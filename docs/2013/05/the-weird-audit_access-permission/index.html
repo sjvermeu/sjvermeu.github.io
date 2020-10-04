@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>The weird "audit_access" permission - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2013/05/the-weird-audit_access-permission/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="access,audit,audit_access,selinux" />
+        <meta name="description" content="While writing up the posts on capabilities, one thing I had in my mind was to give some additional information on frequently occurring denials, such as the dac_override and dac_read_search capabilities, and when they are triggered. For the DAC-related capabilities, policy developers often notice that these capabilities are triggered without …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="The weird &#34;audit_access&#34; permission"/>
+        <meta property="og:url" content="http://blog.siphos.be/2013/05/the-weird-audit_access-permission/"/>
+        <meta property="og:description" content="While writing up the posts on capabilities, one thing I had in my mind was to give some additional information on frequently occurring denials, such as the dac_override and dac_read_search capabilities, and when they are triggered. For the DAC-related capabilities, policy developers often notice that these capabilities are triggered without …"/>
+        <meta property="article:published_time" content="2013-05-19" />
+            <meta property="article:section" content="SELinux" />
+            <meta property="article:tag" content="access" />
+            <meta property="article:tag" content="audit" />
+            <meta property="article:tag" content="audit_access" />
+            <meta property="article:tag" content="selinux" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feed/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+        <link href="http://blog.siphos.be/feed/all.rss.xml" type="application/rss+xml" rel="alternate"
+              title="Simplicity is a form of art... RSS Feed"/>
+
+
+        <link href="http://blog.siphos.be/category/selinux/feed/atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... SELinux ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2013/05/the-weird-audit_access-permission/"
+                       rel="bookmark"
+                       title="Permalink to The weird "audit_access" permission">
+                        The weird "audit_access" permission
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-05-19T03:50:00+02:00"> Sun 19 May 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/access/">access</a>
+        /
+	<a href="http://blog.siphos.be/tag/audit/">audit</a>
+        /
+	<a href="http://blog.siphos.be/tag/audit_access/">audit_access</a>
+        /
+	<a href="http://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>While writing up the posts on capabilities, one thing I had in my mind
+was to give some additional information on frequently occurring denials,
+such as the <em>dac_override</em> and <em>dac_read_search</em> capabilities, and
+when they are triggered. For the DAC-related capabilities, policy
+developers often notice that these capabilities are triggered without a
+real need for them. So in the majority of cases, the policy developer
+wants to disable auditing of this:</p>
+<div class="highlight"><pre><span></span><code>dontaudit &lt;somedomain&gt; self:capability { dac_read_search dac_override };
+</code></pre></div>
+
+
+<p>When applications wants to search through directories not owned by the
+user as which the application runs, <em>both</em> capabilities will be checked
+- first the <em>dac_read_search</em> one and, if that is denied (it will be
+audited though) then <em>dac_override</em> is checked. If that one is denied
+as well, it too will be audited. That is why many developers
+automatically <em>dontaudit</em> both capability calls if the application
+itself doesn't really need the permission.</p>
+<p>Let's say you allow this because the application needs it. But then
+another issue comes up when the application checks file attributes or
+access permissions (which is a second occurring denial that developers
+come across with). Such applications use <em>access()</em> or <em>faccessat()</em> to
+get information about files, but other than that don't do anything with
+the files. When this occurs and the domain does not have read, write or
+execute permissions on the target, then the denial is shown even when
+the application doesn't really read, write or execute the file.</p>
+<div class="highlight"><pre><span></span><code>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main(int argc, char ** argv) {
+  printf(&quot;%s: Exists (%d), Readable (%d), Writeable (%d), Executable (%d)\n&quot;, argv[1],
+    access(argv[1], F_OK), access(argv[1], R_OK),
+    access(argv[1], W_OK), access(argv[1], X_OK));
+}
+
+$ check /var/lib/logrotate.status
+/var/lib/logrotate.status: Exists (0), Readable (-1), Writeable (-1), Executable (-1)
+
+$ tail -1 /var/log/audit.log
+...
+type=AVC msg=audit(1367400559.273:5224): avc:  denied  { read } for  pid=12270 comm=&quot;test&quot; name=&quot;logrotate.status&quot; dev=&quot;dm-3&quot; ino=2849 scontext=staff_u:staff_r:staff_t tcontext=system_u:object_r:logrotate_var_lib_t tclass=file
+</code></pre></div>
+
+
+<p>This gives the impression that the application is doing nasty stuff,
+even when it is merely checking permissions. One way would be to
+dontaudit read as well, but if the application does the check against
+several files of various types, that might mean you need to include
+dontaudit statements for various domains. That by itself isn't wrong,
+but perhaps you do not want to audit such checks but do want to audit
+real read attempts. This is what the <em>audit_access</em> permission is for.</p>
+<p>The <a href="http://marc.info/?l=selinux&amp;m=125349740623497&amp;w=2">audit_access</a>
+<a href="http://marc.info/?l=selinux&amp;m=127239846604513">permission</a> is meant to
+be used only for <em>dontaudit</em> statements: it has no effect on the
+security of the system itself, so using it in <em>allow</em> statements has no
+effect. The purpose of the permission is to allow policy developers to
+not audit access checks without really dontauditing other, possibly
+malicious, attempts. In other words, checking the access can be
+dontaudited while actually attempting to use the access (reading,
+writing or executing the file) will still result in the proper denial.</p>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'the-weird-audit_access-permission';
+                var disqus_url = 'http://blog.siphos.be/2013/05/the-weird-audit_access-permission/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://www.gentoo.org" target="_blank">
+                Gentoo Linux
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

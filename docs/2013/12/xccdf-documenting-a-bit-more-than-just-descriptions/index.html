@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>XCCDF - Documenting a bit more than just descriptions - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="openscap,scap,sce,xccdf" />
+        <meta name="description" content="In my previous post I made a skeleton XCCDF document. By now, we can create a well documented &#34;baseline&#34; (best practice) for our subject (say PostgreSQL). But for now I only talked about &lt;description&gt; whereas XCCDF allows many other tags as well. You can add metadata information for a particular …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="XCCDF - Documenting a bit more than just descriptions"/>
+        <meta property="og:url" content="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"/>
+        <meta property="og:description" content="In my previous post I made a skeleton XCCDF document. By now, we can create a well documented &#34;baseline&#34; (best practice) for our subject (say PostgreSQL). But for now I only talked about &lt;description&gt; whereas XCCDF allows many other tags as well. You can add metadata information for a particular …"/>
+        <meta property="article:published_time" content="2013-12-16" />
+            <meta property="article:section" content="Security" />
+            <meta property="article:tag" content="openscap" />
+            <meta property="article:tag" content="scap" />
+            <meta property="article:tag" content="sce" />
+            <meta property="article:tag" content="xccdf" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feed/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+        <link href="http://blog.siphos.be/feed/all.rss.xml" type="application/rss+xml" rel="alternate"
+              title="Simplicity is a form of art... RSS Feed"/>
+
+
+        <link href="http://blog.siphos.be/category/security/feed/atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... Security ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"
+                       rel="bookmark"
+                       title="Permalink to XCCDF - Documenting a bit more than just descriptions">
+                        XCCDF - Documenting a bit more than just descriptions
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-12-16T04:58:00+01:00"> Mon 16 December 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/security.html">Security</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/openscap/">openscap</a>
+        /
+	<a href="http://blog.siphos.be/tag/scap/">scap</a>
+        /
+	<a href="http://blog.siphos.be/tag/sce/">sce</a>
+        /
+	<a href="http://blog.siphos.be/tag/xccdf/">xccdf</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>In my <a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/">previous
+post</a> I
+made a skeleton XCCDF document. By now, we can create a well documented
+"baseline" (best practice) for our subject (say PostgreSQL). But for now
+I only talked about <code>&lt;description&gt;</code> whereas XCCDF allows many other tags
+as well.</p>
+<p>You can add <em>metadata</em> information for a particular <code>Group</code>. It is
+recommended to use the <a href="http://dublincore.org/">dublin core</a> notation:</p>
+<p>(XML content lost during blog conversion)`</p>
+<p>If you use metadata information however, it should <strong>not</strong> be used
+<em>instead</em> of XCCDF elements.</p>
+<p>Another set of elements that can be used are <code>warning</code> elements:</p>
+<p>(XML content lost during blog conversion)</p>
+<p>The <code>&lt;rationale&gt;</code> element can be used to explain in more detail why a
+rule is important.</p>
+<p>(XML content lost during blog conversion)</p>
+<p>Some elements we saw before also apply on the specific <code>&lt;Group&gt;</code>
+elements, such as <code>&lt;status&gt;</code> or <code>&lt;version&gt;</code>. The combination of these
+elements should allow for a pretty good explanation of the secure setup
+we want to achieve.</p>
+<p>But documentation is one thing - how about checking something
+automatically? Enter the XCCDF <code>Rule</code> element.</p>
+<p>Rules are particular tests, checks if you wish, that you want to have
+executed. To start off, let's look at a <code>Rule</code> element that, as
+automated approach, calls a script. To accomplish this, we use the <strong>SCE
+(Script Check Engine)</strong> method. This is <em>not</em> part of the SCAP standard
+by itself (SCAP uses OVAL for automated checks - I'll discuss OVAL
+later) but XCCDF allows for other check systems to be used. And SCE is
+supported by <a href="http://www.open-scap.org">openscap</a>.</p>
+<p>(XML content lost during blog conversion)</p>
+<p>First of all, we have the <code>Rule</code> element itself, with the specially
+crafted <code>id</code> attribute as seen before. There are three attributes used
+in the example:</p>
+<ol>
+<li><code>selected="false"</code> tells the XCCDF interpreter that the Rule should
+    not be automatically selected. In other words, only if a <code>Profile</code>
+    refers to the rule will be rule be triggered (and the
+    check executed).</li>
+<li><code>severity="low"</code> is a matter of documenting how severe a
+    non-compliant rule is.</li>
+<li><code>weight="0.0"</code> gives a weight on the <code>Rule</code>. In this case, the
+    weight is 0, meaning that the rule might be recommended but by
+    itself does not introduce a security vulnerability or mismatch. Of
+    course, you are free to use whatever value suits you best.</li>
+</ol>
+<p>We also notice a <code>fixtext</code> element. When the rule failed (the system is
+not compliant to the rule) then the fixtext should assist administrators
+in securing the system again. In other words, <code>fixtext</code> are the
+human-readable instructions on remediating the system.</p>
+<p>Finally, we have the <code>check</code> element. This element tells the XCCDF
+interpreter that an automated validation is defined. The type of
+automated validation is provided by the <code>system</code> attribute, which in
+this case refers to the SCE system. The <code>check-content-ref</code> element
+refers to the script to be executed.</p>
+<p>Let's look at the contents of the script:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+
+<span class="c1"># Get CHOST value</span>
+<span class="nb">echo</span> <span class="s2">&quot;Getting CHOST variable content through portageq.&quot;</span><span class="p">;</span>
+<span class="nv">my_chost</span><span class="o">=</span><span class="k">$(</span>portageq envvar CHOST<span class="k">)</span><span class="p">;</span>
+<span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="si">${</span><span class="nv">my_chost</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span>
+<span class="k">then</span>
+  <span class="nb">echo</span> <span class="s2">&quot;-- The portageq command failed. Falling back to glibc build info.&quot;</span><span class="p">;</span>
+  <span class="nv">my_chost</span><span class="o">=</span><span class="k">$(</span>cat /var/db/pkg/sys-libs/glibc-*/CHOST <span class="p">|</span> tail -1<span class="k">)</span><span class="p">;</span>
+<span class="k">fi</span>
+<span class="nb">echo</span> <span class="s2">&quot;-- Got CHOST=</span><span class="si">${</span><span class="nv">my_chost</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="c1"># Get current GCC version</span>
+<span class="nb">echo</span> <span class="s2">&quot;Getting current GCC version through /etc/env.d/gcc/config-*&quot;</span><span class="p">;</span>
+<span class="nv">current_gcc</span><span class="o">=</span><span class="k">$(</span>grep CURRENT /etc/env.d/gcc/config-* <span class="p">|</span> sed -e <span class="s2">&quot;s:CURRENT=</span><span class="si">${</span><span class="nv">my_chost</span><span class="si">}</span><span class="s2">-::g&quot;</span> <span class="p">|</span> sed -e <span class="s2">&quot;s:\([0-9\.-r]*\){</span>$<span class="s2">,-.*</span>$<span class="s2">}:\1:g&quot;</span> <span class="k">)</span><span class="p">;</span>
+<span class="nb">echo</span> <span class="s2">&quot;-- Got version=</span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="c1"># Get type</span>
+<span class="nb">echo</span> <span class="s2">&quot;Getting compiler type (profile/spec) through its CURRENT= value.&quot;</span><span class="p">;</span>
+<span class="nv">current_type</span><span class="o">=</span><span class="k">$(</span>grep CURRENT /etc/env.d/gcc/config-* <span class="p">|</span> sed -e <span class="s2">&quot;s:CURRENT=</span><span class="si">${</span><span class="nv">my_chost</span><span class="si">}</span><span class="s2">-</span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2">::g&quot;</span> <span class="p">|</span> sed -e <span class="s1">&#39;s:^-::g&#39;</span><span class="k">)</span><span class="p">;</span>
+<span class="nb">echo</span> <span class="s2">&quot;-- Got type=</span><span class="si">${</span><span class="nv">current_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+
+<span class="nb">echo</span> <span class="s2">&quot;Checking USE flags of gcc-</span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2"> for hardened USE flag.&quot;</span><span class="p">;</span>
+grep -q hardened /var/db/pkg/sys-devel/gcc-<span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span>/USE<span class="p">;</span>
+<span class="nv">current_hardened_use</span><span class="o">=</span><span class="nv">$?</span><span class="p">;</span>
+<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="nv">current_hardened_use</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span>
+<span class="k">then</span>
+  <span class="nb">echo</span> <span class="s2">&quot;!! GCC </span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2"> is not build with USE=hardened!&quot;</span><span class="p">;</span>
+  <span class="nb">echo</span> <span class="s2">&quot;!! Please enable a hardened profile.&quot;</span><span class="p">;</span>
+  <span class="nb">exit</span> <span class="si">${</span><span class="nv">XCCDF_RESULT_FAIL</span><span class="si">}</span><span class="p">;</span>
+<span class="k">else</span>
+  <span class="nb">echo</span> <span class="s2">&quot;-- GCC </span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2"> is build with USE=hardened.&quot;</span><span class="p">;</span>
+  <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="si">${</span><span class="nv">current_type</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span>
+  <span class="k">then</span>
+    <span class="nb">echo</span> <span class="s2">&quot;-- The default type is used which is a hardened type.&quot;</span><span class="p">;</span>
+    <span class="nb">exit</span> <span class="si">${</span><span class="nv">XCCDF_RESULT_PASS</span><span class="si">}</span><span class="p">;</span>
+  <span class="k">else</span>
+    <span class="nb">echo</span> <span class="s2">&quot;!! A non-default type is used: </span><span class="si">${</span><span class="nv">current_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="nb">echo</span> <span class="s2">&quot;!! This means not all hardened toolchain measures are enabled.&quot;</span><span class="p">;</span>
+    <span class="nb">exit</span> <span class="si">${</span><span class="nv">XCCDF_RESULT_FAIL</span><span class="si">}</span><span class="p">;</span>
+  <span class="k">fi</span>
+<span class="k">fi</span>
+</code></pre></div>
+</td></tr></table>
+
+<p>As you can see, the script can give output when needed, but the most
+important part is that it has to return a particular return value. This
+return value is provided through environment variables
+(<code>XCCDF_RESULT_*</code>).</p>
+<p>All we need to do now is to include this <code>Rule</code> in the <code>Profile</code>.</p>
+<p>(XML content lost during blog conversion)</p>
+<p>We can now evaluate the XCCDF file on the system if we refer to the
+right profile. By selecting the profile, the XCCDF interpreter will also
+automatically check the rules referred to by the profile (and the rules
+that do not have <code>selected="false"</code> set too).</p>
+<div class="highlight"><pre><span></span><code># oscap xccdf eval --profile ... gentoo-xccdf.xml
+
+Title   Test if the hardened toolchain is used
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-toolchain-hardened
+Result  pass
+
+Title   Test if sulogin is used for single-user boot (/etc/inittab)
+Rule    xccdf_org.gentoo.dev.swift_rule_inittab-sulogin
+Result  fail
+</code></pre></div>
+
+
+<p>Now, if you want to check this on several systems, you would need to
+distribute not only the XCCDF file, but also all files referred to by
+the XCCDF document. As this is counterproductive, SCAP supports <em>Data
+Streams</em>. A data stream is a single file that includes the content of
+all files. With openscap, data streams can be made as follows:</p>
+<div class="highlight"><pre><span></span><code># oscap ds sds-compose postgresql-xccdf.xml postgresql-ds.xml
+</code></pre></div>
+
+
+<p>So now we have a document explaining the secure setup of a component,
+and included automated checks to validate system compliance with the
+document using scripts. In the next post, I'll go on with OVAL.</p>
+<p>This post is part of a series on SCAP content:</p>
+<ol>
+<li><a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/">Documenting security best practices - XCCDF
+    introduction</a></li>
+<li><a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/">An XCCDF skeleton for
+    PostgreSQL</a></li>
+</ol>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'xccdf-documenting-a-bit-more-than-just-descriptions';
+                var disqus_url = 'http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://www.gentoo.org" target="_blank">
+                Gentoo Linux
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

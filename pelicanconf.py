@@ -47,7 +47,7 @@ AUTHOR_SAVE_AS = ''
 
 # TODO Search currently does not seem to work well, verify later again
 # TODO Remove when publishing
-# SEARCH_URL = "file:///home/swift/Sites/blog.siphos.be/output/search.html"
+# SEARCH_URL = "file://docs/search.html"
 
 # Plugins
 
