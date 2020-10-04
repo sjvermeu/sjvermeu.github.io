@@ -84,4 +84,4 @@ SITEMAP = {
   }
 }
 
-STATIC_PATHS = ['images','static']
+STATIC_PATHS = ['images','static','CNAME']
