@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BDIR="$(pwd)/output"
+BDIR="$(pwd)/docs"
 
 cd ${BDIR}/feed;
 ln -f -s all.rss.xml index.html;
