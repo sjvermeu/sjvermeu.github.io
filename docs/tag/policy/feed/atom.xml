@@ -4,7 +4,18 @@
 security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
 about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
 should've asked why the &lt;em&gt;reference policy&lt;/em&gt; or &lt;em&gt;Red Hat/Fedora policy&lt;/em&gt; does not
-confine Firefox, because SELinux …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you're a bit following the SELinux development community you will know
+confine Firefox, because SELinux is, as I've
+&lt;a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/"&gt;mentioned before&lt;/a&gt;,
+not the same as its policy.&lt;/p&gt;
+&lt;p&gt;In effect, Gentoo's SELinux policy &lt;em&gt;does&lt;/em&gt; confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+&lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies"&gt;develop desktop policies&lt;/a&gt;
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;If you're a bit following the SELinux development community you will know
 &lt;a href="http://danwalsh.livejournal.com"&gt;Dan Walsh&lt;/a&gt;, a &lt;a href="http://people.redhat.com/dwalsh/"&gt;Red Hat&lt;/a&gt;
 security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
 about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
@@ -113,7 +124,10 @@ this is sound.&lt;/p&gt;</content><category term="SELinux"></category><category 
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
-servers because it does not play well with their day-to-day operations. But …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
+servers because it does not play well with their day-to-day operations. But
+the Android inclusion shows that SELinux itself is not the culprit for this:
+it is the policy.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
@@ -192,7 +206,14 @@ another car. Let's create other cars in the SELinux world as well.&lt;/p&gt;</co
 SELinux policies can be a nuisance. Not only are the number of SELinux
 policies that are available through the standard repositories limited,
 some of these policies are not even written with the same level of
-confinement that an administrator …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When testing out new technologies or new setups, not having (proper)
+confinement that an administrator might expect. Or perhaps the
+technology to be tested is used in a completely different manner.&lt;/p&gt;
+&lt;p&gt;Without proper policies, any attempt to start such a daemon or
+application might or will cause permission violations. In many cases,
+developers or users tend to disable SELinux enforcing then so that they
+can continue playing with the new technology. And why not? After all,
+policy development is to be done &lt;em&gt;after&lt;/em&gt; the technology is understood.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;When testing out new technologies or new setups, not having (proper)
 SELinux policies can be a nuisance. Not only are the number of SELinux
 policies that are available through the standard repositories limited,
 some of these policies are not even written with the same level of

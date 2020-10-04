@@ -72,6 +72,43 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.siphos.be/2016/10/gnupg-private-key-suddenly-missing/">GnuPG: private key suddenly missing?</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2016-10-12T18:56:00+02:00"> Wed 12 October 2016</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/free-software.html">Free Software</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/gnupg/">gnupg</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>After updating my workstation, I noticed that keychain reported that it could
+not load one of the GnuPG keys I passed it on.</p>
+<div class="highlight"><pre><span></span><code> * keychain 2.8.1 ~ http://www.funtoo.org
+ * Found existing ssh-agent: 2167
+ * Found existing gpg-agent: 2194
+ * Warning: can't find 0xB7BD4B0DE76AC6A4; skipping
+ * Known ssh key: /home/swift/.ssh/id_dsa
+ * Known ssh key: /home/swift/.ssh/id_ed25519
+ * Known gpg key: 0x22899E947878B0CE
+</code></pre></div>
+<p>I did not modify my key store at all, so what happened?</p>
+
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/10/gnupg-private-key-suddenly-missing/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.siphos.be/2016/09/we-do-not-ship-selinux-sandbox/">We do not ship SELinux sandbox</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -105,8 +142,6 @@ utility. The utility is part of the <code>policycoreutils</code> package. Luckil
 <code>sys-apps/policycoreutils</code> package is not vulnerable - and not because we were
 clairvoyant about this issue, but because we don't ship this utility.</p>
 
-
-<p><strong>What is the …</strong></p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/09/we-do-not-ship-selinux-sandbox/">more ...</a>
                 </div>
             </article>
@@ -135,7 +170,12 @@ clairvoyant about this issue, but because we don't ship this utility.</p>
                 <div class="summary"><p>While working on the second edition of my first book, <a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition">SELinux System Administration - Second Edition</a>
 I had to test out a few commands on different Linux distributions to make sure
 that I don't create instructions that only work on Gentoo Linux. After all, as
-awesome as Gentoo might be, the …</p>
+awesome as Gentoo might be, the Linux world is a bit bigger. So I downloaded a
+few live systems to run in Qemu/KVM.</p>
+<p>Some of these systems however use <a href="https://cloudinit.readthedocs.io/en/latest/">cloud-init</a>
+which, while interesting to use, is not set up on my system yet. And without 
+support for cloud-init, how can I get access to the system?</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/09/mounting-qemu-images/">more ...</a>
                 </div>
             </article>
@@ -166,7 +206,16 @@ awesome as Gentoo might be, the …</p>
                 <div class="summary"><p>At my work, I have the pleasure of being involved in a big data project that
 uses Hadoop as the primary platform for several services. As an architect, I
 try to get to know the platform's capabilities, its potential use cases, its
-surrounding ecosystem, etc. And although the implementation at …</p>
+surrounding ecosystem, etc. And although the implementation at work is not in
+its final form (yay agile infrastructure releases) I do start to get a grasp of
+where we might be going.</p>
+<p>For many analysts and architects, this Hadoop platform is a new kid on the block
+so I have some work explaining what it is and what it is capable of. Not for the
+fun of it, but to help the company make the right decisions, to support management
+and operations, to lift the fear of new environments. One thing I've once said is
+that "Hadoop is the poor man's mainframe", because I notice some high-level
+similarities between the two.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/06/comparing-hadoop-with-mainframe/">more ...</a>
                 </div>
             </article>
@@ -195,12 +244,19 @@ surrounding ecosystem, etc. And although the implementation at …</p>
                 <div class="summary"><p>After reorganizing my salt configuration, I received the following error:</p>
 <div class="highlight"><pre><span></span><code>[ERROR   ] Template was specified incorrectly: False
 </code></pre></div>
-
-
 <p>Enabling some debugging on the command gave me a slight pointer why this occurred:</p>
-<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv &#39;testing&#39;, u&#39;salt://top.sls&#39;
+<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
 [DEBUG   ] No contents loaded for env: testing
-[DEBUG …</code></pre></div>
+[DEBUG   ] compile template: False
+[ERROR   ] Template was specified incorrectly: False
+</code></pre></div>
+<p>I was using a single top file as recommended by Salt, but apparently it was still
+looking for top files in the other environments.</p>
+<p>Yet, if I split the top files across the environments, I got the following warning:</p>
+<div class="highlight"><pre><span></span><code>[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+</code></pre></div>
+<p>So what's all this about?</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/03/template-was-specified-incorrectly/">more ...</a>
                 </div>
             </article>
@@ -230,7 +286,11 @@ surrounding ecosystem, etc. And although the implementation at …</p>
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards <code>salt-ssh</code>. This would allow to do some system management over SSH
 instead of ZeroMQ.</p>
-<p>I'm not …</p>
+<p>I'm not confident yet that this is a solid approach to take (as performance is also
+important, which is greatly reduced with <code>salt-ssh</code>), and the security exposure of the
+salt minions over ZeroMQ is also not that insecure (especially not when a local firewall
+ensures that only connections from the salt master are allowed). But playing doesn't hurt.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/03/using-salt-ssh-with-agent-forwarding/">more ...</a>
                 </div>
             </article>
@@ -261,9 +321,6 @@ another. Both mail providers used IMAP, so I looked into IMAP related synchroniz
 methods. I quickly found the <a href="https://github.com/imapsync/imapsync">imapsync</a> application,
 also supported through Gentoo's repository.</p>
 
-
-<p><strong>What I required</strong></p>
-<p>The migration required that all …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/03/trying-out-imapsync/">more ...</a>
                 </div>
             </article>
@@ -292,7 +349,11 @@ also supported through Gentoo's repository.</p>
                 <div class="summary"><p>A short while ago I got the notification that pulling new CVE information was
 no longer possible. The reason was that the NVD site did not support uncompressed
 downloads anymore. The fix for cvechecker was simple, and it also gave me a reason
-to push out a new release (after …</p>
+to push out a new release (after two years) which also includes various updates by
+Christopher Warner.</p>
+<p>So <a href="https://github.com/sjvermeu/cvechecker/wiki">cvechecker 3.6</a> is now available
+for general consumption.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/11/new-cvechecker-release/">more ...</a>
                 </div>
             </article>
@@ -326,7 +387,10 @@ to push out a new release (after …</p>
 a couple of technological domains, namely databases and scheduling/workload 
 automation. It brought me in contact with many vendors, many technologies
 and most importantly, many teams within the organization. The focus domain
-was challenging, as I had to …</p>
+was challenging, as I had to deal with the strategy on how the organization,
+which is a financial institution, will deal with databases and scheduling in
+the long term.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/switching-focus-at-work/">more ...</a>
                 </div>
             </article>
@@ -363,55 +427,7 @@ errors from SELinux and the system itself:</p>
 <span class="gp gp-VirtualEnv">(Ignored)</span>
 </code></pre></div>
 
-
-
-
-<p>The authentication log shows entries such as the following:</p>
-<div class="highlight"><pre><span></span><code>Sep 14 20:20 …</code></pre></div>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/getting-su-to-work-in-init-scripts/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">Custom CIL SELinux policies in Gentoo</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-09-10T07:13:00+02:00"> Thu 10 September 2015</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/gentoo.html">Gentoo</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-        /
-	<a href="https://blog.siphos.be/tag/cil/">cil</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-        /
-	<a href="https://blog.siphos.be/tag/ebuild/">ebuild</a>
-        /
-	<a href="https://blog.siphos.be/tag/eclass/">eclass</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>In Gentoo, we have been supporting <a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file">custom policy packages</a>
-for a while now. Unlike most other distributions, which focus on binary packages,
-Gentoo has always supported source-based packages as default (although 
-<a href="https://wiki.gentoo.org/wiki/Binary_package_guide">binary packages</a> are 
-supported as well).</p>
-<p>A recent <a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4">commit</a>
-now also allows CIL files to be used.</p>
-
-
-<p><strong>Policy ebuilds …</strong></p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -530,7 +546,7 @@ now also allows CIL files to be used.</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+         <div class="col-xs-10">&copy; 2020 Sven Vermeulen
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

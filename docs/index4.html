@@ -72,6 +72,47 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">Custom CIL SELinux policies in Gentoo</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-09-10T07:13:00+02:00"> Thu 10 September 2015</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/gentoo.html">Gentoo</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+        /
+	<a href="https://blog.siphos.be/tag/cil/">cil</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+        /
+	<a href="https://blog.siphos.be/tag/ebuild/">ebuild</a>
+        /
+	<a href="https://blog.siphos.be/tag/eclass/">eclass</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>In Gentoo, we have been supporting <a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file">custom policy packages</a>
+for a while now. Unlike most other distributions, which focus on binary packages,
+Gentoo has always supported source-based packages as default (although 
+<a href="https://wiki.gentoo.org/wiki/Binary_package_guide">binary packages</a> are 
+supported as well).</p>
+<p>A recent <a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4">commit</a>
+now also allows CIL files to be used.</p>
+
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.siphos.be/2015/09/using-multiple-openssh-daemons/">Using multiple OpenSSH daemons</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -102,7 +143,12 @@ Simplicity is a form of art...            </a>
 and for this interactive access I position <a href="http://www.openssh.com/">OpenSSH</a>. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.</p>
-<p>For instance, on one …</p>
+<p>For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/using-multiple-openssh-daemons/">more ...</a>
                 </div>
             </article>
@@ -135,7 +181,9 @@ have harder security requirements for OpenSSH than most users do.</p>
                 <div class="summary"><p>A few days ago I committed a small update to <code>policycoreutils</code>, a SELinux related
 package that provides most of the management utilities for SELinux systems. The
 fix was to get two patches (which are committed upstream) into the existing
-release so that our users can benefit from the fixed issues …</p>
+release so that our users can benefit from the fixed issues without having to
+wait for a new release.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/maintaining-packages-and-backporting/">more ...</a>
                 </div>
             </article>
@@ -166,7 +214,11 @@ release so that our users can benefit from the fixed issues …</p>
                 <div class="summary"><p>CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
-it, but real-life work and time-to-market for now …</p>
+it, but real-life work and time-to-market for now forces me to stick with the
+M4-based refpolicy one.</p>
+<p>Still, I do try out some things here and there, and one of the things I wanted
+to look into was how CIL policies would deal with interfaces.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/doing-away-with-interfaces/">more ...</a>
                 </div>
             </article>
@@ -207,7 +259,12 @@ it, but real-life work and time-to-market for now …</p>
                 <div class="summary"><p>Gentoo has removed its support of the older GuideXML format in favor of using
 the <a href="https://wiki.gentoo.org">Gentoo Wiki</a> and a new content management system
 for the main site (or is it static pages, I don't have the faintest idea to be
-honest). I do still have a few GuideXML pages in …</p>
+honest). I do still have a few GuideXML pages in my development space, which I
+am going to move to HTML pretty soon.</p>
+<p>In order to do so, I make use of the <a href="https://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl?view=log">guidexml2wiki</a>
+stylesheet I <a href="http://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/">developed</a>.
+But instead of migrating it to wiki syntax, I want to end with HTML.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/slowly-converting-from-guidexml-to-html/">more ...</a>
                 </div>
             </article>
@@ -236,7 +293,13 @@ honest). I do still have a few GuideXML pages in …</p>
 <a href="https://github.com/p8952/bocker">Bocker</a> by Peter Wilmott as well ;-), I
 still find it important that technologies are well capable of supporting a
 multi-instance environment.</p>
-<p>Being able to run multiple instances makes for great consolidation …</p>
+<p>Being able to run multiple instances makes for great consolidation. The system
+can be optimized for the technology, access to the system limited to the admins
+of said technology while still providing isolation between instances. For some
+technologies, running on commodity hardware just doesn't cut it (not all 
+software is written for such hardware platforms) and consolidation allows for
+reducing (hardware/licensing) costs.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/making-the-case-for-multi-instance-support/">more ...</a>
                 </div>
             </article>
@@ -271,7 +334,8 @@ on OpenSSH's deprecation of the <a href="https://en.wikipedia.org/wiki/Digital_S
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested <a href="http://ed25519.cr.yp.to/">ED25519</a> algorithm. Of
 course, I wouldn't be a security-interested party if I did not do some additional
-investigation into the …</p>
+investigation into the DSA versus Ed25519 discussion.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/switching-openssh-to-ed25519-keys/">more ...</a>
                 </div>
             </article>
@@ -306,9 +370,6 @@ my blog to <a href="http://blog.getpelican.com/">Pelican</a>, a static site gene
 with Python. A number of adjustments have been made since, which I'll happily
 talk about.</p>
 
-
-<p><strong>The full article view on index page</strong></p>
-<p>One of the features I wanted was to have my latest …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/updates-on-my-pelican-adventure/">more ...</a>
                 </div>
             </article>
@@ -341,7 +402,9 @@ written by <a href="http://catchchallenger.first-world.info/wiki/User:Alpha_one_
 which gives a quick benchmark on a couple of compression methods / algorithms.
 It gave me the idea of writing a quick script that tests out a wide number of
 compression utilities available in Gentoo (usually through the <code>app-arch</code>
-category …</p>
+category), with also a number of options (in case multiple options are
+possible).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/finding-a-good-compression-utility/">more ...</a>
                 </div>
             </article>
@@ -384,47 +447,19 @@ category …</p>
 security engineer. Today he <a href="http://danwalsh.livejournal.com/72697.html">blogged</a> 
 about <em>CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox</em>. He 
 should've asked why the <em>reference policy</em> or <em>Red Hat/Fedora policy</em> does not
-confine Firefox, because SELinux …</p>
+confine Firefox, because SELinux is, as I've
+<a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">mentioned before</a>,
+not the same as its policy.</p>
+<p>In effect, Gentoo's SELinux policy <em>does</em> confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+<a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies">develop desktop policies</a>
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2015/08/can-selinux-substitute-dac/">Can SELinux substitute DAC?</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-08-09T14:48:00+02:00"> Sun 09 August 2015</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-        /
-	<a href="https://blog.siphos.be/tag/refpolicy/">refpolicy</a>
-        /
-	<a href="https://blog.siphos.be/tag/linux/">linux</a>
-        /
-	<a href="https://blog.siphos.be/tag/dac/">dac</a>
-        /
-	<a href="https://blog.siphos.be/tag/lsm/">lsm</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>A nice <a href="https://twitter.com/sjvermeu/status/630107879123623936">twitter discussion</a>
-with <a href="https://twitter.com/erlheldata">Erling Hellenäs</a> caught my full attention later
-when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
-in the current implementation, but why not and what would be needed?</p>
-<p>SELinux is implemented through the <a href="https://en.wikipedia.org/wiki/Linux_Security_Modules">Linux Security Modules framework</a>
-which allows …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/can-selinux-substitute-dac/">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -543,7 +578,7 @@ which allows …</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+         <div class="col-xs-10">&copy; 2020 Sven Vermeulen
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

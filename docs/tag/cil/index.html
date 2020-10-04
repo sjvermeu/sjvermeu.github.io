@@ -111,8 +111,6 @@ supported as well).</p>
 <p>A recent <a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4">commit</a>
 now also allows CIL files to be used.</p>
 
-
-<p><strong>Policy ebuilds …</strong></p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">more ...</a>
                 </div>
             </article>
@@ -143,7 +141,11 @@ now also allows CIL files to be used.</p>
                 <div class="summary"><p>CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
-it, but real-life work and time-to-market for now …</p>
+it, but real-life work and time-to-market for now forces me to stick with the
+M4-based refpolicy one.</p>
+<p>Still, I do try out some things here and there, and one of the things I wanted
+to look into was how CIL policies would deal with interfaces.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/doing-away-with-interfaces/">more ...</a>
                 </div>
             </article>
@@ -177,7 +179,10 @@ it, but real-life work and time-to-market for now …</p>
 recent <a href="https://source.android.com/devices/tech/security/selinux/">Android</a>
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
-servers because it does not play well with their day-to-day operations. But …</p>
+servers because it does not play well with their day-to-day operations. But
+the Android inclusion shows that SELinux itself is not the culprit for this:
+it is the policy.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">more ...</a>
                 </div>
             </article>
@@ -249,7 +254,15 @@ with. Currently, policy code is written in a set of three files:</p>
 <li>The <code>.te</code> file contains the SELinux policy code (type
     enforcement rules)</li>
 <li>The <code>.if</code> file contains functions which turn a set of arguments into
-    blocks of SELinux …</li></ul>
+    blocks of SELinux policy code (interfaces). These functions are
+    called by other interface files or type enforcement files</li>
+<li>The <code>.fc</code> file contains mappings of file path expressions towards
+    labels (file contexts)</li>
+</ul>
+<p>These files are compiled into loadable modules (or a base module) which
+are then transformed to an active policy. But this is not a single-step
+approach.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/">more ...</a>
                 </div>
             </article>
@@ -286,7 +299,9 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the <a href="https://github.com/SELinuxProject/selinux">SELinux
 userspace</a> so that developers
-and contributors can already work with in-progress code developments …</p>
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/">more ...</a>
                 </div>
             </article>

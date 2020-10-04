@@ -1,9 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art...</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/feed/all.atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2018-09-09T13:20:00+02:00</updated><entry><title>cvechecker 3.9 released</title><link href="https://blog.siphos.be/2018/09/cvechecker-3.9-released/" rel="alternate"></link><published>2018-09-09T13:20:00+02:00</published><updated>2018-09-09T13:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-09-09:/2018/09/cvechecker-3.9-released/</id><content type="html">&lt;p&gt;Thanks to updates from Vignesh Jayaraman, Anton Hillebrand and Rolf Eike Beer,
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art...</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/feed/all.atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2020-10-04T13:20:00+02:00</updated><entry><title>Working on infra strategy</title><link href="https://blog.siphos.be/2020/10/working-on-infra-strategy/" rel="alternate"></link><published>2020-10-04T13:20:00+02:00</published><updated>2020-10-04T13:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2020-10-04:/2020/10/working-on-infra-strategy/</id><content type="html">&lt;p&gt;After a long hiatus, I'm ready to take up blogging again on my public blog.
+With my day job becoming more intensive and my side-job taking the remainder
+of the time, I've since quit my work on the Gentoo project. I am in process
+of releasing a new edition of the SELinux System Administration book, so I'll
+probably discuss that more later.&lt;/p&gt;
+&lt;p&gt;Today, I want to write about a task I had to do this year as brand new domain
+architect for infrastructure.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Transitioning to domain architect&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While I have been an infrastructure architect for quite some time already, my
+focus then was always on specific areas within infrastructure (databases,
+scheduling, big data), or on general infrastructure projects or challenges
+(infrastructure zoning concept, region-wide disaster recovery analysis and
+design). As one of my ex-colleagues and mentors put it, as infrastructure
+architects you are allowed to piss on each other's area: you can (and perhaps
+should) challenge the vision and projects of others, of course in a
+professional way.&lt;/p&gt;
+&lt;p&gt;I heeded the advice of this person, and was able to get a much better grip on
+all our infrastructure services, their designs and challenges. I mentioned
+earlier on that my day job became more intensive: it was not just the direct
+responsibilities that I had that became more challenging, my principle to learn
+and keep track of all infrastructure evolutions were a large part of it as
+well. This pays off, as feedback and advice within the architecture review
+boards is more to the point, more tied to the situation.&lt;/p&gt;
+&lt;p&gt;Furthermore, as an architect, I still try to get my hands dirty on everything
+bouncing around. When I was focusing on big data, I learned Spark and
+pySpark, I revisited my Python knowledge, and used this for specific cases
+(like using Python to create reports rather than Excel) to make sure I get a
+general feel of what engineers and developers have to work with. When my focus
+was on databases, I tried to get acquainted with DBA tasks. When we were
+launching our container initiative, I set up and used Kubernetes myself (back
+then this was also to see if SELinux is working properly with Kubernetes and
+during the installation).&lt;/p&gt;
+&lt;p&gt;While this does not make me anything near what our engineers and experts are
+doing, I feel it gives me enough knowledge to be able to talk and discuss
+topics with these colleagues without being that "ivory tower" architect,
+and better understand (to a certain level) what they are going through when
+new initiatives or solutions are thrown at them.&lt;/p&gt;
+&lt;p&gt;End of 2019, the company decided that a reorganization was due, not only on
+department and directorate level, but also on the IT and Enterprise
+Architecture level. One of the areas that improved was to make sure the
+infrastructure in general was also covered and supported by the EA team.
+Part of that move, two of my infrastructure architect colleagues and
+myself joined the EA team. One colleague is appointed to tackle a strategic
+theme, another is now domain architect for workplace/workforce,
+and I got the task of covering the infrastructure domain. Well, it is called
+infrastructure, but focus on the infrastructure related to hosting of
+applications and services: cloud hosting, data center, network, compute,
+private cloud, container platform, mainframe, integration services,
+middleware, etc. Another large part of what I consider "infrastructure" is
+part of the workplace domain, which my colleague is pushing forward.&lt;/p&gt;
+&lt;p&gt;While I was still handing over my previous workload, coaching the new colleague
+that got thrown in to make sure both him and the teams involved are not left
+with a gap, the various domain enterprise architects got a first task: draft
+up the strategy for the domain… and don't wait too long ;-)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tackling a domain strategy&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Now, I've drafted infrastructural strategies quite a few times already,
+although those have most focus on the technology side. The domain view
+goes beyond just the technological means: to be able to have a well-founded
+strategy, I also have to tackle the resources and human side of things, the
+ability of the organization to deal with (yet another?) transformation, the
+processes involved, etc.&lt;/p&gt;
+&lt;p&gt;Unlike the more specific area focus I had in the past, where the number of
+direct stakeholders is limited, the infrastructure domain I now support has
+many more direct stakeholders involved. If I count the product managers, system
+architects, product owners (yes we are trying the Scaled Agile approach in our
+organization) and the managerial roles within the domain, I have 148 people to
+involve, spread across 7 Agile Release Trains with different directorate
+steering. The consumers of the infrastructure services (which are more part of
+business delivery services rather than on IT level) are even much larger than
+that, and are the most important ones (but also more difficult) to get in touch
+with.&lt;/p&gt;
+&lt;p&gt;Rather than just asking what the main evolutions are in the several areas of
+the domains, I approached this more according to practices I read in books like
+"Good Strategy, Bad Strategy" by Richard Rumelt. I started with interviews of
+all the stakeholders to get to learn what their challenges and problems are.
+I wanted our strategy to tackle the issues at hand, not focus on technological
+choices. Based on these interviews, I grouped the issues and challenges to see
+what are the primary causes of these issues.&lt;/p&gt;
+&lt;p&gt;Then I devised what action domains I need to focus on in the strategy. An
+action domain was an area that more clearly describes the challenges ahead:
+while I had close to 200 challenges observed from the interviews, I can assign
+the huge majority of them to one of two action domains: if we tackle these
+domains then we are helping the organization in most of their challenges.
+After validating that these action domains are indeed covering the needs of
+the organization, I started working on the principles how to tackle these
+issues.&lt;/p&gt;
+&lt;p&gt;Within the principles I want to steer the evolution within the infrastructure
+domain, without already focusing on the tangible projects to accomplish that.
+The principles should map to both larger projects (which I wanted to describe
+in the strategy as well) as well as smaller or more continuity-related
+projects. I eventually settled with four principles:
+  - one principle covering how to transform the environment,
+  - one principle covering what we offer (and thus also what we won't be
+    offering anymore),
+  - one principle which extends our scope with a major area that our internal
+    customers are demanding, and
+  - one principle describing how we will design our services&lt;/p&gt;
+&lt;p&gt;Four principles are easy enough to remember for all involved, and if they are
+described well, they are steering enough for the organization to take up in
+their solutions. But with principles alone the strategy is not tangible enough
+for everyone, and many choices to be made are not codified within those
+principles. The next step was to draw out the vision for  infrastructure, based
+upon current knowledge and the principles above, and show the major areas of
+work that lays ahead, as well as give guidance on what these areas should
+evolve to.&lt;/p&gt;
+&lt;p&gt;I settled for eight vision statements, each worked out further with high level
+guidance, as well as impact information: how will this impact the organization?
+Do we need specific knowledge or other profiles that we miss? Is this a vision
+that instills a cultural change (which often implies a slower adoption and the
+need for more support)? What are the financial consequences? What will happen
+if we do not pursue this vision?&lt;/p&gt;
+&lt;p&gt;Within each vision, I collaborated with the various system architects and other
+stakeholders to draft out epics, changes that support the vision and are ready
+to be taken up in the Scaled Agile approach of the organization. The epics that
+would be due soon were fully expanded, with a lean business case (attempt) and
+phasing. Epics that are scheduled later (the strategy is a 5-year plan) are
+mainly paraphrased as expanding those right now provides little value.&lt;/p&gt;
+&lt;p&gt;While the epics themselves are not fully described in the strategy (the visions
+give the rough approach), drafting these out is a way to verify if the vision
+statements are feasible and correct, and is a way to check if the organization
+understands and supports the vision.&lt;/p&gt;
+&lt;p&gt;From the moment I got the request to the final draft of the strategy note,
+around 2 months have passed. The first draft was slideware and showed the
+intentions towards management (who wanted feedback within a few weeks after
+the request), after which the strategy was codified in a large document, and
+brought for approval on the appropriate boards.&lt;/p&gt;
+&lt;p&gt;That was only the first hurdle though. Next was to communicate this strategy
+further…&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Communication and involvement are key&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The strategic document was almost finalized when COVID-19 struck. The company
+moved to working at home, and the way of working changed a lot. This also
+impacted how to approach the communication of the strategy and trying to get
+involvement of people. Rather than physically explaining the strategy, watching
+the body language of the people to see if they understand and support it or
+not, I was facing digital meetings where we did not yet have video.
+Furthermore, the organization was moving towards a more distributed approach
+with smaller teams (higher agility) with fewer means of bringing out
+information to larger groups.&lt;/p&gt;
+&lt;p&gt;I selected a few larger meetings (such as those where all product managers and
+system architects are present) to present and discuss the strategy, but also
+started making webinars on this so that interested people could get informed
+about it. I even decided to have two webinars: a very short one (3 minutes)
+which focuses on the principles alone (and quickly summarizes the vision
+statements), and an average one (20-ish minutes) which covers the principles
+and vision statements.&lt;/p&gt;
+&lt;p&gt;I also made recordings of the full explanations (e.g. those to management
+team), which take 1 hour, but did not move those towards a webinar (due to
+time pressure). Of course, I also published the strategy document itself for
+everyone, as well as the slides that accompany it.&lt;/p&gt;
+&lt;p&gt;One of the next steps is to translate the strategy further towards the
+specific agile release trains, drafting up specific roadmaps, etc. This will
+also allow me to communicate and explain the strategy further. Right now, this
+is where we are at - and while I am happy with the strategy content, I do feel
+that the communication part received too little attention from myself, and is
+something I need to continue to put focus on.&lt;/p&gt;
+&lt;p&gt;If a strategy is not absorbed by the organization, it fails as a strategy. And
+if you do not have sufficient collaboration on the strategy after it was
+'finalized' (not just communication but collaboration) then the organization
+cannot absorb it. I also understand that the infrastructure strategy isn't
+the only one guiding the organization: each domain has a strategy, and
+while the domain architects do try to get the strategies aligned (or at least
+not contradictory to each other), it is still not a single, company-wide
+strategy.&lt;/p&gt;
+&lt;p&gt;Right now, colleagues are working on consolidating the various strategies on
+architectural level, while the agile organization is using the strategies to
+formulate their specific solution visions (and for a handful of solutions I'm
+also directly involved).&lt;/p&gt;
+&lt;p&gt;We'll see how it pans out.&lt;/p&gt;
+&lt;p&gt;So, do you think this is a sensible approach I took? How did you tackle
+communication and collaboration of such initiatives during COVID-19 measures? &lt;/p&gt;
+</content><category term="Architecture"></category></entry><entry><title>cvechecker 3.9 released</title><link href="https://blog.siphos.be/2018/09/cvechecker-3.9-released/" rel="alternate"></link><published>2018-09-09T13:20:00+02:00</published><updated>2018-09-09T13:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-09-09:/2018/09/cvechecker-3.9-released/</id><content type="html">&lt;p&gt;Thanks to updates from Vignesh Jayaraman, Anton Hillebrand and Rolf Eike Beer,
 a new release of &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; is
 now made available.&lt;/p&gt;
 &lt;p&gt;This new release (v3.9) is a bugfix release.&lt;/p&gt;
-</content><category term="Free Software"></category><category term="cvechecker"></category></entry><entry><title>Automating compliance checks</title><link href="https://blog.siphos.be/2018/03/automating-compliance-checks/" rel="alternate"></link><published>2018-03-03T13:20:00+01:00</published><updated>2018-03-03T13:20:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-03-03:/2018/03/automating-compliance-checks/</id><summary type="html">&lt;p&gt;With the configuration baseline for a technical service being described fully (see the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first&lt;/a&gt;, &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second&lt;/a&gt; and &lt;a href="https://blog.siphos.be/2018/01/documenting-a-rule/"&gt;third&lt;/a&gt; post in this series), it is time to consider the validation of the settings in an automated manner. The preferred method for this is to use &lt;em&gt;Open Vulnerability and Assessment Language (OVAL)&lt;/em&gt;, which …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the configuration baseline for a technical service being described fully (see the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first&lt;/a&gt;, &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second&lt;/a&gt; and &lt;a href="https://blog.siphos.be/2018/01/documenting-a-rule/"&gt;third&lt;/a&gt; post in this series), it is time to consider the validation of the settings in an automated manner. The preferred method for this is to use &lt;em&gt;Open Vulnerability and Assessment Language (OVAL)&lt;/em&gt;, which is nowadays managed by the &lt;a href="https://oval.cisecurity.org/"&gt;Center for Internet Security&lt;/a&gt;, abbreviated as CISecurity. Previously, OVAL was maintained and managed by Mitre under NIST supervision, and Google searches will often still point to the old sites. However, documentation is now maintained on CISecurity's &lt;a href="https://github.com/OVALProject/Language/tree/5.11.2/docs"&gt;github repositories&lt;/a&gt;.&lt;/p&gt;
+</content><category term="Free Software"></category><category term="cvechecker"></category></entry><entry><title>Automating compliance checks</title><link href="https://blog.siphos.be/2018/03/automating-compliance-checks/" rel="alternate"></link><published>2018-03-03T13:20:00+01:00</published><updated>2018-03-03T13:20:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-03-03:/2018/03/automating-compliance-checks/</id><summary type="html">&lt;p&gt;With the configuration baseline for a technical service being described fully (see the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first&lt;/a&gt;, &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second&lt;/a&gt; and &lt;a href="https://blog.siphos.be/2018/01/documenting-a-rule/"&gt;third&lt;/a&gt; post in this series), it is time to consider the validation of the settings in an automated manner. The preferred method for this is to use &lt;em&gt;Open Vulnerability and Assessment Language (OVAL)&lt;/em&gt;, which is nowadays managed by the &lt;a href="https://oval.cisecurity.org/"&gt;Center for Internet Security&lt;/a&gt;, abbreviated as CISecurity. Previously, OVAL was maintained and managed by Mitre under NIST supervision, and Google searches will often still point to the old sites. However, documentation is now maintained on CISecurity's &lt;a href="https://github.com/OVALProject/Language/tree/5.11.2/docs"&gt;github repositories&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;But I digress...&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With the configuration baseline for a technical service being described fully (see the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first&lt;/a&gt;, &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second&lt;/a&gt; and &lt;a href="https://blog.siphos.be/2018/01/documenting-a-rule/"&gt;third&lt;/a&gt; post in this series), it is time to consider the validation of the settings in an automated manner. The preferred method for this is to use &lt;em&gt;Open Vulnerability and Assessment Language (OVAL)&lt;/em&gt;, which is nowadays managed by the &lt;a href="https://oval.cisecurity.org/"&gt;Center for Internet Security&lt;/a&gt;, abbreviated as CISecurity. Previously, OVAL was maintained and managed by Mitre under NIST supervision, and Google searches will often still point to the old sites. However, documentation is now maintained on CISecurity's &lt;a href="https://github.com/OVALProject/Language/tree/5.11.2/docs"&gt;github repositories&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;But I digress...&lt;/p&gt;
 
 
@@ -180,7 +352,8 @@ Result  pass
 &lt;/ul&gt;
 &lt;p&gt;Keep in mind though that, as we have seen above, INI files specifically have no specialization available. It would be nice if CISecurity would develop support for common textual data formats, such as CSV (although that one is easily interpretable with the existing ones), JSON, YAML and INI.&lt;/p&gt;
 &lt;p&gt;The &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/unix-definitions-schema.md"&gt;unix&lt;/a&gt; one contains tests specific to Unix and Unix-like operating systems (so yes, it is also useful for Linux), and together with the &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/linux-definitions-schema.md"&gt;linux&lt;/a&gt; one a wide range of configurations can be checked. This includes support for generic extended attributes (&lt;code&gt;fileextendedattribute_test&lt;/code&gt;) as well as SELinux specific rules (&lt;code&gt;selinuxboolean_test&lt;/code&gt; and &lt;code&gt;selinuxsecuritycontext_test&lt;/code&gt;), network interface settings (&lt;code&gt;interface_test&lt;/code&gt;), runtime processes (&lt;code&gt;process58_test&lt;/code&gt;), kernel parameters (&lt;code&gt;sysctl_test&lt;/code&gt;), installed software tests (such as &lt;code&gt;rpminfo_test&lt;/code&gt; for RHEL and other RPM enabled operating systems) and more.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="oval"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting a rule</title><link href="https://blog.siphos.be/2018/01/documenting-a-rule/" rel="alternate"></link><published>2018-01-24T20:40:00+01:00</published><updated>2018-01-24T20:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-24:/2018/01/documenting-a-rule/</id><summary type="html">&lt;p&gt;In the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first post&lt;/a&gt; I talked about why configuration documentation is important. In the &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second post&lt;/a&gt; I looked into a good structure for configuration documentation of a technological service, and ended with an XCCDF template in which this documentation can be structured.&lt;/p&gt;
-&lt;p&gt;The next step is to document the rules …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first post&lt;/a&gt; I talked about why configuration documentation is important. In the &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second post&lt;/a&gt; I looked into a good structure for configuration documentation of a technological service, and ended with an XCCDF template in which this documentation can be structured.&lt;/p&gt;
+&lt;p&gt;The next step is to document the rules themselves, i.e. the actual content of a configuration baseline.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first post&lt;/a&gt; I talked about why configuration documentation is important. In the &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second post&lt;/a&gt; I looked into a good structure for configuration documentation of a technological service, and ended with an XCCDF template in which this documentation can be structured.&lt;/p&gt;
 &lt;p&gt;The next step is to document the rules themselves, i.e. the actual content of a configuration baseline.&lt;/p&gt;
 
 
@@ -308,7 +481,9 @@ Result  pass
 &lt;p&gt;The second one, which I use more often, is a custom XSL style sheet, which also introduces the knowledge and interpretations of what this blog post series brings up (including the organizational identification). The end result is similar (the same content) but uses a structure/organization that is more in line with expectations.&lt;/p&gt;
 &lt;p&gt;For instance, in my company, the information security officers want to have a tabular overview of all the rules in a configuration baseline. So the XSL style sheet generates such a tabular overview, and uses in-documenting linking to the more elaborate descriptions of all the rules.&lt;/p&gt;
 &lt;p&gt;An &lt;a href="https://blog.siphos.be/static/2018/xccdf.xsl"&gt;older version&lt;/a&gt; is online for those interested. It uses JavaScript as well (in case you are security sensitive you might want to look into it) to allow collapsing rule documentation for faster online viewing.&lt;/p&gt;
-&lt;p&gt;The custom XSL has an additional advantage, namely that there is no dependency on Open-SCAP to generate the guides (even though it is perfectly possible to copy the XSL and continue). I can successfully generate the guide using &lt;a href="https://www.microsoft.com/en-us/download/details.aspx?id=21714"&gt;Microsoft's msxml&lt;/a&gt; utility, using xsltproc, etc depending on the platform I'm on.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Structuring a configuration baseline</title><link href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/" rel="alternate"></link><published>2018-01-17T09:10:00+01:00</published><updated>2018-01-17T09:10:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-17:/2018/01/structuring-a-configuration-baseline/</id><summary type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and technology agnostic.&lt;/p&gt;
+&lt;p&gt;The custom XSL has an additional advantage, namely that there is no dependency on Open-SCAP to generate the guides (even though it is perfectly possible to copy the XSL and continue). I can successfully generate the guide using &lt;a href="https://www.microsoft.com/en-us/download/details.aspx?id=21714"&gt;Microsoft's msxml&lt;/a&gt; utility, using xsltproc, etc depending on the platform I'm on.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Structuring a configuration baseline</title><link href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/" rel="alternate"></link><published>2018-01-17T09:10:00+01:00</published><updated>2018-01-17T09:10:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-17:/2018/01/structuring-a-configuration-baseline/</id><summary type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and technology agnostic.&lt;/p&gt;
+&lt;p&gt;If you haven't read the blog post on &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;documenting configuration changes&lt;/a&gt;, it might be a good idea to do so as it declares the scope of configuration baselines and why I think XCCDF is a good match for this.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and technology agnostic.&lt;/p&gt;
 &lt;p&gt;If you haven't read the blog post on &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;documenting configuration changes&lt;/a&gt;, it might be a good idea to do so as it declares the scope of configuration baselines and why I think XCCDF is a good match for this.&lt;/p&gt;
 
 
@@ -383,7 +558,9 @@ Result  pass
 &lt;p&gt;The regular data management related settings look into both the end user data handling (as far as this is infrastructurally related - this isn't meant to become a secure development guide) as well as service-internal data handling. When the technology is meant to handle data (like a database or LDAP) then certain related settings could be both in the service specific settings chapter or in this one. Personally, I tend to prefer that technology-specific and non-reusable settings are in the former, while the data and information handling chapter covers the integration and technology-agnostic data handling.&lt;/p&gt;
 &lt;p&gt;If the service handles sensitive information, it is very likely that additional constraints or requirements were put in place beyond the "traditional" cryptographic requirements. Although such requirements are often implemented on the application level (like tagging the data properly and then, based on the tags, handle specific fine-grained access controls, archival and data retention), more and more technologies provide out-of-the-box (or at least reusable) methods that can be configured.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;An XCCDF template&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;To support the above structure, I've made an &lt;a href="https://blog.siphos.be/static/2018/xccdf-template.xml"&gt;XCCDF template&lt;/a&gt; that might be a good start for documenting the configuration baseline of a technology. It also structures the chapters a bit more with various sections, but those are definitely not mandatory to use as it strongly depends on the technology being documented, the maturity of the organization, etc.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting configuration changes</title><link href="https://blog.siphos.be/2018/01/documenting-configuration-changes/" rel="alternate"></link><published>2018-01-07T21:20:00+01:00</published><updated>2018-01-07T21:20:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-07:/2018/01/documenting-configuration-changes/</id><summary type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very …&lt;/p&gt;</summary><content type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very crucial.&lt;/p&gt;
+&lt;p&gt;To support the above structure, I've made an &lt;a href="https://blog.siphos.be/static/2018/xccdf-template.xml"&gt;XCCDF template&lt;/a&gt; that might be a good start for documenting the configuration baseline of a technology. It also structures the chapters a bit more with various sections, but those are definitely not mandatory to use as it strongly depends on the technology being documented, the maturity of the organization, etc.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting configuration changes</title><link href="https://blog.siphos.be/2018/01/documenting-configuration-changes/" rel="alternate"></link><published>2018-01-07T21:20:00+01:00</published><updated>2018-01-07T21:20:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-07:/2018/01/documenting-configuration-changes/</id><summary type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very crucial.&lt;/p&gt;
+&lt;p&gt;In this blog post series, I'm going to look into using the &lt;em&gt;Extensible Configuration Checklist Description Format (XCCDF)&lt;/em&gt; as the way to document these. This first post is an introduction to XCCDF functionally, and what I position it for.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very crucial.&lt;/p&gt;
 &lt;p&gt;In this blog post series, I'm going to look into using the &lt;em&gt;Extensible Configuration Checklist Description Format (XCCDF)&lt;/em&gt; as the way to document these. This first post is an introduction to XCCDF functionally, and what I position it for.&lt;/p&gt;
 
 
@@ -448,7 +625,9 @@ Result  pass
 &lt;p&gt;In the past I've &lt;a href="http://blog.siphos.be/tag/xccdf/"&gt;blogged about XCCDF&lt;/a&gt; already, but that was with a previous blog technology and the migration wasn't as successful as I originally thought. XML snippets were all removed, and I'm too lazy to go back to my backups from 2013 and individually correct blogs.&lt;/p&gt;
 &lt;p&gt;A good resource on XCCDF is the &lt;a href="https://csrc.nist.gov/CSRC/media/Publications/nistir/7275/rev-4/final/documents/nistir-7275r4_updated-march-2012_clean.pdf"&gt;NIST IR-7275 publication (PDF)&lt;/a&gt; which covers the XCCDF standard in much detail.&lt;/p&gt;
 &lt;p&gt;The Center for Internet Security (CISecurity) maintains more than a hundred &lt;a href="https://www.cisecurity.org/cis-benchmarks/"&gt;CIS Benchmarks&lt;/a&gt;, all available for free as PDFs, and are often based on XCCDF (available to subscribed members).&lt;/p&gt;
-&lt;p&gt;In the next blog post, I'll talk about the in-document structure of a good configuration baseline.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>SELinux and extended permissions</title><link href="https://blog.siphos.be/2017/11/selinux-and-extended-permissions/" rel="alternate"></link><published>2017-11-20T17:00:00+01:00</published><updated>2017-11-20T17:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-11-20:/2017/11/selinux-and-extended-permissions/</id><summary type="html">&lt;p&gt;One of the features present in the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Releases"&gt;August release&lt;/a&gt; of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the features present in the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Releases"&gt;August release&lt;/a&gt; of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and target (resource) identifiers, but also a specific number on which it applies. And ioctl's are the first (and currently only) permission on which this is implemented.&lt;/p&gt;
+&lt;p&gt;In the next blog post, I'll talk about the in-document structure of a good configuration baseline.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>SELinux and extended permissions</title><link href="https://blog.siphos.be/2017/11/selinux-and-extended-permissions/" rel="alternate"></link><published>2017-11-20T17:00:00+01:00</published><updated>2017-11-20T17:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-11-20:/2017/11/selinux-and-extended-permissions/</id><summary type="html">&lt;p&gt;One of the features present in the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Releases"&gt;August release&lt;/a&gt; of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and target (resource) identifiers, but also a specific number on which it applies. And ioctl's are the first (and currently only) permission on which this is implemented.&lt;/p&gt;
+&lt;p&gt;Note that ioctl-level permission controls isn't a new feature by itself, but the fact that it can be used in modular policies is.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;One of the features present in the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Releases"&gt;August release&lt;/a&gt; of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and target (resource) identifiers, but also a specific number on which it applies. And ioctl's are the first (and currently only) permission on which this is implemented.&lt;/p&gt;
 &lt;p&gt;Note that ioctl-level permission controls isn't a new feature by itself, but the fact that it can be used in modular policies is.&lt;/p&gt;
 
 
@@ -504,7 +683,15 @@ allowxperm { appdomain -bluetooth } self:{ rawip_socket tcp_socket udp_socket } 
 &lt;p&gt;And with that, we again show how fine-grained the SELinux access controls can be.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="ioctl"></category></entry><entry><title>SELinux Userspace 2.7</title><link href="https://blog.siphos.be/2017/09/selinux-userspace-2.7/" rel="alternate"></link><published>2017-09-26T14:50:00+02:00</published><updated>2017-09-26T14:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-09-26:/2017/09/selinux-userspace-2.7/</id><summary type="html">&lt;p&gt;A few days ago, &lt;a href="http://blog.perfinion.com/"&gt;Jason "perfinion" Zaman&lt;/a&gt; stabilized the 2.7 SELinux userspace on
 Gentoo. This release has quite a &lt;a href="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20170804/RELEASE-20170804.txt"&gt;few new features&lt;/a&gt;, which I'll cover in later
 posts, but for distribution packagers the main change is that the userspace
-now has many more components to package. The project has …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few days ago, &lt;a href="http://blog.perfinion.com/"&gt;Jason "perfinion" Zaman&lt;/a&gt; stabilized the 2.7 SELinux userspace on
+now has many more components to package. The project has split up the
+policycoreutils package in separate packages so that deployments can be made
+more specific.&lt;/p&gt;
+&lt;p&gt;Let's take a look at all the various userspace packages again, learn what their
+purpose is, so that you can decide if they're needed or not on a system. Also,
+when I cover the contents of a package, be aware that it is based on the deployment
+on my system, which might or might not be a complete installation (as with Gentoo,
+different USE flags can trigger different package deployments).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;A few days ago, &lt;a href="http://blog.perfinion.com/"&gt;Jason "perfinion" Zaman&lt;/a&gt; stabilized the 2.7 SELinux userspace on
 Gentoo. This release has quite a &lt;a href="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20170804/RELEASE-20170804.txt"&gt;few new features&lt;/a&gt;, which I'll cover in later
 posts, but for distribution packagers the main change is that the userspace
 now has many more components to package. The project has split up the
@@ -723,7 +910,12 @@ quite a big application set now that some functionality is split off from the &l
 package.&lt;/p&gt;</content><category term="SELinux"></category><category term="gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Authenticating with U2F</title><link href="https://blog.siphos.be/2017/09/authenticating-with-u2f/" rel="alternate"></link><published>2017-09-11T18:25:00+02:00</published><updated>2017-09-11T18:25:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-09-11:/2017/09/authenticating-with-u2f/</id><summary type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
 sources&lt;/a&gt;, I now enabled two-factor authentication through my Yubico U2F
 USB device. Well, at least for local access - remote access through SSH requires
-both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
+both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication
+methods in OpenSSH&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Enabling U2F on (Gentoo) Linux is fairly easy. The various guides online which talk
+about the &lt;code&gt;pam_u2f&lt;/code&gt; setup are indeed correct that it is fairly simple. For completeness
+sake, I've documented what I know on the Gentoo Wiki, as the &lt;a href="https://wiki.gentoo.org/wiki/Pam_u2f"&gt;pam_u2f article&lt;/a&gt;.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
 sources&lt;/a&gt;, I now enabled two-factor authentication through my Yubico U2F
 USB device. Well, at least for local access - remote access through SSH requires
 both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication
@@ -807,7 +999,11 @@ for remote authentication, but that uses the OTP (One Time Password) functionali
 on the Yubico keys that I own.&lt;/p&gt;</content><category term="Security"></category><category term="gentoo"></category><category term="security"></category><category term="yubico"></category><category term="u2f"></category><category term="pam"></category></entry><entry><title>Using nVidia with SELinux</title><link href="https://blog.siphos.be/2017/08/using-nvidia-with-selinux/" rel="alternate"></link><published>2017-08-23T19:04:00+02:00</published><updated>2017-08-23T19:04:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-08-23:/2017/08/using-nvidia-with-selinux/</id><summary type="html">&lt;p&gt;Yesterday I've &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switched to the gentoo-sources kernel package&lt;/a&gt; on Gentoo Linux.
 And with that, I also attempted (succesfully) to use the propriatary nvidia drivers
 so that I can enjoy both a smoother 3D experience while playing minecraft, as well
-as use the CUDA support so I don't need to use …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Yesterday I've &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switched to the gentoo-sources kernel package&lt;/a&gt; on Gentoo Linux.
+as use the CUDA support so I don't need to use cloud-based services for small
+exercises.&lt;/p&gt;
+&lt;p&gt;The move to nvidia was quite simple, as the &lt;a href="https://wiki.gentoo.org/wiki/NVidia/nvidia-drivers"&gt;nvidia-drivers wiki article&lt;/a&gt; on
+the Gentoo wiki was quite easy to follow.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Yesterday I've &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switched to the gentoo-sources kernel package&lt;/a&gt; on Gentoo Linux.
 And with that, I also attempted (succesfully) to use the propriatary nvidia drivers
 so that I can enjoy both a smoother 3D experience while playing minecraft, as well
 as use the CUDA support so I don't need to use cloud-based services for small
@@ -933,7 +1129,16 @@ on my ebook reader with me, which inspired a lot.&lt;/p&gt;</content><category t
 are removed from the tree&lt;/a&gt; due to the &lt;a href="http://grsecurity.net/"&gt;grsecurity&lt;/a&gt; change where the grsecurity
 Linux kernel patches are no longer provided for free. The decision was made due to
 supportability and maintainability reasons.&lt;/p&gt;
-&lt;p&gt;That doesn't mean …&lt;/p&gt;</summary><content type="html">&lt;p&gt;You've might already read it on the Gentoo news site, the &lt;a href="https://www.gentoo.org/news/2017/08/19/hardened-sources-removal.html"&gt;Hardened Linux kernel sources
+&lt;p&gt;That doesn't mean that users who want to stick with the grsecurity related hardening
+features are left alone. &lt;a href="https://blogs.gentoo.org/ago/2017/08/21/sys-kernel-grsecurity-sources-available/#utm_source=feed&amp;amp;utm_medium=feed&amp;amp;utm_campaign=feed"&gt;Agostino Sarubbo has started providing sys-kernel/grsecurity-sources&lt;/a&gt;
+for the users who want to stick with it, as it is based on &lt;a href="https://github.com/minipli/linux-unofficial_grsec"&gt;minipli's unofficial patchset&lt;/a&gt;.
+I seriously hope that the patchset will continue to be maintained and, who knows, even evolve further.&lt;/p&gt;
+&lt;p&gt;Personally though, I'm switching to the Gentoo sources, and stick with SELinux as one of the
+protection measures. And with that, I might even start using my NVidia graphics card a bit more, 
+as that one hasn't been touched in several years (I have an Optimus-capable setup with both an
+Intel integrated graphics card and an NVidia one, but all attempts to use nouveau for the one game
+I like to play - minecraft - didn't work out that well).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;You've might already read it on the Gentoo news site, the &lt;a href="https://www.gentoo.org/news/2017/08/19/hardened-sources-removal.html"&gt;Hardened Linux kernel sources
 are removed from the tree&lt;/a&gt; due to the &lt;a href="http://grsecurity.net/"&gt;grsecurity&lt;/a&gt; change where the grsecurity
 Linux kernel patches are no longer provided for free. The decision was made due to
 supportability and maintainability reasons.&lt;/p&gt;
@@ -1016,7 +1221,16 @@ has been on my TODO list for some time to look in more depth to it. Perhaps this
 approach details...&lt;/sub&gt;&lt;/p&gt;
 &lt;p&gt;Organizations and companies generally have an IT workload (dare I say,
 backlog?) which needs to be properly assessed, prioritized and taken up.
-Sometimes, the IT team(s) get an amount of budget and HR …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
+Sometimes, the IT team(s) get an amount of budget and HR resources to "do their
+thing", while others need to continuously ask for approval to launch a new
+project or instantiate a change.&lt;/p&gt;
+&lt;p&gt;Sizeable organizations even require engineering and development effort on IT
+projects which are not readily available: specialized teams exist, but they are
+governance-wise assigned to projects. And as everyone thinks their project is
+the top-most priority one, many will be disappointed when they hear there are
+no resources available for their pet project.&lt;/p&gt;
+&lt;p&gt;So... how should organizations prioritize such projects?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
 approach details...&lt;/sub&gt;&lt;/p&gt;
 &lt;p&gt;Organizations and companies generally have an IT workload (dare I say,
 backlog?) which needs to be properly assessed, prioritized and taken up.
@@ -1266,7 +1480,17 @@ allocation and the accompanying need for segmentation. In the past, governing
 the segments within the organization means keeping close control over the
 service deployments, firewall rules, etc.&lt;/p&gt;
 &lt;p&gt;Lately, the idea of micro-segmentation, supported through software-defined
-networking solutions, seems to defy …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Many organizations struggle with the all-time increase in IP address
+networking solutions, seems to defy the need for a segmentation governance.
+However, I think that that is a very short-sighted sales proposition. Even
+with micro-segmentation, or even pure point-to-point / peer2peer communication
+flow control, you'll still be needing a high level overview of the services
+within your scope.&lt;/p&gt;
+&lt;p&gt;In this blog post, I'll give some insights in how we are approaching this in
+the company I work for. In short, it starts with requirements gathering,
+creating labels to assign to deployments, creating groups based on one or two
+labels in a layered approach, and finally fixating the resulting schema and
+start mapping guidance documents (policies) toward the presented architecture.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Many organizations struggle with the all-time increase in IP address
 allocation and the accompanying need for segmentation. In the past, governing
 the segments within the organization means keeping close control over the
 service deployments, firewall rules, etc.&lt;/p&gt;
@@ -1583,7 +1807,16 @@ about a changed fingerprint, something like the following:&lt;/p&gt;
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
 Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-It is also possible that …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Today I was attempting to update a local repository, when SSH complained
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+SHA256:p4ZGs+YjsBAw26tn2a+HPkga1dPWWAWX+NEm4Cv4I9s.
+Please contact your system administrator.
+Add correct host key in /home/user/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /home/user/.ssh/known_hosts:9
+ECDSA host key for 192.168.56.101 has changed and you have requested strict checking.
+Host key verification failed.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+</summary><content type="html">&lt;p&gt;Today I was attempting to update a local repository, when SSH complained
 about a changed fingerprint, something like the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
@@ -1632,7 +1865,10 @@ I recently re-enabled elliptic curve support in OpenSSH (with Gentoo's
 USE="-bindist") which triggered the validation of the old key.&lt;/p&gt;</content><category term="Security"></category><category term="openssh"></category><category term="fingerprint"></category><category term="md5"></category></entry><entry><title>Switched to Lineage OS</title><link href="https://blog.siphos.be/2017/04/switched-to-lineage-os/" rel="alternate"></link><published>2017-04-09T16:40:00+02:00</published><updated>2017-04-09T16:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-04-09:/2017/04/switched-to-lineage-os/</id><summary type="html">&lt;p&gt;I have been a long time user of &lt;a href="https://en.wikipedia.org/wiki/CyanogenMod"&gt;Cyanogenmod&lt;/a&gt;, 
 which discontinued its services end of 2016. Due to lack of (continuous) time, I was not
 able to switch over toward a different ROM. Also, I wasn't sure if
-&lt;a href="https://www.lineageos.org/"&gt;LineageOS&lt;/a&gt; would remain the best choice for me or not. I wanted …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I have been a long time user of &lt;a href="https://en.wikipedia.org/wiki/CyanogenMod"&gt;Cyanogenmod&lt;/a&gt;, 
+&lt;a href="https://www.lineageos.org/"&gt;LineageOS&lt;/a&gt; would remain the best choice for me or not. I wanted
+to review other ROMs for my Samsung Galaxy SIII (the i9300 model) phone.&lt;/p&gt;
+&lt;p&gt;Today, I made my choice and installed LineageOS.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I have been a long time user of &lt;a href="https://en.wikipedia.org/wiki/CyanogenMod"&gt;Cyanogenmod&lt;/a&gt;, 
 which discontinued its services end of 2016. Due to lack of (continuous) time, I was not
 able to switch over toward a different ROM. Also, I wasn't sure if
 &lt;a href="https://www.lineageos.org/"&gt;LineageOS&lt;/a&gt; would remain the best choice for me or not. I wanted
@@ -1742,7 +1978,8 @@ can come up.&lt;/p&gt;
 list in the background), the second boot was well below half a minute. I didn't count it,
 but it's fast enough for me.&lt;/p&gt;</content><category term="Misc"></category><category term="cyanogenmod"></category><category term="lineageos"></category><category term="mobile"></category><category term="android"></category></entry><entry><title>cvechecker 3.8 released</title><link href="https://blog.siphos.be/2017/03/cvechecker-3.8-released/" rel="alternate"></link><published>2017-03-27T19:00:00+02:00</published><updated>2017-03-27T19:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-03-27:/2017/03/cvechecker-3.8-released/</id><summary type="html">&lt;p&gt;A new release is now available for the &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; application.
 This is a stupid yet important bugfix release: the 3.7 release saw all newly released CVEs as being already
-known, so it did not take them up to the database. As a result, systems would never check for the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A new release is now available for the &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; application.
+known, so it did not take them up to the database. As a result, systems would never check for the new CVEs.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;A new release is now available for the &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; application.
 This is a stupid yet important bugfix release: the 3.7 release saw all newly released CVEs as being already
 known, so it did not take them up to the database. As a result, systems would never check for the new CVEs.&lt;/p&gt;
 
@@ -1759,7 +1996,9 @@ the resulting CVEs back in the database.&lt;/p&gt;
 which talks about how to handle certificate stores on Gentoo Linux. The write-up
 of the article (which might still change name later, because it does not handle
 &lt;em&gt;everything&lt;/em&gt; about certificates, mostly how to handle certificate stores) was
-inspired …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I recently created a new article on the Gentoo Wiki titled &lt;a href="https://wiki.gentoo.org/wiki/Certificates"&gt;Certificates&lt;/a&gt;
+inspired by the observation that I had to adjust the certificate stores of both
+Chromium and Firefox separately, even though they both use NSS.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I recently created a new article on the Gentoo Wiki titled &lt;a href="https://wiki.gentoo.org/wiki/Certificates"&gt;Certificates&lt;/a&gt;
 which talks about how to handle certificate stores on Gentoo Linux. The write-up
 of the article (which might still change name later, because it does not handle
 &lt;em&gt;everything&lt;/em&gt; about certificates, mostly how to handle certificate stores) was
@@ -1814,10 +2053,7 @@ manipulate the user certificate stores, or adapt the user files directly current
 new &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; release. There are
 few changes in it, but I am planning on making a new release soon with lots of
 clean-ups.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;What has been changed&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;So, what has changed? With this release …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After a long time of getting too little attention from me, I decided to make a 
+</summary><content type="html">&lt;p&gt;After a long time of getting too little attention from me, I decided to make a 
 new &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; release. There are
 few changes in it, but I am planning on making a new release soon with lots of
 clean-ups.&lt;/p&gt;
@@ -1847,17 +2083,11 @@ timeperiod here]. I don't know if there will be feature improvements in the
 next few releases (not that there aren't many feature enhancements needed) but
 I hope that, once the code is improved, new functionality can be added more
 easily.&lt;/p&gt;
-&lt;p&gt;But that's for another time. Right now, enjoy the new release.&lt;/p&gt;</content><category term="Free Software"></category><category term="cvechecker"></category></entry><entry><title>I missed FOSDEM</title><link href="https://blog.siphos.be/2017/02/i-missed-fosdem/" rel="alternate"></link><published>2017-02-07T17:06:00+01:00</published><updated>2017-02-07T17:06:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-02-07:/2017/02/i-missed-fosdem/</id><summary type="html">&lt;p&gt;I sadly had to miss out on the FOSDEM event. The entire weekend was filled with
-me being apathetic, feverish and overall zombie-like. Yes, sickness can be cruel.
-It wasn't until today that I had the energy back to fire up my laptop.&lt;/p&gt;
-&lt;p&gt;Sorry for the crew that I promised …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I sadly had to miss out on the FOSDEM event. The entire weekend was filled with
+&lt;p&gt;But that's for another time. Right now, enjoy the new release.&lt;/p&gt;</content><category term="Free Software"></category><category term="cvechecker"></category></entry><entry><title>I missed FOSDEM</title><link href="https://blog.siphos.be/2017/02/i-missed-fosdem/" rel="alternate"></link><published>2017-02-07T17:06:00+01:00</published><updated>2017-02-07T17:06:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-02-07:/2017/02/i-missed-fosdem/</id><content type="html">&lt;p&gt;I sadly had to miss out on the FOSDEM event. The entire weekend was filled with
 me being apathetic, feverish and overall zombie-like. Yes, sickness can be cruel.
 It wasn't until today that I had the energy back to fire up my laptop.&lt;/p&gt;
 &lt;p&gt;Sorry for the crew that I promised to meet at FOSDEM. I'll make it up, somehow.&lt;/p&gt;
-</content><category term="Misc"></category><category term="gentoo"></category><category term="fosdem"></category></entry><entry><title>SELinux System Administration, 2nd Edition</title><link href="https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/" rel="alternate"></link><published>2016-12-22T19:26:00+01:00</published><updated>2016-12-22T19:26:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-12-22:/2016/12/selinux-system-administration-2nd-edition/</id><summary type="html">&lt;p&gt;While still working on a few other projects, one of the time consumers of the
-past half year (haven't you noticed? my blog was quite silent) has come to an
-end: the &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
-book is now available. With almost double the amount of pages and a …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While still working on a few other projects, one of the time consumers of the
+</content><category term="Misc"></category><category term="gentoo"></category><category term="fosdem"></category></entry><entry><title>SELinux System Administration, 2nd Edition</title><link href="https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/" rel="alternate"></link><published>2016-12-22T19:26:00+01:00</published><updated>2016-12-22T19:26:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-12-22:/2016/12/selinux-system-administration-2nd-edition/</id><content type="html">&lt;p&gt;While still working on a few other projects, one of the time consumers of the
 past half year (haven't you noticed? my blog was quite silent) has come to an
 end: the &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
 book is now available. With almost double the amount of pages and a serious
@@ -1872,8 +2102,13 @@ not load one of the GnuPG keys I passed it on.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; * keychain 2.8.1 ~ http://www.funtoo.org
  * Found existing ssh-agent: 2167
  * Found existing gpg-agent: 2194
- * Warning: can&amp;#39;t find 0xB7BD4B0DE76AC6A4; skipping
- * Known ssh key: /home/swift …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;After updating my workstation, I noticed that keychain reported that it could
+ * Warning: can't find 0xB7BD4B0DE76AC6A4; skipping
+ * Known ssh key: /home/swift/.ssh/id_dsa
+ * Known ssh key: /home/swift/.ssh/id_ed25519
+ * Known gpg key: 0x22899E947878B0CE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I did not modify my key store at all, so what happened?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;After updating my workstation, I noticed that keychain reported that it could
 not load one of the GnuPG keys I passed it on.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; * keychain 2.8.1 ~ http://www.funtoo.org
  * Found existing ssh-agent: 2167
@@ -1912,9 +2147,7 @@ but right now I'm happy that I found it.&lt;/p&gt;
 utility. The utility is part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. Luckily, Gentoo's
 &lt;code&gt;sys-apps/policycoreutils&lt;/code&gt; package is not vulnerable - and not because we were
 clairvoyant about this issue, but because we don't ship this utility.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;What is the …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few days ago a vulnerability was reported in the SELinux sandbox user space
+</summary><content type="html">&lt;p&gt;A few days ago a vulnerability was reported in the SELinux sandbox user space
 utility. The utility is part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. Luckily, Gentoo's
 &lt;code&gt;sys-apps/policycoreutils&lt;/code&gt; package is not vulnerable - and not because we were
 clairvoyant about this issue, but because we don't ship this utility.&lt;/p&gt;
@@ -1961,7 +2194,12 @@ various types of workloads, so security concessions had to be made), I decided t
 &lt;p&gt;And that is why Gentoo is not vulnerable to this specific issue.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="sandbox"></category><category term="gentoo"></category><category term="vulnerability"></category><category term="seunshare"></category></entry><entry><title>Mounting QEMU images</title><link href="https://blog.siphos.be/2016/09/mounting-qemu-images/" rel="alternate"></link><published>2016-09-26T19:26:00+02:00</published><updated>2016-09-26T19:26:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-09-26:/2016/09/mounting-qemu-images/</id><summary type="html">&lt;p&gt;While working on the second edition of my first book, &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
 I had to test out a few commands on different Linux distributions to make sure
 that I don't create instructions that only work on Gentoo Linux. After all, as
-awesome as Gentoo might be, the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While working on the second edition of my first book, &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
+awesome as Gentoo might be, the Linux world is a bit bigger. So I downloaded a
+few live systems to run in Qemu/KVM.&lt;/p&gt;
+&lt;p&gt;Some of these systems however use &lt;a href="https://cloudinit.readthedocs.io/en/latest/"&gt;cloud-init&lt;/a&gt;
+which, while interesting to use, is not set up on my system yet. And without 
+support for cloud-init, how can I get access to the system?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;While working on the second edition of my first book, &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
 I had to test out a few commands on different Linux distributions to make sure
 that I don't create instructions that only work on Gentoo Linux. After all, as
 awesome as Gentoo might be, the Linux world is a bit bigger. So I downloaded a
@@ -2040,7 +2278,16 @@ my own set of commands.&lt;/p&gt;
 &lt;p&gt;It did trigger my interest in the cloud-init setup though...&lt;/p&gt;</content><category term="Free Software"></category><category term="qemu"></category></entry><entry><title>Comparing Hadoop with mainframe</title><link href="https://blog.siphos.be/2016/06/comparing-hadoop-with-mainframe/" rel="alternate"></link><published>2016-06-15T20:55:00+02:00</published><updated>2016-06-15T20:55:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-06-15:/2016/06/comparing-hadoop-with-mainframe/</id><summary type="html">&lt;p&gt;At my work, I have the pleasure of being involved in a big data project that
 uses Hadoop as the primary platform for several services. As an architect, I
 try to get to know the platform's capabilities, its potential use cases, its
-surrounding ecosystem, etc. And although the implementation at …&lt;/p&gt;</summary><content type="html">&lt;p&gt;At my work, I have the pleasure of being involved in a big data project that
+surrounding ecosystem, etc. And although the implementation at work is not in
+its final form (yay agile infrastructure releases) I do start to get a grasp of
+where we might be going.&lt;/p&gt;
+&lt;p&gt;For many analysts and architects, this Hadoop platform is a new kid on the block
+so I have some work explaining what it is and what it is capable of. Not for the
+fun of it, but to help the company make the right decisions, to support management
+and operations, to lift the fear of new environments. One thing I've once said is
+that "Hadoop is the poor man's mainframe", because I notice some high-level
+similarities between the two.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;At my work, I have the pleasure of being involved in a big data project that
 uses Hadoop as the primary platform for several services. As an architect, I
 try to get to know the platform's capabilities, its potential use cases, its
 surrounding ecosystem, etc. And although the implementation at work is not in
@@ -2312,12 +2559,19 @@ you will soon see that you need teams (plural) to get things done.&lt;/p&gt;
 If you don't agree, or are interested in some insights, be sure to comment!&lt;/p&gt;</content><category term="Hadoop"></category><category term="hadoop"></category><category term="mainframe"></category></entry><entry><title>Template was specified incorrectly</title><link href="https://blog.siphos.be/2016/03/template-was-specified-incorrectly/" rel="alternate"></link><published>2016-03-27T13:32:00+02:00</published><updated>2016-03-27T13:32:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-03-27:/2016/03/template-was-specified-incorrectly/</id><summary type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;p&gt;Enabling some debugging on the command gave me a slight pointer why this occurred:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv &amp;#39;testing&amp;#39;, u&amp;#39;salt://top.sls&amp;#39;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
 [DEBUG   ] No contents loaded for env: testing
-[DEBUG …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
+[DEBUG   ] compile template: False
+[ERROR   ] Template was specified incorrectly: False
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I was using a single top file as recommended by Salt, but apparently it was still
+looking for top files in the other environments.&lt;/p&gt;
+&lt;p&gt;Yet, if I split the top files across the environments, I got the following warning:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So what's all this about?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -2396,7 +2650,11 @@ testserver:
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
 instead of ZeroMQ.&lt;/p&gt;
-&lt;p&gt;I'm not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
+&lt;p&gt;I'm not confident yet that this is a solid approach to take (as performance is also
+important, which is greatly reduced with &lt;code&gt;salt-ssh&lt;/code&gt;), and the security exposure of the
+salt minions over ZeroMQ is also not that insecure (especially not when a local firewall
+ensures that only connections from the salt master are allowed). But playing doesn't hurt.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
 instead of ZeroMQ.&lt;/p&gt;
@@ -2432,10 +2690,7 @@ myminion:
 another. Both mail providers used IMAP, so I looked into IMAP related synchronization
 methods. I quickly found the &lt;a href="https://github.com/imapsync/imapsync"&gt;imapsync&lt;/a&gt; application,
 also supported through Gentoo's repository.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;What I required&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The migration required that all …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently, I had to migrate mail boxes for a couple of users from one mail provider to
+</summary><content type="html">&lt;p&gt;Recently, I had to migrate mail boxes for a couple of users from one mail provider to
 another. Both mail providers used IMAP, so I looked into IMAP related synchronization
 methods. I quickly found the &lt;a href="https://github.com/imapsync/imapsync"&gt;imapsync&lt;/a&gt; application,
 also supported through Gentoo's repository.&lt;/p&gt;
@@ -2495,10 +2750,7 @@ various online tutorials about &lt;code&gt;imapsync&lt;/code&gt;, such as &lt;/p
 &lt;li&gt;&lt;a href="https://wiki.zimbra.com/wiki/Guide_to_imapsync"&gt;Guide to imapsync&lt;/a&gt; on wiki.zimbra.com&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;The migration took a while, but without major issues. Within a few hours, the mailboxes of all
-users where correctly migrated.&lt;/p&gt;</content><category term="Free Software"></category><category term="imapsync"></category></entry><entry><title>New cvechecker release</title><link href="https://blog.siphos.be/2015/11/new-cvechecker-release/" rel="alternate"></link><published>2015-11-07T11:07:00+01:00</published><updated>2015-11-07T11:07:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-11-07:/2015/11/new-cvechecker-release/</id><summary type="html">&lt;p&gt;A short while ago I got the notification that pulling new CVE information was
-no longer possible. The reason was that the NVD site did not support uncompressed
-downloads anymore. The fix for cvechecker was simple, and it also gave me a reason
-to push out a new release (after …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A short while ago I got the notification that pulling new CVE information was
+users where correctly migrated.&lt;/p&gt;</content><category term="Free Software"></category><category term="imapsync"></category></entry><entry><title>New cvechecker release</title><link href="https://blog.siphos.be/2015/11/new-cvechecker-release/" rel="alternate"></link><published>2015-11-07T11:07:00+01:00</published><updated>2015-11-07T11:07:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-11-07:/2015/11/new-cvechecker-release/</id><content type="html">&lt;p&gt;A short while ago I got the notification that pulling new CVE information was
 no longer possible. The reason was that the NVD site did not support uncompressed
 downloads anymore. The fix for cvechecker was simple, and it also gave me a reason
 to push out a new release (after two years) which also includes various updates by
@@ -2509,7 +2761,10 @@ for general consumption.&lt;/p&gt;
 a couple of technological domains, namely databases and scheduling/workload 
 automation. It brought me in contact with many vendors, many technologies
 and most importantly, many teams within the organization. The focus domain
-was challenging, as I had to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
+was challenging, as I had to deal with the strategy on how the organization,
+which is a financial institution, will deal with databases and scheduling in
+the long term.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
 a couple of technological domains, namely databases and scheduling/workload 
 automation. It brought me in contact with many vendors, many technologies
 and most importantly, many teams within the organization. The focus domain
@@ -2563,12 +2818,7 @@ errors from SELinux and the system itself:&lt;/p&gt;
 &lt;span class="go"&gt;su: Authentication service cannot retrieve authentication info&lt;/span&gt;
 &lt;span class="gp gp-VirtualEnv"&gt;(Ignored)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
-
-
-&lt;p&gt;The authentication log shows entries such as the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Sep 14 20:20 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;While developing an init script which has to switch user, I got a couple of
+</summary><content type="html">&lt;p&gt;While developing an init script which has to switch user, I got a couple of
 errors from SELinux and the system itself:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~# rc-service hadoop-namenode format&lt;/span&gt;
 &lt;span class="go"&gt;Authenticating root.&lt;/span&gt;
@@ -2609,9 +2859,7 @@ Gentoo has always supported source-based packages as default (although
 supported as well).&lt;/p&gt;
 &lt;p&gt;A recent &lt;a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4"&gt;commit&lt;/a&gt;
 now also allows CIL files to be used.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;Policy ebuilds …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
+</summary><content type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
 for a while now. Unlike most other distributions, which focus on binary packages,
 Gentoo has always supported source-based packages as default (although 
 &lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary packages&lt;/a&gt; are 
@@ -2696,7 +2944,12 @@ world.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gen
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
-&lt;p&gt;For instance, on one …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
+&lt;p&gt;For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
@@ -2759,7 +3012,9 @@ for theft.&lt;/p&gt;
 dongle (which I don't keep attached to those devices of course) is somewhat less.&lt;/p&gt;</content><category term="Free Software"></category><category term="openssh"></category><category term="ssh"></category><category term="u2f"></category><category term="selinux"></category></entry><entry><title>Maintaining packages and backporting</title><link href="https://blog.siphos.be/2015/09/maintaining-packages-and-backporting/" rel="alternate"></link><published>2015-09-02T20:33:00+02:00</published><updated>2015-09-02T20:33:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-02:/2015/09/maintaining-packages-and-backporting/</id><summary type="html">&lt;p&gt;A few days ago I committed a small update to &lt;code&gt;policycoreutils&lt;/code&gt;, a SELinux related
 package that provides most of the management utilities for SELinux systems. The
 fix was to get two patches (which are committed upstream) into the existing
-release so that our users can benefit from the fixed issues …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few days ago I committed a small update to &lt;code&gt;policycoreutils&lt;/code&gt;, a SELinux related
+release so that our users can benefit from the fixed issues without having to
+wait for a new release.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;A few days ago I committed a small update to &lt;code&gt;policycoreutils&lt;/code&gt;, a SELinux related
 package that provides most of the management utilities for SELinux systems. The
 fix was to get two patches (which are committed upstream) into the existing
 release so that our users can benefit from the fixed issues without having to
@@ -2841,7 +3096,11 @@ patches towards our repository) we can serve updates with just a few minutes
 of work.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="ebuild"></category><category term="patching"></category></entry><entry><title>Doing away with interfaces</title><link href="https://blog.siphos.be/2015/08/doing-away-with-interfaces/" rel="alternate"></link><published>2015-08-29T11:30:00+02:00</published><updated>2015-08-29T11:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-29:/2015/08/doing-away-with-interfaces/</id><summary type="html">&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
-it, but real-life work and time-to-market for now …&lt;/p&gt;</summary><content type="html">&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
+it, but real-life work and time-to-market for now forces me to stick with the
+M4-based refpolicy one.&lt;/p&gt;
+&lt;p&gt;Still, I do try out some things here and there, and one of the things I wanted
+to look into was how CIL policies would deal with interfaces.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
 it, but real-life work and time-to-market for now forces me to stick with the
@@ -2947,7 +3206,12 @@ from the module definition: everything is inside the CIL file. I secretly hope
 that tools such as &lt;code&gt;seinfo&lt;/code&gt; would support querying macros as well.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="cil"></category></entry><entry><title>Slowly converting from GuideXML to HTML</title><link href="https://blog.siphos.be/2015/08/slowly-converting-from-guidexml-to-html/" rel="alternate"></link><published>2015-08-25T11:30:00+02:00</published><updated>2015-08-25T11:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-25:/2015/08/slowly-converting-from-guidexml-to-html/</id><summary type="html">&lt;p&gt;Gentoo has removed its support of the older GuideXML format in favor of using
 the &lt;a href="https://wiki.gentoo.org"&gt;Gentoo Wiki&lt;/a&gt; and a new content management system
 for the main site (or is it static pages, I don't have the faintest idea to be
-honest). I do still have a few GuideXML pages in …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Gentoo has removed its support of the older GuideXML format in favor of using
+honest). I do still have a few GuideXML pages in my development space, which I
+am going to move to HTML pretty soon.&lt;/p&gt;
+&lt;p&gt;In order to do so, I make use of the &lt;a href="https://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl?view=log"&gt;guidexml2wiki&lt;/a&gt;
+stylesheet I &lt;a href="http://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/"&gt;developed&lt;/a&gt;.
+But instead of migrating it to wiki syntax, I want to end with HTML.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Gentoo has removed its support of the older GuideXML format in favor of using
 the &lt;a href="https://wiki.gentoo.org"&gt;Gentoo Wiki&lt;/a&gt; and a new content management system
 for the main site (or is it static pages, I don't have the faintest idea to be
 honest). I do still have a few GuideXML pages in my development space, which I
@@ -2988,7 +3252,13 @@ gxml2html&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&
 &lt;a href="https://github.com/p8952/bocker"&gt;Bocker&lt;/a&gt; by Peter Wilmott as well ;-), I
 still find it important that technologies are well capable of supporting a
 multi-instance environment.&lt;/p&gt;
-&lt;p&gt;Being able to run multiple instances makes for great consolidation …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the high attention that technologies such as &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
+&lt;p&gt;Being able to run multiple instances makes for great consolidation. The system
+can be optimized for the technology, access to the system limited to the admins
+of said technology while still providing isolation between instances. For some
+technologies, running on commodity hardware just doesn't cut it (not all 
+software is written for such hardware platforms) and consolidation allows for
+reducing (hardware/licensing) costs.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With the high attention that technologies such as &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
 &lt;a href="https://coreos.com/blog/rocket/"&gt;Rocket&lt;/a&gt; and the like get (I recommend to look at 
 &lt;a href="https://github.com/p8952/bocker"&gt;Bocker&lt;/a&gt; by Peter Wilmott as well ;-), I
 still find it important that technologies are well capable of supporting a
@@ -3105,7 +3375,8 @@ on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digita
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; algorithm. Of
 course, I wouldn't be a security-interested party if I did not do some additional
-investigation into the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
+investigation into the DSA versus Ed25519 discussion.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
 on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm"&gt;DSA algorithm&lt;/a&gt;
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; algorithm. Of
@@ -3214,10 +3485,7 @@ and fix up the server.&lt;/p&gt;</content><category term="Free Software"></categ
 my blog to &lt;a href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt;, a static site generator build
 with Python. A number of adjustments have been made since, which I'll happily
 talk about.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;The full article view on index page&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;One of the features I wanted was to have my latest …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It's been a few weeks that I &lt;a href="http://blog.siphos.be/2015/08/switching-to-pelican/"&gt;switched&lt;/a&gt;
+</summary><content type="html">&lt;p&gt;It's been a few weeks that I &lt;a href="http://blog.siphos.be/2015/08/switching-to-pelican/"&gt;switched&lt;/a&gt;
 my blog to &lt;a href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt;, a static site generator build
 with Python. A number of adjustments have been made since, which I'll happily
 talk about.&lt;/p&gt;
@@ -3300,7 +3568,9 @@ written by &lt;a href="http://catchchallenger.first-world.info/wiki/User:Alpha_o
 which gives a quick benchmark on a couple of compression methods / algorithms.
 It gave me the idea of writing a quick script that tests out a wide number of
 compression utilities available in Gentoo (usually through the &lt;code&gt;app-arch&lt;/code&gt;
-category …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I recently came across a &lt;a href="http://catchchallenger.first-world.info//wiki/Quick_Benchmark:_Gzip_vs_Bzip2_vs_LZMA_vs_XZ_vs_LZ4_vs_LZO"&gt;wiki page&lt;/a&gt;
+category), with also a number of options (in case multiple options are
+possible).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I recently came across a &lt;a href="http://catchchallenger.first-world.info//wiki/Quick_Benchmark:_Gzip_vs_Bzip2_vs_LZMA_vs_XZ_vs_LZ4_vs_LZO"&gt;wiki page&lt;/a&gt;
 written by &lt;a href="http://catchchallenger.first-world.info/wiki/User:Alpha_one_x86"&gt;Herman Brule&lt;/a&gt;
 which gives a quick benchmark on a couple of compression methods / algorithms.
 It gave me the idea of writing a quick script that tests out a wide number of
@@ -3481,7 +3751,18 @@ This file is now available as test.pdf.lrz.
 security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
 about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
 should've asked why the &lt;em&gt;reference policy&lt;/em&gt; or &lt;em&gt;Red Hat/Fedora policy&lt;/em&gt; does not
-confine Firefox, because SELinux …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you're a bit following the SELinux development community you will know
+confine Firefox, because SELinux is, as I've
+&lt;a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/"&gt;mentioned before&lt;/a&gt;,
+not the same as its policy.&lt;/p&gt;
+&lt;p&gt;In effect, Gentoo's SELinux policy &lt;em&gt;does&lt;/em&gt; confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+&lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies"&gt;develop desktop policies&lt;/a&gt;
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;If you're a bit following the SELinux development community you will know
 &lt;a href="http://danwalsh.livejournal.com"&gt;Dan Walsh&lt;/a&gt;, a &lt;a href="http://people.redhat.com/dwalsh/"&gt;Red Hat&lt;/a&gt;
 security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
 about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
@@ -3591,7 +3872,11 @@ with &lt;a href="https://twitter.com/erlheldata"&gt;Erling Hellenäs&lt;/a&gt; c
 when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
 in the current implementation, but why not and what would be needed?&lt;/p&gt;
 &lt;p&gt;SELinux is implemented through the &lt;a href="https://en.wikipedia.org/wiki/Linux_Security_Modules"&gt;Linux Security Modules framework&lt;/a&gt;
-which allows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A nice &lt;a href="https://twitter.com/sjvermeu/status/630107879123623936"&gt;twitter discussion&lt;/a&gt;
+which allows for different security systems to be implemented and integrated
+in the Linux kernel. Through LSM, various security-sensitive operations can be
+secured further through &lt;em&gt;additional&lt;/em&gt; access checks. This criteria was made to
+have LSM be as minimally invasive as possible.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;A nice &lt;a href="https://twitter.com/sjvermeu/status/630107879123623936"&gt;twitter discussion&lt;/a&gt;
 with &lt;a href="https://twitter.com/erlheldata"&gt;Erling Hellenäs&lt;/a&gt; caught my full attention later
 when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
 in the current implementation, but why not and what would be needed?&lt;/p&gt;
@@ -3706,7 +3991,10 @@ substitute DAC with SELinux-only controls.&lt;/p&gt;</content><category term="SE
 the Linux kernel, able to create advanced firewall capabilities. One of the 
 features that it &lt;em&gt;cannot&lt;/em&gt; provide is per-application filtering. Together with
 SELinux however, it is possible to implement this on a &lt;em&gt;per domain&lt;/em&gt; basis.&lt;/p&gt;
-&lt;p&gt;SELinux does not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Iptables (and the successor nftables) is a powerful packet filtering system in
+&lt;p&gt;SELinux does not know applications, but it knows domains. If we ensure that each
+application runs in its own domain, then we can leverage the firewall
+capabilities with SELinux to only allow those domains access that we need.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Iptables (and the successor nftables) is a powerful packet filtering system in
 the Linux kernel, able to create advanced firewall capabilities. One of the 
 features that it &lt;em&gt;cannot&lt;/em&gt; provide is per-application filtering. Together with
 SELinux however, it is possible to implement this on a &lt;em&gt;per domain&lt;/em&gt; basis.&lt;/p&gt;
@@ -3825,7 +4113,13 @@ system.&lt;/p&gt;</content><category term="SELinux"></category><category term="s
 they work). Taking backups is not purely for companies and organizations.
 Individuals should also take backups to ensure that, in case of errors or
 calamities, the all important files are readily recoverable.&lt;/p&gt;
-&lt;p&gt;For backing up files and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It is often said, yet too often forgotten: taking backups (and verifying that 
+&lt;p&gt;For backing up files and directories, I personally use &lt;a href="http://obnam.org/"&gt;obnam&lt;/a&gt;,
+after playing around with &lt;a href="http://www.bacula.org/"&gt;Bacula&lt;/a&gt; and
+&lt;a href="https://attic-backup.org/"&gt;attic&lt;/a&gt;. Bacula is more meant for large
+distributed environments (although I also tend to use obnam for my server
+infrastructure) and was too complex for my taste. The choice between obnam and
+attic is even more personally-oriented.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;It is often said, yet too often forgotten: taking backups (and verifying that 
 they work). Taking backups is not purely for companies and organizations.
 Individuals should also take backups to ensure that, in case of errors or
 calamities, the all important files are readily recoverable.&lt;/p&gt;
@@ -3910,7 +4204,10 @@ blocks between clients (it is not mandatory, but supported nonetheless).&lt;/p&g
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
-servers because it does not play well with their day-to-day operations. But …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
+servers because it does not play well with their day-to-day operations. But
+the Android inclusion shows that SELinux itself is not the culprit for this:
+it is the policy.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
@@ -3989,7 +4286,11 @@ another car. Let's create other cars in the SELinux world as well.&lt;/p&gt;</co
 offline for a few hours with a good workstation helps to not be disturbed
 by external actions (air pockets notwithstanding).&lt;/p&gt;
 &lt;p&gt;Early this year, I expressed my &lt;a href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/"&gt;intentions to move to Pelican&lt;/a&gt;
-from WordPress. I wasn't actually …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Nothing beats a few hours of flying to get things moving on stuff. Being
+from WordPress. I wasn't actually unhappy with WordPress, but the security
+concerns I had were a bit too much for blog as simple as mine. Running a
+PHP-enabled site with a database for something that I can easily handle through
+a static site, well, I had to try.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Nothing beats a few hours of flying to get things moving on stuff. Being
 offline for a few hours with a good workstation helps to not be disturbed
 by external actions (air pockets notwithstanding).&lt;/p&gt;
 &lt;p&gt;Early this year, I expressed my &lt;a href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/"&gt;intentions to move to Pelican&lt;/a&gt;
@@ -4113,7 +4414,15 @@ Robert asked how to use SELinux to prevent even root access to a
 directory. The trivial solution would be not to assign an administrative
 role to the root account (which is definitely possible, but you want
 some way to gain administrative access otherwise ;-)&lt;/p&gt;
-&lt;p&gt;Restricting root is one …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In a
+&lt;p&gt;Restricting root is one of the commonly referred features of a MAC
+(Mandatory Access Control) system. With a well designed user management
+and sudo environment, it is fairly trivial - but if you need to start
+from the premise that a user has direct root access, it requires some
+thought to implement it correctly. The main "issue" is not that it is
+difficult to implement policy-wise, but that most users will start from
+a pre-existing policy (such as the reference policy) and build on top of
+that.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In a
 &lt;a href="http://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/comment-page-1/#comment-143323"&gt;comment&lt;/a&gt;
 Robert asked how to use SELinux to prevent even root access to a
 directory. The trivial solution would be not to assign an administrative
@@ -4229,7 +4538,21 @@ personal accounts and a well-designed &lt;code&gt;/etc/sudoers&lt;/code&gt; file
 whose policies I don't agree with) it is often more difficult to finish
 the policies so that they are broadly usable. When dealing with personal
 policies, having them "just work" is often sufficient. To make the
-policies reusable for distributions …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When developing SELinux policies for new software (or existing ones
+policies reusable for distributions (or for the upstream project), a
+number of things are necessary:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Try structuring the policy using the style as suggested by refpolicy
+    or Gentoo&lt;/li&gt;
+&lt;li&gt;Add the role interfaces that are most likely to be used or required,
+    or which are in the current draft implemented differently&lt;/li&gt;
+&lt;li&gt;Refactor some of the policies to use refpolicy/Gentoo style
+    interfaces&lt;/li&gt;
+&lt;li&gt;Remove the comments from the policies (as refpolicy does not want
+    too verbose policies)&lt;/li&gt;
+&lt;li&gt;Change or update the file context definitions for default
+    installations (rather than the custom installations I use)&lt;/li&gt;
+&lt;/ul&gt;
+</summary><content type="html">&lt;p&gt;When developing SELinux policies for new software (or existing ones
 whose policies I don't agree with) it is often more difficult to finish
 the policies so that they are broadly usable. When dealing with personal
 policies, having them "just work" is often sufficient. To make the
@@ -4324,7 +4647,15 @@ with. Currently, policy code is written in a set of three files:&lt;/p&gt;
 &lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
     enforcement rules)&lt;/li&gt;
 &lt;li&gt;The &lt;code&gt;.if&lt;/code&gt; file contains functions which turn a set of arguments into
-    blocks of SELinux …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
+    blocks of SELinux policy code (interfaces). These functions are
+    called by other interface files or type enforcement files&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;.fc&lt;/code&gt; file contains mappings of file path expressions towards
+    labels (file contexts)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These files are compiled into loadable modules (or a base module) which
+are then transformed to an active policy. But this is not a single-step
+approach.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
 with. Currently, policy code is written in a set of three files:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
@@ -4429,7 +4760,9 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux
 userspace&lt;/a&gt; so that developers
-and contributors can already work with in-progress code developments …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
 applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux
@@ -4460,9 +4793,7 @@ more on that later.&lt;/p&gt;</content><category term="Gentoo"></category><categ
 backend for many services. The database system is very robust, well
 supported by the community and very powerful. In this post, I'm going to
 show how I use central authentication and authorization with PostgreSQL.&lt;/p&gt;
-
-
-&lt;p&gt;Centralized management is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I have been running a PostgreSQL cluster for a while as the primary
+</summary><content type="html">&lt;p&gt;I have been running a PostgreSQL cluster for a while as the primary
 backend for many services. The database system is very robust, well
 supported by the community and very powerful. In this post, I'm going to
 show how I use central authentication and authorization with PostgreSQL.&lt;/p&gt;
@@ -4604,7 +4935,14 @@ breeze.&lt;/p&gt;</content><category term="Free Software"></category><category t
 SELinux policies can be a nuisance. Not only are the number of SELinux
 policies that are available through the standard repositories limited,
 some of these policies are not even written with the same level of
-confinement that an administrator …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When testing out new technologies or new setups, not having (proper)
+confinement that an administrator might expect. Or perhaps the
+technology to be tested is used in a completely different manner.&lt;/p&gt;
+&lt;p&gt;Without proper policies, any attempt to start such a daemon or
+application might or will cause permission violations. In many cases,
+developers or users tend to disable SELinux enforcing then so that they
+can continue playing with the new technology. And why not? After all,
+policy development is to be done &lt;em&gt;after&lt;/em&gt; the technology is understood.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;When testing out new technologies or new setups, not having (proper)
 SELinux policies can be a nuisance. Not only are the number of SELinux
 policies that are available through the standard repositories limited,
 some of these policies are not even written with the same level of

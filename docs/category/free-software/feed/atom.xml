@@ -5,7 +5,8 @@ now made available.&lt;/p&gt;
 &lt;p&gt;This new release (v3.9) is a bugfix release.&lt;/p&gt;
 </content><category term="Free Software"></category><category term="cvechecker"></category></entry><entry><title>cvechecker 3.8 released</title><link href="https://blog.siphos.be/2017/03/cvechecker-3.8-released/" rel="alternate"></link><published>2017-03-27T19:00:00+02:00</published><updated>2017-03-27T19:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-03-27:/2017/03/cvechecker-3.8-released/</id><summary type="html">&lt;p&gt;A new release is now available for the &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; application.
 This is a stupid yet important bugfix release: the 3.7 release saw all newly released CVEs as being already
-known, so it did not take them up to the database. As a result, systems would never check for the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A new release is now available for the &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; application.
+known, so it did not take them up to the database. As a result, systems would never check for the new CVEs.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;A new release is now available for the &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; application.
 This is a stupid yet important bugfix release: the 3.7 release saw all newly released CVEs as being already
 known, so it did not take them up to the database. As a result, systems would never check for the new CVEs.&lt;/p&gt;
 
@@ -22,10 +23,7 @@ the resulting CVEs back in the database.&lt;/p&gt;
 new &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; release. There are
 few changes in it, but I am planning on making a new release soon with lots of
 clean-ups.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;What has been changed&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;So, what has changed? With this release …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After a long time of getting too little attention from me, I decided to make a 
+</summary><content type="html">&lt;p&gt;After a long time of getting too little attention from me, I decided to make a 
 new &lt;a href="https://github.com/sjvermeu/cvechecker/wiki"&gt;cvechecker&lt;/a&gt; release. There are
 few changes in it, but I am planning on making a new release soon with lots of
 clean-ups.&lt;/p&gt;
@@ -60,8 +58,13 @@ not load one of the GnuPG keys I passed it on.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; * keychain 2.8.1 ~ http://www.funtoo.org
  * Found existing ssh-agent: 2167
  * Found existing gpg-agent: 2194
- * Warning: can&amp;#39;t find 0xB7BD4B0DE76AC6A4; skipping
- * Known ssh key: /home/swift …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;After updating my workstation, I noticed that keychain reported that it could
+ * Warning: can't find 0xB7BD4B0DE76AC6A4; skipping
+ * Known ssh key: /home/swift/.ssh/id_dsa
+ * Known ssh key: /home/swift/.ssh/id_ed25519
+ * Known gpg key: 0x22899E947878B0CE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I did not modify my key store at all, so what happened?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;After updating my workstation, I noticed that keychain reported that it could
 not load one of the GnuPG keys I passed it on.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; * keychain 2.8.1 ~ http://www.funtoo.org
  * Found existing ssh-agent: 2167
@@ -99,7 +102,12 @@ but right now I'm happy that I found it.&lt;/p&gt;
 &lt;p&gt;Good, now I can continue debugging networking issues with an azure-hosted system...&lt;/p&gt;</content><category term="Free Software"></category><category term="gnupg"></category></entry><entry><title>Mounting QEMU images</title><link href="https://blog.siphos.be/2016/09/mounting-qemu-images/" rel="alternate"></link><published>2016-09-26T19:26:00+02:00</published><updated>2016-09-26T19:26:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-09-26:/2016/09/mounting-qemu-images/</id><summary type="html">&lt;p&gt;While working on the second edition of my first book, &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
 I had to test out a few commands on different Linux distributions to make sure
 that I don't create instructions that only work on Gentoo Linux. After all, as
-awesome as Gentoo might be, the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While working on the second edition of my first book, &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
+awesome as Gentoo might be, the Linux world is a bit bigger. So I downloaded a
+few live systems to run in Qemu/KVM.&lt;/p&gt;
+&lt;p&gt;Some of these systems however use &lt;a href="https://cloudinit.readthedocs.io/en/latest/"&gt;cloud-init&lt;/a&gt;
+which, while interesting to use, is not set up on my system yet. And without 
+support for cloud-init, how can I get access to the system?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;While working on the second edition of my first book, &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
 I had to test out a few commands on different Linux distributions to make sure
 that I don't create instructions that only work on Gentoo Linux. After all, as
 awesome as Gentoo might be, the Linux world is a bit bigger. So I downloaded a
@@ -178,12 +186,19 @@ my own set of commands.&lt;/p&gt;
 &lt;p&gt;It did trigger my interest in the cloud-init setup though...&lt;/p&gt;</content><category term="Free Software"></category><category term="qemu"></category></entry><entry><title>Template was specified incorrectly</title><link href="https://blog.siphos.be/2016/03/template-was-specified-incorrectly/" rel="alternate"></link><published>2016-03-27T13:32:00+02:00</published><updated>2016-03-27T13:32:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-03-27:/2016/03/template-was-specified-incorrectly/</id><summary type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;p&gt;Enabling some debugging on the command gave me a slight pointer why this occurred:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv &amp;#39;testing&amp;#39;, u&amp;#39;salt://top.sls&amp;#39;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
 [DEBUG   ] No contents loaded for env: testing
-[DEBUG …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
+[DEBUG   ] compile template: False
+[ERROR   ] Template was specified incorrectly: False
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I was using a single top file as recommended by Salt, but apparently it was still
+looking for top files in the other environments.&lt;/p&gt;
+&lt;p&gt;Yet, if I split the top files across the environments, I got the following warning:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So what's all this about?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -262,7 +277,11 @@ testserver:
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
 instead of ZeroMQ.&lt;/p&gt;
-&lt;p&gt;I'm not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
+&lt;p&gt;I'm not confident yet that this is a solid approach to take (as performance is also
+important, which is greatly reduced with &lt;code&gt;salt-ssh&lt;/code&gt;), and the security exposure of the
+salt minions over ZeroMQ is also not that insecure (especially not when a local firewall
+ensures that only connections from the salt master are allowed). But playing doesn't hurt.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
 instead of ZeroMQ.&lt;/p&gt;
@@ -298,10 +317,7 @@ myminion:
 another. Both mail providers used IMAP, so I looked into IMAP related synchronization
 methods. I quickly found the &lt;a href="https://github.com/imapsync/imapsync"&gt;imapsync&lt;/a&gt; application,
 also supported through Gentoo's repository.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;What I required&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The migration required that all …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently, I had to migrate mail boxes for a couple of users from one mail provider to
+</summary><content type="html">&lt;p&gt;Recently, I had to migrate mail boxes for a couple of users from one mail provider to
 another. Both mail providers used IMAP, so I looked into IMAP related synchronization
 methods. I quickly found the &lt;a href="https://github.com/imapsync/imapsync"&gt;imapsync&lt;/a&gt; application,
 also supported through Gentoo's repository.&lt;/p&gt;
@@ -361,10 +377,7 @@ various online tutorials about &lt;code&gt;imapsync&lt;/code&gt;, such as &lt;/p
 &lt;li&gt;&lt;a href="https://wiki.zimbra.com/wiki/Guide_to_imapsync"&gt;Guide to imapsync&lt;/a&gt; on wiki.zimbra.com&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;The migration took a while, but without major issues. Within a few hours, the mailboxes of all
-users where correctly migrated.&lt;/p&gt;</content><category term="Free Software"></category><category term="imapsync"></category></entry><entry><title>New cvechecker release</title><link href="https://blog.siphos.be/2015/11/new-cvechecker-release/" rel="alternate"></link><published>2015-11-07T11:07:00+01:00</published><updated>2015-11-07T11:07:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-11-07:/2015/11/new-cvechecker-release/</id><summary type="html">&lt;p&gt;A short while ago I got the notification that pulling new CVE information was
-no longer possible. The reason was that the NVD site did not support uncompressed
-downloads anymore. The fix for cvechecker was simple, and it also gave me a reason
-to push out a new release (after …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A short while ago I got the notification that pulling new CVE information was
+users where correctly migrated.&lt;/p&gt;</content><category term="Free Software"></category><category term="imapsync"></category></entry><entry><title>New cvechecker release</title><link href="https://blog.siphos.be/2015/11/new-cvechecker-release/" rel="alternate"></link><published>2015-11-07T11:07:00+01:00</published><updated>2015-11-07T11:07:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-11-07:/2015/11/new-cvechecker-release/</id><content type="html">&lt;p&gt;A short while ago I got the notification that pulling new CVE information was
 no longer possible. The reason was that the NVD site did not support uncompressed
 downloads anymore. The fix for cvechecker was simple, and it also gave me a reason
 to push out a new release (after two years) which also includes various updates by
@@ -375,7 +388,12 @@ for general consumption.&lt;/p&gt;
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
-&lt;p&gt;For instance, on one …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
+&lt;p&gt;For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
@@ -440,7 +458,8 @@ on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digita
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; algorithm. Of
 course, I wouldn't be a security-interested party if I did not do some additional
-investigation into the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
+investigation into the DSA versus Ed25519 discussion.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
 on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm"&gt;DSA algorithm&lt;/a&gt;
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; algorithm. Of
@@ -549,10 +568,7 @@ and fix up the server.&lt;/p&gt;</content><category term="Free Software"></categ
 my blog to &lt;a href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt;, a static site generator build
 with Python. A number of adjustments have been made since, which I'll happily
 talk about.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;The full article view on index page&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;One of the features I wanted was to have my latest …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It's been a few weeks that I &lt;a href="http://blog.siphos.be/2015/08/switching-to-pelican/"&gt;switched&lt;/a&gt;
+</summary><content type="html">&lt;p&gt;It's been a few weeks that I &lt;a href="http://blog.siphos.be/2015/08/switching-to-pelican/"&gt;switched&lt;/a&gt;
 my blog to &lt;a href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt;, a static site generator build
 with Python. A number of adjustments have been made since, which I'll happily
 talk about.&lt;/p&gt;
@@ -634,7 +650,13 @@ those posts through the tag.&lt;/p&gt;</content><category term="Free Software"><
 they work). Taking backups is not purely for companies and organizations.
 Individuals should also take backups to ensure that, in case of errors or
 calamities, the all important files are readily recoverable.&lt;/p&gt;
-&lt;p&gt;For backing up files and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It is often said, yet too often forgotten: taking backups (and verifying that 
+&lt;p&gt;For backing up files and directories, I personally use &lt;a href="http://obnam.org/"&gt;obnam&lt;/a&gt;,
+after playing around with &lt;a href="http://www.bacula.org/"&gt;Bacula&lt;/a&gt; and
+&lt;a href="https://attic-backup.org/"&gt;attic&lt;/a&gt;. Bacula is more meant for large
+distributed environments (although I also tend to use obnam for my server
+infrastructure) and was too complex for my taste. The choice between obnam and
+attic is even more personally-oriented.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;It is often said, yet too often forgotten: taking backups (and verifying that 
 they work). Taking backups is not purely for companies and organizations.
 Individuals should also take backups to ensure that, in case of errors or
 calamities, the all important files are readily recoverable.&lt;/p&gt;
@@ -719,7 +741,11 @@ blocks between clients (it is not mandatory, but supported nonetheless).&lt;/p&g
 offline for a few hours with a good workstation helps to not be disturbed
 by external actions (air pockets notwithstanding).&lt;/p&gt;
 &lt;p&gt;Early this year, I expressed my &lt;a href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/"&gt;intentions to move to Pelican&lt;/a&gt;
-from WordPress. I wasn't actually …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Nothing beats a few hours of flying to get things moving on stuff. Being
+from WordPress. I wasn't actually unhappy with WordPress, but the security
+concerns I had were a bit too much for blog as simple as mine. Running a
+PHP-enabled site with a database for something that I can easily handle through
+a static site, well, I had to try.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Nothing beats a few hours of flying to get things moving on stuff. Being
 offline for a few hours with a good workstation helps to not be disturbed
 by external actions (air pockets notwithstanding).&lt;/p&gt;
 &lt;p&gt;Early this year, I expressed my &lt;a href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/"&gt;intentions to move to Pelican&lt;/a&gt;
@@ -807,9 +833,7 @@ an important use case for me.&lt;/p&gt;</content><category term="Free Software">
 backend for many services. The database system is very robust, well
 supported by the community and very powerful. In this post, I'm going to
 show how I use central authentication and authorization with PostgreSQL.&lt;/p&gt;
-
-
-&lt;p&gt;Centralized management is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I have been running a PostgreSQL cluster for a while as the primary
+</summary><content type="html">&lt;p&gt;I have been running a PostgreSQL cluster for a while as the primary
 backend for many services. The database system is very robust, well
 supported by the community and very powerful. In this post, I'm going to
 show how I use central authentication and authorization with PostgreSQL.&lt;/p&gt;

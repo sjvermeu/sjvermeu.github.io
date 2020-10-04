@@ -98,12 +98,19 @@ Simplicity is a form of art...            </a>
                 <div class="summary"><p>After reorganizing my salt configuration, I received the following error:</p>
 <div class="highlight"><pre><span></span><code>[ERROR   ] Template was specified incorrectly: False
 </code></pre></div>
-
-
 <p>Enabling some debugging on the command gave me a slight pointer why this occurred:</p>
-<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv &#39;testing&#39;, u&#39;salt://top.sls&#39;
+<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
 [DEBUG   ] No contents loaded for env: testing
-[DEBUG …</code></pre></div>
+[DEBUG   ] compile template: False
+[ERROR   ] Template was specified incorrectly: False
+</code></pre></div>
+<p>I was using a single top file as recommended by Salt, but apparently it was still
+looking for top files in the other environments.</p>
+<p>Yet, if I split the top files across the environments, I got the following warning:</p>
+<div class="highlight"><pre><span></span><code>[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+</code></pre></div>
+<p>So what's all this about?</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/03/template-was-specified-incorrectly/">more ...</a>
                 </div>
             </article>
@@ -133,7 +140,11 @@ Simplicity is a form of art...            </a>
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards <code>salt-ssh</code>. This would allow to do some system management over SSH
 instead of ZeroMQ.</p>
-<p>I'm not …</p>
+<p>I'm not confident yet that this is a solid approach to take (as performance is also
+important, which is greatly reduced with <code>salt-ssh</code>), and the security exposure of the
+salt minions over ZeroMQ is also not that insecure (especially not when a local firewall
+ensures that only connections from the salt master are allowed). But playing doesn't hurt.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/03/using-salt-ssh-with-agent-forwarding/">more ...</a>
                 </div>
             </article>

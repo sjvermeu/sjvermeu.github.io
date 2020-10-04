@@ -1,20 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Simplicity is a form of art... - SELinux</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Mon, 20 Nov 2017 17:00:00 +0100</lastBuildDate><item><title>SELinux and extended permissions</title><link>https://blog.siphos.be/2017/11/selinux-and-extended-permissions/</link><description>&lt;p&gt;One of the features present in the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Releases"&gt;August release&lt;/a&gt; of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 20 Nov 2017 17:00:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2017-11-20:/2017/11/selinux-and-extended-permissions/</guid><category>SELinux</category><category>selinux</category><category>ioctl</category></item><item><title>SELinux Userspace 2.7</title><link>https://blog.siphos.be/2017/09/selinux-userspace-2.7/</link><description>&lt;p&gt;A few days ago, &lt;a href="http://blog.perfinion.com/"&gt;Jason "perfinion" Zaman&lt;/a&gt; stabilized the 2.7 SELinux userspace on
+<rss version="2.0"><channel><title>Simplicity is a form of art... - SELinux</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Mon, 20 Nov 2017 17:00:00 +0100</lastBuildDate><item><title>SELinux and extended permissions</title><link>https://blog.siphos.be/2017/11/selinux-and-extended-permissions/</link><description>&lt;p&gt;One of the features present in the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Releases"&gt;August release&lt;/a&gt; of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and target (resource) identifiers, but also a specific number on which it applies. And ioctl's are the first (and currently only) permission on which this is implemented.&lt;/p&gt;
+&lt;p&gt;Note that ioctl-level permission controls isn't a new feature by itself, but the fact that it can be used in modular policies is.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 20 Nov 2017 17:00:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2017-11-20:/2017/11/selinux-and-extended-permissions/</guid><category>SELinux</category><category>selinux</category><category>ioctl</category></item><item><title>SELinux Userspace 2.7</title><link>https://blog.siphos.be/2017/09/selinux-userspace-2.7/</link><description>&lt;p&gt;A few days ago, &lt;a href="http://blog.perfinion.com/"&gt;Jason "perfinion" Zaman&lt;/a&gt; stabilized the 2.7 SELinux userspace on
 Gentoo. This release has quite a &lt;a href="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20170804/RELEASE-20170804.txt"&gt;few new features&lt;/a&gt;, which I'll cover in later
 posts, but for distribution packagers the main change is that the userspace
-now has many more components to package. The project has …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 26 Sep 2017 14:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2017-09-26:/2017/09/selinux-userspace-2.7/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>userspace</category></item><item><title>Using nVidia with SELinux</title><link>https://blog.siphos.be/2017/08/using-nvidia-with-selinux/</link><description>&lt;p&gt;Yesterday I've &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switched to the gentoo-sources kernel package&lt;/a&gt; on Gentoo Linux.
+now has many more components to package. The project has split up the
+policycoreutils package in separate packages so that deployments can be made
+more specific.&lt;/p&gt;
+&lt;p&gt;Let's take a look at all the various userspace packages again, learn what their
+purpose is, so that you can decide if they're needed or not on a system. Also,
+when I cover the contents of a package, be aware that it is based on the deployment
+on my system, which might or might not be a complete installation (as with Gentoo,
+different USE flags can trigger different package deployments).&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 26 Sep 2017 14:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2017-09-26:/2017/09/selinux-userspace-2.7/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>userspace</category></item><item><title>Using nVidia with SELinux</title><link>https://blog.siphos.be/2017/08/using-nvidia-with-selinux/</link><description>&lt;p&gt;Yesterday I've &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switched to the gentoo-sources kernel package&lt;/a&gt; on Gentoo Linux.
 And with that, I also attempted (succesfully) to use the propriatary nvidia drivers
 so that I can enjoy both a smoother 3D experience while playing minecraft, as well
-as use the CUDA support so I don't need to use …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 23 Aug 2017 19:04:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2017-08-23:/2017/08/using-nvidia-with-selinux/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>nvidia</category></item><item><title>SELinux System Administration, 2nd Edition</title><link>https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/</link><description>&lt;p&gt;While still working on a few other projects, one of the time consumers of the
+as use the CUDA support so I don't need to use cloud-based services for small
+exercises.&lt;/p&gt;
+&lt;p&gt;The move to nvidia was quite simple, as the &lt;a href="https://wiki.gentoo.org/wiki/NVidia/nvidia-drivers"&gt;nvidia-drivers wiki article&lt;/a&gt; on
+the Gentoo wiki was quite easy to follow.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 23 Aug 2017 19:04:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2017-08-23:/2017/08/using-nvidia-with-selinux/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>nvidia</category></item><item><title>SELinux System Administration, 2nd Edition</title><link>https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/</link><description>&lt;p&gt;While still working on a few other projects, one of the time consumers of the
 past half year (haven't you noticed? my blog was quite silent) has come to an
 end: the &lt;a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition"&gt;SELinux System Administration - Second Edition&lt;/a&gt;
-book is now available. With almost double the amount of pages and a …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 22 Dec 2016 19:26:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2016-12-22:/2016/12/selinux-system-administration-2nd-edition/</guid><category>SELinux</category><category>selinux</category><category>gentoo</category><category>rhel</category><category>redhat</category><category>packt</category><category>book</category><category>publishing</category></item><item><title>We do not ship SELinux sandbox</title><link>https://blog.siphos.be/2016/09/we-do-not-ship-selinux-sandbox/</link><description>&lt;p&gt;A few days ago a vulnerability was reported in the SELinux sandbox user space
+book is now available. With almost double the amount of pages and a serious
+update of the content, the book can now be bought either through Packt Publishing
+itself, or the various online bookstores such as &lt;a href="https://www.amazon.com/SELinux-System-Administration-Sven-Vermeulen-ebook/dp/B01LWM02WI"&gt;Amazon&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;With the holidays now approaching, I hope to be able to execute a few tasks
+within the Gentoo community (and of the Gentoo Foundation) and get back on track.
+Luckily, my absence was not jeopardizing the state of &lt;a href="https://wiki.gentoo.org/wiki/SELinux"&gt;SELinux&lt;/a&gt;
+in Gentoo thanks to the efforts of Jason Zaman.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 22 Dec 2016 19:26:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2016-12-22:/2016/12/selinux-system-administration-2nd-edition/</guid><category>SELinux</category><category>selinux</category><category>gentoo</category><category>rhel</category><category>redhat</category><category>packt</category><category>book</category><category>publishing</category></item><item><title>We do not ship SELinux sandbox</title><link>https://blog.siphos.be/2016/09/we-do-not-ship-selinux-sandbox/</link><description>&lt;p&gt;A few days ago a vulnerability was reported in the SELinux sandbox user space
 utility. The utility is part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. Luckily, Gentoo's
 &lt;code&gt;sys-apps/policycoreutils&lt;/code&gt; package is not vulnerable - and not because we were
 clairvoyant about this issue, but because we don't ship this utility.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;What is the …&lt;/strong&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 27 Sep 2016 20:47:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2016-09-27:/2016/09/we-do-not-ship-selinux-sandbox/</guid><category>SELinux</category><category>selinux</category><category>sandbox</category><category>gentoo</category><category>vulnerability</category><category>seunshare</category></item><item><title>Getting su to work in init scripts</title><link>https://blog.siphos.be/2015/09/getting-su-to-work-in-init-scripts/</link><description>&lt;p&gt;While developing an init script which has to switch user, I got a couple of
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 27 Sep 2016 20:47:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2016-09-27:/2016/09/we-do-not-ship-selinux-sandbox/</guid><category>SELinux</category><category>selinux</category><category>sandbox</category><category>gentoo</category><category>vulnerability</category><category>seunshare</category></item><item><title>Getting su to work in init scripts</title><link>https://blog.siphos.be/2015/09/getting-su-to-work-in-init-scripts/</link><description>&lt;p&gt;While developing an init script which has to switch user, I got a couple of
 errors from SELinux and the system itself:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~# rc-service hadoop-namenode format&lt;/span&gt;
 &lt;span class="go"&gt;Authenticating root.&lt;/span&gt;
@@ -22,33 +41,53 @@ errors from SELinux and the system itself:&lt;/p&gt;
 &lt;span class="go"&gt;su: Authentication service cannot retrieve authentication info&lt;/span&gt;
 &lt;span class="gp gp-VirtualEnv"&gt;(Ignored)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
-
-
-&lt;p&gt;The authentication log shows entries such as the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Sep 14 20:20 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 14 Sep 2015 16:37:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-09-14:/2015/09/getting-su-to-work-in-init-scripts/</guid><category>SELinux</category><category>selinux</category><category>initrc</category></item><item><title>Doing away with interfaces</title><link>https://blog.siphos.be/2015/08/doing-away-with-interfaces/</link><description>&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 14 Sep 2015 16:37:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-09-14:/2015/09/getting-su-to-work-in-init-scripts/</guid><category>SELinux</category><category>selinux</category><category>initrc</category></item><item><title>Doing away with interfaces</title><link>https://blog.siphos.be/2015/08/doing-away-with-interfaces/</link><description>&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
-it, but real-life work and time-to-market for now …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 29 Aug 2015 11:30:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-29:/2015/08/doing-away-with-interfaces/</guid><category>SELinux</category><category>selinux</category><category>cil</category></item><item><title>Why we do confine Firefox</title><link>https://blog.siphos.be/2015/08/why-we-do-confine-firefox/</link><description>&lt;p&gt;If you're a bit following the SELinux development community you will know
+it, but real-life work and time-to-market for now forces me to stick with the
+M4-based refpolicy one.&lt;/p&gt;
+&lt;p&gt;Still, I do try out some things here and there, and one of the things I wanted
+to look into was how CIL policies would deal with interfaces.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 29 Aug 2015 11:30:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-29:/2015/08/doing-away-with-interfaces/</guid><category>SELinux</category><category>selinux</category><category>cil</category></item><item><title>Why we do confine Firefox</title><link>https://blog.siphos.be/2015/08/why-we-do-confine-firefox/</link><description>&lt;p&gt;If you're a bit following the SELinux development community you will know
 &lt;a href="http://danwalsh.livejournal.com"&gt;Dan Walsh&lt;/a&gt;, a &lt;a href="http://people.redhat.com/dwalsh/"&gt;Red Hat&lt;/a&gt;
 security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
 about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
 should've asked why the &lt;em&gt;reference policy&lt;/em&gt; or &lt;em&gt;Red Hat/Fedora policy&lt;/em&gt; does not
-confine Firefox, because SELinux …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 11 Aug 2015 19:18:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-11:/2015/08/why-we-do-confine-firefox/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>policy</category><category>firefox</category><category>cve</category><category>vulnerability</category><category>xdg</category></item><item><title>Can SELinux substitute DAC?</title><link>https://blog.siphos.be/2015/08/can-selinux-substitute-dac/</link><description>&lt;p&gt;A nice &lt;a href="https://twitter.com/sjvermeu/status/630107879123623936"&gt;twitter discussion&lt;/a&gt;
+confine Firefox, because SELinux is, as I've
+&lt;a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/"&gt;mentioned before&lt;/a&gt;,
+not the same as its policy.&lt;/p&gt;
+&lt;p&gt;In effect, Gentoo's SELinux policy &lt;em&gt;does&lt;/em&gt; confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+&lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies"&gt;develop desktop policies&lt;/a&gt;
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 11 Aug 2015 19:18:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-11:/2015/08/why-we-do-confine-firefox/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>policy</category><category>firefox</category><category>cve</category><category>vulnerability</category><category>xdg</category></item><item><title>Can SELinux substitute DAC?</title><link>https://blog.siphos.be/2015/08/can-selinux-substitute-dac/</link><description>&lt;p&gt;A nice &lt;a href="https://twitter.com/sjvermeu/status/630107879123623936"&gt;twitter discussion&lt;/a&gt;
 with &lt;a href="https://twitter.com/erlheldata"&gt;Erling Hellenäs&lt;/a&gt; caught my full attention later
 when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
 in the current implementation, but why not and what would be needed?&lt;/p&gt;
 &lt;p&gt;SELinux is implemented through the &lt;a href="https://en.wikipedia.org/wiki/Linux_Security_Modules"&gt;Linux Security Modules framework&lt;/a&gt;
-which allows …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 09 Aug 2015 14:48:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-09:/2015/08/can-selinux-substitute-dac/</guid><category>SELinux</category><category>selinux</category><category>refpolicy</category><category>linux</category><category>dac</category><category>lsm</category></item><item><title>Filtering network access per application</title><link>https://blog.siphos.be/2015/08/filtering-network-access-per-application/</link><description>&lt;p&gt;Iptables (and the successor nftables) is a powerful packet filtering system in
+which allows for different security systems to be implemented and integrated
+in the Linux kernel. Through LSM, various security-sensitive operations can be
+secured further through &lt;em&gt;additional&lt;/em&gt; access checks. This criteria was made to
+have LSM be as minimally invasive as possible.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 09 Aug 2015 14:48:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-09:/2015/08/can-selinux-substitute-dac/</guid><category>SELinux</category><category>selinux</category><category>refpolicy</category><category>linux</category><category>dac</category><category>lsm</category></item><item><title>Filtering network access per application</title><link>https://blog.siphos.be/2015/08/filtering-network-access-per-application/</link><description>&lt;p&gt;Iptables (and the successor nftables) is a powerful packet filtering system in
 the Linux kernel, able to create advanced firewall capabilities. One of the 
 features that it &lt;em&gt;cannot&lt;/em&gt; provide is per-application filtering. Together with
 SELinux however, it is possible to implement this on a &lt;em&gt;per domain&lt;/em&gt; basis.&lt;/p&gt;
-&lt;p&gt;SELinux does not …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Fri, 07 Aug 2015 03:49:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-07:/2015/08/filtering-network-access-per-application/</guid><category>SELinux</category><category>selinux</category><category>network</category><category>iptables</category></item><item><title>Don't confuse SELinux with its policy</title><link>https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/</link><description>&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
+&lt;p&gt;SELinux does not know applications, but it knows domains. If we ensure that each
+application runs in its own domain, then we can leverage the firewall
+capabilities with SELinux to only allow those domains access that we need.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Fri, 07 Aug 2015 03:49:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-07:/2015/08/filtering-network-access-per-application/</guid><category>SELinux</category><category>selinux</category><category>network</category><category>iptables</category></item><item><title>Don't confuse SELinux with its policy</title><link>https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/</link><description>&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
-servers because it does not play well with their day-to-day operations. But …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 03 Aug 2015 01:49:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-03:/2015/08/dont-confuse-selinux-with-its-policy/</guid><category>SELinux</category><category>selinux</category><category>policy</category><category>cil</category></item><item><title>Loading CIL modules directly</title><link>https://blog.siphos.be/2015/07/loading-cil-modules-directly/</link><description>&lt;p&gt;In a &lt;a href="http://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/"&gt;previous
+servers because it does not play well with their day-to-day operations. But
+the Android inclusion shows that SELinux itself is not the culprit for this:
+it is the policy.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 03 Aug 2015 01:49:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-03:/2015/08/dont-confuse-selinux-with-its-policy/</guid><category>SELinux</category><category>selinux</category><category>policy</category><category>cil</category></item><item><title>Loading CIL modules directly</title><link>https://blog.siphos.be/2015/07/loading-cil-modules-directly/</link><description>&lt;p&gt;In a &lt;a href="http://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/"&gt;previous
 post&lt;/a&gt;
 I used the &lt;code&gt;secilc&lt;/code&gt; binary to load an additional test policy. Little did
 I know (and that's actually embarrassing because it was one of the
@@ -62,21 +101,58 @@ Robert asked how to use SELinux to prevent even root access to a
 directory. The trivial solution would be not to assign an administrative
 role to the root account (which is definitely possible, but you want
 some way to gain administrative access otherwise ;-)&lt;/p&gt;
-&lt;p&gt;Restricting root is one …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 11 Jul 2015 14:09:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-07-11:/2015/07/restricting-even-root-access-to-a-folder/</guid><category>SELinux</category></item><item><title>Intermediate policies</title><link>https://blog.siphos.be/2015/07/intermediate-policies/</link><description>&lt;p&gt;When developing SELinux policies for new software (or existing ones
+&lt;p&gt;Restricting root is one of the commonly referred features of a MAC
+(Mandatory Access Control) system. With a well designed user management
+and sudo environment, it is fairly trivial - but if you need to start
+from the premise that a user has direct root access, it requires some
+thought to implement it correctly. The main "issue" is not that it is
+difficult to implement policy-wise, but that most users will start from
+a pre-existing policy (such as the reference policy) and build on top of
+that.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 11 Jul 2015 14:09:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-07-11:/2015/07/restricting-even-root-access-to-a-folder/</guid><category>SELinux</category></item><item><title>Intermediate policies</title><link>https://blog.siphos.be/2015/07/intermediate-policies/</link><description>&lt;p&gt;When developing SELinux policies for new software (or existing ones
 whose policies I don't agree with) it is often more difficult to finish
 the policies so that they are broadly usable. When dealing with personal
 policies, having them "just work" is often sufficient. To make the
-policies reusable for distributions …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 05 Jul 2015 18:17:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-07-05:/2015/07/intermediate-policies/</guid><category>SELinux</category><category>community</category><category>contributions</category><category>policy development</category><category>selinux</category></item><item><title>Where does CIL play in the SELinux system?</title><link>https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/</link><description>&lt;p&gt;SELinux policy developers already have a number of file formats to work
+policies reusable for distributions (or for the upstream project), a
+number of things are necessary:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Try structuring the policy using the style as suggested by refpolicy
+    or Gentoo&lt;/li&gt;
+&lt;li&gt;Add the role interfaces that are most likely to be used or required,
+    or which are in the current draft implemented differently&lt;/li&gt;
+&lt;li&gt;Refactor some of the policies to use refpolicy/Gentoo style
+    interfaces&lt;/li&gt;
+&lt;li&gt;Remove the comments from the policies (as refpolicy does not want
+    too verbose policies)&lt;/li&gt;
+&lt;li&gt;Change or update the file context definitions for default
+    installations (rather than the custom installations I use)&lt;/li&gt;
+&lt;/ul&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 05 Jul 2015 18:17:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-07-05:/2015/07/intermediate-policies/</guid><category>SELinux</category><category>community</category><category>contributions</category><category>policy development</category><category>selinux</category></item><item><title>Where does CIL play in the SELinux system?</title><link>https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/</link><description>&lt;p&gt;SELinux policy developers already have a number of file formats to work
 with. Currently, policy code is written in a set of three files:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
     enforcement rules)&lt;/li&gt;
 &lt;li&gt;The &lt;code&gt;.if&lt;/code&gt; file contains functions which turn a set of arguments into
-    blocks of SELinux …&lt;/li&gt;&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 13 Jun 2015 23:12:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-06-13:/2015/06/where-does-cil-play-in-the-selinux-system/</guid><category>SELinux</category><category>cil</category><category>selinux</category><category>userspace</category></item><item><title>Testing with permissive domains</title><link>https://blog.siphos.be/2015/05/testing-with-permissive-domains/</link><description>&lt;p&gt;When testing out new technologies or new setups, not having (proper)
+    blocks of SELinux policy code (interfaces). These functions are
+    called by other interface files or type enforcement files&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;.fc&lt;/code&gt; file contains mappings of file path expressions towards
+    labels (file contexts)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These files are compiled into loadable modules (or a base module) which
+are then transformed to an active policy. But this is not a single-step
+approach.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 13 Jun 2015 23:12:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-06-13:/2015/06/where-does-cil-play-in-the-selinux-system/</guid><category>SELinux</category><category>cil</category><category>selinux</category><category>userspace</category></item><item><title>Testing with permissive domains</title><link>https://blog.siphos.be/2015/05/testing-with-permissive-domains/</link><description>&lt;p&gt;When testing out new technologies or new setups, not having (proper)
 SELinux policies can be a nuisance. Not only are the number of SELinux
 policies that are available through the standard repositories limited,
 some of these policies are not even written with the same level of
-confinement that an administrator …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 18 May 2015 13:40:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-05-18:/2015/05/testing-with-permissive-domains/</guid><category>SELinux</category><category>permissive</category><category>policy</category><category>selinux</category><category>semanage</category><category>test</category></item><item><title>Use change management when you are using SELinux to its fullest</title><link>https://blog.siphos.be/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/</link><description>&lt;p&gt;If you are using SELinux on production systems (with which I mean
+confinement that an administrator might expect. Or perhaps the
+technology to be tested is used in a completely different manner.&lt;/p&gt;
+&lt;p&gt;Without proper policies, any attempt to start such a daemon or
+application might or will cause permission violations. In many cases,
+developers or users tend to disable SELinux enforcing then so that they
+can continue playing with the new technology. And why not? After all,
+policy development is to be done &lt;em&gt;after&lt;/em&gt; the technology is understood.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 18 May 2015 13:40:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-05-18:/2015/05/testing-with-permissive-domains/</guid><category>SELinux</category><category>permissive</category><category>policy</category><category>selinux</category><category>semanage</category><category>test</category></item><item><title>Use change management when you are using SELinux to its fullest</title><link>https://blog.siphos.be/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/</link><description>&lt;p&gt;If you are using SELinux on production systems (with which I mean
 systems that you offer services with towards customers or other parties
 beyond you, yourself and your ego), please consider proper change
 management if you don't do already. SELinux is a very sensitive security

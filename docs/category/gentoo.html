@@ -105,7 +105,16 @@ Simplicity is a form of art...            </a>
 are removed from the tree</a> due to the <a href="http://grsecurity.net/">grsecurity</a> change where the grsecurity
 Linux kernel patches are no longer provided for free. The decision was made due to
 supportability and maintainability reasons.</p>
-<p>That doesn't mean …</p>
+<p>That doesn't mean that users who want to stick with the grsecurity related hardening
+features are left alone. <a href="https://blogs.gentoo.org/ago/2017/08/21/sys-kernel-grsecurity-sources-available/#utm_source=feed&amp;utm_medium=feed&amp;utm_campaign=feed">Agostino Sarubbo has started providing sys-kernel/grsecurity-sources</a>
+for the users who want to stick with it, as it is based on <a href="https://github.com/minipli/linux-unofficial_grsec">minipli's unofficial patchset</a>.
+I seriously hope that the patchset will continue to be maintained and, who knows, even evolve further.</p>
+<p>Personally though, I'm switching to the Gentoo sources, and stick with SELinux as one of the
+protection measures. And with that, I might even start using my NVidia graphics card a bit more, 
+as that one hasn't been touched in several years (I have an Optimus-capable setup with both an
+Intel integrated graphics card and an NVidia one, but all attempts to use nouveau for the one game
+I like to play - minecraft - didn't work out that well).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/08/switch-to-gentoo-sources/">more ...</a>
                 </div>
             </article>
@@ -139,7 +148,9 @@ supportability and maintainability reasons.</p>
 which talks about how to handle certificate stores on Gentoo Linux. The write-up
 of the article (which might still change name later, because it does not handle
 <em>everything</em> about certificates, mostly how to handle certificate stores) was
-inspired …</p>
+inspired by the observation that I had to adjust the certificate stores of both
+Chromium and Firefox separately, even though they both use NSS.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/03/handling-certificates-in-gentoo-linux/">more ...</a>
                 </div>
             </article>
@@ -181,8 +192,6 @@ supported as well).</p>
 <p>A recent <a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4">commit</a>
 now also allows CIL files to be used.</p>
 
-
-<p><strong>Policy ebuilds …</strong></p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">more ...</a>
                 </div>
             </article>
@@ -215,7 +224,9 @@ now also allows CIL files to be used.</p>
                 <div class="summary"><p>A few days ago I committed a small update to <code>policycoreutils</code>, a SELinux related
 package that provides most of the management utilities for SELinux systems. The
 fix was to get two patches (which are committed upstream) into the existing
-release so that our users can benefit from the fixed issues …</p>
+release so that our users can benefit from the fixed issues without having to
+wait for a new release.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/maintaining-packages-and-backporting/">more ...</a>
                 </div>
             </article>
@@ -256,7 +267,12 @@ release so that our users can benefit from the fixed issues …</p>
                 <div class="summary"><p>Gentoo has removed its support of the older GuideXML format in favor of using
 the <a href="https://wiki.gentoo.org">Gentoo Wiki</a> and a new content management system
 for the main site (or is it static pages, I don't have the faintest idea to be
-honest). I do still have a few GuideXML pages in …</p>
+honest). I do still have a few GuideXML pages in my development space, which I
+am going to move to HTML pretty soon.</p>
+<p>In order to do so, I make use of the <a href="https://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl?view=log">guidexml2wiki</a>
+stylesheet I <a href="http://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/">developed</a>.
+But instead of migrating it to wiki syntax, I want to end with HTML.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/slowly-converting-from-guidexml-to-html/">more ...</a>
                 </div>
             </article>
@@ -289,7 +305,9 @@ written by <a href="http://catchchallenger.first-world.info/wiki/User:Alpha_one_
 which gives a quick benchmark on a couple of compression methods / algorithms.
 It gave me the idea of writing a quick script that tests out a wide number of
 compression utilities available in Gentoo (usually through the <code>app-arch</code>
-category …</p>
+category), with also a number of options (in case multiple options are
+possible).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/finding-a-good-compression-utility/">more ...</a>
                 </div>
             </article>
@@ -326,7 +344,9 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the <a href="https://github.com/SELinuxProject/selinux">SELinux
 userspace</a> so that developers
-and contributors can already work with in-progress code developments …</p>
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/">more ...</a>
                 </div>
             </article>

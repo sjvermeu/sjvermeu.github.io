@@ -105,7 +105,12 @@ Simplicity is a form of art...            </a>
 and for this interactive access I position <a href="http://www.openssh.com/">OpenSSH</a>. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.</p>
-<p>For instance, on one …</p>
+<p>For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/using-multiple-openssh-daemons/">more ...</a>
                 </div>
             </article>
@@ -140,7 +145,8 @@ on OpenSSH's deprecation of the <a href="https://en.wikipedia.org/wiki/Digital_S
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested <a href="http://ed25519.cr.yp.to/">ED25519</a> algorithm. Of
 course, I wouldn't be a security-interested party if I did not do some additional
-investigation into the …</p>
+investigation into the DSA versus Ed25519 discussion.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/switching-openssh-to-ed25519-keys/">more ...</a>
                 </div>
             </article>

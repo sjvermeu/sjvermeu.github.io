@@ -6,7 +6,16 @@ about a changed fingerprint, something like the following:&lt;/p&gt;
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
 Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-It is also possible that …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Today I was attempting to update a local repository, when SSH complained
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+SHA256:p4ZGs+YjsBAw26tn2a+HPkga1dPWWAWX+NEm4Cv4I9s.
+Please contact your system administrator.
+Add correct host key in /home/user/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /home/user/.ssh/known_hosts:9
+ECDSA host key for 192.168.56.101 has changed and you have requested strict checking.
+Host key verification failed.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+</summary><content type="html">&lt;p&gt;Today I was attempting to update a local repository, when SSH complained
 about a changed fingerprint, something like the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
@@ -56,7 +65,12 @@ USE="-bindist") which triggered the validation of the old key.&lt;/p&gt;</conten
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
-&lt;p&gt;For instance, on one …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
+&lt;p&gt;For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
@@ -121,7 +135,8 @@ on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digita
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; algorithm. Of
 course, I wouldn't be a security-interested party if I did not do some additional
-investigation into the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
+investigation into the DSA versus Ed25519 discussion.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
 on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm"&gt;DSA algorithm&lt;/a&gt;
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; algorithm. Of

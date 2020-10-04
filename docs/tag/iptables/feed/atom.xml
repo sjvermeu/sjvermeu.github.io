@@ -3,7 +3,10 @@
 the Linux kernel, able to create advanced firewall capabilities. One of the 
 features that it &lt;em&gt;cannot&lt;/em&gt; provide is per-application filtering. Together with
 SELinux however, it is possible to implement this on a &lt;em&gt;per domain&lt;/em&gt; basis.&lt;/p&gt;
-&lt;p&gt;SELinux does not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Iptables (and the successor nftables) is a powerful packet filtering system in
+&lt;p&gt;SELinux does not know applications, but it knows domains. If we ensure that each
+application runs in its own domain, then we can leverage the firewall
+capabilities with SELinux to only allow those domains access that we need.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Iptables (and the successor nftables) is a powerful packet filtering system in
 the Linux kernel, able to create advanced firewall capabilities. One of the 
 features that it &lt;em&gt;cannot&lt;/em&gt; provide is per-application filtering. Together with
 SELinux however, it is possible to implement this on a &lt;em&gt;per domain&lt;/em&gt; basis.&lt;/p&gt;

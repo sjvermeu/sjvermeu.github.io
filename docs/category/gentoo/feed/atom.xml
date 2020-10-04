@@ -3,7 +3,16 @@
 are removed from the tree&lt;/a&gt; due to the &lt;a href="http://grsecurity.net/"&gt;grsecurity&lt;/a&gt; change where the grsecurity
 Linux kernel patches are no longer provided for free. The decision was made due to
 supportability and maintainability reasons.&lt;/p&gt;
-&lt;p&gt;That doesn't mean …&lt;/p&gt;</summary><content type="html">&lt;p&gt;You've might already read it on the Gentoo news site, the &lt;a href="https://www.gentoo.org/news/2017/08/19/hardened-sources-removal.html"&gt;Hardened Linux kernel sources
+&lt;p&gt;That doesn't mean that users who want to stick with the grsecurity related hardening
+features are left alone. &lt;a href="https://blogs.gentoo.org/ago/2017/08/21/sys-kernel-grsecurity-sources-available/#utm_source=feed&amp;amp;utm_medium=feed&amp;amp;utm_campaign=feed"&gt;Agostino Sarubbo has started providing sys-kernel/grsecurity-sources&lt;/a&gt;
+for the users who want to stick with it, as it is based on &lt;a href="https://github.com/minipli/linux-unofficial_grsec"&gt;minipli's unofficial patchset&lt;/a&gt;.
+I seriously hope that the patchset will continue to be maintained and, who knows, even evolve further.&lt;/p&gt;
+&lt;p&gt;Personally though, I'm switching to the Gentoo sources, and stick with SELinux as one of the
+protection measures. And with that, I might even start using my NVidia graphics card a bit more, 
+as that one hasn't been touched in several years (I have an Optimus-capable setup with both an
+Intel integrated graphics card and an NVidia one, but all attempts to use nouveau for the one game
+I like to play - minecraft - didn't work out that well).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;You've might already read it on the Gentoo news site, the &lt;a href="https://www.gentoo.org/news/2017/08/19/hardened-sources-removal.html"&gt;Hardened Linux kernel sources
 are removed from the tree&lt;/a&gt; due to the &lt;a href="http://grsecurity.net/"&gt;grsecurity&lt;/a&gt; change where the grsecurity
 Linux kernel patches are no longer provided for free. The decision was made due to
 supportability and maintainability reasons.&lt;/p&gt;
@@ -86,7 +95,9 @@ has been on my TODO list for some time to look in more depth to it. Perhaps this
 which talks about how to handle certificate stores on Gentoo Linux. The write-up
 of the article (which might still change name later, because it does not handle
 &lt;em&gt;everything&lt;/em&gt; about certificates, mostly how to handle certificate stores) was
-inspired …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I recently created a new article on the Gentoo Wiki titled &lt;a href="https://wiki.gentoo.org/wiki/Certificates"&gt;Certificates&lt;/a&gt;
+inspired by the observation that I had to adjust the certificate stores of both
+Chromium and Firefox separately, even though they both use NSS.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I recently created a new article on the Gentoo Wiki titled &lt;a href="https://wiki.gentoo.org/wiki/Certificates"&gt;Certificates&lt;/a&gt;
 which talks about how to handle certificate stores on Gentoo Linux. The write-up
 of the article (which might still change name later, because it does not handle
 &lt;em&gt;everything&lt;/em&gt; about certificates, mostly how to handle certificate stores) was
@@ -144,9 +155,7 @@ Gentoo has always supported source-based packages as default (although
 supported as well).&lt;/p&gt;
 &lt;p&gt;A recent &lt;a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4"&gt;commit&lt;/a&gt;
 now also allows CIL files to be used.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;Policy ebuilds …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
+</summary><content type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
 for a while now. Unlike most other distributions, which focus on binary packages,
 Gentoo has always supported source-based packages as default (although 
 &lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary packages&lt;/a&gt; are 
@@ -230,7 +239,9 @@ to support the 2.4 userspace) which allows Gentoo to stay ahead in the SELinux
 world.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="cil"></category><category term="selinux"></category><category term="ebuild"></category><category term="eclass"></category></entry><entry><title>Maintaining packages and backporting</title><link href="https://blog.siphos.be/2015/09/maintaining-packages-and-backporting/" rel="alternate"></link><published>2015-09-02T20:33:00+02:00</published><updated>2015-09-02T20:33:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-02:/2015/09/maintaining-packages-and-backporting/</id><summary type="html">&lt;p&gt;A few days ago I committed a small update to &lt;code&gt;policycoreutils&lt;/code&gt;, a SELinux related
 package that provides most of the management utilities for SELinux systems. The
 fix was to get two patches (which are committed upstream) into the existing
-release so that our users can benefit from the fixed issues …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few days ago I committed a small update to &lt;code&gt;policycoreutils&lt;/code&gt;, a SELinux related
+release so that our users can benefit from the fixed issues without having to
+wait for a new release.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;A few days ago I committed a small update to &lt;code&gt;policycoreutils&lt;/code&gt;, a SELinux related
 package that provides most of the management utilities for SELinux systems. The
 fix was to get two patches (which are committed upstream) into the existing
 release so that our users can benefit from the fixed issues without having to
@@ -312,7 +323,12 @@ patches towards our repository) we can serve updates with just a few minutes
 of work.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="ebuild"></category><category term="patching"></category></entry><entry><title>Slowly converting from GuideXML to HTML</title><link href="https://blog.siphos.be/2015/08/slowly-converting-from-guidexml-to-html/" rel="alternate"></link><published>2015-08-25T11:30:00+02:00</published><updated>2015-08-25T11:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-25:/2015/08/slowly-converting-from-guidexml-to-html/</id><summary type="html">&lt;p&gt;Gentoo has removed its support of the older GuideXML format in favor of using
 the &lt;a href="https://wiki.gentoo.org"&gt;Gentoo Wiki&lt;/a&gt; and a new content management system
 for the main site (or is it static pages, I don't have the faintest idea to be
-honest). I do still have a few GuideXML pages in …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Gentoo has removed its support of the older GuideXML format in favor of using
+honest). I do still have a few GuideXML pages in my development space, which I
+am going to move to HTML pretty soon.&lt;/p&gt;
+&lt;p&gt;In order to do so, I make use of the &lt;a href="https://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl?view=log"&gt;guidexml2wiki&lt;/a&gt;
+stylesheet I &lt;a href="http://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/"&gt;developed&lt;/a&gt;.
+But instead of migrating it to wiki syntax, I want to end with HTML.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Gentoo has removed its support of the older GuideXML format in favor of using
 the &lt;a href="https://wiki.gentoo.org"&gt;Gentoo Wiki&lt;/a&gt; and a new content management system
 for the main site (or is it static pages, I don't have the faintest idea to be
 honest). I do still have a few GuideXML pages in my development space, which I
@@ -353,7 +369,9 @@ written by &lt;a href="http://catchchallenger.first-world.info/wiki/User:Alpha_o
 which gives a quick benchmark on a couple of compression methods / algorithms.
 It gave me the idea of writing a quick script that tests out a wide number of
 compression utilities available in Gentoo (usually through the &lt;code&gt;app-arch&lt;/code&gt;
-category …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I recently came across a &lt;a href="http://catchchallenger.first-world.info//wiki/Quick_Benchmark:_Gzip_vs_Bzip2_vs_LZMA_vs_XZ_vs_LZ4_vs_LZO"&gt;wiki page&lt;/a&gt;
+category), with also a number of options (in case multiple options are
+possible).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I recently came across a &lt;a href="http://catchchallenger.first-world.info//wiki/Quick_Benchmark:_Gzip_vs_Bzip2_vs_LZMA_vs_XZ_vs_LZ4_vs_LZO"&gt;wiki page&lt;/a&gt;
 written by &lt;a href="http://catchchallenger.first-world.info/wiki/User:Alpha_one_x86"&gt;Herman Brule&lt;/a&gt;
 which gives a quick benchmark on a couple of compression methods / algorithms.
 It gave me the idea of writing a quick script that tests out a wide number of
@@ -534,7 +552,9 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux
 userspace&lt;/a&gt; so that developers
-and contributors can already work with in-progress code developments …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
 applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux

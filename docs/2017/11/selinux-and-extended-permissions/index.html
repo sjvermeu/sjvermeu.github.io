@@ -13,13 +13,13 @@
 
         <meta name="author" content="Sven Vermeulen" />
         <meta name="keywords" content="selinux,ioctl" />
-        <meta name="description" content="One of the features present in the August release of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and …" />
+        <meta name="description" content="One of the features present in the August release of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and target (resource) identifiers, but also a specific number on which it applies. And ioctl&#39;s are the first (and currently only) permission on which this is implemented. Note that ioctl-level permission controls isn&#39;t a new feature by itself, but the fact that it can be used in modular policies is." />
 
         <meta property="og:site_name" content="Simplicity is a form of art..." />
         <meta property="og:type" content="article"/>
         <meta property="og:title" content="SELinux and extended permissions"/>
         <meta property="og:url" content="https://blog.siphos.be/2017/11/selinux-and-extended-permissions/"/>
-        <meta property="og:description" content="One of the features present in the August release of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and …"/>
+        <meta property="og:description" content="One of the features present in the August release of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and target (resource) identifiers, but also a specific number on which it applies. And ioctl&#39;s are the first (and currently only) permission on which this is implemented. Note that ioctl-level permission controls isn&#39;t a new feature by itself, but the fact that it can be used in modular policies is."/>
         <meta property="article:published_time" content="2017-11-20" />
             <meta property="article:section" content="SELinux" />
             <meta property="article:tag" content="selinux" />
@@ -244,7 +244,7 @@ allowxperm { appdomain -bluetooth } self:{ rawip_socket tcp_socket udp_socket } 
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+         <div class="col-xs-10">&copy; 2020 Sven Vermeulen
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

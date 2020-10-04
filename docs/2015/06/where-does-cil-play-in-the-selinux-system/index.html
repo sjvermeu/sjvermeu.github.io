@@ -13,13 +13,13 @@
 
         <meta name="author" content="Sven Vermeulen" />
         <meta name="keywords" content="cil,selinux,userspace" />
-        <meta name="description" content="SELinux policy developers already have a number of file formats to work with. Currently, policy code is written in a set of three files: The .te file contains the SELinux policy code (type enforcement rules) The .if file contains functions which turn a set of arguments into blocks of SELinux …" />
+        <meta name="description" content="SELinux policy developers already have a number of file formats to work with. Currently, policy code is written in a set of three files: The .te file contains the SELinux policy code (type enforcement rules) The .if file contains functions which turn a set of arguments into blocks of SELinux policy code (interfaces). These functions are called by other interface files or type enforcement files The .fc file contains mappings of file path expressions towards labels (file contexts) These files are compiled into loadable modules (or a base module) which are then transformed to an active policy. But this is not a single-step approach." />
 
         <meta property="og:site_name" content="Simplicity is a form of art..." />
         <meta property="og:type" content="article"/>
         <meta property="og:title" content="Where does CIL play in the SELinux system?"/>
         <meta property="og:url" content="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/"/>
-        <meta property="og:description" content="SELinux policy developers already have a number of file formats to work with. Currently, policy code is written in a set of three files: The .te file contains the SELinux policy code (type enforcement rules) The .if file contains functions which turn a set of arguments into blocks of SELinux …"/>
+        <meta property="og:description" content="SELinux policy developers already have a number of file formats to work with. Currently, policy code is written in a set of three files: The .te file contains the SELinux policy code (type enforcement rules) The .if file contains functions which turn a set of arguments into blocks of SELinux policy code (interfaces). These functions are called by other interface files or type enforcement files The .fc file contains mappings of file path expressions towards labels (file contexts) These files are compiled into loadable modules (or a base module) which are then transformed to an active policy. But this is not a single-step approach."/>
         <meta property="article:published_time" content="2015-06-13" />
             <meta property="article:section" content="SELinux" />
             <meta property="article:tag" content="cil" />
@@ -294,7 +294,7 @@ type=AVC msg=audit(1434044145.829:296): avc:  denied  { name_connect } for  pid=
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+         <div class="col-xs-10">&copy; 2020 Sven Vermeulen
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

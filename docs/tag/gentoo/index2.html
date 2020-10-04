@@ -110,7 +110,12 @@ Simplicity is a form of art...            </a>
                 <div class="summary"><p>Gentoo has removed its support of the older GuideXML format in favor of using
 the <a href="https://wiki.gentoo.org">Gentoo Wiki</a> and a new content management system
 for the main site (or is it static pages, I don't have the faintest idea to be
-honest). I do still have a few GuideXML pages in …</p>
+honest). I do still have a few GuideXML pages in my development space, which I
+am going to move to HTML pretty soon.</p>
+<p>In order to do so, I make use of the <a href="https://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl?view=log">guidexml2wiki</a>
+stylesheet I <a href="http://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/">developed</a>.
+But instead of migrating it to wiki syntax, I want to end with HTML.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/slowly-converting-from-guidexml-to-html/">more ...</a>
                 </div>
             </article>
@@ -145,7 +150,8 @@ on OpenSSH's deprecation of the <a href="https://en.wikipedia.org/wiki/Digital_S
 for the public key authentication, I started switching the few keys I still had
 using DSA to the suggested <a href="http://ed25519.cr.yp.to/">ED25519</a> algorithm. Of
 course, I wouldn't be a security-interested party if I did not do some additional
-investigation into the …</p>
+investigation into the DSA versus Ed25519 discussion.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/switching-openssh-to-ed25519-keys/">more ...</a>
                 </div>
             </article>
@@ -178,7 +184,9 @@ written by <a href="http://catchchallenger.first-world.info/wiki/User:Alpha_one_
 which gives a quick benchmark on a couple of compression methods / algorithms.
 It gave me the idea of writing a quick script that tests out a wide number of
 compression utilities available in Gentoo (usually through the <code>app-arch</code>
-category …</p>
+category), with also a number of options (in case multiple options are
+possible).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/finding-a-good-compression-utility/">more ...</a>
                 </div>
             </article>
@@ -221,7 +229,18 @@ category …</p>
 security engineer. Today he <a href="http://danwalsh.livejournal.com/72697.html">blogged</a> 
 about <em>CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox</em>. He 
 should've asked why the <em>reference policy</em> or <em>Red Hat/Fedora policy</em> does not
-confine Firefox, because SELinux …</p>
+confine Firefox, because SELinux is, as I've
+<a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">mentioned before</a>,
+not the same as its policy.</p>
+<p>In effect, Gentoo's SELinux policy <em>does</em> confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+<a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies">develop desktop policies</a>
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">more ...</a>
                 </div>
             </article>
@@ -258,7 +277,9 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the <a href="https://github.com/SELinuxProject/selinux">SELinux
 userspace</a> so that developers
-and contributors can already work with in-progress code developments …</p>
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/">more ...</a>
                 </div>
             </article>

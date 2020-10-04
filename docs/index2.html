@@ -72,6 +72,51 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.siphos.be/2017/08/switch-to-gentoo-sources/">Switch to Gentoo sources</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2017-08-22T19:04:00+02:00"> Tue 22 August 2017</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/gentoo.html">Gentoo</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+        /
+	<a href="https://blog.siphos.be/tag/hardened/">hardened</a>
+        /
+	<a href="https://blog.siphos.be/tag/grsecurity/">grsecurity</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>You've might already read it on the Gentoo news site, the <a href="https://www.gentoo.org/news/2017/08/19/hardened-sources-removal.html">Hardened Linux kernel sources
+are removed from the tree</a> due to the <a href="http://grsecurity.net/">grsecurity</a> change where the grsecurity
+Linux kernel patches are no longer provided for free. The decision was made due to
+supportability and maintainability reasons.</p>
+<p>That doesn't mean that users who want to stick with the grsecurity related hardening
+features are left alone. <a href="https://blogs.gentoo.org/ago/2017/08/21/sys-kernel-grsecurity-sources-available/#utm_source=feed&amp;utm_medium=feed&amp;utm_campaign=feed">Agostino Sarubbo has started providing sys-kernel/grsecurity-sources</a>
+for the users who want to stick with it, as it is based on <a href="https://github.com/minipli/linux-unofficial_grsec">minipli's unofficial patchset</a>.
+I seriously hope that the patchset will continue to be maintained and, who knows, even evolve further.</p>
+<p>Personally though, I'm switching to the Gentoo sources, and stick with SELinux as one of the
+protection measures. And with that, I might even start using my NVidia graphics card a bit more, 
+as that one hasn't been touched in several years (I have an Optimus-capable setup with both an
+Intel integrated graphics card and an NVidia one, but all attempts to use nouveau for the one game
+I like to play - minecraft - didn't work out that well).</p>
+
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/08/switch-to-gentoo-sources/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.siphos.be/2017/07/project-prioritization/">Project prioritization</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -104,7 +149,16 @@ Simplicity is a form of art...            </a>
 approach details...</sub></p>
 <p>Organizations and companies generally have an IT workload (dare I say,
 backlog?) which needs to be properly assessed, prioritized and taken up.
-Sometimes, the IT team(s) get an amount of budget and HR …</p>
+Sometimes, the IT team(s) get an amount of budget and HR resources to "do their
+thing", while others need to continuously ask for approval to launch a new
+project or instantiate a change.</p>
+<p>Sizeable organizations even require engineering and development effort on IT
+projects which are not readily available: specialized teams exist, but they are
+governance-wise assigned to projects. And as everyone thinks their project is
+the top-most priority one, many will be disappointed when they hear there are
+no resources available for their pet project.</p>
+<p>So... how should organizations prioritize such projects?</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/07/project-prioritization/">more ...</a>
                 </div>
             </article>
@@ -141,7 +195,17 @@ allocation and the accompanying need for segmentation. In the past, governing
 the segments within the organization means keeping close control over the
 service deployments, firewall rules, etc.</p>
 <p>Lately, the idea of micro-segmentation, supported through software-defined
-networking solutions, seems to defy …</p>
+networking solutions, seems to defy the need for a segmentation governance.
+However, I think that that is a very short-sighted sales proposition. Even
+with micro-segmentation, or even pure point-to-point / peer2peer communication
+flow control, you'll still be needing a high level overview of the services
+within your scope.</p>
+<p>In this blog post, I'll give some insights in how we are approaching this in
+the company I work for. In short, it starts with requirements gathering,
+creating labels to assign to deployments, creating groups based on one or two
+labels in a layered approach, and finally fixating the resulting schema and
+start mapping guidance documents (policies) toward the presented architecture.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/">more ...</a>
                 </div>
             </article>
@@ -178,7 +242,16 @@ about a changed fingerprint, something like the following:</p>
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
 Someone could be eavesdropping on you right now (man-in-the-middle attack)!
-It is also possible that …</code></pre></div>
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+SHA256:p4ZGs+YjsBAw26tn2a+HPkga1dPWWAWX+NEm4Cv4I9s.
+Please contact your system administrator.
+Add correct host key in /home/user/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /home/user/.ssh/known_hosts:9
+ECDSA host key for 192.168.56.101 has changed and you have requested strict checking.
+Host key verification failed.
+</code></pre></div>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/05/matching-md5-ssh-fingerprint/">more ...</a>
                 </div>
             </article>
@@ -213,7 +286,10 @@ It is also possible that …</code></pre></div>
                 <div class="summary"><p>I have been a long time user of <a href="https://en.wikipedia.org/wiki/CyanogenMod">Cyanogenmod</a>, 
 which discontinued its services end of 2016. Due to lack of (continuous) time, I was not
 able to switch over toward a different ROM. Also, I wasn't sure if
-<a href="https://www.lineageos.org/">LineageOS</a> would remain the best choice for me or not. I wanted …</p>
+<a href="https://www.lineageos.org/">LineageOS</a> would remain the best choice for me or not. I wanted
+to review other ROMs for my Samsung Galaxy SIII (the i9300 model) phone.</p>
+<p>Today, I made my choice and installed LineageOS.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/04/switched-to-lineage-os/">more ...</a>
                 </div>
             </article>
@@ -241,7 +317,8 @@ able to switch over toward a different ROM. Also, I wasn't sure if
 </footer><!-- /.post-info -->                    </div>
                 <div class="summary"><p>A new release is now available for the <a href="https://github.com/sjvermeu/cvechecker/wiki">cvechecker</a> application.
 This is a stupid yet important bugfix release: the 3.7 release saw all newly released CVEs as being already
-known, so it did not take them up to the database. As a result, systems would never check for the …</p>
+known, so it did not take them up to the database. As a result, systems would never check for the new CVEs.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/03/cvechecker-3.8-released/">more ...</a>
                 </div>
             </article>
@@ -275,7 +352,9 @@ known, so it did not take them up to the database. As a result, systems would ne
 which talks about how to handle certificate stores on Gentoo Linux. The write-up
 of the article (which might still change name later, because it does not handle
 <em>everything</em> about certificates, mostly how to handle certificate stores) was
-inspired …</p>
+inspired by the observation that I had to adjust the certificate stores of both
+Chromium and Firefox separately, even though they both use NSS.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/03/handling-certificates-in-gentoo-linux/">more ...</a>
                 </div>
             </article>
@@ -306,9 +385,6 @@ new <a href="https://github.com/sjvermeu/cvechecker/wiki">cvechecker</a> release
 few changes in it, but I am planning on making a new release soon with lots of
 clean-ups.</p>
 
-
-<p><strong>What has been changed</strong></p>
-<p>So, what has changed? With this release …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/03/cvechecker-3.7-released/">more ...</a>
                 </div>
             </article>
@@ -339,7 +415,8 @@ clean-ups.</p>
                 <div class="summary"><p>I sadly had to miss out on the FOSDEM event. The entire weekend was filled with
 me being apathetic, feverish and overall zombie-like. Yes, sickness can be cruel.
 It wasn't until today that I had the energy back to fire up my laptop.</p>
-<p>Sorry for the crew that I promised …</p>
+<p>Sorry for the crew that I promised to meet at FOSDEM. I'll make it up, somehow.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/02/i-missed-fosdem/">more ...</a>
                 </div>
             </article>
@@ -380,40 +457,15 @@ It wasn't until today that I had the energy back to fire up my laptop.</p>
                 <div class="summary"><p>While still working on a few other projects, one of the time consumers of the
 past half year (haven't you noticed? my blog was quite silent) has come to an
 end: the <a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition">SELinux System Administration - Second Edition</a>
-book is now available. With almost double the amount of pages and a …</p>
+book is now available. With almost double the amount of pages and a serious
+update of the content, the book can now be bought either through Packt Publishing
+itself, or the various online bookstores such as <a href="https://www.amazon.com/SELinux-System-Administration-Sven-Vermeulen-ebook/dp/B01LWM02WI">Amazon</a>.</p>
+<p>With the holidays now approaching, I hope to be able to execute a few tasks
+within the Gentoo community (and of the Gentoo Foundation) and get back on track.
+Luckily, my absence was not jeopardizing the state of <a href="https://wiki.gentoo.org/wiki/SELinux">SELinux</a>
+in Gentoo thanks to the efforts of Jason Zaman.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2016/10/gnupg-private-key-suddenly-missing/">GnuPG: private key suddenly missing?</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2016-10-12T18:56:00+02:00"> Wed 12 October 2016</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/free-software.html">Free Software</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/gnupg/">gnupg</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>After updating my workstation, I noticed that keychain reported that it could
-not load one of the GnuPG keys I passed it on.</p>
-<div class="highlight"><pre><span></span><code> * keychain 2.8.1 ~ http://www.funtoo.org
- * Found existing ssh-agent: 2167
- * Found existing gpg-agent: 2194
- * Warning: can&#39;t find 0xB7BD4B0DE76AC6A4; skipping
- * Known ssh key: /home/swift …</code></pre></div>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/10/gnupg-private-key-suddenly-missing/">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -532,7 +584,7 @@ not load one of the GnuPG keys I passed it on.</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+         <div class="col-xs-10">&copy; 2020 Sven Vermeulen
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

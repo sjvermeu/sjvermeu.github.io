@@ -2,12 +2,19 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - salt</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/salt/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2016-03-27T13:32:00+02:00</updated><entry><title>Template was specified incorrectly</title><link href="https://blog.siphos.be/2016/03/template-was-specified-incorrectly/" rel="alternate"></link><published>2016-03-27T13:32:00+02:00</published><updated>2016-03-27T13:32:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-03-27:/2016/03/template-was-specified-incorrectly/</id><summary type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
 &lt;p&gt;Enabling some debugging on the command gave me a slight pointer why this occurred:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv &amp;#39;testing&amp;#39;, u&amp;#39;salt://top.sls&amp;#39;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
 [DEBUG   ] No contents loaded for env: testing
-[DEBUG …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
+[DEBUG   ] compile template: False
+[ERROR   ] Template was specified incorrectly: False
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I was using a single top file as recommended by Salt, but apparently it was still
+looking for top files in the other environments.&lt;/p&gt;
+&lt;p&gt;Yet, if I split the top files across the environments, I got the following warning:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So what's all this about?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -86,7 +93,11 @@ testserver:
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
 instead of ZeroMQ.&lt;/p&gt;
-&lt;p&gt;I'm not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
+&lt;p&gt;I'm not confident yet that this is a solid approach to take (as performance is also
+important, which is greatly reduced with &lt;code&gt;salt-ssh&lt;/code&gt;), and the security exposure of the
+salt minions over ZeroMQ is also not that insecure (especially not when a local firewall
+ensures that only connections from the salt master are allowed). But playing doesn't hurt.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
 instead of ZeroMQ.&lt;/p&gt;

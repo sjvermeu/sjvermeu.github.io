@@ -72,6 +72,49 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.siphos.be/2015/08/can-selinux-substitute-dac/">Can SELinux substitute DAC?</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-08-09T14:48:00+02:00"> Sun 09 August 2015</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+        /
+	<a href="https://blog.siphos.be/tag/refpolicy/">refpolicy</a>
+        /
+	<a href="https://blog.siphos.be/tag/linux/">linux</a>
+        /
+	<a href="https://blog.siphos.be/tag/dac/">dac</a>
+        /
+	<a href="https://blog.siphos.be/tag/lsm/">lsm</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>A nice <a href="https://twitter.com/sjvermeu/status/630107879123623936">twitter discussion</a>
+with <a href="https://twitter.com/erlheldata">Erling Hellenäs</a> caught my full attention later
+when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
+in the current implementation, but why not and what would be needed?</p>
+<p>SELinux is implemented through the <a href="https://en.wikipedia.org/wiki/Linux_Security_Modules">Linux Security Modules framework</a>
+which allows for different security systems to be implemented and integrated
+in the Linux kernel. Through LSM, various security-sensitive operations can be
+secured further through <em>additional</em> access checks. This criteria was made to
+have LSM be as minimally invasive as possible.</p>
+
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/can-selinux-substitute-dac/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.siphos.be/2015/08/filtering-network-access-per-application/">Filtering network access per application</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -100,7 +143,10 @@ Simplicity is a form of art...            </a>
 the Linux kernel, able to create advanced firewall capabilities. One of the 
 features that it <em>cannot</em> provide is per-application filtering. Together with
 SELinux however, it is possible to implement this on a <em>per domain</em> basis.</p>
-<p>SELinux does not …</p>
+<p>SELinux does not know applications, but it knows domains. If we ensure that each
+application runs in its own domain, then we can leverage the firewall
+capabilities with SELinux to only allow those domains access that we need.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/filtering-network-access-per-application/">more ...</a>
                 </div>
             </article>
@@ -134,7 +180,13 @@ SELinux however, it is possible to implement this on a <em>per domain</em> basis
 they work). Taking backups is not purely for companies and organizations.
 Individuals should also take backups to ensure that, in case of errors or
 calamities, the all important files are readily recoverable.</p>
-<p>For backing up files and …</p>
+<p>For backing up files and directories, I personally use <a href="http://obnam.org/">obnam</a>,
+after playing around with <a href="http://www.bacula.org/">Bacula</a> and
+<a href="https://attic-backup.org/">attic</a>. Bacula is more meant for large
+distributed environments (although I also tend to use obnam for my server
+infrastructure) and was too complex for my taste. The choice between obnam and
+attic is even more personally-oriented.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/my-application-base-obnam/">more ...</a>
                 </div>
             </article>
@@ -168,7 +220,10 @@ calamities, the all important files are readily recoverable.</p>
 recent <a href="https://source.android.com/devices/tech/security/selinux/">Android</a>
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
-servers because it does not play well with their day-to-day operations. But …</p>
+servers because it does not play well with their day-to-day operations. But
+the Android inclusion shows that SELinux itself is not the culprit for this:
+it is the policy.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">more ...</a>
                 </div>
             </article>
@@ -202,7 +257,11 @@ servers because it does not play well with their day-to-day operations. But …<
 offline for a few hours with a good workstation helps to not be disturbed
 by external actions (air pockets notwithstanding).</p>
 <p>Early this year, I expressed my <a href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/">intentions to move to Pelican</a>
-from WordPress. I wasn't actually …</p>
+from WordPress. I wasn't actually unhappy with WordPress, but the security
+concerns I had were a bit too much for blog as simple as mine. Running a
+PHP-enabled site with a database for something that I can easily handle through
+a static site, well, I had to try.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/switching-to-pelican/">more ...</a>
                 </div>
             </article>
@@ -268,7 +327,15 @@ Robert asked how to use SELinux to prevent even root access to a
 directory. The trivial solution would be not to assign an administrative
 role to the root account (which is definitely possible, but you want
 some way to gain administrative access otherwise ;-)</p>
-<p>Restricting root is one …</p>
+<p>Restricting root is one of the commonly referred features of a MAC
+(Mandatory Access Control) system. With a well designed user management
+and sudo environment, it is fairly trivial - but if you need to start
+from the premise that a user has direct root access, it requires some
+thought to implement it correctly. The main "issue" is not that it is
+difficult to implement policy-wise, but that most users will start from
+a pre-existing policy (such as the reference policy) and build on top of
+that.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/07/restricting-even-root-access-to-a-folder/">more ...</a>
                 </div>
             </article>
@@ -304,7 +371,21 @@ some way to gain administrative access otherwise ;-)</p>
 whose policies I don't agree with) it is often more difficult to finish
 the policies so that they are broadly usable. When dealing with personal
 policies, having them "just work" is often sufficient. To make the
-policies reusable for distributions …</p>
+policies reusable for distributions (or for the upstream project), a
+number of things are necessary:</p>
+<ul>
+<li>Try structuring the policy using the style as suggested by refpolicy
+    or Gentoo</li>
+<li>Add the role interfaces that are most likely to be used or required,
+    or which are in the current draft implemented differently</li>
+<li>Refactor some of the policies to use refpolicy/Gentoo style
+    interfaces</li>
+<li>Remove the comments from the policies (as refpolicy does not want
+    too verbose policies)</li>
+<li>Change or update the file context definitions for default
+    installations (rather than the custom installations I use)</li>
+</ul>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/07/intermediate-policies/">more ...</a>
                 </div>
             </article>
@@ -340,7 +421,15 @@ with. Currently, policy code is written in a set of three files:</p>
 <li>The <code>.te</code> file contains the SELinux policy code (type
     enforcement rules)</li>
 <li>The <code>.if</code> file contains functions which turn a set of arguments into
-    blocks of SELinux …</li></ul>
+    blocks of SELinux policy code (interfaces). These functions are
+    called by other interface files or type enforcement files</li>
+<li>The <code>.fc</code> file contains mappings of file path expressions towards
+    labels (file contexts)</li>
+</ul>
+<p>These files are compiled into loadable modules (or a base module) which
+are then transformed to an active policy. But this is not a single-step
+approach.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/">more ...</a>
                 </div>
             </article>
@@ -377,40 +466,10 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the <a href="https://github.com/SELinuxProject/selinux">SELinux
 userspace</a> so that developers
-and contributors can already work with in-progress code developments …</p>
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2015/05/postgresql-with-central-authentication-and-authorization/">PostgreSQL with central authentication and authorization</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-05-25T12:07:00+02:00"> Mon 25 May 2015</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/free-software.html">Free Software</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/postgresql/">postgresql</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>I have been running a PostgreSQL cluster for a while as the primary
-backend for many services. The database system is very robust, well
-supported by the community and very powerful. In this post, I'm going to
-show how I use central authentication and authorization with PostgreSQL.</p>
-
-
-<p>Centralized management is …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/05/postgresql-with-central-authentication-and-authorization/">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -529,7 +588,7 @@ show how I use central authentication and authorization with PostgreSQL.</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+         <div class="col-xs-10">&copy; 2020 Sven Vermeulen
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

@@ -102,7 +102,15 @@ Simplicity is a form of art...            </a>
                 <div class="summary"><p>A few days ago, <a href="http://blog.perfinion.com/">Jason "perfinion" Zaman</a> stabilized the 2.7 SELinux userspace on
 Gentoo. This release has quite a <a href="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20170804/RELEASE-20170804.txt">few new features</a>, which I'll cover in later
 posts, but for distribution packagers the main change is that the userspace
-now has many more components to package. The project has …</p>
+now has many more components to package. The project has split up the
+policycoreutils package in separate packages so that deployments can be made
+more specific.</p>
+<p>Let's take a look at all the various userspace packages again, learn what their
+purpose is, so that you can decide if they're needed or not on a system. Also,
+when I cover the contents of a package, be aware that it is based on the deployment
+on my system, which might or might not be a complete installation (as with Gentoo,
+different USE flags can trigger different package deployments).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/09/selinux-userspace-2.7/">more ...</a>
                 </div>
             </article>
@@ -139,7 +147,12 @@ now has many more components to package. The project has …</p>
                 <div class="summary"><p>In order to further secure access to my workstation, after the <a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/">switch to Gentoo
 sources</a>, I now enabled two-factor authentication through my Yubico U2F
 USB device. Well, at least for local access - remote access through SSH requires
-both userid/password as well as the correct SSH key, by <a href="https://lwn.net/Articles/544640/">chaining authentication …</a></p>
+both userid/password as well as the correct SSH key, by <a href="https://lwn.net/Articles/544640/">chaining authentication
+methods in OpenSSH</a>.</p>
+<p>Enabling U2F on (Gentoo) Linux is fairly easy. The various guides online which talk
+about the <code>pam_u2f</code> setup are indeed correct that it is fairly simple. For completeness
+sake, I've documented what I know on the Gentoo Wiki, as the <a href="https://wiki.gentoo.org/wiki/Pam_u2f">pam_u2f article</a>.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/09/authenticating-with-u2f/">more ...</a>
                 </div>
             </article>
@@ -172,7 +185,11 @@ both userid/password as well as the correct SSH key, by <a href="https://lwn.net
                 <div class="summary"><p>Yesterday I've <a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/">switched to the gentoo-sources kernel package</a> on Gentoo Linux.
 And with that, I also attempted (succesfully) to use the propriatary nvidia drivers
 so that I can enjoy both a smoother 3D experience while playing minecraft, as well
-as use the CUDA support so I don't need to use …</p>
+as use the CUDA support so I don't need to use cloud-based services for small
+exercises.</p>
+<p>The move to nvidia was quite simple, as the <a href="https://wiki.gentoo.org/wiki/NVidia/nvidia-drivers">nvidia-drivers wiki article</a> on
+the Gentoo wiki was quite easy to follow.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/08/using-nvidia-with-selinux/">more ...</a>
                 </div>
             </article>
@@ -208,7 +225,16 @@ as use the CUDA support so I don't need to use …</p>
 are removed from the tree</a> due to the <a href="http://grsecurity.net/">grsecurity</a> change where the grsecurity
 Linux kernel patches are no longer provided for free. The decision was made due to
 supportability and maintainability reasons.</p>
-<p>That doesn't mean …</p>
+<p>That doesn't mean that users who want to stick with the grsecurity related hardening
+features are left alone. <a href="https://blogs.gentoo.org/ago/2017/08/21/sys-kernel-grsecurity-sources-available/#utm_source=feed&amp;utm_medium=feed&amp;utm_campaign=feed">Agostino Sarubbo has started providing sys-kernel/grsecurity-sources</a>
+for the users who want to stick with it, as it is based on <a href="https://github.com/minipli/linux-unofficial_grsec">minipli's unofficial patchset</a>.
+I seriously hope that the patchset will continue to be maintained and, who knows, even evolve further.</p>
+<p>Personally though, I'm switching to the Gentoo sources, and stick with SELinux as one of the
+protection measures. And with that, I might even start using my NVidia graphics card a bit more, 
+as that one hasn't been touched in several years (I have an Optimus-capable setup with both an
+Intel integrated graphics card and an NVidia one, but all attempts to use nouveau for the one game
+I like to play - minecraft - didn't work out that well).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/08/switch-to-gentoo-sources/">more ...</a>
                 </div>
             </article>
@@ -242,7 +268,9 @@ supportability and maintainability reasons.</p>
 which talks about how to handle certificate stores on Gentoo Linux. The write-up
 of the article (which might still change name later, because it does not handle
 <em>everything</em> about certificates, mostly how to handle certificate stores) was
-inspired …</p>
+inspired by the observation that I had to adjust the certificate stores of both
+Chromium and Firefox separately, even though they both use NSS.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/03/handling-certificates-in-gentoo-linux/">more ...</a>
                 </div>
             </article>
@@ -273,7 +301,8 @@ inspired …</p>
                 <div class="summary"><p>I sadly had to miss out on the FOSDEM event. The entire weekend was filled with
 me being apathetic, feverish and overall zombie-like. Yes, sickness can be cruel.
 It wasn't until today that I had the energy back to fire up my laptop.</p>
-<p>Sorry for the crew that I promised …</p>
+<p>Sorry for the crew that I promised to meet at FOSDEM. I'll make it up, somehow.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/02/i-missed-fosdem/">more ...</a>
                 </div>
             </article>
@@ -314,7 +343,14 @@ It wasn't until today that I had the energy back to fire up my laptop.</p>
                 <div class="summary"><p>While still working on a few other projects, one of the time consumers of the
 past half year (haven't you noticed? my blog was quite silent) has come to an
 end: the <a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition">SELinux System Administration - Second Edition</a>
-book is now available. With almost double the amount of pages and a …</p>
+book is now available. With almost double the amount of pages and a serious
+update of the content, the book can now be bought either through Packt Publishing
+itself, or the various online bookstores such as <a href="https://www.amazon.com/SELinux-System-Administration-Sven-Vermeulen-ebook/dp/B01LWM02WI">Amazon</a>.</p>
+<p>With the holidays now approaching, I hope to be able to execute a few tasks
+within the Gentoo community (and of the Gentoo Foundation) and get back on track.
+Luckily, my absence was not jeopardizing the state of <a href="https://wiki.gentoo.org/wiki/SELinux">SELinux</a>
+in Gentoo thanks to the efforts of Jason Zaman.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/">more ...</a>
                 </div>
             </article>
@@ -353,8 +389,6 @@ utility. The utility is part of the <code>policycoreutils</code> package. Luckil
 <code>sys-apps/policycoreutils</code> package is not vulnerable - and not because we were
 clairvoyant about this issue, but because we don't ship this utility.</p>
 
-
-<p><strong>What is the …</strong></p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/09/we-do-not-ship-selinux-sandbox/">more ...</a>
                 </div>
             </article>
@@ -396,8 +430,6 @@ supported as well).</p>
 <p>A recent <a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4">commit</a>
 now also allows CIL files to be used.</p>
 
-
-<p><strong>Policy ebuilds …</strong></p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">more ...</a>
                 </div>
             </article>
@@ -430,7 +462,9 @@ now also allows CIL files to be used.</p>
                 <div class="summary"><p>A few days ago I committed a small update to <code>policycoreutils</code>, a SELinux related
 package that provides most of the management utilities for SELinux systems. The
 fix was to get two patches (which are committed upstream) into the existing
-release so that our users can benefit from the fixed issues …</p>
+release so that our users can benefit from the fixed issues without having to
+wait for a new release.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/maintaining-packages-and-backporting/">more ...</a>
                 </div>
             </article>

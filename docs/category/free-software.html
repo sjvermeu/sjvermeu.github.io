@@ -127,7 +127,8 @@ now made available.</p>
 </footer><!-- /.post-info -->                    </div>
                 <div class="summary"><p>A new release is now available for the <a href="https://github.com/sjvermeu/cvechecker/wiki">cvechecker</a> application.
 This is a stupid yet important bugfix release: the 3.7 release saw all newly released CVEs as being already
-known, so it did not take them up to the database. As a result, systems would never check for the …</p>
+known, so it did not take them up to the database. As a result, systems would never check for the new CVEs.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/03/cvechecker-3.8-released/">more ...</a>
                 </div>
             </article>
@@ -158,9 +159,6 @@ new <a href="https://github.com/sjvermeu/cvechecker/wiki">cvechecker</a> release
 few changes in it, but I am planning on making a new release soon with lots of
 clean-ups.</p>
 
-
-<p><strong>What has been changed</strong></p>
-<p>So, what has changed? With this release …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/03/cvechecker-3.7-released/">more ...</a>
                 </div>
             </article>
@@ -191,8 +189,13 @@ not load one of the GnuPG keys I passed it on.</p>
 <div class="highlight"><pre><span></span><code> * keychain 2.8.1 ~ http://www.funtoo.org
  * Found existing ssh-agent: 2167
  * Found existing gpg-agent: 2194
- * Warning: can&#39;t find 0xB7BD4B0DE76AC6A4; skipping
- * Known ssh key: /home/swift …</code></pre></div>
+ * Warning: can't find 0xB7BD4B0DE76AC6A4; skipping
+ * Known ssh key: /home/swift/.ssh/id_dsa
+ * Known ssh key: /home/swift/.ssh/id_ed25519
+ * Known gpg key: 0x22899E947878B0CE
+</code></pre></div>
+<p>I did not modify my key store at all, so what happened?</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/10/gnupg-private-key-suddenly-missing/">more ...</a>
                 </div>
             </article>
@@ -221,7 +224,12 @@ not load one of the GnuPG keys I passed it on.</p>
                 <div class="summary"><p>While working on the second edition of my first book, <a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition">SELinux System Administration - Second Edition</a>
 I had to test out a few commands on different Linux distributions to make sure
 that I don't create instructions that only work on Gentoo Linux. After all, as
-awesome as Gentoo might be, the …</p>
+awesome as Gentoo might be, the Linux world is a bit bigger. So I downloaded a
+few live systems to run in Qemu/KVM.</p>
+<p>Some of these systems however use <a href="https://cloudinit.readthedocs.io/en/latest/">cloud-init</a>
+which, while interesting to use, is not set up on my system yet. And without 
+support for cloud-init, how can I get access to the system?</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/09/mounting-qemu-images/">more ...</a>
                 </div>
             </article>
@@ -250,12 +258,19 @@ awesome as Gentoo might be, the …</p>
                 <div class="summary"><p>After reorganizing my salt configuration, I received the following error:</p>
 <div class="highlight"><pre><span></span><code>[ERROR   ] Template was specified incorrectly: False
 </code></pre></div>
-
-
 <p>Enabling some debugging on the command gave me a slight pointer why this occurred:</p>
-<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv &#39;testing&#39;, u&#39;salt://top.sls&#39;
+<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
 [DEBUG   ] No contents loaded for env: testing
-[DEBUG …</code></pre></div>
+[DEBUG   ] compile template: False
+[ERROR   ] Template was specified incorrectly: False
+</code></pre></div>
+<p>I was using a single top file as recommended by Salt, but apparently it was still
+looking for top files in the other environments.</p>
+<p>Yet, if I split the top files across the environments, I got the following warning:</p>
+<div class="highlight"><pre><span></span><code>[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+</code></pre></div>
+<p>So what's all this about?</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/03/template-was-specified-incorrectly/">more ...</a>
                 </div>
             </article>
@@ -285,7 +300,11 @@ awesome as Gentoo might be, the …</p>
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards <code>salt-ssh</code>. This would allow to do some system management over SSH
 instead of ZeroMQ.</p>
-<p>I'm not …</p>
+<p>I'm not confident yet that this is a solid approach to take (as performance is also
+important, which is greatly reduced with <code>salt-ssh</code>), and the security exposure of the
+salt minions over ZeroMQ is also not that insecure (especially not when a local firewall
+ensures that only connections from the salt master are allowed). But playing doesn't hurt.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/03/using-salt-ssh-with-agent-forwarding/">more ...</a>
                 </div>
             </article>
@@ -316,9 +335,6 @@ another. Both mail providers used IMAP, so I looked into IMAP related synchroniz
 methods. I quickly found the <a href="https://github.com/imapsync/imapsync">imapsync</a> application,
 also supported through Gentoo's repository.</p>
 
-
-<p><strong>What I required</strong></p>
-<p>The migration required that all …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/03/trying-out-imapsync/">more ...</a>
                 </div>
             </article>
@@ -347,7 +363,11 @@ also supported through Gentoo's repository.</p>
                 <div class="summary"><p>A short while ago I got the notification that pulling new CVE information was
 no longer possible. The reason was that the NVD site did not support uncompressed
 downloads anymore. The fix for cvechecker was simple, and it also gave me a reason
-to push out a new release (after …</p>
+to push out a new release (after two years) which also includes various updates by
+Christopher Warner.</p>
+<p>So <a href="https://github.com/sjvermeu/cvechecker/wiki">cvechecker 3.6</a> is now available
+for general consumption.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/11/new-cvechecker-release/">more ...</a>
                 </div>
             </article>
@@ -383,7 +403,12 @@ to push out a new release (after …</p>
 and for this interactive access I position <a href="http://www.openssh.com/">OpenSSH</a>. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.</p>
-<p>For instance, on one …</p>
+<p>For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/using-multiple-openssh-daemons/">more ...</a>
                 </div>
             </article>

@@ -112,7 +112,18 @@ Simplicity is a form of art...            </a>
 security engineer. Today he <a href="http://danwalsh.livejournal.com/72697.html">blogged</a> 
 about <em>CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox</em>. He 
 should've asked why the <em>reference policy</em> or <em>Red Hat/Fedora policy</em> does not
-confine Firefox, because SELinux …</p>
+confine Firefox, because SELinux is, as I've
+<a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">mentioned before</a>,
+not the same as its policy.</p>
+<p>In effect, Gentoo's SELinux policy <em>does</em> confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+<a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies">develop desktop policies</a>
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">more ...</a>
                 </div>
             </article>
@@ -151,7 +162,11 @@ with <a href="https://twitter.com/erlheldata">Erling Hellenäs</a> caught my ful
 when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
 in the current implementation, but why not and what would be needed?</p>
 <p>SELinux is implemented through the <a href="https://en.wikipedia.org/wiki/Linux_Security_Modules">Linux Security Modules framework</a>
-which allows …</p>
+which allows for different security systems to be implemented and integrated
+in the Linux kernel. Through LSM, various security-sensitive operations can be
+secured further through <em>additional</em> access checks. This criteria was made to
+have LSM be as minimally invasive as possible.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/can-selinux-substitute-dac/">more ...</a>
                 </div>
             </article>
@@ -185,7 +200,10 @@ which allows …</p>
 the Linux kernel, able to create advanced firewall capabilities. One of the 
 features that it <em>cannot</em> provide is per-application filtering. Together with
 SELinux however, it is possible to implement this on a <em>per domain</em> basis.</p>
-<p>SELinux does not …</p>
+<p>SELinux does not know applications, but it knows domains. If we ensure that each
+application runs in its own domain, then we can leverage the firewall
+capabilities with SELinux to only allow those domains access that we need.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/filtering-network-access-per-application/">more ...</a>
                 </div>
             </article>
@@ -219,7 +237,10 @@ SELinux however, it is possible to implement this on a <em>per domain</em> basis
 recent <a href="https://source.android.com/devices/tech/security/selinux/">Android</a>
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
-servers because it does not play well with their day-to-day operations. But …</p>
+servers because it does not play well with their day-to-day operations. But
+the Android inclusion shows that SELinux itself is not the culprit for this:
+it is the policy.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">more ...</a>
                 </div>
             </article>
@@ -291,7 +312,21 @@ modules directly.</p>
 whose policies I don't agree with) it is often more difficult to finish
 the policies so that they are broadly usable. When dealing with personal
 policies, having them "just work" is often sufficient. To make the
-policies reusable for distributions …</p>
+policies reusable for distributions (or for the upstream project), a
+number of things are necessary:</p>
+<ul>
+<li>Try structuring the policy using the style as suggested by refpolicy
+    or Gentoo</li>
+<li>Add the role interfaces that are most likely to be used or required,
+    or which are in the current draft implemented differently</li>
+<li>Refactor some of the policies to use refpolicy/Gentoo style
+    interfaces</li>
+<li>Remove the comments from the policies (as refpolicy does not want
+    too verbose policies)</li>
+<li>Change or update the file context definitions for default
+    installations (rather than the custom installations I use)</li>
+</ul>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/07/intermediate-policies/">more ...</a>
                 </div>
             </article>
@@ -327,7 +362,15 @@ with. Currently, policy code is written in a set of three files:</p>
 <li>The <code>.te</code> file contains the SELinux policy code (type
     enforcement rules)</li>
 <li>The <code>.if</code> file contains functions which turn a set of arguments into
-    blocks of SELinux …</li></ul>
+    blocks of SELinux policy code (interfaces). These functions are
+    called by other interface files or type enforcement files</li>
+<li>The <code>.fc</code> file contains mappings of file path expressions towards
+    labels (file contexts)</li>
+</ul>
+<p>These files are compiled into loadable modules (or a base module) which
+are then transformed to an active policy. But this is not a single-step
+approach.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/">more ...</a>
                 </div>
             </article>
@@ -364,7 +407,9 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the <a href="https://github.com/SELinuxProject/selinux">SELinux
 userspace</a> so that developers
-and contributors can already work with in-progress code developments …</p>
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/">more ...</a>
                 </div>
             </article>
@@ -402,7 +447,14 @@ and contributors can already work with in-progress code developments …</p>
 SELinux policies can be a nuisance. Not only are the number of SELinux
 policies that are available through the standard repositories limited,
 some of these policies are not even written with the same level of
-confinement that an administrator …</p>
+confinement that an administrator might expect. Or perhaps the
+technology to be tested is used in a completely different manner.</p>
+<p>Without proper policies, any attempt to start such a daemon or
+application might or will cause permission violations. In many cases,
+developers or users tend to disable SELinux enforcing then so that they
+can continue playing with the new technology. And why not? After all,
+policy development is to be done <em>after</em> the technology is understood.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/05/testing-with-permissive-domains/">more ...</a>
                 </div>
             </article>

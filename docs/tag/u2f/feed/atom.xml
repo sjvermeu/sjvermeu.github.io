@@ -2,7 +2,12 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - u2f</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/u2f/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2017-09-11T18:25:00+02:00</updated><entry><title>Authenticating with U2F</title><link href="https://blog.siphos.be/2017/09/authenticating-with-u2f/" rel="alternate"></link><published>2017-09-11T18:25:00+02:00</published><updated>2017-09-11T18:25:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-09-11:/2017/09/authenticating-with-u2f/</id><summary type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
 sources&lt;/a&gt;, I now enabled two-factor authentication through my Yubico U2F
 USB device. Well, at least for local access - remote access through SSH requires
-both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
+both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication
+methods in OpenSSH&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Enabling U2F on (Gentoo) Linux is fairly easy. The various guides online which talk
+about the &lt;code&gt;pam_u2f&lt;/code&gt; setup are indeed correct that it is fairly simple. For completeness
+sake, I've documented what I know on the Gentoo Wiki, as the &lt;a href="https://wiki.gentoo.org/wiki/Pam_u2f"&gt;pam_u2f article&lt;/a&gt;.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
 sources&lt;/a&gt;, I now enabled two-factor authentication through my Yubico U2F
 USB device. Well, at least for local access - remote access through SSH requires
 both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication
@@ -87,7 +92,12 @@ on the Yubico keys that I own.&lt;/p&gt;</content><category term="Security"></ca
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
-&lt;p&gt;For instance, on one …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
+&lt;p&gt;For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;

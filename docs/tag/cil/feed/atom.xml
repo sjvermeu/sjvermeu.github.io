@@ -6,9 +6,7 @@ Gentoo has always supported source-based packages as default (although
 supported as well).&lt;/p&gt;
 &lt;p&gt;A recent &lt;a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4"&gt;commit&lt;/a&gt;
 now also allows CIL files to be used.&lt;/p&gt;
-
-
-&lt;p&gt;&lt;strong&gt;Policy ebuilds …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
+</summary><content type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
 for a while now. Unlike most other distributions, which focus on binary packages,
 Gentoo has always supported source-based packages as default (although 
 &lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary packages&lt;/a&gt; are 
@@ -92,7 +90,11 @@ to support the 2.4 userspace) which allows Gentoo to stay ahead in the SELinux
 world.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="cil"></category><category term="selinux"></category><category term="ebuild"></category><category term="eclass"></category></entry><entry><title>Doing away with interfaces</title><link href="https://blog.siphos.be/2015/08/doing-away-with-interfaces/" rel="alternate"></link><published>2015-08-29T11:30:00+02:00</published><updated>2015-08-29T11:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-29:/2015/08/doing-away-with-interfaces/</id><summary type="html">&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
-it, but real-life work and time-to-market for now …&lt;/p&gt;</summary><content type="html">&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
+it, but real-life work and time-to-market for now forces me to stick with the
+M4-based refpolicy one.&lt;/p&gt;
+&lt;p&gt;Still, I do try out some things here and there, and one of the things I wanted
+to look into was how CIL policies would deal with interfaces.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
 it, but real-life work and time-to-market for now forces me to stick with the
@@ -199,7 +201,10 @@ that tools such as &lt;code&gt;seinfo&lt;/code&gt; would support querying macros
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
-servers because it does not play well with their day-to-day operations. But …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
+servers because it does not play well with their day-to-day operations. But
+the Android inclusion shows that SELinux itself is not the culprit for this:
+it is the policy.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
@@ -314,7 +319,15 @@ with. Currently, policy code is written in a set of three files:&lt;/p&gt;
 &lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
     enforcement rules)&lt;/li&gt;
 &lt;li&gt;The &lt;code&gt;.if&lt;/code&gt; file contains functions which turn a set of arguments into
-    blocks of SELinux …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
+    blocks of SELinux policy code (interfaces). These functions are
+    called by other interface files or type enforcement files&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;.fc&lt;/code&gt; file contains mappings of file path expressions towards
+    labels (file contexts)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These files are compiled into loadable modules (or a base module) which
+are then transformed to an active policy. But this is not a single-step
+approach.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
 with. Currently, policy code is written in a set of three files:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
@@ -419,7 +432,9 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux
 userspace&lt;/a&gt; so that developers
-and contributors can already work with in-progress code developments …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
 applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux

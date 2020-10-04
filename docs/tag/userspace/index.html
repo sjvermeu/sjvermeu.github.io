@@ -102,7 +102,15 @@ Simplicity is a form of art...            </a>
                 <div class="summary"><p>A few days ago, <a href="http://blog.perfinion.com/">Jason "perfinion" Zaman</a> stabilized the 2.7 SELinux userspace on
 Gentoo. This release has quite a <a href="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20170804/RELEASE-20170804.txt">few new features</a>, which I'll cover in later
 posts, but for distribution packagers the main change is that the userspace
-now has many more components to package. The project has …</p>
+now has many more components to package. The project has split up the
+policycoreutils package in separate packages so that deployments can be made
+more specific.</p>
+<p>Let's take a look at all the various userspace packages again, learn what their
+purpose is, so that you can decide if they're needed or not on a system. Also,
+when I cover the contents of a package, be aware that it is based on the deployment
+on my system, which might or might not be a complete installation (as with Gentoo,
+different USE flags can trigger different package deployments).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/09/selinux-userspace-2.7/">more ...</a>
                 </div>
             </article>
@@ -138,7 +146,15 @@ with. Currently, policy code is written in a set of three files:</p>
 <li>The <code>.te</code> file contains the SELinux policy code (type
     enforcement rules)</li>
 <li>The <code>.if</code> file contains functions which turn a set of arguments into
-    blocks of SELinux …</li></ul>
+    blocks of SELinux policy code (interfaces). These functions are
+    called by other interface files or type enforcement files</li>
+<li>The <code>.fc</code> file contains mappings of file path expressions towards
+    labels (file contexts)</li>
+</ul>
+<p>These files are compiled into loadable modules (or a base module) which
+are then transformed to an active policy. But this is not a single-step
+approach.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/">more ...</a>
                 </div>
             </article>
@@ -175,7 +191,9 @@ applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the <a href="https://github.com/SELinuxProject/selinux">SELinux
 userspace</a> so that developers
-and contributors can already work with in-progress code developments …</p>
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/">more ...</a>
                 </div>
             </article>

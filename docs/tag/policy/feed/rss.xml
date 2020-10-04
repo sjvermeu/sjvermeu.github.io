@@ -4,15 +4,36 @@
 security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
 about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
 should've asked why the &lt;em&gt;reference policy&lt;/em&gt; or &lt;em&gt;Red Hat/Fedora policy&lt;/em&gt; does not
-confine Firefox, because SELinux …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 11 Aug 2015 19:18:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-11:/2015/08/why-we-do-confine-firefox/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>policy</category><category>firefox</category><category>cve</category><category>vulnerability</category><category>xdg</category></item><item><title>Don't confuse SELinux with its policy</title><link>https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/</link><description>&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
+confine Firefox, because SELinux is, as I've
+&lt;a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/"&gt;mentioned before&lt;/a&gt;,
+not the same as its policy.&lt;/p&gt;
+&lt;p&gt;In effect, Gentoo's SELinux policy &lt;em&gt;does&lt;/em&gt; confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+&lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies"&gt;develop desktop policies&lt;/a&gt;
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 11 Aug 2015 19:18:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-11:/2015/08/why-we-do-confine-firefox/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>policy</category><category>firefox</category><category>cve</category><category>vulnerability</category><category>xdg</category></item><item><title>Don't confuse SELinux with its policy</title><link>https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/</link><description>&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
-servers because it does not play well with their day-to-day operations. But …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 03 Aug 2015 01:49:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-03:/2015/08/dont-confuse-selinux-with-its-policy/</guid><category>SELinux</category><category>selinux</category><category>policy</category><category>cil</category></item><item><title>Testing with permissive domains</title><link>https://blog.siphos.be/2015/05/testing-with-permissive-domains/</link><description>&lt;p&gt;When testing out new technologies or new setups, not having (proper)
+servers because it does not play well with their day-to-day operations. But
+the Android inclusion shows that SELinux itself is not the culprit for this:
+it is the policy.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 03 Aug 2015 01:49:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-03:/2015/08/dont-confuse-selinux-with-its-policy/</guid><category>SELinux</category><category>selinux</category><category>policy</category><category>cil</category></item><item><title>Testing with permissive domains</title><link>https://blog.siphos.be/2015/05/testing-with-permissive-domains/</link><description>&lt;p&gt;When testing out new technologies or new setups, not having (proper)
 SELinux policies can be a nuisance. Not only are the number of SELinux
 policies that are available through the standard repositories limited,
 some of these policies are not even written with the same level of
-confinement that an administrator …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 18 May 2015 13:40:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-05-18:/2015/05/testing-with-permissive-domains/</guid><category>SELinux</category><category>permissive</category><category>policy</category><category>selinux</category><category>semanage</category><category>test</category></item><item><title>Use change management when you are using SELinux to its fullest</title><link>https://blog.siphos.be/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/</link><description>&lt;p&gt;If you are using SELinux on production systems (with which I mean
+confinement that an administrator might expect. Or perhaps the
+technology to be tested is used in a completely different manner.&lt;/p&gt;
+&lt;p&gt;Without proper policies, any attempt to start such a daemon or
+application might or will cause permission violations. In many cases,
+developers or users tend to disable SELinux enforcing then so that they
+can continue playing with the new technology. And why not? After all,
+policy development is to be done &lt;em&gt;after&lt;/em&gt; the technology is understood.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 18 May 2015 13:40:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-05-18:/2015/05/testing-with-permissive-domains/</guid><category>SELinux</category><category>permissive</category><category>policy</category><category>selinux</category><category>semanage</category><category>test</category></item><item><title>Use change management when you are using SELinux to its fullest</title><link>https://blog.siphos.be/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/</link><description>&lt;p&gt;If you are using SELinux on production systems (with which I mean
 systems that you offer services with towards customers or other parties
 beyond you, yourself and your ego), please consider proper change
 management if you don't do already. SELinux is a very sensitive security

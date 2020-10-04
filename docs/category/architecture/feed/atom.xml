@@ -1,9 +1,188 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - Architecture</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/category/architecture/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2017-07-18T20:40:00+02:00</updated><entry><title>Project prioritization</title><link href="https://blog.siphos.be/2017/07/project-prioritization/" rel="alternate"></link><published>2017-07-18T20:40:00+02:00</published><updated>2017-07-18T20:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-07-18:/2017/07/project-prioritization/</id><summary type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - Architecture</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/category/architecture/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2020-10-04T13:20:00+02:00</updated><entry><title>Working on infra strategy</title><link href="https://blog.siphos.be/2020/10/working-on-infra-strategy/" rel="alternate"></link><published>2020-10-04T13:20:00+02:00</published><updated>2020-10-04T13:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2020-10-04:/2020/10/working-on-infra-strategy/</id><content type="html">&lt;p&gt;After a long hiatus, I'm ready to take up blogging again on my public blog.
+With my day job becoming more intensive and my side-job taking the remainder
+of the time, I've since quit my work on the Gentoo project. I am in process
+of releasing a new edition of the SELinux System Administration book, so I'll
+probably discuss that more later.&lt;/p&gt;
+&lt;p&gt;Today, I want to write about a task I had to do this year as brand new domain
+architect for infrastructure.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Transitioning to domain architect&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While I have been an infrastructure architect for quite some time already, my
+focus then was always on specific areas within infrastructure (databases,
+scheduling, big data), or on general infrastructure projects or challenges
+(infrastructure zoning concept, region-wide disaster recovery analysis and
+design). As one of my ex-colleagues and mentors put it, as infrastructure
+architects you are allowed to piss on each other's area: you can (and perhaps
+should) challenge the vision and projects of others, of course in a
+professional way.&lt;/p&gt;
+&lt;p&gt;I heeded the advice of this person, and was able to get a much better grip on
+all our infrastructure services, their designs and challenges. I mentioned
+earlier on that my day job became more intensive: it was not just the direct
+responsibilities that I had that became more challenging, my principle to learn
+and keep track of all infrastructure evolutions were a large part of it as
+well. This pays off, as feedback and advice within the architecture review
+boards is more to the point, more tied to the situation.&lt;/p&gt;
+&lt;p&gt;Furthermore, as an architect, I still try to get my hands dirty on everything
+bouncing around. When I was focusing on big data, I learned Spark and
+pySpark, I revisited my Python knowledge, and used this for specific cases
+(like using Python to create reports rather than Excel) to make sure I get a
+general feel of what engineers and developers have to work with. When my focus
+was on databases, I tried to get acquainted with DBA tasks. When we were
+launching our container initiative, I set up and used Kubernetes myself (back
+then this was also to see if SELinux is working properly with Kubernetes and
+during the installation).&lt;/p&gt;
+&lt;p&gt;While this does not make me anything near what our engineers and experts are
+doing, I feel it gives me enough knowledge to be able to talk and discuss
+topics with these colleagues without being that "ivory tower" architect,
+and better understand (to a certain level) what they are going through when
+new initiatives or solutions are thrown at them.&lt;/p&gt;
+&lt;p&gt;End of 2019, the company decided that a reorganization was due, not only on
+department and directorate level, but also on the IT and Enterprise
+Architecture level. One of the areas that improved was to make sure the
+infrastructure in general was also covered and supported by the EA team.
+Part of that move, two of my infrastructure architect colleagues and
+myself joined the EA team. One colleague is appointed to tackle a strategic
+theme, another is now domain architect for workplace/workforce,
+and I got the task of covering the infrastructure domain. Well, it is called
+infrastructure, but focus on the infrastructure related to hosting of
+applications and services: cloud hosting, data center, network, compute,
+private cloud, container platform, mainframe, integration services,
+middleware, etc. Another large part of what I consider "infrastructure" is
+part of the workplace domain, which my colleague is pushing forward.&lt;/p&gt;
+&lt;p&gt;While I was still handing over my previous workload, coaching the new colleague
+that got thrown in to make sure both him and the teams involved are not left
+with a gap, the various domain enterprise architects got a first task: draft
+up the strategy for the domain… and don't wait too long ;-)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Tackling a domain strategy&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Now, I've drafted infrastructural strategies quite a few times already,
+although those have most focus on the technology side. The domain view
+goes beyond just the technological means: to be able to have a well-founded
+strategy, I also have to tackle the resources and human side of things, the
+ability of the organization to deal with (yet another?) transformation, the
+processes involved, etc.&lt;/p&gt;
+&lt;p&gt;Unlike the more specific area focus I had in the past, where the number of
+direct stakeholders is limited, the infrastructure domain I now support has
+many more direct stakeholders involved. If I count the product managers, system
+architects, product owners (yes we are trying the Scaled Agile approach in our
+organization) and the managerial roles within the domain, I have 148 people to
+involve, spread across 7 Agile Release Trains with different directorate
+steering. The consumers of the infrastructure services (which are more part of
+business delivery services rather than on IT level) are even much larger than
+that, and are the most important ones (but also more difficult) to get in touch
+with.&lt;/p&gt;
+&lt;p&gt;Rather than just asking what the main evolutions are in the several areas of
+the domains, I approached this more according to practices I read in books like
+"Good Strategy, Bad Strategy" by Richard Rumelt. I started with interviews of
+all the stakeholders to get to learn what their challenges and problems are.
+I wanted our strategy to tackle the issues at hand, not focus on technological
+choices. Based on these interviews, I grouped the issues and challenges to see
+what are the primary causes of these issues.&lt;/p&gt;
+&lt;p&gt;Then I devised what action domains I need to focus on in the strategy. An
+action domain was an area that more clearly describes the challenges ahead:
+while I had close to 200 challenges observed from the interviews, I can assign
+the huge majority of them to one of two action domains: if we tackle these
+domains then we are helping the organization in most of their challenges.
+After validating that these action domains are indeed covering the needs of
+the organization, I started working on the principles how to tackle these
+issues.&lt;/p&gt;
+&lt;p&gt;Within the principles I want to steer the evolution within the infrastructure
+domain, without already focusing on the tangible projects to accomplish that.
+The principles should map to both larger projects (which I wanted to describe
+in the strategy as well) as well as smaller or more continuity-related
+projects. I eventually settled with four principles:
+  - one principle covering how to transform the environment,
+  - one principle covering what we offer (and thus also what we won't be
+    offering anymore),
+  - one principle which extends our scope with a major area that our internal
+    customers are demanding, and
+  - one principle describing how we will design our services&lt;/p&gt;
+&lt;p&gt;Four principles are easy enough to remember for all involved, and if they are
+described well, they are steering enough for the organization to take up in
+their solutions. But with principles alone the strategy is not tangible enough
+for everyone, and many choices to be made are not codified within those
+principles. The next step was to draw out the vision for  infrastructure, based
+upon current knowledge and the principles above, and show the major areas of
+work that lays ahead, as well as give guidance on what these areas should
+evolve to.&lt;/p&gt;
+&lt;p&gt;I settled for eight vision statements, each worked out further with high level
+guidance, as well as impact information: how will this impact the organization?
+Do we need specific knowledge or other profiles that we miss? Is this a vision
+that instills a cultural change (which often implies a slower adoption and the
+need for more support)? What are the financial consequences? What will happen
+if we do not pursue this vision?&lt;/p&gt;
+&lt;p&gt;Within each vision, I collaborated with the various system architects and other
+stakeholders to draft out epics, changes that support the vision and are ready
+to be taken up in the Scaled Agile approach of the organization. The epics that
+would be due soon were fully expanded, with a lean business case (attempt) and
+phasing. Epics that are scheduled later (the strategy is a 5-year plan) are
+mainly paraphrased as expanding those right now provides little value.&lt;/p&gt;
+&lt;p&gt;While the epics themselves are not fully described in the strategy (the visions
+give the rough approach), drafting these out is a way to verify if the vision
+statements are feasible and correct, and is a way to check if the organization
+understands and supports the vision.&lt;/p&gt;
+&lt;p&gt;From the moment I got the request to the final draft of the strategy note,
+around 2 months have passed. The first draft was slideware and showed the
+intentions towards management (who wanted feedback within a few weeks after
+the request), after which the strategy was codified in a large document, and
+brought for approval on the appropriate boards.&lt;/p&gt;
+&lt;p&gt;That was only the first hurdle though. Next was to communicate this strategy
+further…&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Communication and involvement are key&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The strategic document was almost finalized when COVID-19 struck. The company
+moved to working at home, and the way of working changed a lot. This also
+impacted how to approach the communication of the strategy and trying to get
+involvement of people. Rather than physically explaining the strategy, watching
+the body language of the people to see if they understand and support it or
+not, I was facing digital meetings where we did not yet have video.
+Furthermore, the organization was moving towards a more distributed approach
+with smaller teams (higher agility) with fewer means of bringing out
+information to larger groups.&lt;/p&gt;
+&lt;p&gt;I selected a few larger meetings (such as those where all product managers and
+system architects are present) to present and discuss the strategy, but also
+started making webinars on this so that interested people could get informed
+about it. I even decided to have two webinars: a very short one (3 minutes)
+which focuses on the principles alone (and quickly summarizes the vision
+statements), and an average one (20-ish minutes) which covers the principles
+and vision statements.&lt;/p&gt;
+&lt;p&gt;I also made recordings of the full explanations (e.g. those to management
+team), which take 1 hour, but did not move those towards a webinar (due to
+time pressure). Of course, I also published the strategy document itself for
+everyone, as well as the slides that accompany it.&lt;/p&gt;
+&lt;p&gt;One of the next steps is to translate the strategy further towards the
+specific agile release trains, drafting up specific roadmaps, etc. This will
+also allow me to communicate and explain the strategy further. Right now, this
+is where we are at - and while I am happy with the strategy content, I do feel
+that the communication part received too little attention from myself, and is
+something I need to continue to put focus on.&lt;/p&gt;
+&lt;p&gt;If a strategy is not absorbed by the organization, it fails as a strategy. And
+if you do not have sufficient collaboration on the strategy after it was
+'finalized' (not just communication but collaboration) then the organization
+cannot absorb it. I also understand that the infrastructure strategy isn't
+the only one guiding the organization: each domain has a strategy, and
+while the domain architects do try to get the strategies aligned (or at least
+not contradictory to each other), it is still not a single, company-wide
+strategy.&lt;/p&gt;
+&lt;p&gt;Right now, colleagues are working on consolidating the various strategies on
+architectural level, while the agile organization is using the strategies to
+formulate their specific solution visions (and for a handful of solutions I'm
+also directly involved).&lt;/p&gt;
+&lt;p&gt;We'll see how it pans out.&lt;/p&gt;
+&lt;p&gt;So, do you think this is a sensible approach I took? How did you tackle
+communication and collaboration of such initiatives during COVID-19 measures? &lt;/p&gt;
+</content><category term="Architecture"></category></entry><entry><title>Project prioritization</title><link href="https://blog.siphos.be/2017/07/project-prioritization/" rel="alternate"></link><published>2017-07-18T20:40:00+02:00</published><updated>2017-07-18T20:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-07-18:/2017/07/project-prioritization/</id><summary type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
 approach details...&lt;/sub&gt;&lt;/p&gt;
 &lt;p&gt;Organizations and companies generally have an IT workload (dare I say,
 backlog?) which needs to be properly assessed, prioritized and taken up.
-Sometimes, the IT team(s) get an amount of budget and HR …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
+Sometimes, the IT team(s) get an amount of budget and HR resources to "do their
+thing", while others need to continuously ask for approval to launch a new
+project or instantiate a change.&lt;/p&gt;
+&lt;p&gt;Sizeable organizations even require engineering and development effort on IT
+projects which are not readily available: specialized teams exist, but they are
+governance-wise assigned to projects. And as everyone thinks their project is
+the top-most priority one, many will be disappointed when they hear there are
+no resources available for their pet project.&lt;/p&gt;
+&lt;p&gt;So... how should organizations prioritize such projects?&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
 approach details...&lt;/sub&gt;&lt;/p&gt;
 &lt;p&gt;Organizations and companies generally have an IT workload (dare I say,
 backlog?) which needs to be properly assessed, prioritized and taken up.
@@ -253,7 +432,17 @@ allocation and the accompanying need for segmentation. In the past, governing
 the segments within the organization means keeping close control over the
 service deployments, firewall rules, etc.&lt;/p&gt;
 &lt;p&gt;Lately, the idea of micro-segmentation, supported through software-defined
-networking solutions, seems to defy …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Many organizations struggle with the all-time increase in IP address
+networking solutions, seems to defy the need for a segmentation governance.
+However, I think that that is a very short-sighted sales proposition. Even
+with micro-segmentation, or even pure point-to-point / peer2peer communication
+flow control, you'll still be needing a high level overview of the services
+within your scope.&lt;/p&gt;
+&lt;p&gt;In this blog post, I'll give some insights in how we are approaching this in
+the company I work for. In short, it starts with requirements gathering,
+creating labels to assign to deployments, creating groups based on one or two
+labels in a layered approach, and finally fixating the resulting schema and
+start mapping guidance documents (policies) toward the presented architecture.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Many organizations struggle with the all-time increase in IP address
 allocation and the accompanying need for segmentation. In the past, governing
 the segments within the organization means keeping close control over the
 service deployments, firewall rules, etc.&lt;/p&gt;
@@ -567,7 +756,10 @@ view, but also clarity and manageability of the environment.&lt;/p&gt;</content>
 a couple of technological domains, namely databases and scheduling/workload 
 automation. It brought me in contact with many vendors, many technologies
 and most importantly, many teams within the organization. The focus domain
-was challenging, as I had to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
+was challenging, as I had to deal with the strategy on how the organization,
+which is a financial institution, will deal with databases and scheduling in
+the long term.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
 a couple of technological domains, namely databases and scheduling/workload 
 automation. It brought me in contact with many vendors, many technologies
 and most importantly, many teams within the organization. The focus domain
@@ -618,7 +810,13 @@ time I'm looking at it. &lt;/p&gt;
 &lt;a href="https://github.com/p8952/bocker"&gt;Bocker&lt;/a&gt; by Peter Wilmott as well ;-), I
 still find it important that technologies are well capable of supporting a
 multi-instance environment.&lt;/p&gt;
-&lt;p&gt;Being able to run multiple instances makes for great consolidation …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the high attention that technologies such as &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
+&lt;p&gt;Being able to run multiple instances makes for great consolidation. The system
+can be optimized for the technology, access to the system limited to the admins
+of said technology while still providing isolation between instances. For some
+technologies, running on commodity hardware just doesn't cut it (not all 
+software is written for such hardware platforms) and consolidation allows for
+reducing (hardware/licensing) costs.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;With the high attention that technologies such as &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
 &lt;a href="https://coreos.com/blog/rocket/"&gt;Rocket&lt;/a&gt; and the like get (I recommend to look at 
 &lt;a href="https://github.com/p8952/bocker"&gt;Bocker&lt;/a&gt; by Peter Wilmott as well ;-), I
 still find it important that technologies are well capable of supporting a

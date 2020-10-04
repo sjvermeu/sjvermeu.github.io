@@ -13,13 +13,13 @@
 
         <meta name="author" content="Sven Vermeulen" />
         <meta name="keywords" content="gentoo,security,yubico,u2f,pam" />
-        <meta name="description" content="In order to further secure access to my workstation, after the switch to Gentoo sources, I now enabled two-factor authentication through my Yubico U2F USB device. Well, at least for local access - remote access through SSH requires both userid/password as well as the correct SSH key, by chaining authentication …" />
+        <meta name="description" content="In order to further secure access to my workstation, after the switch to Gentoo sources, I now enabled two-factor authentication through my Yubico U2F USB device. Well, at least for local access - remote access through SSH requires both userid/password as well as the correct SSH key, by chaining authentication methods in OpenSSH. Enabling U2F on (Gentoo) Linux is fairly easy. The various guides online which talk about the pam_u2f setup are indeed correct that it is fairly simple. For completeness sake, I&#39;ve documented what I know on the Gentoo Wiki, as the pam_u2f article." />
 
         <meta property="og:site_name" content="Simplicity is a form of art..." />
         <meta property="og:type" content="article"/>
         <meta property="og:title" content="Authenticating with U2F"/>
         <meta property="og:url" content="https://blog.siphos.be/2017/09/authenticating-with-u2f/"/>
-        <meta property="og:description" content="In order to further secure access to my workstation, after the switch to Gentoo sources, I now enabled two-factor authentication through my Yubico U2F USB device. Well, at least for local access - remote access through SSH requires both userid/password as well as the correct SSH key, by chaining authentication …"/>
+        <meta property="og:description" content="In order to further secure access to my workstation, after the switch to Gentoo sources, I now enabled two-factor authentication through my Yubico U2F USB device. Well, at least for local access - remote access through SSH requires both userid/password as well as the correct SSH key, by chaining authentication methods in OpenSSH. Enabling U2F on (Gentoo) Linux is fairly easy. The various guides online which talk about the pam_u2f setup are indeed correct that it is fairly simple. For completeness sake, I&#39;ve documented what I know on the Gentoo Wiki, as the pam_u2f article."/>
         <meta property="article:published_time" content="2017-09-11" />
             <meta property="article:section" content="Security" />
             <meta property="article:tag" content="gentoo" />
@@ -281,7 +281,7 @@ on the Yubico keys that I own.</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+         <div class="col-xs-10">&copy; 2020 Sven Vermeulen
             &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

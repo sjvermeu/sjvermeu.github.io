@@ -112,7 +112,18 @@ Simplicity is a form of art...            </a>
 security engineer. Today he <a href="http://danwalsh.livejournal.com/72697.html">blogged</a> 
 about <em>CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox</em>. He 
 should've asked why the <em>reference policy</em> or <em>Red Hat/Fedora policy</em> does not
-confine Firefox, because SELinux …</p>
+confine Firefox, because SELinux is, as I've
+<a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">mentioned before</a>,
+not the same as its policy.</p>
+<p>In effect, Gentoo's SELinux policy <em>does</em> confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+<a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies">develop desktop policies</a>
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">more ...</a>
                 </div>
             </article>

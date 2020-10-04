@@ -97,7 +97,9 @@ Simplicity is a form of art...            </a>
 	<a href="https://blog.siphos.be/tag/ioctl/">ioctl</a>
     
 </footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>One of the features present in the <a href="https://github.com/SELinuxProject/selinux/wiki/Releases">August release</a> of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and …</p>
+                <div class="summary"><p>One of the features present in the <a href="https://github.com/SELinuxProject/selinux/wiki/Releases">August release</a> of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and target (resource) identifiers, but also a specific number on which it applies. And ioctl's are the first (and currently only) permission on which this is implemented.</p>
+<p>Note that ioctl-level permission controls isn't a new feature by itself, but the fact that it can be used in modular policies is.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/11/selinux-and-extended-permissions/">more ...</a>
                 </div>
             </article>
@@ -130,7 +132,15 @@ Simplicity is a form of art...            </a>
                 <div class="summary"><p>A few days ago, <a href="http://blog.perfinion.com/">Jason "perfinion" Zaman</a> stabilized the 2.7 SELinux userspace on
 Gentoo. This release has quite a <a href="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20170804/RELEASE-20170804.txt">few new features</a>, which I'll cover in later
 posts, but for distribution packagers the main change is that the userspace
-now has many more components to package. The project has …</p>
+now has many more components to package. The project has split up the
+policycoreutils package in separate packages so that deployments can be made
+more specific.</p>
+<p>Let's take a look at all the various userspace packages again, learn what their
+purpose is, so that you can decide if they're needed or not on a system. Also,
+when I cover the contents of a package, be aware that it is based on the deployment
+on my system, which might or might not be a complete installation (as with Gentoo,
+different USE flags can trigger different package deployments).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/09/selinux-userspace-2.7/">more ...</a>
                 </div>
             </article>
@@ -163,7 +173,11 @@ now has many more components to package. The project has …</p>
                 <div class="summary"><p>Yesterday I've <a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/">switched to the gentoo-sources kernel package</a> on Gentoo Linux.
 And with that, I also attempted (succesfully) to use the propriatary nvidia drivers
 so that I can enjoy both a smoother 3D experience while playing minecraft, as well
-as use the CUDA support so I don't need to use …</p>
+as use the CUDA support so I don't need to use cloud-based services for small
+exercises.</p>
+<p>The move to nvidia was quite simple, as the <a href="https://wiki.gentoo.org/wiki/NVidia/nvidia-drivers">nvidia-drivers wiki article</a> on
+the Gentoo wiki was quite easy to follow.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/08/using-nvidia-with-selinux/">more ...</a>
                 </div>
             </article>
@@ -199,7 +213,16 @@ as use the CUDA support so I don't need to use …</p>
 are removed from the tree</a> due to the <a href="http://grsecurity.net/">grsecurity</a> change where the grsecurity
 Linux kernel patches are no longer provided for free. The decision was made due to
 supportability and maintainability reasons.</p>
-<p>That doesn't mean …</p>
+<p>That doesn't mean that users who want to stick with the grsecurity related hardening
+features are left alone. <a href="https://blogs.gentoo.org/ago/2017/08/21/sys-kernel-grsecurity-sources-available/#utm_source=feed&amp;utm_medium=feed&amp;utm_campaign=feed">Agostino Sarubbo has started providing sys-kernel/grsecurity-sources</a>
+for the users who want to stick with it, as it is based on <a href="https://github.com/minipli/linux-unofficial_grsec">minipli's unofficial patchset</a>.
+I seriously hope that the patchset will continue to be maintained and, who knows, even evolve further.</p>
+<p>Personally though, I'm switching to the Gentoo sources, and stick with SELinux as one of the
+protection measures. And with that, I might even start using my NVidia graphics card a bit more, 
+as that one hasn't been touched in several years (I have an Optimus-capable setup with both an
+Intel integrated graphics card and an NVidia one, but all attempts to use nouveau for the one game
+I like to play - minecraft - didn't work out that well).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/08/switch-to-gentoo-sources/">more ...</a>
                 </div>
             </article>
@@ -240,7 +263,14 @@ supportability and maintainability reasons.</p>
                 <div class="summary"><p>While still working on a few other projects, one of the time consumers of the
 past half year (haven't you noticed? my blog was quite silent) has come to an
 end: the <a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition">SELinux System Administration - Second Edition</a>
-book is now available. With almost double the amount of pages and a …</p>
+book is now available. With almost double the amount of pages and a serious
+update of the content, the book can now be bought either through Packt Publishing
+itself, or the various online bookstores such as <a href="https://www.amazon.com/SELinux-System-Administration-Sven-Vermeulen-ebook/dp/B01LWM02WI">Amazon</a>.</p>
+<p>With the holidays now approaching, I hope to be able to execute a few tasks
+within the Gentoo community (and of the Gentoo Foundation) and get back on track.
+Luckily, my absence was not jeopardizing the state of <a href="https://wiki.gentoo.org/wiki/SELinux">SELinux</a>
+in Gentoo thanks to the efforts of Jason Zaman.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/">more ...</a>
                 </div>
             </article>
@@ -279,8 +309,6 @@ utility. The utility is part of the <code>policycoreutils</code> package. Luckil
 <code>sys-apps/policycoreutils</code> package is not vulnerable - and not because we were
 clairvoyant about this issue, but because we don't ship this utility.</p>
 
-
-<p><strong>What is the …</strong></p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2016/09/we-do-not-ship-selinux-sandbox/">more ...</a>
                 </div>
             </article>
@@ -317,11 +345,6 @@ errors from SELinux and the system itself:</p>
 <span class="gp gp-VirtualEnv">(Ignored)</span>
 </code></pre></div>
 
-
-
-
-<p>The authentication log shows entries such as the following:</p>
-<div class="highlight"><pre><span></span><code>Sep 14 20:20 …</code></pre></div>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/getting-su-to-work-in-init-scripts/">more ...</a>
                 </div>
             </article>
@@ -363,8 +386,6 @@ supported as well).</p>
 <p>A recent <a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4">commit</a>
 now also allows CIL files to be used.</p>
 
-
-<p><strong>Policy ebuilds …</strong></p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">more ...</a>
                 </div>
             </article>
@@ -400,7 +421,12 @@ now also allows CIL files to be used.</p>
 and for this interactive access I position <a href="http://www.openssh.com/">OpenSSH</a>. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.</p>
-<p>For instance, on one …</p>
+<p>For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/using-multiple-openssh-daemons/">more ...</a>
                 </div>
             </article>
@@ -431,7 +457,11 @@ have harder security requirements for OpenSSH than most users do.</p>
                 <div class="summary"><p>CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
-it, but real-life work and time-to-market for now …</p>
+it, but real-life work and time-to-market for now forces me to stick with the
+M4-based refpolicy one.</p>
+<p>Still, I do try out some things here and there, and one of the things I wanted
+to look into was how CIL policies would deal with interfaces.</p>
+
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/doing-away-with-interfaces/">more ...</a>
                 </div>
             </article>

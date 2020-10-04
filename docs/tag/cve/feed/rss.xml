@@ -4,7 +4,18 @@
 security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
 about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
 should've asked why the &lt;em&gt;reference policy&lt;/em&gt; or &lt;em&gt;Red Hat/Fedora policy&lt;/em&gt; does not
-confine Firefox, because SELinux …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 11 Aug 2015 19:18:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-11:/2015/08/why-we-do-confine-firefox/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>policy</category><category>firefox</category><category>cve</category><category>vulnerability</category><category>xdg</category></item><item><title>Gentoo metadata support for CPE</title><link>https://blog.siphos.be/2013/05/gentoo-metadata-support-for-cpe/</link><description>&lt;p&gt;Recently, the &lt;code&gt;metadata.xml&lt;/code&gt; file syntax definition (the DTD for those
+confine Firefox, because SELinux is, as I've
+&lt;a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/"&gt;mentioned before&lt;/a&gt;,
+not the same as its policy.&lt;/p&gt;
+&lt;p&gt;In effect, Gentoo's SELinux policy &lt;em&gt;does&lt;/em&gt; confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+&lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies"&gt;develop desktop policies&lt;/a&gt;
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 11 Aug 2015 19:18:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-08-11:/2015/08/why-we-do-confine-firefox/</guid><category>SELinux</category><category>gentoo</category><category>selinux</category><category>policy</category><category>firefox</category><category>cve</category><category>vulnerability</category><category>xdg</category></item><item><title>Gentoo metadata support for CPE</title><link>https://blog.siphos.be/2013/05/gentoo-metadata-support-for-cpe/</link><description>&lt;p&gt;Recently, the &lt;code&gt;metadata.xml&lt;/code&gt; file syntax definition (the DTD for those
 that know a bit of XML) has been updated to support CPE definitions. A
 &lt;a href="https://nvd.nist.gov/cpe.cfm"&gt;CPE&lt;/a&gt; (Common Platform Enumeration) is an
 identifier that
