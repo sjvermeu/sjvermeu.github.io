@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - pcre</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/pcre/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-07-09T20:35:00+02:00</updated><entry><title>Segmentation fault when emerging packages after libpcre upgrade?</title><link href="http://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/" rel="alternate"></link><published>2014-07-09T20:35:00+02:00</published><updated>2014-07-09T20:35:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-07-09:/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/</id><summary type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
+to the file system, with an error that looks like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
+/usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
+ * ERROR: dev-libs/libpcre-8.35::gentoo …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
+to the file system, with an error that looks like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
+/usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
+ * ERROR: dev-libs/libpcre-8.35::gentoo failed:
+ *   Failed to set SELinux security labels.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This has been &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=516608"&gt;reported as bug
+516608&lt;/a&gt; and, after some
+investigation, the cause is found. First the quick workaround:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# cd /etc/selinux/strict/contexts/files
+~# rm *.bin
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And do the same for the other SELinux policy stores on the system
+(targeted, mcs, mls, ...).&lt;/p&gt;
+&lt;p&gt;Now, what is happening... Inside the mentioned directory, binary files
+exist such as &lt;code&gt;file_contexts.bin&lt;/code&gt;. These files contain the compiled
+regular expressions of the non-binary files (like &lt;code&gt;file_contexts&lt;/code&gt;). By
+using the precompiled versions, regular expression matching by the
+SELinux utilities is a lot faster. Not that it is massively slow
+otherwise, but it is a nice speed improvement nonetheless.&lt;/p&gt;
+&lt;p&gt;However, when pcre updates occur, then the basic structures that pcre
+uses internally might change. For instance, a number might switch from a
+signed integer to an unsigned integer. As pcre is meant to be used
+within the same application run, most applications do not have any
+issues with such changes. However, the SELinux utilities effectively
+serialize these structures and later read them back in. If the new pcre
+uses a changed structure, then the read-in structures are incompatible
+and even corrupt.&lt;/p&gt;
+&lt;p&gt;Hence the segmentation faults.&lt;/p&gt;
+&lt;p&gt;To resolve this, &lt;a href="http://marc.info/?l=selinux&amp;amp;m=140492568205937&amp;amp;w=2"&gt;Stephen
+Smalley&lt;/a&gt; created a
+patch that includes PCRE version checking. This patch is now included in
+&lt;a href="http://packages.gentoo.org/package/sys-libs/libselinux"&gt;sys-libs/libselinux&lt;/a&gt;
+version 2.3-r1. The package also recompiles the existing &lt;code&gt;*.bin&lt;/code&gt; files
+so that the older binary files are no longer on the system. But there is
+a significant chance that this update will not trickle down to the users
+in time, so the workaround might be needed.&lt;/p&gt;
+&lt;p&gt;I considered updating the pcre ebuilds as well with this workaround, but
+considering that libselinux is most likely to be stabilized faster than
+any libpcre bump I let it go.&lt;/p&gt;
+&lt;p&gt;At least we have a solution for future upgrades; sorry for the noise.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; &lt;code&gt;libselinux-2.2.2-r5&lt;/code&gt; also has the fix included.&lt;/p&gt;</content><category term="SELinux"></category><category term="file_contexts"></category><category term="fix"></category><category term="Gentoo"></category><category term="libselinux"></category><category term="pcre"></category></entry><entry><title>Rebuilding SELinux contexts with sefcontext_compile</title><link href="http://blog.siphos.be/2013/07/rebuilding-selinux-contexts-with-sefcontext_compile/" rel="alternate"></link><published>2013-07-08T20:55:00+02:00</published><updated>2013-07-08T20:55:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-07-08:/2013/07/rebuilding-selinux-contexts-with-sefcontext_compile/</id><summary type="html">&lt;p&gt;A recent update of &lt;em&gt;libpcre&lt;/em&gt; caused the binary precompiled regular
+expression files of SELinux to become outdated (and even blatantly
+wrong). The details are in bug &lt;a href="https://bugs.gentoo.org/471718"&gt;471718&lt;/a&gt;
+but that doesn't help the users that are already facing the problem, nor
+have we found a good place to put the fix …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A recent update of &lt;em&gt;libpcre&lt;/em&gt; caused the binary precompiled regular
+expression files of SELinux to become outdated (and even blatantly
+wrong). The details are in bug &lt;a href="https://bugs.gentoo.org/471718"&gt;471718&lt;/a&gt;
+but that doesn't help the users that are already facing the problem, nor
+have we found a good place to put the fix in.&lt;/p&gt;
+&lt;p&gt;Anyway, if you are facing issues with SELinux labeling (having files
+being labeled as &lt;em&gt;portage_tmp_t&lt;/em&gt; instead of the proper label), check
+with &lt;strong&gt;matchpathcon&lt;/strong&gt; if the label is correct. If &lt;strong&gt;matchpathcon&lt;/strong&gt; sais
+that the label should be &lt;code&gt;&amp;lt;&amp;lt;none&amp;gt;&amp;gt;&lt;/code&gt; then you need to rebuild the SELinux
+context files:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cd /etc/selinux/strict/contexts/files
+# for n in *.bin; do sefcontext_compile ${n%%.bin}; done
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;strong&gt;sefcontext_compile&lt;/strong&gt; command will rebuild the SELinux context
+files. When that has been done, &lt;strong&gt;matchpathcon&lt;/strong&gt; should show the right
+context again, and Portage will relabel files correctly. Until then, you
+will need to relabel the packages that have been built since (and
+including) the &lt;em&gt;libpcre&lt;/em&gt; build.&lt;/p&gt;
+&lt;p&gt;If someone has a good suggestion where to put these rebuilds in, please
+do drop a note in the bug. Although the proper one might be &lt;em&gt;libpcre&lt;/em&gt;
+itself, I'd rather not put too much SELinux logic in the ebuild unless
+it is pretty safeguarded...&lt;/p&gt;
+&lt;p&gt;In any case, it has also been documented in the &lt;a href="https://wiki.gentoo.org/wiki/SELinux/FAQ#File_labels_do_not_seem_to_be_set_anymore.2C_and_matchpathcon_sais_.3C.3Cnone.3E.3E"&gt;Gentoo SELinux
+FAQ&lt;/a&gt;
+on the Gentoo wiki.&lt;/p&gt;</content><category term="SELinux"></category><category term="hardened"></category><category term="pcre"></category><category term="selinux"></category></entry></feed>

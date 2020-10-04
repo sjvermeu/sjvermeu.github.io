@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - corruption</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/corruption/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-29T03:50:00+02:00</updated><entry><title>photorec to the rescue</title><link href="http://blog.siphos.be/2013/04/photorec-to-the-rescue/" rel="alternate"></link><published>2013-04-29T03:50:00+02:00</published><updated>2013-04-29T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-29:/2013/04/photorec-to-the-rescue/</id><summary type="html">&lt;p&gt;Once again
+&lt;a href="http://www.cgsecurity.org/wiki/PhotoRec_Step_By_Step"&gt;PhotoRec&lt;/a&gt; has
+been able to save files from a corrupt FAT USB drive. The application
+scans the partition, looking for known files (based on the file magic)
+and then restores those files. The files are not named as they were
+though, so there is still some manual work …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Once again
+&lt;a href="http://www.cgsecurity.org/wiki/PhotoRec_Step_By_Step"&gt;PhotoRec&lt;/a&gt; has
+been able to save files from a corrupt FAT USB drive. The application
+scans the partition, looking for known files (based on the file magic)
+and then restores those files. The files are not named as they were
+though, so there is still some manual work left, but the recovery works
+pretty well:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;PhotoRec 6.12, Data Recovery Utility, May 2011
+Christophe GRENIER 
+http://www.cgsecurity.org
+
+Disk /dev/sdc1 - 1000 GB / 931 GiB (RO) - WD My Book
+     Partition                  Start        End    Size in sectors
+     No partition             0   0  1 121600 253 63 1953520002 [Whole disk]
+
+
+Pass 1 - Reading sector  464342462/1953520002, 10738 files found
+Elapsed time 2h46m01s - Estimated time to completion 8h52m25
+jpg: 7429 recovered
+txt: 961 recovered
+mp3: 558 recovered
+tx?: 373 recovered
+riff: 297 recovered
+gif: 218 recovered
+exe: 151 recovered
+ifo: 126 recovered
+mpg: 91 recovered
+pdf: 83 recovered
+others: 451 recovered
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In Gentoo, you can find the package as part of &lt;code&gt;app-admin/testdisk&lt;/code&gt;. To
+recover the files, I ran the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ photorec /log /d /path/to/recovery/dest /dev/sdc1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;While skimming through the recovered files, I found a few ones that I
+deleted a long time ago but apparently never got overwritten (the data,
+that is). Scary to see how easy such recovery is... Makes me remember
+that, if you really want to delete files in a less recoverable manner,
+you can use &lt;strong&gt;shred&lt;/strong&gt; for that.&lt;/p&gt;
+&lt;p&gt;And for those out there yelling to backup this data - you're absolutely
+correct, but no. I backup my systems and important files daily, but this
+disk contained (mainly) raw picture images and videorecordings. The
+manipulated, finished images and recordings are backed up (or at least
+on a disk &lt;em&gt;and&lt;/em&gt; somewhere online), but the raw images and recordings are
+often too much to introduce a backup for, and if I would really lost
+them, I wouldn't shed a tear (nor panic).&lt;/p&gt;</content><category term="Free Software"></category><category term="corruption"></category><category term="photorec"></category><category term="recovery"></category><category term="shred"></category></entry></feed>

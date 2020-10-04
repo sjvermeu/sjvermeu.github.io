@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - virtual</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/virtual/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-02-25T03:05:00+01:00</updated><entry><title>Uploading selinuxnode test VM</title><link href="http://blog.siphos.be/2013/02/uploading-selinuxnode-test-vm/" rel="alternate"></link><published>2013-02-25T03:05:00+01:00</published><updated>2013-02-25T03:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-25:/2013/02/uploading-selinuxnode-test-vm/</id><summary type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
+few hours), I'm uploading a new SELinux-enabled KVM guest image. This is
+not an update on the previous image though (it's a reinstalled system -
+after all, I use VMs for testing, so it makes sense to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
+few hours), I'm uploading a new SELinux-enabled KVM guest image. This is
+not an update on the previous image though (it's a reinstalled system -
+after all, I use VMs for testing, so it makes sense to reinstall from
+time to time to check if the installation instructions are still
+accurate). However, the focus remains the same:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A minimal Gentoo Linux installation for amd64 (x86_64) as guest
+    within a KVM hypervisor. The image is about 190 Mb in size
+    compressed, and 1.6 Gb in size uncompressed. The file format is
+    Qemu's QCOW2 so expect the image to grow as you work with it. The
+    file systems are, in total, sized to about 50 Gb.&lt;/li&gt;
+&lt;li&gt;The installation has SELinux enabled (strict policy, enforcing
+    mode), various grSecurity settings enabled (including PaX and TPE),
+    but now also includes IMA (Integrity Measurement Architecture) and
+    EVM (Extended Verification Module) although EVM is by default
+    started in fix mode.&lt;/li&gt;
+&lt;li&gt;The image will not start any network-facing daemons by default
+    (unlike the previous image) for security reasons (if I let this
+    image stay around this long as I did with the previous, it's prone
+    to have some vulnerabilities in the future, although I'm hoping I
+    can update the image more frequently). This includes SSH, so you'll
+    need access to the image console first after which you can configure
+    the network and start SSH (&lt;strong&gt;run_init rc-service sshd start&lt;/strong&gt; does
+    the trick).&lt;/li&gt;
+&lt;li&gt;A couple of default accounts are created, and the image will display
+    those accounts and their passwords on the screen (it is a test/play
+    VM, not a production VM).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are still a few minor issues with it, that I hope to fix by the
+next upload:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=457812"&gt;Bug 457812&lt;/a&gt; is
+    still applicable to the image, so you'll notice lots of SELinux
+    denials on the mknod capability. They seem to be cosmetic though.&lt;/li&gt;
+&lt;li&gt;At shutdown, udev somewhere fails with a SELinux initial
+    context problem. I thought I had it covered, but I noticed after
+    compressing the image that it is still there. I'll fix it - I
+    promise ;)&lt;/li&gt;
+&lt;li&gt;EVM is enabled in fix mode, because otherwise EVM is &lt;a href="http://sourceforge.net/mailarchive/forum.php?thread_name=1361476641.29360.114.camel%40falcor1&amp;amp;forum_name=linux-ima-user"&gt;prohibiting
+    mode
+    changes&lt;/a&gt;
+    on files in /run. I still have to investigate this further though -
+    I had to use the EVM=fix workaround due to time pressure.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When uploaded, I'll ask the Gentoo infrastructure team to synchronise
+the image with our mirrors so you can enjoy it. It'll be on the
+distfiles, under experimental/amd64/qemu-selinux (it has the 20130224
+date in the name, so you can see for yourself if the sync has already
+occurred or not).&lt;/p&gt;</content><category term="Gentoo"></category><category term="evm"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="ima"></category><category term="kvm"></category><category term="selinux"></category><category term="virtual"></category></entry></feed>

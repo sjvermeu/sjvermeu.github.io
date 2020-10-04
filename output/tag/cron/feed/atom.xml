@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - cron</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/cron/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-01-03T21:05:00+01:00</updated><entry><title>Oh it is cron again...</title><link href="http://blog.siphos.be/2014/01/oh-it-is-cron-again/" rel="alternate"></link><published>2014-01-03T21:05:00+01:00</published><updated>2014-01-03T21:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-03:/2014/01/oh-it-is-cron-again/</id><summary type="html">&lt;p&gt;Today I was pointed to the following error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test fcron[6722]: fcron[6722] 3.1.2 started
+test fcron[6722]: Cannot bind socket to &amp;#39;/var/run/fcron.fifo&amp;#39;: Permission denied
+test fcron[6722]:  &amp;quot;at&amp;quot; reboot jobs will only be run at computer&amp;#39;s startup.
+test fcron[6722]: updating configuration from …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Today I was pointed to the following error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test fcron[6722]: fcron[6722] 3.1.2 started
+test fcron[6722]: Cannot bind socket to &amp;#39;/var/run/fcron.fifo&amp;#39;: Permission denied
+test fcron[6722]:  &amp;quot;at&amp;quot; reboot jobs will only be run at computer&amp;#39;s startup.
+test fcron[6722]: updating configuration from /var/spool/fcron
+test fcron[6722]: adding file systab Jan  3 17:51:19 test fcron[6722]: adding new file user
+test fcron[6722]: NO CONTEXT for user &amp;quot;(null)&amp;quot;: Invalid argument
+test fcron[6722]: ENTRYPOINT FAILED for user &amp;quot;user&amp;quot; (CONTEXT (null)) for file CONTEXT user_u:object_r:user_cron_spool_t:s0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;First of all, the moment I notice that it is cron, I know I'm up for a
+few hours at it. Cron has been notoriously difficult to integrate with
+SELinux, because it doesn't use the simpler "fork-execute" method (where
+we can put in transitions). Instead, it often has to call
+SELinux-specific methods to get the job done. Same was true here.&lt;/p&gt;
+&lt;p&gt;Anyway, on to the issues. First of all, the &lt;em&gt;Cannot bind socket&lt;/em&gt; is a
+simple SELinux policy thingie that one can easily ignore for now (I'll
+patch and upstream that in a minute). The problem is the &lt;em&gt;NO CONTEXT&lt;/em&gt;
+stuff.&lt;/p&gt;
+&lt;p&gt;The code looks as follows:&lt;/p&gt;
+&lt;p&gt;``` {lang="c"}&lt;/p&gt;
+&lt;h1&gt;ifdef SYSFCRONTAB&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;if(!strcmp(cf-&amp;gt;cf_user, SYSFCRONTAB))
+    user_name = &amp;quot;system_u&amp;quot;;
+else
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;endif /&lt;em&gt; def SYSFCRONTAB &lt;/em&gt;/&lt;/h1&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;    user_name = cf-&amp;gt;cf_user;
+if(flask_enabled)
+{
+    if(get_default_context(user_name, NULL, &amp;amp;cf-&amp;gt;cf_user_context))
+        error_e(&amp;quot;NO CONTEXT for user \&amp;quot;%s\&amp;quot;&amp;quot;, cf-&amp;gt;cf_user_context);
+    retval = security_compute_av(cf-&amp;gt;cf_user_context, cf-&amp;gt;cf_file_context
+            , SECCLASS_FILE, FILE__ENTRYPOINT, &amp;amp;avd);
+
+    if(retval || ((FILE__ENTRYPOINT &amp;amp; avd.allowed) != FILE__ENTRYPOINT))
+    {
+        syslog(LOG_ERR, &amp;quot;ENTRYPOINT FAILED for user \&amp;quot;%s\&amp;quot; &amp;quot;
+               &amp;quot;(CONTEXT %s) for file CONTEXT %s&amp;quot;
+               , cf-&amp;gt;cf_user, cf-&amp;gt;cf_user_context, cf-&amp;gt;cf_file_context);
+        goto err;
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;```&lt;/p&gt;
+&lt;p&gt;It wasn't obvious to me either, but from a quick look through the
+&lt;a href="http://userspace.selinuxproject.org/trac/browser/libselinux/include/selinux/selinux.h"&gt;selinux.h&lt;/a&gt;
+code I found out that &lt;em&gt;get_default_context()&lt;/em&gt; requires the SELinux
+user rather than Linux user.&lt;/p&gt;
+&lt;p&gt;The purpose of the &lt;em&gt;get_default_context()&lt;/em&gt; method is to return the
+SELinux context in which newly started tasks, originating from the
+current context (if second argument is &lt;em&gt;NULL&lt;/em&gt;) or given context (second
+argument), owned by the given user (first argument) should start in. In
+case of cron, the code is asking SELinux what the context should be for
+the cronjob itself, considering that it has to be executed for a given
+user.&lt;/p&gt;
+&lt;p&gt;Now the code currently passes on the owner (Linux user) of the crontab
+file. As this owner usually is not a SELinux user (only when there is a
+SELinux user named after the Linux user will this succeed), the method
+returns &lt;em&gt;NULL&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;The right call here would be to first look up the correct SELinux user
+for the given Linux user, and then call the &lt;em&gt;get_default_context()&lt;/em&gt;
+method. This will return a context to transition to.&lt;/p&gt;
+&lt;p&gt;Now, cron systems usually do a second check - they see if the file in
+which the cronjobs are mentioned is an &lt;em&gt;entrypoint&lt;/em&gt; for the context that
+it should transition to. Even though the file itself will not be
+directly executed, by checking if the &lt;em&gt;entrypoint&lt;/em&gt; permission is set
+cron can be reasonably certain that it should proceed. So for cron, this
+is like saying "Yes, the file with context &lt;code&gt;cron_spool_t&lt;/code&gt; is allowed to
+contain job definitions for cron to execute".&lt;/p&gt;
+&lt;p&gt;I've sent the
+&lt;a href="http://thread.gmane.org/gmane.comp.sysutils.fcron.devel/89"&gt;patch&lt;/a&gt; for
+this upstream and hopefully it gets added in - if I'm correct in the
+deduction, that is.&lt;/p&gt;
+&lt;p&gt;So when you get issues with cron, do the following checks:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Is the cron daemon running in the right domain? It should run in a
+    &lt;code&gt;crond_t&lt;/code&gt; domain, otherwise it will not be able to get a proper
+    default context.&lt;/li&gt;
+&lt;li&gt;Assuming that cron uses the right arguments, make sure that a
+    default context is set for the given SELinux user (check the
+    &lt;code&gt;contexts/default_contexts&lt;/code&gt; and &lt;code&gt;contexts/users/*&lt;/code&gt; files) and that
+    this context is valid&lt;/li&gt;
+&lt;li&gt;Check the context of the file in which the definitions are stored
+    and make sure it is mentioned as an entrypoint for the job domain&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Or, in some code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# ps -efZ | grep fcron | awk &amp;#39;{print $1}&amp;#39;
+system_u:system_r:crond_t
+# getseuser swift system_u:system_r:crond_t
+seuser: user_u
+Context 0     user_u:user_r:cronjob_t
+# ls -lZ /var/spool/fcron/new.user
+... user_u:object_r:user_cron_spool_t
+# sesearch -s cronjob_t -t user_cron_spool_t -c file -p entrypoint -A
+Found 1 semantic av rules:
+  allow cronjob_t user_cron_spool_t : file entrypoint ;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="cron"></category><category term="selinux"></category></entry></feed>

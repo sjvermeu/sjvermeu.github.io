@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - seshowtree</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/seshowtree/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-01-05T04:14:00+01:00</updated><entry><title>How does foo_t get this privilege?</title><link href="http://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/" rel="alternate"></link><published>2014-01-05T04:14:00+01:00</published><updated>2014-01-05T04:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-05:/2014/01/how-does-foo_t-get-this-privilege/</id><summary type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
+that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
+&lt;p&gt;I used a simple script (which I've been using for a while already)
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
+that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
+&lt;p&gt;I used a simple script (which I've been using for a while already)
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents the SELinux rules for a particular
+domain in a tree-like structure, expanding the interfaces as it finds
+them. The script is far from perfect, but does enough to help me answer
+such questions. If you're interested, the script is also available on my
+&lt;a href="https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowtree"&gt;github
+small.coding&lt;/a&gt;
+project.&lt;/p&gt;
+&lt;p&gt;``` {lang="bash"}
+~# seshowtree user roles/unprivuser.te &amp;gt; output.txt&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;In the resulting output, I search for the `cgroup_t` and work my way up,
+which gives:
+
+``` {lang=&amp;quot;bash&amp;quot;}
+userdom_unpriv_user_template(user)
+. userdom_common_user_template($1)
+. . fs_rw_cgroup_files($1_t)
+. . . rw_files_pattern($1, cgroup_t, cgroup_t)
+. . . . allow $1 $3:file rw_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So in this case, the user forgot to look into
+&lt;code&gt;userdom_common_user_template&lt;/code&gt;, which is called by
+&lt;code&gt;userdom_unpriv_user_template&lt;/code&gt; to find the path to this privilege. Of
+course, that still doesn't explain why the privileges are assigned in
+the first place. As the policy file itself does not contain the
+necessary comments to deduce this, I had to ask the git repository for
+more information:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;{lang="bash"}
+~$ git annotate userdomain.if&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;In the end, it was a commit from 2010, informing me that "Common users
+can read and write cgroup files (access governed by dac)". So the
+privilege is by design, referring to the regular DAC permissions to
+properly govern access to the files.&lt;/p&gt;</content><category term="SELinux"></category><category term="policy"></category><category term="selinux"></category><category term="seshowtree"></category></entry></feed>

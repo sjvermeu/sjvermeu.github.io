@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - libcap</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/libcap/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-06T03:50:00+02:00</updated><entry><title>Overview of Linux capabilities, part 3</title><link href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-3/" rel="alternate"></link><published>2013-05-06T03:50:00+02:00</published><updated>2013-05-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-06:/2013/05/overview-of-linux-capabilities-part-3/</id><summary type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;I&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/"&gt;talked&lt;/a&gt;
+about capabilities and gave an introduction to how this powerful
+security feature within Linux can be used (and also exploited). I also
+covered a few capabilities, so let's wrap this up with the remainder of
+them.&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;CAP_AUDIT_CONTROL&lt;/dt&gt;
+&lt;dd&gt;Enable and disable kernel auditing; change auditing filter …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;I&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/"&gt;talked&lt;/a&gt;
+about capabilities and gave an introduction to how this powerful
+security feature within Linux can be used (and also exploited). I also
+covered a few capabilities, so let's wrap this up with the remainder of
+them.&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;CAP_AUDIT_CONTROL&lt;/dt&gt;
+&lt;dd&gt;Enable and disable kernel auditing; change auditing filter rules;
+retrieve auditing status and filtering rules&lt;/dd&gt;
+&lt;dt&gt;CAP_AUDIT_WRITE&lt;/dt&gt;
+&lt;dd&gt;Write records to kernel auditing log&lt;/dd&gt;
+&lt;dt&gt;CAP_BLOCK_SUSPEND&lt;/dt&gt;
+&lt;dd&gt;Employ features that can block system suspend&lt;/dd&gt;
+&lt;dt&gt;CAP_MAC_ADMIN&lt;/dt&gt;
+&lt;dd&gt;Override Mandatory Access Control (implemented for the SMACK LSM)&lt;/dd&gt;
+&lt;dt&gt;CAP_MAC_OVERRIDE&lt;/dt&gt;
+&lt;dd&gt;Allow MAC configuration or state changes (implemented for the
+SMACK LSM)&lt;/dd&gt;
+&lt;dt&gt;CAP_NET_ADMIN&lt;/dt&gt;
+&lt;dd&gt;Perform various network-related operations:
+&lt;/p&gt;
+-   interface configuration
+-   administration of IP firewall, masquerading and accounting
+-   modify routing tables
+-   bind to any address for transparent proxying
+-   set type-of-service (TOS)
+-   clear driver statistics
+-   set promiscuous mode
+-   enabling multicasting
+-   use &lt;em&gt;setsockopt()&lt;/em&gt; for privileged socket operations&lt;/dd&gt;
+&lt;dt&gt;CAP_NET_BIND_SERVICE&lt;/dt&gt;
+&lt;dd&gt;Bind a socket to Internet domain privileged ports (less than 1024)&lt;/dd&gt;
+&lt;dt&gt;CAP_NET_RAW&lt;/dt&gt;
+&lt;dd&gt;Use RAW and PACKET sockets, and bind to any address for transparent
+proxying&lt;/dd&gt;
+&lt;dt&gt;CAP_SETPCAP&lt;/dt&gt;
+&lt;dd&gt;Allow the process to add any capability from the calling thread's
+bounding set to its inheritable set, and drop capabilities from the
+bounding set (using &lt;em&gt;prctl()&lt;/em&gt;) and make changes to the
+&lt;em&gt;securebits&lt;/em&gt; flags.&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_ADMIN&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;Very powerful capability, includes:
+&lt;/p&gt;
+-   Running quota control, mount, swap management, set hostname, ...
+-   Perform &lt;em&gt;VM86_REQUEST_IRQ vm86&lt;/em&gt; command
+-   Perform &lt;em&gt;IPC_SET&lt;/em&gt; and &lt;em&gt;IPC_RMID&lt;/em&gt; operations on arbitrary
+    System V IPC objects
+-   Perform operations on &lt;code&gt;trusted.*&lt;/code&gt; and &lt;code&gt;security.*&lt;/code&gt; extended
+    attributes
+-   Use &lt;em&gt;lookup_dcookie&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;p&gt;
+and many, many more. &lt;strong&gt;man capabilities&lt;/strong&gt; gives a good overview
+of them.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_BOOT&lt;/dt&gt;
+&lt;dd&gt;Use &lt;em&gt;reboot()&lt;/em&gt; and &lt;em&gt;kexec_load()&lt;/em&gt;&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_CHROOT&lt;/dt&gt;
+&lt;dd&gt;Use &lt;em&gt;chroot()&lt;/em&gt;&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_MODULE&lt;/dt&gt;
+&lt;dd&gt;Load and unload kernel modules&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_RESOURCE&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;Another capability with many consequences, including:
+&lt;/p&gt;
+-   Use reserved space on ext2 file systems
+-   Make &lt;em&gt;ioctl()&lt;/em&gt; calls controlling ext3 journaling
+-   Override disk quota limits
+-   Increase resource limits
+-   Override &lt;code&gt;RLIMIT_NPROC&lt;/code&gt; resource limits&lt;/p&gt;
+&lt;p&gt;&lt;p&gt;
+and many more.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_TIME&lt;/dt&gt;
+&lt;dd&gt;Set system clock and real-time hardware clock&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_TTY_CONFIG&lt;/dt&gt;
+&lt;dd&gt;Use &lt;em&gt;vhangup()&lt;/em&gt; and employ various privileged &lt;em&gt;ioctl()&lt;/em&gt; operations
+on virtual terminals&lt;/dd&gt;
+&lt;dt&gt;CAP_SYSLOG&lt;/dt&gt;
+&lt;dd&gt;Perform privileged &lt;em&gt;syslog()&lt;/em&gt; operations and view kernel addresses
+exposed with &lt;code&gt;/proc&lt;/code&gt; and other interfaces (if &lt;code&gt;kptr_restrict&lt;/code&gt;
+is set)&lt;/dd&gt;
+&lt;dt&gt;CAP_WAKE_ALARM&lt;/dt&gt;
+&lt;dd&gt;Trigger something that will wake up the system&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;Now when you look through the manual page of the capabilities, you'll
+notice it talks about &lt;em&gt;securebits&lt;/em&gt; as well. This is an additional set of
+flags that govern how capabilities are used, inherited etc. System
+administrators don't set these flags - they are governed by the
+applications themselves (when creating threads, forking, etc.) These
+flags are set on a per-thread level, and govern the following behavior:&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;SECBIT_KEEP_CAPS&lt;/dt&gt;
+&lt;dd&gt;Allow a thread with UID 0 to retain its capabilities when it
+switches its UIDs to a nonzero (non-root) value. By default, this
+flag is &lt;em&gt;not&lt;/em&gt; set, and even if it is set, it is cleared on an
+&lt;em&gt;execve&lt;/em&gt; call, reducing the likelihood that capabilities
+are "leaked".&lt;/dd&gt;
+&lt;dt&gt;SECBIT_NO_SETUID_FIXUP&lt;/dt&gt;
+&lt;dd&gt;When set, the kernel will not adjust the capability sets when the
+thread's effective and file system UIDs are switched between
+zero (root) and non-zero values.&lt;/dd&gt;
+&lt;dt&gt;SECBIT_NOROOT&lt;/dt&gt;
+&lt;dd&gt;If set, the kernel does not grant capabilities when a setuid-root
+program is executed, or when a process with an effective or real UID
+of 0 (root) calls &lt;em&gt;execve&lt;/em&gt;.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;Manipulating these bits requires the &lt;code&gt;CAP_SETPCAP&lt;/code&gt; capability. Except
+for the &lt;code&gt;SECBIT_KEEP_CAPS&lt;/code&gt; security bit, the others are preserved on an
+&lt;em&gt;execve()&lt;/em&gt; call, and all bits are inherited by child processes (such as
+when &lt;em&gt;fork()&lt;/em&gt; is used).&lt;/p&gt;
+&lt;p&gt;As a user or admin, you can also see capability-related information
+through the &lt;code&gt;/proc&lt;/code&gt; file system:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep ^Cap /proc/$$/status
+CapInh: 0000000000000000
+CapPrm: 0000001fffffffff
+CapEff: 0000001fffffffff
+CapBnd: 0000001fffffffff
+
+$ grep ^Cap /proc/$$/status
+CapInh: 0000000000000000
+CapPrm: 0000000000000000
+CapEff: 0000000000000000
+CapBnd: 0000001fffffffff
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The capabilities listed therein are bitmasks for the various
+capabilities. The mask &lt;code&gt;1FFFFFFFFF&lt;/code&gt; holds 37 positions, which match the
+37 capabilities known (again, see &lt;code&gt;uapi/linux/capabilities.h&lt;/code&gt; in the
+kernel sources to see the values of each of the capabilities). Again,
+the &lt;strong&gt;pscap&lt;/strong&gt; can be used to get information about the enabled
+capabilities of running processes in a more human readable format. But
+another tool provided by the &lt;code&gt;sys-libs/libcap&lt;/code&gt; is interested as well to
+look at: &lt;strong&gt;capsh&lt;/strong&gt;. The tool offers many capability-related features,
+including decoding the &lt;code&gt;status&lt;/code&gt; fields:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ capsh --decode=0000001fffffffff
+0x0000001fffffffff=cap_chown,cap_dac_override,cap_dac_read_search,
+cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,
+cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,
+cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,
+cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,
+cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,
+cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,
+cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,
+cap_syslog,35,36
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next to fancy decoding, &lt;strong&gt;capsh&lt;/strong&gt; can also launch a shell with reduced
+capabilities. This makes it a good utility for jailing chroots even
+more.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="capsh"></category><category term="libcap"></category><category term="linux"></category></entry></feed>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - pkg_config</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/pkg_config/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-08-23T11:53:00+02:00</updated><entry><title>Why our policies don't like emerge --config</title><link href="http://blog.siphos.be/2013/08/why-our-policies-dont-like-emerge-config/" rel="alternate"></link><published>2013-08-23T11:53:00+02:00</published><updated>2013-08-23T11:53:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/why-our-policies-dont-like-emerge-config/</id><summary type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
+done on request of the administrator for certain packages. For instance,
+for the &lt;code&gt;dev-db/postgresql-server&lt;/code&gt; package we can call its
+&lt;code&gt;pkg_config()&lt;/code&gt; phase to create the PostgreSQL instance and configure it
+so that the configuration of the database is stored …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
+done on request of the administrator for certain packages. For instance,
+for the &lt;code&gt;dev-db/postgresql-server&lt;/code&gt; package we can call its
+&lt;code&gt;pkg_config()&lt;/code&gt; phase to create the PostgreSQL instance and configure it
+so that the configuration of the database is stored in
+&lt;code&gt;/etc/postgresql-9.2&lt;/code&gt; rather than together with the data files.&lt;/p&gt;
+&lt;p&gt;When you run Gentoo with SELinux however, you might already have noticed
+that this doesn't work. The reason is that, whenever an administrator
+calls &lt;strong&gt;emerge&lt;/strong&gt;, the process (and by default its child processes) will
+run in a confined domain called &lt;code&gt;portage_t&lt;/code&gt;. The domain is still quite
+privileged, but not as privileged as the administrator domain
+&lt;code&gt;sysadm_t&lt;/code&gt;. It holds the rights to build software and install files,
+directories and other things on the file system. But it does not support
+switching users for instance, which is what the PostgreSQL
+&lt;code&gt;pkg_config()&lt;/code&gt; does: it wants to run a certain command as the &lt;code&gt;postgres&lt;/code&gt;
+user, which is prohibited by SELinux.&lt;/p&gt;
+&lt;p&gt;I'm not sure yet how to tackle this properly. One thing is that I might
+update Portage to run in the user domain by default, and transition
+dynamically towards the proper domains according to the task(s) it is
+executing. We already do this for building software (where we transition
+to a &lt;code&gt;portage_sandbox_t&lt;/code&gt; confined domain), perhaps it can be expanded to
+support transitioning to &lt;code&gt;portage_t&lt;/code&gt; when it isn't running the
+&lt;code&gt;pkg_config()&lt;/code&gt; phase. But that means injecting (more) SELinux-specific
+code in Portage, something I'd rather not do (introduces additional
+complexity and maintenance).&lt;/p&gt;
+&lt;p&gt;Another possibility would be to have administrators explicitly state
+that no transition should occur, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With a minor addition to the policy, this gave me a good hope... until I
+noticed that &lt;strong&gt;emerge&lt;/strong&gt; underlyingly calls &lt;strong&gt;ebuild&lt;/strong&gt; and &lt;strong&gt;ebuild.sh&lt;/strong&gt;,
+both labeled as &lt;code&gt;portage_exec_t&lt;/code&gt;, so these calls transition to
+&lt;code&gt;portage_t&lt;/code&gt; again.&lt;/p&gt;
+&lt;p&gt;I'm going to look further into this - there are quite a few options
+still open.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="pkg_config"></category><category term="portage"></category><category term="selinux"></category></entry></feed>

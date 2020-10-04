@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - eclass</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/eclass/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-09-10T07:13:00+02:00</updated><entry><title>Custom CIL SELinux policies in Gentoo</title><link href="http://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/" rel="alternate"></link><published>2015-09-10T07:13:00+02:00</published><updated>2015-09-10T07:13:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-10:/2015/09/custom-cil-selinux-policies-in-gentoo/</id><summary type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
+for a while now. Unlike most other distributions, which focus on binary packages,
+Gentoo has always supported source-based packages as default (although 
+&lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary packages&lt;/a&gt; are 
+supported as well).&lt;/p&gt;
+&lt;p&gt;A recent &lt;a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4"&gt;commit&lt;/a&gt;
+now also allows CIL files to be used.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Policy ebuilds …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
+for a while now. Unlike most other distributions, which focus on binary packages,
+Gentoo has always supported source-based packages as default (although 
+&lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary packages&lt;/a&gt; are 
+supported as well).&lt;/p&gt;
+&lt;p&gt;A recent &lt;a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4"&gt;commit&lt;/a&gt;
+now also allows CIL files to be used.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Policy ebuilds, how they work&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Gentoo provides its own SELinux policy, based on the &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Reference_policy"&gt;reference policy&lt;/a&gt;, 
+and provides per-module ebuilds (packages). For instance, the SELinux policy for
+the &lt;a href="https://packages.gentoo.org/package/app-misc/screen"&gt;screen&lt;/a&gt; package is
+provided by the &lt;a href="https://packages.gentoo.org/package/sec-policy/selinux-screen"&gt;sec-policy/selinux-screen&lt;/a&gt;
+package.&lt;/p&gt;
+&lt;p&gt;The package itself is pretty straight forward:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Copyright 1999-2015 Gentoo Foundation&lt;/span&gt;
+&lt;span class="c1"&gt;# Distributed under the terms of the GNU General Public License v2&lt;/span&gt;
+&lt;span class="c1"&gt;# $Id$&lt;/span&gt;
+&lt;span class="nv"&gt;EAPI&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;5&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;IUSE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;MODS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;screen&amp;quot;&lt;/span&gt;
+
+inherit selinux-policy-2
+
+&lt;span class="nv"&gt;DESCRIPTION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SELinux policy for screen&amp;quot;&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="nv"&gt;$PV&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="m"&gt;9999&lt;/span&gt;* &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;
+        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The real workhorse lays within a &lt;a href="https://devmanual.gentoo.org/eclass-writing/"&gt;Gentoo eclass&lt;/a&gt;,
+something that can be seen as a library for ebuilds. It allows consolidation of functions and
+activities so that a large set of ebuilds can be simplified. The more ebuilds are standardized,
+the more development can be put inside an eclass instead of in the ebuilds. As a result, some
+ebuilds are extremely simple, and the SELinux policy ebuilds are a good example of this.&lt;/p&gt;
+&lt;p&gt;The eclass for SELinux policy ebuilds is called &lt;a href="https://devmanual.gentoo.org/eclass-reference/selinux-policy-2.eclass/index.html"&gt;selinux-policy-2.eclass&lt;/a&gt;
+and holds a number of functionalities. One of these (the one we focus on right now)
+is to support custom SELinux policy modules.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Custom SELinux policy ebuilds&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Whenever a user has a SELinux policy that is not part of the Gentoo policy repository,
+then the user might want to provide these policies through packages still. This has
+the advantage that Portage (or whatever package manager is used) is aware of the
+policies on the system, and proper dependencies can be built in.&lt;/p&gt;
+&lt;p&gt;To use a custom policy, the user needs to create an ebuild which informs the eclass
+not only about the module name (through the &lt;code&gt;MODS&lt;/code&gt; variable) but also about the
+policy files themselves. These files are put in the &lt;code&gt;files/&lt;/code&gt; location of the ebuild,
+and referred to through the &lt;code&gt;POLICY_FILES&lt;/code&gt; variable:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Copyright 1999-2015 Gentoo Foundation&lt;/span&gt;
+&lt;span class="c1"&gt;# Distributed under the terms of the GNU General Public License v2&lt;/span&gt;
+&lt;span class="c1"&gt;# $Id$&lt;/span&gt;
+&lt;span class="nv"&gt;EAPI&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;5&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;IUSE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;MODS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;oracle&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;POLICY_FILES&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;oracle.te oracle.if oracle.fc&amp;quot;&lt;/span&gt;
+
+inherit selinux-policy-2
+
+&lt;span class="nv"&gt;DESCRIPTION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SELinux policy for screen&amp;quot;&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="nv"&gt;$PV&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="m"&gt;9999&lt;/span&gt;* &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;
+        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The eclass generally will try to build the policies, converting them into &lt;code&gt;.pp&lt;/code&gt;
+files. With CIL, this is no longer needed. Instead, what we do is copy the &lt;code&gt;.cil&lt;/code&gt;
+files straight into the location where we place the &lt;code&gt;.pp&lt;/code&gt; files.&lt;/p&gt;
+&lt;p&gt;From that point onwards, managing the &lt;code&gt;.cil&lt;/code&gt; files is similar to &lt;code&gt;.pp&lt;/code&gt; files.
+They are loaded with &lt;code&gt;semodule -i&lt;/code&gt; and unloaded with &lt;code&gt;semodule -r&lt;/code&gt; when needed.&lt;/p&gt;
+&lt;p&gt;Enabling CIL in our ebuilds is a small improvement (after the heavy workload
+to support the 2.4 userspace) which allows Gentoo to stay ahead in the SELinux
+world.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="cil"></category><category term="selinux"></category><category term="ebuild"></category><category term="eclass"></category></entry><entry><title>Some changes under the hood</title><link href="http://blog.siphos.be/2014/08/some-changes-under-the-hood/" rel="alternate"></link><published>2014-08-09T21:45:00+02:00</published><updated>2014-08-09T21:45:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-08-09:/2014/08/some-changes-under-the-hood/</id><summary type="html">&lt;p&gt;In between conferences, technical writing jobs and traveling, we did a
+few changes under the hood for SELinux in Gentoo.&lt;/p&gt;
+&lt;p&gt;First of all, new policies are bumped and also stabilized (2.20130411-r3
+is now stable, 2.20130411-r5 is \~arch). These have a few updates
+(mergers from upstream), and r5 also …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In between conferences, technical writing jobs and traveling, we did a
+few changes under the hood for SELinux in Gentoo.&lt;/p&gt;
+&lt;p&gt;First of all, new policies are bumped and also stabilized (2.20130411-r3
+is now stable, 2.20130411-r5 is \~arch). These have a few updates
+(mergers from upstream), and r5 also has preliminary support for
+&lt;a href="http://www.freedesktop.org/software/systemd/man/tmpfiles.d.html"&gt;tmpfiles&lt;/a&gt;
+(at least the OpenRC implementation of it), which is made part of the
+&lt;a href="http://packages.gentoo.org/package/sec-policy/selinux-base-policy"&gt;selinux-base-policy&lt;/a&gt;
+package.&lt;/p&gt;
+&lt;p&gt;The ebuilds to support new policy releases now are relatively simple
+copies of the live ebuilds (which always contain the latest policies) so
+that bumping (either by me or other developers) is easy enough. There's
+also a release script in our policy repository which tags the right git
+commit (the point at which the release is made), creates the necessary
+patches, uploads them, etc.&lt;/p&gt;
+&lt;p&gt;One of the changes made is to "drop" the &lt;code&gt;BASEPOL&lt;/code&gt; variable. In the
+past, &lt;code&gt;BASEPOL&lt;/code&gt; was a variable inside the ebuilds that pointed to the
+right patchset (and base policy) as we initially supported policy
+modules of different base releases. However, that was a mistake and we
+quickly moved to bumping all policies with every releaes, but kept the
+&lt;code&gt;BASEPOL&lt;/code&gt; variable in it. Now, &lt;code&gt;BASEPOL&lt;/code&gt; is "just" the &lt;code&gt;${PVR}&lt;/code&gt; value of
+the ebuild so no longer needs to be provided. In the future, I'll
+probably remove &lt;code&gt;BASEPOL&lt;/code&gt; from the internal eclass and the
+&lt;code&gt;selinux-base*&lt;/code&gt; packages as well.&lt;/p&gt;
+&lt;p&gt;A more important change to the eclass is support for the
+&lt;code&gt;SELINUX_GIT_REPO&lt;/code&gt; and &lt;code&gt;SELINUX_GIT_BRANCH&lt;/code&gt; variables (for live ebuilds,
+i.e. those with the 9999 version). If set, then they pull from the
+mentioned repository (and branch) instead of the default
+&lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;hardened-refpolicy.git&lt;/a&gt;
+repository. This allows for developers to do some testing on a different
+branch easily, or for other users to use their own policy repository
+while still enjoying the SELinux integration support in Gentoo through
+the &lt;code&gt;sec-policy/*&lt;/code&gt; packages.&lt;/p&gt;
+&lt;p&gt;Finally, I wrote up a first attempt at our &lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/CodingStyle"&gt;coding
+style&lt;/a&gt;,
+heavily based on the coding style from the reference policy of course
+(as our policy is still following this upstream project). This should
+allow the team to work better together and to decide on namings
+autonomously (instead of hours of discussing and settling for something
+as silly as an interface or boolean name ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="eclass"></category><category term="Gentoo"></category><category term="git"></category><category term="hardened"></category><category term="refpolicy"></category><category term="selinux"></category></entry></feed>

@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - hadoop</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/hadoop/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2016-06-15T20:55:00+02:00</updated><entry><title>Comparing Hadoop with mainframe</title><link href="http://blog.siphos.be/2016/06/comparing-hadoop-with-mainframe/" rel="alternate"></link><published>2016-06-15T20:55:00+02:00</published><updated>2016-06-15T20:55:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-06-15:/2016/06/comparing-hadoop-with-mainframe/</id><summary type="html">&lt;p&gt;At my work, I have the pleasure of being involved in a big data project that
+uses Hadoop as the primary platform for several services. As an architect, I
+try to get to know the platform's capabilities, its potential use cases, its
+surrounding ecosystem, etc. And although the implementation at …&lt;/p&gt;</summary><content type="html">&lt;p&gt;At my work, I have the pleasure of being involved in a big data project that
+uses Hadoop as the primary platform for several services. As an architect, I
+try to get to know the platform's capabilities, its potential use cases, its
+surrounding ecosystem, etc. And although the implementation at work is not in
+its final form (yay agile infrastructure releases) I do start to get a grasp of
+where we might be going.&lt;/p&gt;
+&lt;p&gt;For many analysts and architects, this Hadoop platform is a new kid on the block
+so I have some work explaining what it is and what it is capable of. Not for the
+fun of it, but to help the company make the right decisions, to support management
+and operations, to lift the fear of new environments. One thing I've once said is
+that "Hadoop is the poor man's mainframe", because I notice some high-level
+similarities between the two.&lt;/p&gt;
+
+
+&lt;p&gt;Somehow, it stuck, and I was asked to elaborate. So why not bring these points
+into a nice blog post :)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The big fat disclaimer&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Now, before embarking on this comparison, I would like to state that I am &lt;strong&gt;not&lt;/strong&gt;
+saying that Hadoop offers the same services, or even quality and functionality
+of what can be found in mainframe environments. Considering how much time, effort
+and experience was already put in the mainframe platform, it would be strange if
+Hadoop could match the same. This post is to seek some similarities and, who knows,
+learn a few more tricks from one or another.&lt;/p&gt;
+&lt;p&gt;Second, I am not an avid mainframe knowledgeable person. I've been involved as
+an IT architect in database and workload automation technical domains, which also
+spanned the mainframe parts of it, but most of the effort was within the distributed
+world. Mainframes remain somewhat opaque to me. Still, that shouldn't prevent me
+from making any comparisons for those areas that I do have some grasp on.&lt;/p&gt;
+&lt;p&gt;And if my current understanding is just wrong, I'm sure that I'll learn from the
+comments that you can leave behind!&lt;/p&gt;
+&lt;p&gt;With that being said, here it goes...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reliability, Availability, Serviceability&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Let's start with some of the promises that both platforms make - and generally are
+also able to deliver. Those promises are of reliability, availability and serviceability.&lt;/p&gt;
+&lt;p&gt;For the mainframe platform, these quality attributes are shown as the &lt;a href="https://www.ibm.com/support/knowledgecenter/zosbasics/com.ibm.zos.zmainframe/zconc_RAS.htm"&gt;mainframe strengths&lt;/a&gt;.
+The platform's hardware has extensive self-checking and self-recovery
+capabilities, the systems can recover from failed components without service
+interruption, and failures can be quickly determined and resolved. On the mainframes,
+this is done through a good balance and alignment of hardware and software, design
+decisions and - in my opinion - tight control over the various components and
+services.&lt;/p&gt;
+&lt;p&gt;I notice the same promises on Hadoop. Various components are checking the state
+of the hardware and other components, and when something fails, it is often 
+automatically recovered without impacting services. Instead of tight control
+over the components and services, Hadoop uses a service architecture and APIs
+with Java virtual machine abstractions.&lt;/p&gt;
+&lt;p&gt;Let's consider hardware changes. &lt;/p&gt;
+&lt;p&gt;For &lt;strong&gt;hardware failure and component substitutions&lt;/strong&gt;, both platforms are capable
+of dealing with those without service disruption.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mainframe probably has a better reputation in this matter, as its components
+  have a very high Mean Time Between Failure (MTBF), and many - if not all - of
+  the components are set up in a redundant fashion. Lots of error detection and
+  failure detection processes try to detect if a component is close to failure,
+  and ensure proper transitioning of any workload towards the other components
+  without impact.&lt;/li&gt;
+&lt;li&gt;Hadoop uses redundancy on a server level. If a complete server fails, Hadoop
+  is usually able to deal with this without impact. Either the sensor-like
+  services disable a node before it goes haywire, or the workload and data that
+  was running on the failed node is restarted on a different node. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Hardware (component) failures on the mainframe side will not impact the services
+and running transactions. Component failures on Hadoop might have a noticeable
+impact (especially if it is OLTP-like workload), but will be quickly recovered.&lt;/p&gt;
+&lt;p&gt;Failures are more likely to happen on Hadoop clusters though, as it was designed
+to work with many systems that have a worse MTBF design than a mainframe. The
+focus within Hadoop is on resiliency and fast recoverability. Depending on the
+service that is being used, active redundancy can be in use (so disruptions are
+not visible to the user).&lt;/p&gt;
+&lt;p&gt;If the Hadoop workload includes anything that resembles online transactional
+processing, you're still better off with enterprise-grade hardware such as ECC
+memory to at least allow improved hardware failure detection (and perform
+proactive workload management). CPU failures are not that common (at least not
+those without any upfront Machine Check Exception - MCE), and disk/controller
+failures are handled through the abstraction of HDFS anyway.&lt;/p&gt;
+&lt;p&gt;For &lt;strong&gt;system substitutions&lt;/strong&gt;, I think both platforms can deal with this in a
+dynamic fashion as well:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;For the mainframe side (and I'm guessing here) it is possible to switch
+  machines with no service impact &lt;em&gt;if&lt;/em&gt; the services are running on LPARs
+  that are joined together in a Parallel Sysplex setup (sort-of clustering
+  through the use of the Coupling Facilities of mainframe, which is supported
+  through high-speed data links and services for handling data sharing and
+  IPC across LPARs). My company 
+  &lt;a href="https://www-03.ibm.com/press/us/en/pressrelease/47812.wss"&gt;switched to the z13 mainframe&lt;/a&gt;
+  last year, and was able to keep core services available during the migration.&lt;/li&gt;
+&lt;li&gt;For Hadoop systems, the redundancy on system level is part of its design.
+  Extending clusters, removing nodes, moving services, ... can be done with
+  no impact. For instance, switching the active HiveServer2 instance means
+  de-registering it in the ZooKeeper service. New client connects are then no
+  longer served by that HiveServer2 instance, while active client connections
+  remain until finished.
+  There are also in-memory data grid solutions such as through the Ignite
+  project, allowing for data sharing and IPC across nodes, as well as
+  building up memory-based services with Arrow, allowing for efficient
+  memory transfers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Of course, also &lt;strong&gt;application level code failures&lt;/strong&gt; tend to only disrupt that
+application, and not the other users. Be it because of different address
+spaces and tight runtime control (mainframe) or the use of different
+containers / JVMs for the applications (Hadoop), this is a good feat to have
+(even though it is not something that differentiates these platforms from
+other platforms or operating systems).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Let's talk workloads&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When we look at a mainframe setup, we generally look at different workload
+patterns as well. There are basically two main workload approaches for the
+mainframe: batch, and On-Line Transactional Processing (OLTP) workload. In
+the OLTP type, there is often an additional distinction between synchronous
+OLTP and asynchronous OLTP (usually message-based). &lt;/p&gt;
+&lt;p&gt;Well, we have the same on Hadoop. It was once a pure batch-driven platform
+(and many of its components are still using batches or micro-batches in their
+underlying designs) but now also provides OLTP workload capabilities. Most of
+the OLTP workload on Hadoop is in the form of SQL-like or NoSQL database
+management systems with transaction manager support though.&lt;/p&gt;
+&lt;p&gt;To manage these (different) workloads, and to deal with prioritization of
+the workload, both platforms offer the necessary services to make things both
+managed as well as business (or "fit for purpose") focused.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Using the Workload Manager (WLM) on the mainframe, policies can be set on
+  the workload classes so that an over-demand of resources (cross-LPARs) results
+  in the "right" amount of allocations for the "right" workload. To actually 
+  manage jobs themselves, the Job Entry Subsystem (JES) to receive jobs and
+  schedule then for processing on z/OS. For transactional workload, WLM
+  provides the right resources to for instance the involved IMS regions.&lt;/li&gt;
+&lt;li&gt;On Hadoop, workload management is done through Yet Another Resource 
+  Negotiator (YARN), which uses (logical) queues for the different workloads.
+  Workload (Application Containers) running through these queues can be, 
+  resource-wise, controlled both on the queue level (high-level resource
+  control) as well as process level (low-level resource control) through
+  the use of Linux Control Groups (CGroups - when using Linux based systems
+  course).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If I would try to compare both against each other, one might say that the
+YARN queues are like WLMs service classes, and for batch applications, the
+initiators on mainframe are like the Application Containers within YARN
+queues. The latter can also be somewhat compared to IMS regions in case
+of long-running Application Containers.&lt;/p&gt;
+&lt;p&gt;The comparison will not hold completely though. WLM can be tuned based on
+goals and will do dynamic decision making on the workloads depending on its
+parameters, and even do live adjustments on the resources (through the 
+System Resources Manager - SRM). Heavy focus on workload management on
+mainframe environments is feasible because extending the available resources
+on mainframes is usually expensive (additional Million Service Units - MSU).
+On Hadoop, large cluster users who notice resource contention just tend
+to extend the cluster further. It's a different approach.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Files and file access&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Another thing that tends to confuse some new users on Hadoop is its approach
+to files. But when you know some things about the mainframe, this does remain
+understandable.&lt;/p&gt;
+&lt;p&gt;Both platforms have a sort-of master repository where data sets (mainframe)
+or files (Hadoop) are registered in. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;On the mainframe, the catalog translates data set names into the right
+  location (or points to other catalogs that do the same)&lt;/li&gt;
+&lt;li&gt;On Hadoop, the Hadoop Distributed File System (HDFS) NameNode is
+  responsible for tracking where files (well, blocks) are located across
+  the various systems&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Considering the use of the repository, both platforms thus require the
+allocation of files and offer the necessary APIs to work with them. But
+this small comparison does not end here.&lt;/p&gt;
+&lt;p&gt;Depending on what you want to store (or access), the file format you use
+is important as well.
+- On mainframe, Virtual Storage Access Method (VSAM) provides both the
+  methods (think of it as API) as well as format for a particular data
+  organization. Inside a VSAM, multiple data entries can be stored in a
+  structured way. Besides VSAM, there is also Partitioned Data Set/Extended
+  (PDSE), which is more like a directory of sorts. Regular files are Physical
+  Sequential (PS) data sets.
+- On Hadoop, a number of file formats are supported which optimize the use of
+  the files across the services. One is Avro, which holds both methods and
+  format (not unlike VSAM), another is Optimized Row Columnar (ORC).  HDFS also
+  has a number of options that can be enabled or set on certain locations (HDFS
+  uses a folder-like structure) such as encryption, or on files themselves,
+  such as replication factor.&lt;/p&gt;
+&lt;p&gt;Although I don't say VSAM versus Avro are very similar (Hadoop focuses more on
+the concept of files and then the file structure, whereas mainframe focuses on
+the organization and allocation aspect if I'm not mistaken) they seem to be
+sufficiently similar to get people's attention back on the table.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Services all around&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;What makes a platform tick is its multitude of supported services. And even
+here can we find similarities between the two platforms.&lt;/p&gt;
+&lt;p&gt;On mainframe, DBMS services can be offered my a multitude of softwares.
+Relational DBMS services can be provided by IBM DB2, CA Datacom/DB, NOMAD, ...
+while other database types are rendered by titles such as CA IDMS and ADABAS.
+All these titles build upon the capabilities of the underlying components and
+services to extend the platform's abilities.&lt;/p&gt;
+&lt;p&gt;On Hadoop, several database technologies exist as well. Hive offers a SQL layer
+on top of Hadoop managed data (so does Drill btw), HBase is a non-relational
+database (mainly columnar store), Kylin provides distributed analytics, MapR-DB
+offers a column-store NoSQL database, etc.&lt;/p&gt;
+&lt;p&gt;When we look at transaction processing, the mainframe platform shows its decades
+of experience with solutions such as CICS and IMS. Hadoop is still very much
+at its infancy here, but with projects such as Omid or commercial software solutions
+such as Splice Machine, transactional processing is coming here as well. Most
+of these are based on underlying database management systems which are extended with
+transactional properties.&lt;/p&gt;
+&lt;p&gt;And services that offer messaging and queueing are also available on both
+platforms: mainframe can enjoy Tibco Rendezvous and IBM WebSphere MQ, while
+Hadoop is hitting the news with projects such as Kafka and Ignite.&lt;/p&gt;
+&lt;p&gt;Services extend even beyond the ones that are directly user facing. For instance,
+both platforms can easily be orchestrated using workload automation tooling.
+Mainframe has a number of popular schedulers up its sleeve (such as IBM TWS,
+BMC Control-M or CA Workload Automation) whereas Hadoop is generally easily
+extended with the scheduling and workload automation software of the distributed
+world (which, given its market, is dominated by the same vendors, although many
+smaller ones exist as well). Hadoop also has its "own" little scheduling
+infrastructure called Oozie.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Programming for the platforms&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Platforms however are more than just the sum of the services and the properties
+that it provides. Platforms are used to build solutions on, and that is true for
+both mainframe as well as Hadoop.&lt;/p&gt;
+&lt;p&gt;Let's first look at scripting - using interpreted languages. On mainframe, you
+can use the Restructed Extended Executor (REXX) or CLIST (Command LIST). Hadoop
+gives you Tez and Pig, as well as Python and R (through PySpark and SparkR).&lt;/p&gt;
+&lt;p&gt;If you want to directly interact with the systems, mainframe offers the Time
+Sharing Option/Extensions (TSO/E) and Interactive System Productivity Facility
+(ISPF). For Hadoop, regular shells can be used, as well as service-specific
+ones such as Spark shell. However, for end users, web-based services such 
+as Ambari UI (Ambari Views) are generally better suited.&lt;/p&gt;
+&lt;p&gt;If you're more fond of compiled code, mainframe supports you with COBOL, Java
+(okay, it's "a bit" interpreted, but also compiled - don't shoot me here), C/C++
+and all the other popular programming languages. Hadoop builds on top of Java,
+but supports other languages such as Scala and allows you to run native
+applications as well - it's all about using the right APIs.&lt;/p&gt;
+&lt;p&gt;To support development efforts, Integrated Development Environments (IDEs) are
+provided for both platforms as well. You can use Cobos, Micro Focus Enterprise
+Developer, Rational Developer for System z, Topaz Workbench and more for
+mainframe development. Hadoop has you covered with web-based notebook solutions
+such as Zeppelin and JupyterHub, as well as client-level IDEs such as Eclipse
+(with the Hadoop Development Tools plugins) and IntelliJ.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Governing and managing the platforms&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Finally, there is also the aspect of managing the platforms.&lt;/p&gt;
+&lt;p&gt;When working on the mainframe, management tooling such as the Hardware
+Management Console (HMC) and z/OS Management Facility (z/OSMF) cover operations
+for both hardware and system resources. On Hadoop, central management
+software such as Ambari, Cloudera Manager or Zettaset Orchestrator try to
+cover the same needs - although most of these focus more on the software
+side than on the hardware level.&lt;/p&gt;
+&lt;p&gt;Both platforms also have a reasonable use for multiple roles: application
+developers, end users, system engineers, database adminstrators, operators, 
+system administrators, production control, etc. who all need some kind of access
+to the platform to support their day-to-day duties. And when you talk roles,
+you talk authorizations.&lt;/p&gt;
+&lt;p&gt;On the mainframe, the Resource Access Control Facility (RACF) provides
+access control and auditing facilities, and supports a multitude of services on
+the mainframe (such as DB2, MQ, JES, ...). Many major Hadoop services, such
+as HDFS, YARN, Hive and HBase support Ranger, providing a single pane for
+security controls on the Hadoop platform.&lt;/p&gt;
+&lt;p&gt;Both platforms also offer the necessary APIs or hooks through which system
+developers can fine-tune the platform to fit the needs of the business, or
+develop new integrated solutions - including security oriented ones. 
+Hadoop's extensive plugin-based design (not explicitly
+named) or mainframe's Security Access Facility (SAF) are just examples of this.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Playing around&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Going for a mainframe or a Hadoop platform will always be a management decision.
+Both platforms have specific roles and need particular profiles in order to
+support them. They are both, in my opinion, also difficult to migrate away from
+once you are really using them actively (lock-in) although it is more digestible
+for Hadoop given its financial implications.&lt;/p&gt;
+&lt;p&gt;Once you want to start meddling with it, getting access to a full platform used
+to be hard (the coming age of cloud services makes that this is no longer the
+case though), and both therefore had some potential "small deployment" uses.
+Mainframe experience could be gained through the Hercules 390 emulator, whereas
+most Hadoop distributions have a single-VM sandbox available for download.&lt;/p&gt;
+&lt;p&gt;To do a full scale roll-out however is much harder to do by your own. You'll
+need to have quite some experience or even expertise on so many levels that 
+you will soon see that you need teams (plural) to get things done.&lt;/p&gt;
+&lt;p&gt;This concludes my (apparently longer than expected) write-down of this matter.
+If you don't agree, or are interested in some insights, be sure to comment!&lt;/p&gt;</content><category term="Hadoop"></category><category term="hadoop"></category><category term="mainframe"></category></entry><entry><title>Switching focus at work</title><link href="http://blog.siphos.be/2015/09/switching-focus-at-work/" rel="alternate"></link><published>2015-09-20T13:29:00+02:00</published><updated>2015-09-20T13:29:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-20:/2015/09/switching-focus-at-work/</id><summary type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
+a couple of technological domains, namely databases and scheduling/workload 
+automation. It brought me in contact with many vendors, many technologies
+and most importantly, many teams within the organization. The focus domain
+was challenging, as I had to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
+a couple of technological domains, namely databases and scheduling/workload 
+automation. It brought me in contact with many vendors, many technologies
+and most importantly, many teams within the organization. The focus domain
+was challenging, as I had to deal with the strategy on how the organization,
+which is a financial institution, will deal with databases and scheduling in
+the long term.&lt;/p&gt;
+
+
+&lt;p&gt;This means looking at the investments related to those domains, implementation
+details, standards of use, features that we will or will not use, positioning
+of products and so forth. To do this from an architecture point of view means
+that I not only had to focus on the details of the technology and understand 
+all their use, but also become a sort-of subject matter expert on those topics.
+Luckily, I had (well, still have) great teams of DBAs (for the databases) and
+batch teams (for the scheduling/workload automation) to keep things in the right
+direction. &lt;/p&gt;
+&lt;p&gt;I helped them with a (hopefully sufficiently) clear roadmap, investment track,
+procurement, contract/terms and conditions for use, architectural decisions and
+positioning and what not. And they helped me with understanding the various
+components, learn about the best use of these, and of course implement the 
+improvements that we collaboratively put on the roadmap.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Times, they are changing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Last week, I flipped over a page at work. Although I remain an IT architect
+within the same architecture team, my focus shifts entirely. Instead of a fixed
+domain, my focus is now more volatile. I leave behind the stability of 
+organizationally anchored technology domains and go forward in a more tense
+environment.&lt;/p&gt;
+&lt;p&gt;Instead of looking at just two technology domains, I need to look at all of them,
+and find the right balance between high flexibility demands (which might not want
+to use current "standard" offerings) which come up from a very agile context, and
+the almost non-negotionable requirements that are typical for financial institutions.&lt;/p&gt;
+&lt;p&gt;The focus is also not primarily technology oriented anymore. I'll be part of an 
+enterprise architecture team with direct business involvement and although my
+main focus will be on the technology side, it'll also involve information
+management, business processes and applications.&lt;/p&gt;
+&lt;p&gt;The end goal is to set up a future-proof architecture in an agile, fast-moving
+environment (contradictio in terminis ?) which has a main focus in data analytics
+and information gathering/management. Yes, "big data", but more applied than what
+some of the vendors try to sell us ;-)&lt;/p&gt;
+&lt;p&gt;I'm currently finishing off the high-level design and use of a Hadoop platform,
+and the next focus will be on a possible micro-service architecture using Docker.
+I've been working on this Hadoop design for a while now (but then it was together
+with my previous function at work) and given the evolving nature of Hadoop (and
+the various services that surround it) I'm confident that it will not be the last
+time I'm looking at it. &lt;/p&gt;
+&lt;p&gt;Now let me hope I can keep things manageable ;-)&lt;/p&gt;</content><category term="Architecture"></category><category term="work"></category><category term="hadoop"></category><category term="docker"></category></entry></feed>

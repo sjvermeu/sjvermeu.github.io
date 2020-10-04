@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Simplicity is a form of art... - incrond</title><link>http://blog.siphos.be/</link><description></description><lastBuildDate>Wed, 29 May 2013 03:50:00 +0200</lastBuildDate><item><title>A SELinux policy for incron: marking types eligible for watching</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/</link><description>&lt;p&gt;In the
+&lt;a herf="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/"&gt;previous
+post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
+&lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
+want to be able to update the policy more dynamically with additional
+types. To accomplish this, we will make types eligible for watching
+through an attribute.&lt;/p&gt;
+&lt;p&gt;So how …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 29 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-29:/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/</guid><category>SELinux</category><category>attribute</category><category>incrond</category><category>selinux</category><category>watch</category></item><item><title>A SELinux policy for incron: default set</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/</link><description>&lt;p&gt;I finished the last post a bit with a
+&lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/"&gt;cliffhanger&lt;/a&gt;
+as &lt;strong&gt;incrond&lt;/strong&gt; is still not working properly, and we got a few denials
+that needed to be resolved; here they are again for your convenience:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&amp;quot;incrond …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 28 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-28:/2013/05/a-selinux-policy-for-incron-default-set/</guid><category>SELinux</category><category>booleans</category><category>incrond</category><category>policy</category><category>selinux</category></item><item><title>A SELinux policy for incron: the incrond daemon</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/</link><description>&lt;p&gt;With &lt;code&gt;incrontab_t&lt;/code&gt; (hopefully) complete, let's look at the &lt;code&gt;incrond_t&lt;/code&gt;
+domain. As this domain will also be used to execute the user (and
+system) commands provided through the incrontabs, we need to consider
+how we are going to deal with this wide range of possible permissions
+that it might take. One …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 27 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-27:/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/</guid><category>SELinux</category><category>incrond</category><category>selinux</category></item></channel></rss>

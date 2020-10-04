@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - automation</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/automation/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-26T03:50:00+02:00</updated><entry><title>New SELinux userspace release</title><link href="http://blog.siphos.be/2013/04/new-selinux-userspace-release/" rel="alternate"></link><published>2013-04-26T03:50:00+02:00</published><updated>2013-04-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-26:/2013/04/new-selinux-userspace-release/</id><summary type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong VM, one that
+didn't contain the new packages. Result: no regressions (of course). My
+fault for not using in-ebuild tests properly, as I
+&lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=465846"&gt;should&lt;/a&gt;. So you'll
+probably see me blogging about the in-ebuild testing soon ;-)&lt;/p&gt;
+&lt;p&gt;In any case, the regressions I did find out (quite fast after I updated
+my main laptop with them as well) where a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467258"&gt;missing function in
+libselinux&lt;/a&gt;, a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467264"&gt;referral
+to a non-existing makefile when using "semanage
+permissive"&lt;/a&gt; and the new
+&lt;strong&gt;sepolicy&lt;/strong&gt; application &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467268"&gt;requiring yum python
+bindings&lt;/a&gt;. At least,
+with the missing function (hopefully correctly) resolved, all tests I
+usually do (except for the permissive domains) are now running well
+again.&lt;/p&gt;
+&lt;p&gt;This only goes to show how important testing is. Of course, I
+&lt;a href="http://marc.info/?l=selinux&amp;amp;m=136692033821285&amp;amp;w=2"&gt;reported&lt;/a&gt; the bugs
+on the mailinglist of the userspace utilities as well. Hopefully they
+can look at them while I'm asleep so I can integrate fixes tomorrow more
+easily ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="automation"></category><category term="regression"></category><category term="release"></category><category term="selinux"></category><category term="test"></category><category term="testing"></category><category term="userspace"></category></entry></feed>

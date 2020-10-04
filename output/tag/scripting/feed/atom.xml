@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - scripting</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/scripting/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-06-06T03:50:00+02:00</updated><entry><title>My application base: bash and kiss tools</title><link href="http://blog.siphos.be/2013/06/my-application-base-bash-and-kiss-tools/" rel="alternate"></link><published>2013-06-06T03:50:00+02:00</published><updated>2013-06-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-06:/2013/06/my-application-base-bash-and-kiss-tools/</id><summary type="html">&lt;p&gt;Okay, this just had to be here. I'm an automation guy - partially
+because of my job in which I'm responsible for the long-term strategy
+behind batch, scheduling and workload automation, but also because I
+believe proper automation makes life just that much easier. And for
+personal work, why not automate …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Okay, this just had to be here. I'm an automation guy - partially
+because of my job in which I'm responsible for the long-term strategy
+behind batch, scheduling and workload automation, but also because I
+believe proper automation makes life just that much easier. And for
+personal work, why not automate the majority of stuff as well? For most
+of the automation I use, I use bash scripts (or POSIX sh scripts that I
+try out with the dash shell if I need to export the scripts to non-bash
+users).&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://tiswww.case.edu/php/chet/bash/bashtop.html"&gt;Bourne-Again
+SHell&lt;/a&gt; (or &lt;strong&gt;bash&lt;/strong&gt;)
+is the default shell on Gentoo Linux systems, and is a powerful shell in
+features as well. There are numerous resources available on bash
+scripting, such as the &lt;a href="http://tldp.org/LDP/abs/html/"&gt;Advanced Bash-Scripting
+Guide&lt;/a&gt; or the
+&lt;a href="http://www.commandlinefu.com/commands/browse"&gt;commandlinefu.com&lt;/a&gt; (not
+purely bash), and specific features of Bash have several posts and
+articles all over the web.&lt;/p&gt;
+&lt;p&gt;Shell scripts are easy to write, but their power comes from the various
+tools that a Linux system contains (including the often forgotten
+GNU-provided ones, of which bash is one of them). My system is filled
+with scripts, some small, some large, all with a specific function that
+I imagined I would need to use again later. I prefix almost all my
+scripts with &lt;code&gt;sw&lt;/code&gt; (first letters of SwifT) or &lt;code&gt;mgl&lt;/code&gt; (in case the scripts
+have the potential to be used by others) so I can easily find them (if
+they are within my &lt;code&gt;${PATH}&lt;/code&gt; of course, not all of them are): just type
+the first letters followed by two tabs and bash shows me the list of
+scripts I have:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sw\t\t
+swbackup               swdocbook2html      swsandboxfirefox    swletter      swpics
+swstartvm              swstripcomment      swvmconsole         swgenpdf      swcheckmistakes
+swdoctransaccuracy     swhardened-secmerge swmailman2mbox      swmassrename  swmassstable
+swmovepics             swbumpmod           swsecontribmerge    swseduplicate swfindbracket
+swmergeoverlay         swshowtree          swsetvid            swfileprocmon swlocalize
+swgendigest            swgenmkbase         swgenfinoverview    swmatchcve
+
+$ mgl\t\t
+mglshow                mglverify         mglgxml2docbook       mglautogenif  mgltellabout
+mgltellhowto           mgltellwhynot     mglgenmodoverview     mglgenoval    mglgensetup
+mglcertcli             mglcleannode      mglwaitforfile
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With the proper basic template, I can keep the scripts sane and well
+documented. None of the scripts execute something without arguments, and
+"-h" and "--help" are always mapped to the help information. Those that
+(re)move files often have a "-p" (or "--pretend") flag that instead of
+executing the logic, echo's it to the screen.&lt;/p&gt;
+&lt;p&gt;A simple example is the swpics script. It mounts the SD card, moves the
+images to a first location (&lt;code&gt;Pictures/local/raw&lt;/code&gt;), unmounts the SD card,
+renames the pictures based on the metadata information, finds duplicates
+based on two checksums (in case I forgot to wipe the SD card afterwards
+- I don't wipe it from the script) and removes the duplicates, converts
+the raws into JPEGs and moves these to a minidlna-served location so I
+can review the images from DLNA-compliant devices when I want and then
+starts the Geeqie application. When the Geeqie application has finished,
+it searches for the removed raws and removes those from the
+minidlna-served location as well. It's simple, nothing fancy, and saves
+me a few minutes of work every time.&lt;/p&gt;
+&lt;p&gt;The kiss tools are not really a toolset that is called kiss, but rather
+a set of commands that are simple in their use. Examples are exiv2 (to
+manage JPEG EXIF information, including renaming them based on the EXIF
+timestamp), inotifywait (passive waiting for file modification/writes),
+sipcalc (calculating IP addresses and subnetwork ranges), socat (network
+socket "cat" tool), screen (or tmux, to implement virtual sessions), git
+(okay, not that KISS, but perfect for what it does - versioning stuff)
+and more. Because these applications just do what they are supposed to,
+without too many bells and whistles, it makes it easy to "glue" them
+together to get an automated flow.&lt;/p&gt;
+&lt;p&gt;Automation saves you from performing repetitive steps manually, so is a
+real time-saver. And bash is a perfect scripting language for it.&lt;/p&gt;</content><category term="Free Software"></category><category term="bash"></category><category term="dash"></category><category term="mab"></category><category term="scripting"></category></entry></feed>

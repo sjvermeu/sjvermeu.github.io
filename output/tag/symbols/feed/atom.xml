@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - symbols</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/symbols/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-03-24T21:14:00+01:00</updated><entry><title>Hidden symbols and dynamic linking</title><link href="http://blog.siphos.be/2014/03/hidden-symbols-and-dynamic-linking/" rel="alternate"></link><published>2014-03-24T21:14:00+01:00</published><updated>2014-03-24T21:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-24:/2014/03/hidden-symbols-and-dynamic-linking/</id><summary type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+ebuild which caused the following stacktrace to occur every time the
+&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+Traceback (most recent call last):
+  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
+    import seobject
+  File &amp;quot;/usr/lib64/python2.7 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+ebuild which caused the following stacktrace to occur every time the
+&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+Traceback (most recent call last):
+  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
+    import seobject
+  File &amp;quot;/usr/lib64/python2.7/site-packages/seobject.py&amp;quot;, line 27, in 
+    import sepolicy
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolicy/__init__.py&amp;quot;, line 11, in 
+    import sepolgen.interfaces as interfaces
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/interfaces.py&amp;quot;, line 24, in 
+    import access
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/access.py&amp;quot;, line 35, in 
+    from selinux import audit2why
+ImportError: /usr/lib64/python2.7/site-packages/selinux/audit2why.so: undefined symbol: sepol_set_policydb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Usually this error means that a needed library (a &lt;code&gt;.so&lt;/code&gt; file) is
+missing, or is not part of the &lt;code&gt;/etc/ld.so.conf&lt;/code&gt; list of directories to
+scan. And when SELinux is enabled, you might want to check the
+permissions of that file as well (who knows). But that wasn't the case
+here. After trying to figure things out (which includes switching Python
+versions, grepping for &lt;em&gt;sepol_set_policydb&lt;/em&gt; in &lt;code&gt;libsepol.so&lt;/code&gt; and more)
+I looked at the &lt;code&gt;audit2why.c&lt;/code&gt; code and see if/where
+&lt;em&gt;sepol_set_policydb&lt;/em&gt; is needed, as well as at the &lt;code&gt;libsepol&lt;/code&gt; sources
+to see where it is defined. And yes, the call is (of course) needed, but
+the definition made me wonder if this wasn't a bug:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;{lang="c"}
+int hidden sepol_set_policydb(policydb_t * p)
+{
+        policydb = p;
+        return 0;
+}&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Hidden? But, that means that the function symbol is not available for
+dynamic linking... So if that is the case, shouldn't &lt;code&gt;audit2why.c&lt;/code&gt; not
+call it? Turns out, this was due to a fix we introduced earlier on,
+where &lt;code&gt;libsepol&lt;/code&gt; got linked dynamically instead of statically (i.e.
+using &lt;code&gt;libsepol.a&lt;/code&gt;). Static linking of libraries still allows for the
+(hidden) symbols to be used, whereas dynamic linking doesn't.&lt;/p&gt;
+&lt;p&gt;So that part of the fix got reverted (and should fix the bug we
+introduced), and I learned a bit more about symbols (and the &lt;em&gt;hidden&lt;/em&gt;
+statement).&lt;/p&gt;
+&lt;p&gt;Bonus: if you need to check what symbols are available in a binary /
+shared library, use &lt;strong&gt;nm&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ nm -D /path/to/binary
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Gentoo"></category><category term="elf"></category><category term="hidden"></category><category term="selinux"></category><category term="symbols"></category></entry></feed>

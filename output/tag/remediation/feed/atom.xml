@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - remediation</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/remediation/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-12-20T04:47:00+01:00</updated><entry><title>Remediation through SCAP</title><link href="http://blog.siphos.be/2013/12/remediation-through-scap/" rel="alternate"></link><published>2013-12-20T04:47:00+01:00</published><updated>2013-12-20T04:47:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-20:/2013/12/remediation-through-scap/</id><summary type="html">&lt;p&gt;I promised in my &lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;previous
+post&lt;/a&gt;
+to give some information about remediation.&lt;/p&gt;
+&lt;p&gt;Remediation is the process where you fix a system to become compliant
+again after finding out there is a violation on the system. The easiest
+form of remediation of course is to just notify the administrator and
+give …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I promised in my &lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;previous
+post&lt;/a&gt;
+to give some information about remediation.&lt;/p&gt;
+&lt;p&gt;Remediation is the process where you fix a system to become compliant
+again after finding out there is a violation on the system. The easiest
+form of remediation of course is to just notify the administrator and
+give him the instructions to fix the problem - and in the majority of
+cases, this is exactly what you will do, considering that automatically
+fixing things might create more breakage if you are not careful.&lt;/p&gt;
+&lt;p&gt;But suppose that you know, for a few rules, what the remediation really
+should be, and you want to automate it. Well, in that case, you can
+document the remediation (the commands or scripts) in the XCCDF
+document. As you might have noticed in the previous example, this is
+handled through a &lt;code&gt;&amp;lt;fix&amp;gt;&lt;/code&gt; entity.&lt;/p&gt;
+&lt;p&gt;In the fix, we mention how the fix should be executed
+(&lt;em&gt;urn:xccdf:fix:system:commands&lt;/em&gt; is to tell the XCCDF interpreter that
+the remediation are commands executed on the command line (or verbatim
+within a script). The platform attribute allows us to differentiate
+based on the platform (or even version of the platform). The other
+attributes, such as &lt;em&gt;complexity&lt;/em&gt;, &lt;em&gt;disruption&lt;/em&gt; and &lt;em&gt;reboot&lt;/em&gt; is metadata
+that helps in deciding which auto-remediation you want to execute.&lt;/p&gt;
+&lt;p&gt;With openscap, the remediation can be triggered online during the
+evaluation, by adding &lt;code&gt;--remediate&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --remediate --profile ${PROFILE} --cpe gentoo-cpe.xml --results results-test-xccdf.xml test-xccdf.xml
+Title   There should be no /dev/ROOT in /etc/fstab
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-root
+Result  pass
+
+Title   There should be no /dev/BOOT in /etc/fstab
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-boot
+Result  pass
+
+Title   rc_sys should be defined in /etc/rc.conf
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
+Result  fail
+
+ --- Starting remediation ---
+Title   rc_sys should be defined in /etc/rc.conf
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
+Result  fixed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And indeed, the file has been changed and now complies with the rules
+again.&lt;/p&gt;
+&lt;p&gt;We can also generate the remediation scripts offline:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --profile ${PROFILE} --results results-test-xccdf.xml --cpe gentoo-cpe.xml test-xccdf.xml
+~$ oscap xccdf generate fix --output remediate.sh results-test-xccdf.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The resulting &lt;code&gt;remediate.sh&lt;/code&gt; script then contains the steps to remediate
+the failures reported in the &lt;code&gt;results-test-xccdf.xml&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;In general however, auto-remediation is not that recommended. The amount
+of effort you put in creating remediation scripts that are safe to
+execute is huge. If you do this for a single system, it is much easier
+to just remediate manually. If you need to do it for a large set of
+systems, it makes more sense to use a configuration management solution
+like &lt;a href="http://www.ansibleworks.com/"&gt;ansible&lt;/a&gt; or
+&lt;a href="http://puppetlabs.com/"&gt;puppet&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;So, now that we have experience with documenting our best practices and
+running validation, I'll talk about OVAL in the next post.&lt;/p&gt;
+&lt;p&gt;This post is part of a series on SCAP content:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;Documenting security best practices - XCCDF
+    introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
+    PostgreSQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;Documenting a bit more than just
+    descriptions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;Running a bit with the XCCDF
+    document&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="remediation"></category><category term="scap"></category><category term="xccdf"></category></entry></feed>

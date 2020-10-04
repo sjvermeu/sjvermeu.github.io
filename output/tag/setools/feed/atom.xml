@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - setools</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/setools/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-23T03:50:00+02:00</updated><entry><title>SLOT'ing the old swig-1</title><link href="http://blog.siphos.be/2013/04/sloting-the-old-swig-1/" rel="alternate"></link><published>2013-04-23T03:50:00+02:00</published><updated>2013-04-23T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-23:/2013/04/sloting-the-old-swig-1/</id><summary type="html">&lt;p&gt;The &lt;a href="http://www.swig.org"&gt;SWIG&lt;/a&gt; tool helps developers in building
+interfaces/libraries that can be accessed from many other languages than
+the ones the library is initially written in or for. The SELinux
+userland utility &lt;a href="http://oss.tresys.com/projects/setools"&gt;setools&lt;/a&gt; uses
+it to provide Python and Ruby interfaces even though the application
+itself is written in C …&lt;/p&gt;</summary><content type="html">&lt;p&gt;The &lt;a href="http://www.swig.org"&gt;SWIG&lt;/a&gt; tool helps developers in building
+interfaces/libraries that can be accessed from many other languages than
+the ones the library is initially written in or for. The SELinux
+userland utility &lt;a href="http://oss.tresys.com/projects/setools"&gt;setools&lt;/a&gt; uses
+it to provide Python and Ruby interfaces even though the application
+itself is written in C. Sadly, the tool currently requires swig-1 for
+its building of the interfaces and uses constructs that do not seem to
+be compatible with swig-2 (same with the apse package, btw).&lt;/p&gt;
+&lt;p&gt;I first tried to &lt;a href="http://comments.gmane.org/gmane.comp.security.selinux/17822"&gt;patch
+setools&lt;/a&gt; to
+support swig-2, but eventually found regressions in the libapol library
+it provides so the patch didn't work out (that is why some users
+mentioned that a previous setools version did build with swig - yes it
+did, but the result wasn't correct). Recently, a &lt;a href="https://plus.google.com/117641514179258643044/posts/gNrhVDuwGzp"&gt;post on Google Plus'
+SELinux
+community&lt;/a&gt;
+showed me that I wasn't wrong in this matter (it really does require
+swig-1 and doesn't seem to be trivial to fix).&lt;/p&gt;
+&lt;p&gt;Hence, I have to fix the &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=453512"&gt;gentoo build
+problem&lt;/a&gt; where one set
+of tools requires swig-1 and another swig-2. Otherwise world-updates and
+even building stages for SELinux systems would fail as Portage finds
+incompatible dependencies. One way to approach this is to use Gentoo's
+support for
+&lt;a href="http://devmanual.gentoo.org/general-concepts/slotting/"&gt;SLOTs&lt;/a&gt;. When a
+package (ebuild) in Gentoo defines a SLOT, it tells the package manager
+that the same package but a different version might be installed
+alongside the package if that has a different SLOT version. In case of
+swig, the idea is to give swig-1 a different slot than swig-2 (which
+uses &lt;code&gt;SLOT="0"&lt;/code&gt;) and make sure that both do not install the same files
+(otherwise you get file collisions).&lt;/p&gt;
+&lt;p&gt;Luckily, swig places all of its files except for the &lt;strong&gt;swig&lt;/strong&gt; binary
+itself in &lt;code&gt;/usr/share/swig/&amp;lt;version&amp;gt;&lt;/code&gt;, so all I had left to do was to
+make sure the binary itself is renamed. I chose to use &lt;strong&gt;swig1.3&lt;/strong&gt;
+(similar as to how tools like &lt;strong&gt;ruby&lt;/strong&gt; and &lt;strong&gt;python&lt;/strong&gt; and for some
+packages even &lt;strong&gt;java&lt;/strong&gt; is implemented on Gentoo). The result (through
+&lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=466650"&gt;bug 466650&lt;/a&gt;) is now in
+the tree, as well as an adapted setools package that uses the new swig
+SLOT.&lt;/p&gt;
+&lt;p&gt;Thanks to Samuli Suominen for getting me on the (hopefully ;-) right
+track. I don't know why I was afraid of doing this, it was much less
+complex than I thought (now let's hope I didn't break other things ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="selinux"></category><category term="setools"></category><category term="slot"></category><category term="swig"></category></entry></feed>

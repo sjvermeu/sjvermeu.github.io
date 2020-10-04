@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>The hardened project continues going forward... - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2012/11/the-hardened-project-continues-going-forward/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="description" content="This wednesday, the Gentoo Hardened team held its monthly online meeting, discussing the things that have been done the last few weeks and the ideas that are being worked out for the next. As I did with the last few meetings, allow me to summarize it for all interested parties …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="The hardened project continues going forward..."/>
+        <meta property="og:url" content="http://blog.siphos.be/2012/11/the-hardened-project-continues-going-forward/"/>
+        <meta property="og:description" content="This wednesday, the Gentoo Hardened team held its monthly online meeting, discussing the things that have been done the last few weeks and the ideas that are being worked out for the next. As I did with the last few meetings, allow me to summarize it for all interested parties …"/>
+        <meta property="article:published_time" content="2012-11-17" />
+            <meta property="article:section" content="Gentoo" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/gentoo.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... Gentoo ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2012/11/the-hardened-project-continues-going-forward/"
+                       rel="bookmark"
+                       title="Permalink to The hardened project continues going forward...">
+                        The hardened project continues going forward...
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2012-11-17T21:34:00+01:00"> Sat 17 November 2012</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/gentoo.html">Gentoo</a>
+
+
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>This wednesday, the <a href="http://www.gentoo.org/proj/en/hardened">Gentoo
+Hardened</a> team held its monthly
+online meeting, discussing the things that have been done the last few
+weeks and the ideas that are being worked out for the next. As I did
+with the last few meetings, allow me to summarize it for all interested
+parties...</p>
+<p><strong>Toolchain</strong></p>
+<p>The upstream GCC development on the 4.8 version progressed into its 3rd
+stage of its development cycle. Sadly, many of our hardened patches
+didn't make the release. Zorry will continue working on these things,
+hopefully still being able to merge a few - and otherwise it'll be for
+the next release.</p>
+<p>For the MIPS platform, we might not be able to support the hardenedno*
+GCC profiles [1] in time. However, this is not seen as a blocker
+(we're mostly interested in the hardened ones, not the ones without
+hardening ;-) so this could be done later on.</p>
+<p>Blueness is migrating the stage building for the uclibc stages towards
+catalyst, providing more clean stages. For the amd64 and i686 platforms,
+the uclibc-hardened and uclibc-vanilla stages are already done, and
+mips32r2/uclibc is on the way. Later, ARM stages will be looked at.
+Other platforms, like little endian MIPS, are also on the roadmap.</p>
+<p><strong>Kernel</strong></p>
+<p>The latest hardened-sources (\~arch) package contains a patch supporting
+the <em>user.*</em> namespace for extended attributes in tmpfs, as needed for
+the XATTR_PAX support [2]. However, this patch has not been properly
+investigated nor tested, so input is definitely welcome. During the
+meeting, it was suggested to cap the length of the attribute value and
+only allow the <em>user.pax</em> attribute, as we are otherwise allowing
+unprivileged applications to "grow data" in the kernel memory space (the
+tmpfs).</p>
+<p>Prometheanfire confirmed that recent-enough kernels (3.5.4-r1 and later)
+with nested paging do not exhibit the performance issues reported
+earlier.</p>
+<p><strong>SELinux</strong></p>
+<p>The 20120725 upstream policies are stabilized on revision 5. Although a
+next revision is already available in the hardened-dev overlay, it will
+not be pushed to the main tree due to a broken admin interface. Revision
+7 is slated to be made available later the same day to fix this, and is
+the next candidate for being pushed to the main tree.</p>
+<p>The september-released newer userspace utilities for SELinux are also
+going to be stabilized in the next few days (at the time of writing this
+post, they are ;-). These also support <em>epatch_user</em> so that users and
+developers can easily add in patches to try out stuff without having to
+repackage the application themselves.</p>
+<p><strong>grSecurity and PaX</strong></p>
+<p>The toolchain support for PT_PAX (the ELF-header based PaX markings) is
+due to be removed soon, meaning that the XATTR_PAX support will need to
+be matured by then. This has a few consequences on available packages
+(which will need a bump and fix) such as elfix, but also on the
+<a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-dev.git;a=commit;h=eb3a2e198c926aca7063aa036793bb94bfbec1ef">pax-utils.eclass</a>
+file (interested parties are kindly requested to test out the new eclass
+before it reaches "production"). Of course, it will also mean that the
+new PaX approach needs to be properly documented for end users and
+developers.</p>
+<p>pipacs also mentioned that he is working on a paxctld daemon. Just like
+SELinux' restorecond daemon, this deamon will look for files and check
+them against a known database of binaries with their appropriate PaX
+markings. If the markings are set differently (or not set), the paxctld
+daemon will rectify the situation. For Gentoo, this is less of a concern
+as we already set the proper information through the ebuilds.</p>
+<p><strong>Profiles</strong></p>
+<p>The old SELinux profiles, which were already deprecated for a while,
+have been removed from the portage tree. That means that all
+SELinux-using profiles use the <em>features/selinux</em> inclusion rather than
+a fully build (yet difficult to maintain) profile definition.</p>
+<p><strong>System Integrity</strong></p>
+<p>A few packages, needed to support or work with ima/evm, have been pushed
+to the hardened-dev overlay.</p>
+<p><strong>Documentation</strong></p>
+<p>The SELinux handbook has been updated with the latest policy changes
+(such as supporting the named init scripts). We also <a href="http://www.gentoo.org/proj/en/hardened/selinux-constraints.xml">documented SELinux
+policy
+constraints</a>
+which was long overdue.</p>
+<p>So again a nice month of (volunteer) work on the security state of
+Gentoo Hardened. Thanks again to all (developers, contributors and
+users) for making Gentoo Hardened where it is today. Zorry will send out
+the meeting log later to the mailinglist, so you can look at the more
+gory details of the meeting if you want.</p>
+<ul>
+<li>[1] GCC profiles are a set of parameters passed on to GCC as a
+    "default" setting. Gentoo hardened uses GCC profiles to support
+    using non-hardening features if the users wants to (through the
+    <strong>gcc-config</strong> application).</li>
+<li>[2] XATTR_PAX is a new way of handling PaX markings on binaries.
+    Previously, we kept the PaX markings (i.e. flags telling the kernel
+    PaX code to allow or deny specific behavior or enable certain
+    memory-related hardening features for a specific application) as
+    flags in the binary itself (inside the ELF header). With XATTR_PAX,
+    this is moved to an extended attribute called "user.pax".</li>
+</ul>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'the-hardened-project-continues-going-forward';
+                var disqus_url = 'http://blog.siphos.be/2012/11/the-hardened-project-continues-going-forward/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

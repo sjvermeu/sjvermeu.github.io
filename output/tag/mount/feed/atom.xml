@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - mount</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/mount/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-06-22T20:16:00+02:00</updated><entry><title>Chroots for SELinux enabled applications</title><link href="http://blog.siphos.be/2014/06/chroots-for-selinux-enabled-applications/" rel="alternate"></link><published>2014-06-22T20:16:00+02:00</published><updated>2014-06-22T20:16:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-22:/2014/06/chroots-for-selinux-enabled-applications/</id><summary type="html">&lt;p&gt;Today I had to prepare a chroot jail (thank you grsecurity for the neat
+additional chroot protection features) for a SELinux-enabled
+application. As a result, "just" making a chroot was insufficient: the
+application needed access to &lt;code&gt;/sys/fs/selinux&lt;/code&gt;. Of course, granting
+access to &lt;code&gt;/sys&lt;/code&gt; is not something I like …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I had to prepare a chroot jail (thank you grsecurity for the neat
+additional chroot protection features) for a SELinux-enabled
+application. As a result, "just" making a chroot was insufficient: the
+application needed access to &lt;code&gt;/sys/fs/selinux&lt;/code&gt;. Of course, granting
+access to &lt;code&gt;/sys&lt;/code&gt; is not something I like to see for a chroot jail.&lt;/p&gt;
+&lt;p&gt;Luckily, all other accesses are not needed, so I was able to create a
+static &lt;code&gt;/sys/fs/selinux&lt;/code&gt; directory structure in the chroot, and then
+just mount the SELinux file system on that:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In hindsight, I probably could just have created a &lt;code&gt;/selinux&lt;/code&gt; location
+as that location, although deprecated, is still checked by the SELinux
+libraries.&lt;/p&gt;
+&lt;p&gt;Anyway, there was a second requirement: access to &lt;code&gt;/etc/selinux&lt;/code&gt;.
+Luckily it was purely for read operations, so I was first contemplating
+of copying the data and doing a &lt;strong&gt;chmod -R a-w
+/var/chroot/etc/selinux&lt;/strong&gt;, but then considered a bind-mount:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Alas, bad luck - the read-only flag is ignored during the mount, and the
+bind-mount is still read-write. A &lt;a href="http://lwn.net/Articles/281157/"&gt;simple article on
+lwn.net&lt;/a&gt; informed me about the
+solution: I need to do a remount afterwards to enable the read-only
+state:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o remount,ro /var/chroot/etc/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Great! And because my brain isn't what it used to be, I just make a
+quick blog for future reference ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="bind-mount"></category><category term="bindmount"></category><category term="mount"></category><category term="read-only"></category><category term="ro"></category><category term="selinux"></category></entry><entry><title>SELinux mount options</title><link href="http://blog.siphos.be/2013/05/selinux-mount-options/" rel="alternate"></link><published>2013-05-01T03:50:00+02:00</published><updated>2013-05-01T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-01:/2013/05/selinux-mount-options/</id><summary type="html">&lt;p&gt;When you read through the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux/selinux-handbook.xml"&gt;Gentoo Hardened SELinux
+handbook&lt;/a&gt;,
+you'll notice that we sometimes update &lt;code&gt;/etc/fstab&lt;/code&gt; with some
+SELinux-specific settings. So, what are these settings about and are
+there more of them?&lt;/p&gt;
+&lt;p&gt;First of all, let's look at a particular example from the installation
+instructions so you see what …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When you read through the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux/selinux-handbook.xml"&gt;Gentoo Hardened SELinux
+handbook&lt;/a&gt;,
+you'll notice that we sometimes update &lt;code&gt;/etc/fstab&lt;/code&gt; with some
+SELinux-specific settings. So, what are these settings about and are
+there more of them?&lt;/p&gt;
+&lt;p&gt;First of all, let's look at a particular example from the installation
+instructions so you see what I am talking about:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tmpfs  /tmp  tmpfs  defaults,noexec,nosuid,rootcontext=system_u:object_r:tmp_t  0 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;What the &lt;em&gt;rootcontext=&lt;/em&gt; option does here is to set the context of the
+"root" of that file system (meaning, the context of &lt;code&gt;/tmp&lt;/code&gt; in the
+example) to the specified context &lt;em&gt;before&lt;/em&gt; the file system is made
+visible to the userspace. Because we do it soon, the file system is
+known as &lt;code&gt;tmp_t&lt;/code&gt; throughout its life cycle (not just after the mount or
+so).&lt;/p&gt;
+&lt;p&gt;Another option that you'll frequently see on the Internet is the
+&lt;em&gt;context=&lt;/em&gt; option. This option is most frequently used for file systems
+that do not support extended attributes, and as such cannot store the
+context of files on the file system. With the &lt;em&gt;context=&lt;/em&gt; mount option
+set, all files on that file system get the specified context. For
+instance, &lt;em&gt;context=system_u:object_r:removable_t&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;If the file system does support extended attributes, you might find some
+benefit in using the &lt;em&gt;defcontext=&lt;/em&gt; option. When set, the context of
+files and directories (and other resources on that file system) that do
+not have a SELinux context set yet will use this default context.
+However, once a context is set, it will use that context instead.&lt;/p&gt;
+&lt;p&gt;The last context-related mount option is &lt;em&gt;fscontext=&lt;/em&gt;. With this option,
+you set the context of the "filesystem" class object of the file system
+rather than the mount itself (or the files). Within SELinux,
+"filesystem" is one of the resource classes that can get a context.
+Remember the &lt;code&gt;/tmp&lt;/code&gt; mount example from before? Well, even though the
+files are labeled &lt;code&gt;tmp_t&lt;/code&gt;, the file system context itself is still
+&lt;code&gt;tmpfs_t&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;It is important to know that, if you use one of these mount options,
+&lt;em&gt;context=&lt;/em&gt; is mutually exclusive to the other options as it "forces" the
+context on all resources (including the filesystem class).&lt;/p&gt;</content><category term="SELinux"></category><category term="mount"></category><category term="selinux"></category></entry></feed>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>Lots of work on supporting swig-2 - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2012/08/lots-of-work-on-supporting-swig-2/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="description" content="The SELinux setools package provides a few of the commands I used the most when working with SELinux: sesearch for looking through the policy and seinfo to get information on type/attribute/role/... from the currently loaded policy. This package uses swig, the Simplified (sic) Wrapper and Interface Generator to …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Lots of work on supporting swig-2"/>
+        <meta property="og:url" content="http://blog.siphos.be/2012/08/lots-of-work-on-supporting-swig-2/"/>
+        <meta property="og:description" content="The SELinux setools package provides a few of the commands I used the most when working with SELinux: sesearch for looking through the policy and seinfo to get information on type/attribute/role/... from the currently loaded policy. This package uses swig, the Simplified (sic) Wrapper and Interface Generator to …"/>
+        <meta property="article:published_time" content="2012-08-20" />
+            <meta property="article:section" content="SELinux" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/selinux.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... SELinux ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2012/08/lots-of-work-on-supporting-swig-2/"
+                       rel="bookmark"
+                       title="Permalink to Lots of work on supporting swig-2">
+                        Lots of work on supporting swig-2
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2012-08-20T20:50:00+02:00"> Mon 20 August 2012</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>The SELinux <a href="http://oss.tresys.com/projects/setools/">setools</a>
+<a href="http://packages.gentoo.org/package/app-admin/setools">package</a> provides
+a few of the commands I used the most when working with SELinux:
+<strong>sesearch</strong> for looking through the policy and <strong>seinfo</strong> to get
+information on type/attribute/role/... from the currently loaded policy.</p>
+<p>This package uses <a href="http://www.swig.org/">swig</a>, the Simplified (sic)
+Wrapper and Interface Generator to provide libraries that can be loaded
+by Python and used as regular Python modules, based on the C code that
+setools uses. Or, in other words: you write C code, and swig transforms
+it into libraries that can be loaded by a dozen higher generation
+languages such as Python.</p>
+<p>The change from swig-1 to swig-2 however broke the setools build. It
+seems that the swig interface code that setools uses doesn't work
+properly anymore with more recent swig versions. The last few days (yes,
+days) I have been trying to get setools to build again. The fixes that I
+put in were not extremely difficult, but very labour-intensive (beyond
+the point that I think I'm doing things wrong, but hey - this is my
+first time I'm working on swig stuff, and I'm glad I already got it to
+build again).</p>
+<p>The first thing I had to do was fix constructor/destructor logic. It
+looks like swig-1 supported the C shorthand notation for structures
+whereas swig-2 sees the name of the structure as its class (note that I
+just got it to build, I still need to see if things still work):</p>
+<div class="highlight"><pre><span></span><code>  typedef struct apol_ip {...} apol_ip_t;
+  %extend apol_ip_t {
+-   apol_ip_t(const char * str) {
++   apol_ip(const char * str) {
+  ...
+-   ~apol_ip_t() {
++   ~apol_ip() {
+  ...
+}
+</code></pre></div>
+
+
+<p>Without this, I got "Illegal destructor" errors (not related to the
+illegal destructor fix made to swig itself) and "Method apol_ip_t
+requires a return type" (because it doesn't see them as constructors).</p>
+<p>The second fix I had to introduce was to rename all functions that swig
+would generate which would then have the same name as the C-function.
+For instance, suppose a C function in the code has
+<code>apol_vector_get_size</code> then swig would, for the <code>apol_vector</code> class with
+method <code>get_size</code> in the swig interface, generate a function called
+<code>apol_vector_get_size</code> which of course collides with the already defined
+function, giving an error like "Conflicting types for
+apol_vector_get_size" followed by a "previous declaration was here:".</p>
+<p>Swig supports the <code>%rename</code> method for this, so I had to do:</p>
+<div class="highlight"><pre><span></span><code>  typedef struct apol_vector {} apol_vector_t;
++ %rename(apol_vector_get_size) apol_vector_wrap_get_size;
++ %rename(apol_vector_get_capacity) apol_vector_wrap_get_capacity;
+...
+- size_t get_size() {
++ size_t wrap_get_size() {
+...
+- size_t get_capacity() {
++ size_t wrap_get_capacity() {
+</code></pre></div>
+
+
+<p>The patch that I had to add to finally get it to build again is 7019
+lines (229 Kbyte). Too much manual labour. Now let's hope this really
+fixes things, and doesn't just masquerade the build failures but
+introduces runtime failures. Of course, if I think it works, I'll send
+it upstream so that, if it is indeed the right fix, other developers
+don't have to go through this...</p>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'lots-of-work-on-supporting-swig-2';
+                var disqus_url = 'http://blog.siphos.be/2012/08/lots-of-work-on-supporting-swig-2/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

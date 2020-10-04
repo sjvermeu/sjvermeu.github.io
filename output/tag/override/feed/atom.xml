@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - override</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/override/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-15T03:50:00+02:00</updated><entry><title>Overriding the default SELinux policies</title><link href="http://blog.siphos.be/2013/05/overriding-the-default-selinux-policies/" rel="alternate"></link><published>2013-05-15T03:50:00+02:00</published><updated>2013-05-15T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-15:/2013/05/overriding-the-default-selinux-policies/</id><summary type="html">&lt;p&gt;Extending SELinux policies with additional rules is easy. As SELinux
+uses a &lt;em&gt;deny by default&lt;/em&gt; approach, all you need to do is to &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;create a
+policy
+module&lt;/a&gt;
+that contains the additional (allow) rules, load that and you're all
+set. But what if you want to remove some rules?&lt;/p&gt;
+&lt;p&gt;Well, sadly …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Extending SELinux policies with additional rules is easy. As SELinux
+uses a &lt;em&gt;deny by default&lt;/em&gt; approach, all you need to do is to &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;create a
+policy
+module&lt;/a&gt;
+that contains the additional (allow) rules, load that and you're all
+set. But what if you want to remove some rules?&lt;/p&gt;
+&lt;p&gt;Well, sadly, SELinux does not support deny rules. Once an allow rule is
+loaded in memory, it cannot be overturned anymore. Yes, you can disable
+the module itself that provides the rules, but you cannot selectively
+disable rules. So what to do?&lt;/p&gt;
+&lt;p&gt;Generally, you can disable the module that contains the rules you want
+to disable, and load a custom module that defines everything the
+original module did, except for those rules you don't like. For
+instance, if you do not want the &lt;code&gt;skype_t&lt;/code&gt; domain to be able to
+read/write to the video device, create your own skype-providing module
+(&lt;em&gt;myskype&lt;/em&gt;) with the exact same content (except for the module name at
+the first line) as the original skype module, except for the video
+device:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dev_read_sound(skype_t)
+# dev_read_video_dev(skype_t)
+dev_write_sound(skype_t)
+# dev_write_video_dev(skype_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Load in this policy, and you now have the &lt;code&gt;skype_t&lt;/code&gt; domain without the
+video access. You will get post-install failures when Gentoo pushes out
+an update to the policy though, since it will attempt to reload the
+&lt;code&gt;skype.pp&lt;/code&gt; file (through the &lt;code&gt;selinux-skype&lt;/code&gt; package) and fail because
+it declares types and attributes already provided (by &lt;em&gt;myskype&lt;/em&gt;). You
+can &lt;a href="http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=3&amp;amp;chap=5#doc_chap1"&gt;exclude the
+package&lt;/a&gt;
+from being updated, which works as long as no packages depend on it. Or
+live with the post-install failure ;-) But there might be a simpler
+approach: &lt;em&gt;epatch_user&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Recently, I added in support for &lt;em&gt;epatch_user&lt;/em&gt; in the policy ebuilds.
+This allows users to create patches against the policy source code that
+we use and put them in &lt;code&gt;/etc/portage/patches&lt;/code&gt; in the directory of the
+right category/package. For module patches, the working directory used
+is within the &lt;code&gt;policy/modules&lt;/code&gt; directory of the policy checkout. For
+base, it is below the policy checkout (in other words, the patch will
+need to use the &lt;code&gt;refpolicy/&lt;/code&gt; directory base). But because of how
+&lt;em&gt;epatch_user&lt;/em&gt; works, any patch taken from the base will work as it will
+start stripping directories up to the fourth one.&lt;/p&gt;
+&lt;p&gt;This approach is also needed if you want to exclude rules from
+interfaces rather than from the &lt;code&gt;.te&lt;/code&gt; file: create a small patch and put
+it in &lt;code&gt;/etc/portage/patches&lt;/code&gt; for the &lt;code&gt;sec-policy/selinux-base&lt;/code&gt; package
+(as this provides the interfaces).&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="epatch_user"></category><category term="Gentoo"></category><category term="override"></category><category term="patch"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - bash</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/bash/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-08-31T01:14:00+02:00</updated><entry><title>Showing return code in PS1</title><link href="http://blog.siphos.be/2014/08/showing-return-code-in-ps1/" rel="alternate"></link><published>2014-08-31T01:14:00+02:00</published><updated>2014-08-31T01:14:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-08-31:/2014/08/showing-return-code-in-ps1/</id><summary type="html">&lt;p&gt;If you do daily management on Unix/Linux systems, then checking the
+return code of a command is something you'll do often. If you do SELinux
+development, you might not even notice that a command has failed without
+checking its return code, as policies might prevent the application from
+showing …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you do daily management on Unix/Linux systems, then checking the
+return code of a command is something you'll do often. If you do SELinux
+development, you might not even notice that a command has failed without
+checking its return code, as policies might prevent the application from
+showing any output.&lt;/p&gt;
+&lt;p&gt;To make sure I don't miss out on application failures, I wanted to add
+the return code of the last executed command to my PS1 (i.e. the prompt
+displayed on my terminal).&lt;br&gt;
+I wasn't able to add it to the prompt easily - in fact, I had to use a
+bash feature called the &lt;em&gt;prompt command&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;When the &lt;code&gt;PROMPT_COMMMAND&lt;/code&gt; variable is defined, then bash will execute
+its content (which I declare as a function) to generate the prompt.
+Inside the function, I obtain the return code of the last command (&lt;code&gt;$?&lt;/code&gt;)
+and then add it to the PS1 variable. This results in the following code
+snippet inside my &lt;code&gt;~/.bashrc&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;``` {lang="bash"}
+export PROMPT_COMMAND=__gen_ps1&lt;/p&gt;
+&lt;p&gt;function __gen_ps1() {
+  local EXITCODE="$?";
+  # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
+  if type -P dircolors &amp;gt;/dev/null ; then
+    if [[ -f ~/.dir_colors ]] ; then
+      eval $(dircolors -b ~/.dir_colors)
+    elif [[ -f /etc/DIR_COLORS ]] ; then
+      eval $(dircolors -b /etc/DIR_COLORS)
+    fi
+  fi&lt;/p&gt;
+&lt;p&gt;if [[ ${EUID} == 0 ]] ; then
+    PS1="RC=${EXITCODE} [\033[01;31m]\h[\033[01;34m] \W \$[\033[00m] "
+  else
+    PS1="RC=${EXITCODE} [\033[01;32m]\u@\h[\033[01;34m] \w \$[\033[00m] "
+  fi
+}
+```&lt;/p&gt;
+&lt;p&gt;With it, my prompt now nicely shows the return code of the last executed
+command. Neat.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; Sean Patrick Santos showed me my utter failure in that this can
+be accomplished with the &lt;code&gt;PS1&lt;/code&gt; variable immediately, without using the
+overhead of the &lt;code&gt;PROMPT_COMMAND&lt;/code&gt;. Just make sure to properly escape the
+&lt;code&gt;$&lt;/code&gt; sign which I of course forgot in my late-night experiments :-(.&lt;/p&gt;</content><category term="Gentoo"></category><category term="bash"></category><category term="ps1"></category><category term="rc"></category><category term="shell"></category></entry><entry><title>My application base: bash and kiss tools</title><link href="http://blog.siphos.be/2013/06/my-application-base-bash-and-kiss-tools/" rel="alternate"></link><published>2013-06-06T03:50:00+02:00</published><updated>2013-06-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-06:/2013/06/my-application-base-bash-and-kiss-tools/</id><summary type="html">&lt;p&gt;Okay, this just had to be here. I'm an automation guy - partially
+because of my job in which I'm responsible for the long-term strategy
+behind batch, scheduling and workload automation, but also because I
+believe proper automation makes life just that much easier. And for
+personal work, why not automate …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Okay, this just had to be here. I'm an automation guy - partially
+because of my job in which I'm responsible for the long-term strategy
+behind batch, scheduling and workload automation, but also because I
+believe proper automation makes life just that much easier. And for
+personal work, why not automate the majority of stuff as well? For most
+of the automation I use, I use bash scripts (or POSIX sh scripts that I
+try out with the dash shell if I need to export the scripts to non-bash
+users).&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://tiswww.case.edu/php/chet/bash/bashtop.html"&gt;Bourne-Again
+SHell&lt;/a&gt; (or &lt;strong&gt;bash&lt;/strong&gt;)
+is the default shell on Gentoo Linux systems, and is a powerful shell in
+features as well. There are numerous resources available on bash
+scripting, such as the &lt;a href="http://tldp.org/LDP/abs/html/"&gt;Advanced Bash-Scripting
+Guide&lt;/a&gt; or the
+&lt;a href="http://www.commandlinefu.com/commands/browse"&gt;commandlinefu.com&lt;/a&gt; (not
+purely bash), and specific features of Bash have several posts and
+articles all over the web.&lt;/p&gt;
+&lt;p&gt;Shell scripts are easy to write, but their power comes from the various
+tools that a Linux system contains (including the often forgotten
+GNU-provided ones, of which bash is one of them). My system is filled
+with scripts, some small, some large, all with a specific function that
+I imagined I would need to use again later. I prefix almost all my
+scripts with &lt;code&gt;sw&lt;/code&gt; (first letters of SwifT) or &lt;code&gt;mgl&lt;/code&gt; (in case the scripts
+have the potential to be used by others) so I can easily find them (if
+they are within my &lt;code&gt;${PATH}&lt;/code&gt; of course, not all of them are): just type
+the first letters followed by two tabs and bash shows me the list of
+scripts I have:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sw\t\t
+swbackup               swdocbook2html      swsandboxfirefox    swletter      swpics
+swstartvm              swstripcomment      swvmconsole         swgenpdf      swcheckmistakes
+swdoctransaccuracy     swhardened-secmerge swmailman2mbox      swmassrename  swmassstable
+swmovepics             swbumpmod           swsecontribmerge    swseduplicate swfindbracket
+swmergeoverlay         swshowtree          swsetvid            swfileprocmon swlocalize
+swgendigest            swgenmkbase         swgenfinoverview    swmatchcve
+
+$ mgl\t\t
+mglshow                mglverify         mglgxml2docbook       mglautogenif  mgltellabout
+mgltellhowto           mgltellwhynot     mglgenmodoverview     mglgenoval    mglgensetup
+mglcertcli             mglcleannode      mglwaitforfile
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With the proper basic template, I can keep the scripts sane and well
+documented. None of the scripts execute something without arguments, and
+"-h" and "--help" are always mapped to the help information. Those that
+(re)move files often have a "-p" (or "--pretend") flag that instead of
+executing the logic, echo's it to the screen.&lt;/p&gt;
+&lt;p&gt;A simple example is the swpics script. It mounts the SD card, moves the
+images to a first location (&lt;code&gt;Pictures/local/raw&lt;/code&gt;), unmounts the SD card,
+renames the pictures based on the metadata information, finds duplicates
+based on two checksums (in case I forgot to wipe the SD card afterwards
+- I don't wipe it from the script) and removes the duplicates, converts
+the raws into JPEGs and moves these to a minidlna-served location so I
+can review the images from DLNA-compliant devices when I want and then
+starts the Geeqie application. When the Geeqie application has finished,
+it searches for the removed raws and removes those from the
+minidlna-served location as well. It's simple, nothing fancy, and saves
+me a few minutes of work every time.&lt;/p&gt;
+&lt;p&gt;The kiss tools are not really a toolset that is called kiss, but rather
+a set of commands that are simple in their use. Examples are exiv2 (to
+manage JPEG EXIF information, including renaming them based on the EXIF
+timestamp), inotifywait (passive waiting for file modification/writes),
+sipcalc (calculating IP addresses and subnetwork ranges), socat (network
+socket "cat" tool), screen (or tmux, to implement virtual sessions), git
+(okay, not that KISS, but perfect for what it does - versioning stuff)
+and more. Because these applications just do what they are supposed to,
+without too many bells and whistles, it makes it easy to "glue" them
+together to get an automated flow.&lt;/p&gt;
+&lt;p&gt;Automation saves you from performing repetitive steps manually, so is a
+real time-saver. And bash is a perfect scripting language for it.&lt;/p&gt;</content><category term="Free Software"></category><category term="bash"></category><category term="dash"></category><category term="mab"></category><category term="scripting"></category></entry><entry><title>Commandline SELinux policy helper functions</title><link href="http://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/" rel="alternate"></link><published>2013-05-18T03:50:00+02:00</published><updated>2013-05-18T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-18:/2013/05/commandline-selinux-policy-helper-functions/</id><summary type="html">&lt;p&gt;To work on SELinux policies, I use a couple of functions that I can call
+on the shell (command line): &lt;strong&gt;seshowif&lt;/strong&gt;, &lt;strong&gt;sefindif&lt;/strong&gt;, &lt;strong&gt;seshowdef&lt;/strong&gt;
+and &lt;strong&gt;sefinddef&lt;/strong&gt;. The idea behind the methods is that I want to search
+(&lt;em&gt;find&lt;/em&gt;) for an interface (&lt;em&gt;if&lt;/em&gt;) or definition (&lt;em&gt;def&lt;/em&gt;) that contains a
+particular method or …&lt;/p&gt;</summary><content type="html">&lt;p&gt;To work on SELinux policies, I use a couple of functions that I can call
+on the shell (command line): &lt;strong&gt;seshowif&lt;/strong&gt;, &lt;strong&gt;sefindif&lt;/strong&gt;, &lt;strong&gt;seshowdef&lt;/strong&gt;
+and &lt;strong&gt;sefinddef&lt;/strong&gt;. The idea behind the methods is that I want to search
+(&lt;em&gt;find&lt;/em&gt;) for an interface (&lt;em&gt;if&lt;/em&gt;) or definition (&lt;em&gt;def&lt;/em&gt;) that contains a
+particular method or call. Or, if I know what the interface or
+definition is, I want to see it (&lt;em&gt;show&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;For instance, to find the name of the interface that allows us to define
+file transitions from the &lt;code&gt;postfix_etc_t&lt;/code&gt; label:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif filetrans.*postfix_etc
+contrib/postfix.if: interface(`postfix_config_filetrans&amp;#39;,`
+contrib/postfix.if:     filetrans_pattern($1, postfix_etc_t, $2, $3, $4)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Or to show the content of the &lt;em&gt;corenet_tcp_bind_http_port&lt;/em&gt;
+interface:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ seshowif corenet_tcp_bind_http_port
+interface(`corenet_tcp_bind_http_port&amp;#39;,`
+        gen_require(`
+                type http_port_t;
+        &amp;#39;)
+
+        allow $1 http_port_t:tcp_socket name_bind;
+        allow $1 self:capability net_bind_service;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For the definitions, this is quite similar:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefinddef socket.*create
+obj_perm_sets.spt:define(`create_socket_perms&amp;#39;, `{ create rw_socket_perms }&amp;#39;)
+obj_perm_sets.spt:define(`create_stream_socket_perms&amp;#39;, `{ create_socket_perms listen accept }&amp;#39;)
+obj_perm_sets.spt:define(`connected_socket_perms&amp;#39;, `{ create ioctl read getattr write setattr append bind getopt setopt shutdown }&amp;#39;)
+obj_perm_sets.spt:define(`create_netlink_socket_perms&amp;#39;, `{ create_socket_perms nlmsg_read nlmsg_write }&amp;#39;)
+obj_perm_sets.spt:define(`rw_netlink_socket_perms&amp;#39;, `{ create_socket_perms nlmsg_read nlmsg_write }&amp;#39;)
+obj_perm_sets.spt:define(`r_netlink_socket_perms&amp;#39;, `{ create_socket_perms nlmsg_read }&amp;#39;)
+obj_perm_sets.spt:define(`client_stream_socket_perms&amp;#39;, `{ create ioctl read getattr write setattr append bind getopt setopt shutdown }&amp;#39;)
+
+$ seshowdef manage_files_pattern
+define(`manage_files_pattern&amp;#39;,`
+        allow $1 $2:dir rw_dir_perms;
+        allow $1 $3:file manage_file_perms;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I have these defined in my &lt;code&gt;~/.bashrc&lt;/code&gt; (they are simple
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/selinux-funcs.txt"&gt;functions&lt;/a&gt;) and
+are used on a daily basis here ;-) If you want to learn a bit more on
+developing SELinux policies for Gentoo, make sure you read the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux-development.xml"&gt;Gentoo
+Hardened SELinux
+Development&lt;/a&gt;
+guide.&lt;/p&gt;</content><category term="SELinux"></category><category term="bash"></category><category term="definition"></category><category term="functions"></category><category term="interface"></category><category term="policy"></category><category term="selinux"></category><category term="support"></category></entry></feed>

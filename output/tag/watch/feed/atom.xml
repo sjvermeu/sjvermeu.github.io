@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - watch</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/watch/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-29T03:50:00+02:00</updated><entry><title>A SELinux policy for incron: marking types eligible for watching</title><link href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/" rel="alternate"></link><published>2013-05-29T03:50:00+02:00</published><updated>2013-05-29T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-29:/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/</id><summary type="html">&lt;p&gt;In the
+&lt;a herf="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/"&gt;previous
+post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
+&lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
+want to be able to update the policy more dynamically with additional
+types. To accomplish this, we will make types eligible for watching
+through an attribute.&lt;/p&gt;
+&lt;p&gt;So how …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the
+&lt;a herf="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/"&gt;previous
+post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
+&lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
+want to be able to update the policy more dynamically with additional
+types. To accomplish this, we will make types eligible for watching
+through an attribute.&lt;/p&gt;
+&lt;p&gt;So how does this work? First, we create an attribute called
+&lt;code&gt;incron_notify_type&lt;/code&gt; (we can choose the name we want of course) and
+grant &lt;code&gt;incrond_t&lt;/code&gt; the proper rights on all types that have been assigned
+the &lt;code&gt;incron_notify_type&lt;/code&gt; attribute. Then, we create an interface that
+other modules (or admins) can use to mark specific types eligible for
+watching, called &lt;em&gt;incron_notify_file&lt;/em&gt;. This interface will assign the
+&lt;code&gt;incron_notify_type&lt;/code&gt; attribute to the provided type.&lt;/p&gt;
+&lt;p&gt;First, the attribute and its associated privileges:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;attribute incron_notify_type;
+...
+allow incrond_t incron_notify_type:dir list_dir_perms;
+allow incrond_t incron_notify_type:file read_file_perms;
+allow incrond_t incron_notify_type:lnk_file read_lnk_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it. For now, this won't do much as there are no types associated
+with the &lt;code&gt;incron_notify_type&lt;/code&gt; attribute, so let's change that by
+introducing the interface:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;########################################
+## &amp;lt;summary&amp;gt;
+##      Make the specified type a file or directory
+##      that incrond can watch on.
+## &amp;lt;/summary&amp;gt;
+## &amp;lt;param name=&amp;quot;file_type&amp;quot;&amp;gt;
+##      &amp;lt;summary&amp;gt;
+##      Type of the file to be allowed to watch
+##      &amp;lt;/summary&amp;gt;
+## &amp;lt;/param&amp;gt;
+#
+interface(`incron_notify_file&amp;#39;,`
+        gen_require(`
+                attribute incron_notify_type;
+        &amp;#39;)
+
+        typeattribute $1 incron_notify_type;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it! If you want &lt;strong&gt;incrond&lt;/strong&gt; to watch user content, one can now do
+something like:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;incron_notify_file(home_root_t)
+incron_notify_file(user_home_dir_t)
+incron_notify_file(user_home_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Moreover, we can now also easily check what additional types have been
+marked as such:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ seinfo -aincron_notify_type -x
+   incron_notify_type
+      user_home_dir_t
+      user_home_t
+      home_root_t
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This attribute approach is commonly used for such setups and is becoming
+more and more a "standard" approach.&lt;/p&gt;
+&lt;p&gt;In the next post, we'll cover a boolean-triggered approach where
+&lt;strong&gt;incrond&lt;/strong&gt; will be eligible for watching all (non-security) content.&lt;/p&gt;</content><category term="SELinux"></category><category term="attribute"></category><category term="incrond"></category><category term="selinux"></category><category term="watch"></category></entry></feed>

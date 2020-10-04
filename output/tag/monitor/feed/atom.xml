@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - monitor</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/monitor/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-30T03:50:00+02:00</updated><entry><title>Qemu-KVM monitor tips and tricks</title><link href="http://blog.siphos.be/2013/04/qemu-kvm-monitor-tips-and-tricks/" rel="alternate"></link><published>2013-04-30T03:50:00+02:00</published><updated>2013-04-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-30:/2013/04/qemu-kvm-monitor-tips-and-tricks/</id><summary type="html">&lt;p&gt;When running KVM guests, the &lt;a href="https://en.wikibooks.org/wiki/QEMU/Monitor"&gt;Qemu/KVM
+monitor&lt;/a&gt; is a nice interface
+to interact with the VM and do specific maintenance tasks on. If you run
+the KVM guests with VNC, then you can get to this monitor through
+&lt;code&gt;Ctrl-Alt-2&lt;/code&gt; (and &lt;code&gt;Ctrl-Alt-1&lt;/code&gt; to get back to the VM display). I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When running KVM guests, the &lt;a href="https://en.wikibooks.org/wiki/QEMU/Monitor"&gt;Qemu/KVM
+monitor&lt;/a&gt; is a nice interface
+to interact with the VM and do specific maintenance tasks on. If you run
+the KVM guests with VNC, then you can get to this monitor through
+&lt;code&gt;Ctrl-Alt-2&lt;/code&gt; (and &lt;code&gt;Ctrl-Alt-1&lt;/code&gt; to get back to the VM display). I
+personally run with the monitor on the standard input/output where the
+VM is launched as its output is often large and scrolling in the VNC
+doesn't seem to work well.&lt;/p&gt;
+&lt;p&gt;I decided to give you a few tricks that I use often on the monitor to
+handle the VMs.&lt;/p&gt;
+&lt;p&gt;When I do not start the VNC server associated with the VM by default, I
+can enable it on the monitor using &lt;strong&gt;change vnc&lt;/strong&gt; while getting details
+is done using &lt;strong&gt;info vnc&lt;/strong&gt;. To disable VNC again, use &lt;strong&gt;change vnc
+none&lt;/strong&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) info vnc
+Server: disabled
+(qemu) change vnc 127.0.0.1:20
+(qemu) change vnc password
+Password: ******
+(qemu) info vnc
+Server:
+     address: 127.0.0.1:5920
+        auth: vnc
+Client: none
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Similarly, if you need to enable remote debugging, you can use the
+&lt;strong&gt;gdbserver&lt;/strong&gt; option.&lt;/p&gt;
+&lt;p&gt;Getting information using &lt;strong&gt;info&lt;/strong&gt; is dead-easy, and supports a wide
+area of categories: balloon info, block devices, character devices,
+cpus, memory mappings, network information, etcetera etcetera... Just
+enter &lt;strong&gt;info&lt;/strong&gt; to get an overview of all supported commands.&lt;/p&gt;
+&lt;p&gt;To easily manage block devices, you can see the current state of devices
+using &lt;strong&gt;info block&lt;/strong&gt; and then use &lt;strong&gt;change &amp;lt;blockdevice&amp;gt;
+&amp;lt;path&amp;gt;&lt;/strong&gt; to update it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) info block
+virtio0: removable=0 io-status=ok file=/srv/virt/gentoo/hardened2selinux/selinux-base.img ro=0 drv=qcow2 encrypted=0 bps=0 bps_rd=0 bps_wr=0 iops=0 iops_rd=0 iops_wr=0
+ide1-cd0: removable=1 locked=0 tray-open=0 io-status=ok [not inserted]
+floppy0: removable=1 locked=0 tray-open=0 [not inserted]
+sd0: removable=1 locked=0 tray-open=0 [not inserted]
+(qemu) change ide1-cd0 /srv/virt/media/systemrescuecd-x86-2.2.0.iso
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To powerdown the system, use &lt;strong&gt;system_powerdown&lt;/strong&gt;. If that fails, you
+can use &lt;strong&gt;quit&lt;/strong&gt; to immediately shut down (terminate) the VM. To reset
+it, use &lt;strong&gt;system_reset&lt;/strong&gt;. You can also hot-add PCI devices and
+manipulate CPU states, or even perform &lt;a href="http://www.linux-kvm.org/page/Migration"&gt;live
+migrations&lt;/a&gt; between systems.&lt;/p&gt;
+&lt;p&gt;When you use qcow2 image formats, you can take a full VM snapshot using
+&lt;strong&gt;savevm&lt;/strong&gt; and, when you later want to return to this point again, use
+&lt;strong&gt;loadvm&lt;/strong&gt;. This is interesting when you want to do potentially harmful
+changes on the system and want to easily revert back if things got
+broken.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) savevm 20130419
+(qemu) info snapshots
+     ID        TAG                 VM SIZE                DATE       VM CLOCK
+     1         20130419               224M 2013-04-19 12:05:16   00:00:17.294
+(qemu) loadvm 20130419
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Free Software"></category><category term="kvm"></category><category term="monitor"></category><category term="qemu"></category></entry></feed>

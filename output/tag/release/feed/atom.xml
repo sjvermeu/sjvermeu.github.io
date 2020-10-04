@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - release</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/release/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-12-11T18:37:00+01:00</updated><entry><title>Gentoo SELinux policy release script</title><link href="http://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/" rel="alternate"></link><published>2013-12-11T18:37:00+01:00</published><updated>2013-12-11T18:37:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-11:/2013/12/gentoo-selinux-policy-release-script/</id><summary type="html">&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
+new SELinux policy packages. The script is on the
+&lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;repository&lt;/a&gt;
+itself, in the &lt;code&gt;gentoo/&lt;/code&gt; subdirectory, and is called
+&lt;code&gt;release-prepare.sh&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The reason for the script is that there are a number of steps to
+perform …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
+new SELinux policy packages. The script is on the
+&lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;repository&lt;/a&gt;
+itself, in the &lt;code&gt;gentoo/&lt;/code&gt; subdirectory, and is called
+&lt;code&gt;release-prepare.sh&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The reason for the script is that there are a number of steps to
+perform, one of which (tagging the release) I forgot to do too often. So
+today I made a new release of the policy packages (2.20130424-r4) with
+the script, and decided to blog about it as other developers in the
+hardened team might one day be asked to make a release when I'm not
+available.&lt;/p&gt;
+&lt;p&gt;When the script is called, it spits out the usual help information.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sh release-prepare.sh -h
+Usage: release-prepare.sh
+
+Example: release-prepare.sh 2.20130424-r2 2.20130424-r3
+
+The script will copy the ebuilds of the  towards the
+ and update the string occurrences of that version
+(mostly for the BASEPOL variable).
+
+The following environment variables must be declared correctly for the script
+to function properly:
+  - GENTOOX86 should point to the gentoo-x86 checkout
+    E.g. export GENTOOX86=&amp;quot;/home/user/dev/gentoo-x86&amp;quot;
+  - HARDENEDREFPOL should point to the hardened-refpolicy.git checkout
+    E.g. export HARDENEDREFPOL=&amp;quot;/home/user/dev/hardened-refpolicy&amp;quot;
+  - REFPOLRELEASE should point to the current latest /release/ of the reference
+    policy (so NOT to a checkout), extracted somewhere on the file system.
+    E.g. export REFPOLRELEASE=&amp;quot;/home/user/local/refpolicy-20130424&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So first, we need to export three environment variables needed by the
+script:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;GENTOOX86&lt;/code&gt; points to the CVS checkout of the Portage tree. It is
+    used to create new ebuilds.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;HARDENEDREFPOL&lt;/code&gt; is the git checkout of the policy repository. This
+    one is used to read the changes from to generate a patch.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;REFPOLRELEASE&lt;/code&gt; is an extracted &lt;code&gt;refpolicy-20130424.tar.gz&lt;/code&gt; (the
+    upstream release of the reference policy). This extracted location
+    is needed to generate the patch (the difference between our
+    repository and the upstream release).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;After setting the variables, the script does its magic:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sh release-prepare.sh 2.20130424-r3 2.20130424-r4
+Creating patch 0001-full-patch-against-stable-release.patch... done
+Creating patch bundle for 2.20130424-r4... done
+Copying patch bundle into /usr/portage/distfiles and dev.g.o... done
+Removing old patchbundle references in Manifest (in case of rebuild)... done
+Creating new ebuilds based on old version... done
+Marking ebuilds as ~arch... done
+Creating tag 2.20130424-r4 in our repository... done
+The release has now been prepared.
+
+Please go do the following to finish up:
+- In /home/swift/dev/gentoo-x86/sec-policy go &amp;quot;cvs add&amp;quot; all the new ebuilds
+- In /home/swift/dev/gentoo-x86/sec-policy run &amp;quot;repoman manifest&amp;quot; and &amp;quot;repoman full&amp;quot;
+
+Then, before finally committing - do a run yourself, ensuring that the right
+version is deployed of course:
+- &amp;quot;emerge -1 sec-policy/selinux-aide
+sec-policy/selinux-alsa
+...
+Only then do a &amp;#39;repoman commit -m &amp;#39;Release of 2.20130424-r4&amp;#39;&amp;#39;.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The script performs the following steps:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;It creates the patch with the difference between the main refpolicy
+    release and our repository. Our repository closely follows the
+    upstream release, but still contains quite a few changes that have
+    not been upstreamed yet (due to history loss of the changes, or the
+    changes are very gentoo-specific, or the changes still need to
+    be improved). In the past, we maintained all the patches separately,
+    but this meant that the deployment of the policy ebuilds took too
+    long (around 100 patches being applied takes a while, and took more
+    than 80% of the total deployment time on a regular server system).
+    By using a single patch file, the deployment time is
+    reduced drastically.&lt;/li&gt;
+&lt;li&gt;It then compresses this patch file and stores it in
+    &lt;code&gt;/usr/portage/distfiles&lt;/code&gt; (so that later &lt;code&gt;repoman manifest&lt;/code&gt; can take
+    the file into account) as well as on my dev.gentoo.org location
+    (where it is referenced). If other developers create a release, they
+    will need to change this location (and the pointer in the ebuilds).&lt;/li&gt;
+&lt;li&gt;Previous file references in the &lt;code&gt;Manifest&lt;/code&gt; files are removed, so
+    that &lt;code&gt;repoman&lt;/code&gt; does not think the digest can be skipped.&lt;/li&gt;
+&lt;li&gt;New ebuilds are created, copied from the previous version. In these
+    ebuilds, the &lt;code&gt;KEYWORDS&lt;/code&gt; variable is updated to only contain
+    &lt;code&gt;~arch&lt;/code&gt; keywords.&lt;/li&gt;
+&lt;li&gt;A release tag is created in the git repository.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Then the script tells the user to add the new files to the repository,
+run &lt;code&gt;repoman manifest&lt;/code&gt; and &lt;code&gt;repoman full&lt;/code&gt; to verify the quality of the
+ebuilds and generate the necessary digests. Then, and also after
+testing, the created ebuilds can be committed to the repository.&lt;/p&gt;
+&lt;p&gt;The last few steps have explicitly not been automated so the developer
+has the chance to update the ebuilds (in case more than just the policy
+contents has changed between releases) or do dry runs without affecting
+the &lt;code&gt;gentoo-x86&lt;/code&gt; repository.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="policy"></category><category term="release"></category><category term="selinux"></category></entry><entry><title>cvechecker 3.3 released</title><link href="http://blog.siphos.be/2013/09/cvechecker-3-3-released/" rel="alternate"></link><published>2013-09-16T16:06:00+02:00</published><updated>2013-09-16T16:06:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-09-16:/2013/09/cvechecker-3-3-released/</id><summary type="html">&lt;p&gt;I just uploaded a new release of &lt;a href="http://cvechecker.sf.net"&gt;cvechecker&lt;/a&gt;
+to the project files. The release is a (long overdue) bugfix release,
+but includes two small enhancements: support standard input for the
+binary list (so you can pipe the output of one command to cvechecker)
+and the introduction of the &lt;code&gt;CVECHECKER_CONFFILE&lt;/code&gt; variable …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just uploaded a new release of &lt;a href="http://cvechecker.sf.net"&gt;cvechecker&lt;/a&gt;
+to the project files. The release is a (long overdue) bugfix release,
+but includes two small enhancements: support standard input for the
+binary list (so you can pipe the output of one command to cvechecker)
+and the introduction of the &lt;code&gt;CVECHECKER_CONFFILE&lt;/code&gt; variable to refer to
+another location for the configuration file.&lt;/p&gt;
+&lt;p&gt;Big thanks to &lt;a href="http://mulhern-at-yocto.dreamwidth.org/"&gt;Anne Mulhern&lt;/a&gt;
+for the various patches submitted!&lt;/p&gt;</content><category term="Security"></category><category term="cvechecker"></category><category term="release"></category></entry><entry><title>New SELinux userspace release</title><link href="http://blog.siphos.be/2013/04/new-selinux-userspace-release/" rel="alternate"></link><published>2013-04-26T03:50:00+02:00</published><updated>2013-04-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-26:/2013/04/new-selinux-userspace-release/</id><summary type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong VM, one that
+didn't contain the new packages. Result: no regressions (of course). My
+fault for not using in-ebuild tests properly, as I
+&lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=465846"&gt;should&lt;/a&gt;. So you'll
+probably see me blogging about the in-ebuild testing soon ;-)&lt;/p&gt;
+&lt;p&gt;In any case, the regressions I did find out (quite fast after I updated
+my main laptop with them as well) where a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467258"&gt;missing function in
+libselinux&lt;/a&gt;, a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467264"&gt;referral
+to a non-existing makefile when using "semanage
+permissive"&lt;/a&gt; and the new
+&lt;strong&gt;sepolicy&lt;/strong&gt; application &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467268"&gt;requiring yum python
+bindings&lt;/a&gt;. At least,
+with the missing function (hopefully correctly) resolved, all tests I
+usually do (except for the permissive domains) are now running well
+again.&lt;/p&gt;
+&lt;p&gt;This only goes to show how important testing is. Of course, I
+&lt;a href="http://marc.info/?l=selinux&amp;amp;m=136692033821285&amp;amp;w=2"&gt;reported&lt;/a&gt; the bugs
+on the mailinglist of the userspace utilities as well. Hopefully they
+can look at them while I'm asleep so I can integrate fixes tomorrow more
+easily ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="automation"></category><category term="regression"></category><category term="release"></category><category term="selinux"></category><category term="test"></category><category term="testing"></category><category term="userspace"></category></entry></feed>

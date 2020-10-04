@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - vappliance</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/vappliance/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-01-09T04:13:00+01:00</updated><entry><title>Can Gentoo play a role in a RHEL-only environment?</title><link href="http://blog.siphos.be/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/" rel="alternate"></link><published>2014-01-09T04:13:00+01:00</published><updated>2014-01-09T04:13:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-09:/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/</id><summary type="html">&lt;p&gt;Sounds like a stupid question, as the answer is already in the title. If
+a company has only RedHat Enterprise Linux as allowed / supported Linux
+platform (be it for a support model requirement, ISV certification,
+management tooling support or what not) how could or would Gentoo still
+play a role …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sounds like a stupid question, as the answer is already in the title. If
+a company has only RedHat Enterprise Linux as allowed / supported Linux
+platform (be it for a support model requirement, ISV certification,
+management tooling support or what not) how could or would Gentoo still
+play a role in it.&lt;/p&gt;
+&lt;p&gt;But the answer is, surprisingly, that Gentoo can still be made available
+in the company architecture. One of the possible approaches is a
+&lt;em&gt;virtual appliance&lt;/em&gt; role.&lt;/p&gt;
+&lt;p&gt;Virtual appliances are entire operating systems, provided through VM
+images (be it VMDK or in an
+&lt;a href="http://en.wikipedia.org/wiki/Open_Virtualization_Format"&gt;OVF&lt;/a&gt; package),
+which offer a well defined service to its consumers. More and more
+products are being presented as virtual appliances. Why not - in the
+past, they would be in sealed hardware appliances (but still running
+some form of Linux on it) but nowadays the hypervisor and other
+infrastructure is strong and powerful enough to handle even the most
+intensive tasks in a virtual guest.&lt;/p&gt;
+&lt;p&gt;Gentoo is extremely powerful as a meta-distribution. You can tweak,
+update, enhance and tune a Gentoo Linux installation to fulfill whatever
+requirement you have. And in the end, you can easily create a virtual
+image from it, and have it run as a virtual appliance in the company.&lt;/p&gt;
+&lt;p&gt;An example could be to offer a web-based password management suite. A
+Gentoo Linux deployment could be created, fully
+&lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;hardened&lt;/a&gt; of course,
+with a MAC such as SELinux active. On it, a properly secured web server
+with the password management suite, with underlying database (of course
+only listening on localhost - don't want to expose the database to the
+wider network). Through a simple menu, the various administrative
+services needed to integrate the "appliance" in a larger environment can
+be configured: downloading an SSL certificate request (and uploading the
+signed one), (encrypted) backup/restore routines, SNMP configuration and
+more.&lt;/p&gt;
+&lt;p&gt;If properly designed, all configuration data could be easily exported
+and imported (or provided through a secundary mount) so that updates on
+the appliance are as simple as booting a new image and
+uploading/mounting the configuration data.&lt;/p&gt;
+&lt;p&gt;Building such a virtual appliance can be simplified with &lt;a href="http://www.gentoo.org/proj/en/gentoo-alt/prefix/"&gt;Gentoo
+Prefix&lt;/a&gt;, multi-tenancy
+on the web application level through the
+&lt;a href="http://www.gentoo.org/proj/en/webapps/index.xml"&gt;webapp-config&lt;/a&gt; tool
+while all necessary software is readily available in the Portage tree.&lt;/p&gt;
+&lt;p&gt;All you need is some imagination...&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="linux"></category><category term="vappliance"></category><category term="virtual appliance"></category></entry></feed>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - net-pf</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/net-pf/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-04-01T19:46:00+02:00</updated><entry><title>What is that net-pf-## thingie?</title><link href="http://blog.siphos.be/2014/04/what-is-that-net-pf-thingie/" rel="alternate"></link><published>2014-04-01T19:46:00+02:00</published><updated>2014-04-01T19:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-01:/2014/04/what-is-that-net-pf-thingie/</id><summary type="html">&lt;p&gt;When checking audit logs, you might come across applications that
+request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt;##&lt;/code&gt; being an integer.
+Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
+what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
+&lt;p&gt;The answer can be found in &lt;code&gt;/usr/src/linux/include/linux/socket.h&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF_ATMPVC …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When checking audit logs, you might come across applications that
+request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt;##&lt;/code&gt; being an integer.
+Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
+what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
+&lt;p&gt;The answer can be found in &lt;code&gt;/usr/src/linux/include/linux/socket.h&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF_ATMPVC       8       /* ATM PVCs                     */
+#define AF_X25          9       /* Reserved for X.25 project    */
+#define AF_INET6        10      /* IP version 6                 */
+#define AF_ROSE         11      /* Amateur Radio X.25 PLP       */
+#define AF_DECnet       12      /* Reserved for DECnet project  */
+...
+#define AF_BLUETOOTH    31      /* Bluetooth sockets            */
+#define AF_IUCV         32      /* IUCV sockets                 */
+#define AF_RXRPC        33      /* RxRPC sockets                */
+#define AF_ISDN         34      /* mISDN sockets                */
+#define AF_PHONET       35      /* Phonet sockets               */
+#define AF_IEEE802154   36      /* IEEE802154 sockets           */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So next time you get such a weird module load request, check &lt;code&gt;socket.h&lt;/code&gt;
+for more information.&lt;/p&gt;</content><category term="Free Software"></category><category term="linux"></category><category term="module_request"></category><category term="net-pf"></category></entry></feed>

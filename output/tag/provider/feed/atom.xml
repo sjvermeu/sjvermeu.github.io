@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - provider</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/provider/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-07T19:22:00+02:00</updated><entry><title>Separate puppet provider for Gentoo/SELinux?</title><link href="http://blog.siphos.be/2013/04/separate-puppet-provider-for-gentooselinux/" rel="alternate"></link><published>2013-04-07T19:22:00+02:00</published><updated>2013-04-07T19:22:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-07:/2013/04/separate-puppet-provider-for-gentooselinux/</id><summary type="html">&lt;p&gt;While slowly transitioning my playground infrastructure towards Puppet,
+I already am in process of creating a custom provider for things such as
+services. Puppet uses providers as "implementations" for the functions
+Puppet needs. For instance, for the &lt;em&gt;service&lt;/em&gt; type (which handles init
+script services), there are providers for RedHat, Debian …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While slowly transitioning my playground infrastructure towards Puppet,
+I already am in process of creating a custom provider for things such as
+services. Puppet uses providers as "implementations" for the functions
+Puppet needs. For instance, for the &lt;em&gt;service&lt;/em&gt; type (which handles init
+script services), there are providers for RedHat, Debian, FreeBSD, ...
+and it also has providers called &lt;em&gt;gentoo&lt;/em&gt; and &lt;em&gt;openrc&lt;/em&gt;. The &lt;em&gt;openrc&lt;/em&gt; one
+uses the service scripts that Gentoo's OpenRC provides, such as
+&lt;strong&gt;rc-service&lt;/strong&gt; and &lt;strong&gt;rc-status&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;On a SELinux-enabled system, and especially when using a decentralized
+Puppet environment (I dropped the puppet master set in favor of a
+decentralized usage of Puppet), if you call &lt;strong&gt;rc-service&lt;/strong&gt; to, say,
+start a service, it will ask for the users' password. Of course, Puppet
+doesn't want this, so I have to prefix the commands with &lt;strong&gt;run_init&lt;/strong&gt;
+and have a &lt;code&gt;pam_rootok.so&lt;/code&gt; rule in run_init's PAM definition.&lt;/p&gt;
+&lt;p&gt;So far that's a simple change - I just patched the &lt;code&gt;openrc.rb&lt;/code&gt; file to
+do so. But then the second problem I'm facing is that Puppet wants to
+use return code based commands for checking the run-time state of
+services. Even though some of my services weren't running, Puppet either
+thought they were or called the start routine and consider the service
+started. Sadly that wasn't the case, as the rc-* scripts always return
+0 (you'll need to parse the output).&lt;/p&gt;
+&lt;p&gt;So what I did now is to create a simple script called &lt;code&gt;runstatus&lt;/code&gt; which
+returns the state of services. It's crude, but seems to work:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# We need to exit:&lt;/span&gt;
+&lt;span class="c1"&gt;# 0 - if running&lt;/span&gt;
+&lt;span class="c1"&gt;# 1 - if dead but PID exists&lt;/span&gt;
+&lt;span class="c1"&gt;# 2 - if dead but lock file exists&lt;/span&gt;
+&lt;span class="c1"&gt;# 3 - if not running&lt;/span&gt;
+&lt;span class="c1"&gt;# 4 - if unknown&lt;/span&gt;
+
+rc-status -a -C &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -q started &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+rc-status -a -C &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -q stopped &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;I then have the service provider (I now provide my own instead of
+patching the openrc one) call &lt;strong&gt;runstatus&lt;/strong&gt; to get the state of a
+service, as well as call it after trying to start a service. But as this
+is quite basic functioning, I'm wondering if I'm doing things the right
+way or not. Who else has experience with Puppet and Gentoo, and did you
+have to tweak things to get services and such working?&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="openrc"></category><category term="provider"></category><category term="puppet"></category><category term="selinux"></category></entry><entry><title>Fiddling with puppet apply</title><link href="http://blog.siphos.be/2013/03/fiddling-with-puppet-apply/" rel="alternate"></link><published>2013-03-20T12:31:00+01:00</published><updated>2013-03-20T12:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-20:/2013/03/fiddling-with-puppet-apply/</id><summary type="html">&lt;p&gt;As part of a larger exercise, I am switching my local VM set from a
+more-or-less scripted manual configuration towards a fully
+Puppet-powered one. Of course, it still uses a lot of custom modules and
+is most likely too ugly to expose to the wider internet, but it does
+seem …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As part of a larger exercise, I am switching my local VM set from a
+more-or-less scripted manual configuration towards a fully
+Puppet-powered one. Of course, it still uses a lot of custom modules and
+is most likely too ugly to expose to the wider internet, but it does
+seem to improve my ability to quickly rebuild images if I corrupt them
+somehow.&lt;/p&gt;
+&lt;p&gt;One of the tricks I am using is to use a local apply instead of using a
+Puppet master server - mainly because that master server is again a VM
+that might need to be build up and consumes some resources that I'd
+rather have free for other VMs. So what I do now is akin to the
+following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;All I have to do is make sure that the /mnt/puppet location is a shared
+resource (in my case, an NFSv4 read-only mount) which I can just mount
+on a fresh image.&lt;/p&gt;
+&lt;p&gt;Part of this exercise I noticed that Puppet by default uses the regular
+&lt;em&gt;gentoo&lt;/em&gt; provider for the services. I'd like to use the &lt;em&gt;openrc&lt;/em&gt;
+provider instead, as I can easily tweak that one to work with SELinux (I
+need to prepend &lt;strong&gt;run_init&lt;/strong&gt; to the &lt;strong&gt;rc-service&lt;/strong&gt; calls, otherwise
+SELinux wants to authenticate the user and Puppet doesn't like that; I
+have a pam_rootok.so statement in the run_init PAM file to allow
+unattended calls towards rc-service).&lt;/p&gt;
+&lt;p&gt;A quick Google revealed that all I had to do was to add a &lt;em&gt;provider
+=&amp;gt; openrc&lt;/em&gt; in the service definitions, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;service { &amp;quot;net.eth0&amp;quot;:
+  provider =&amp;gt; openrc,
+  ensure =&amp;gt; running,
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As mentioned, I still manually patch the openrc provider (located in
+/usr/lib64/ruby/site_ruby/1.9.1/puppet/provider/service) so that the
+run_init command is known as well, and that all invocations of the
+rc-service is prepended with run_init:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+  commands :runinit =&amp;gt; &amp;#39;/usr/sbin/run_init&amp;#39;
+  commands :rcservice =&amp;gt; &amp;#39;/sbin/rc-service&amp;#39;
+...
+ [command(:runinit), command(:rcservice), @resource[:name], :start ]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And the same for the stop and status definitions. I might use Portage'
+postinst hook to automatically apply the patch so I don't need to do
+this manually each time.&lt;/p&gt;</content><category term="Gentoo"></category><category term="provider"></category><category term="puppet"></category><category term="selinux"></category><category term="service"></category></entry></feed>

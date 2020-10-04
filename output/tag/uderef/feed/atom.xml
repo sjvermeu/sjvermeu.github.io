@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - uderef</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/uderef/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-17T03:50:00+02:00</updated><entry><title>Looking at the local Linux kernel privilege escalation</title><link href="http://blog.siphos.be/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/" rel="alternate"></link><published>2013-05-17T03:50:00+02:00</published><updated>2013-05-17T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-17:/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/</id><summary type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
+escalation, which has received the
+&lt;a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2094"&gt;CVE-2013-2094&lt;/a&gt;
+ID.
+&lt;a href="http://arstechnica.com/security/2013/05/critical-linux-vulnerability-imperils-users-even-after-silent-fix/"&gt;arstechnica&lt;/a&gt;
+has a write-up with links to good resources on the Internet, but I
+definitely want to point readers to the
+&lt;a href="http://www.reddit.com/r/netsec/comments/1eb9iw/sdfucksheeporgs_semtexc_local_linux_root_exploit/c9ykrck"&gt;explanation&lt;/a&gt;
+that Brad Spengler made on the vulnerability.&lt;/p&gt;
+&lt;p&gt;In …&lt;/p&gt;</summary><content type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
+escalation, which has received the
+&lt;a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2094"&gt;CVE-2013-2094&lt;/a&gt;
+ID.
+&lt;a href="http://arstechnica.com/security/2013/05/critical-linux-vulnerability-imperils-users-even-after-silent-fix/"&gt;arstechnica&lt;/a&gt;
+has a write-up with links to good resources on the Internet, but I
+definitely want to point readers to the
+&lt;a href="http://www.reddit.com/r/netsec/comments/1eb9iw/sdfucksheeporgs_semtexc_local_linux_root_exploit/c9ykrck"&gt;explanation&lt;/a&gt;
+that Brad Spengler made on the vulnerability.&lt;/p&gt;
+&lt;p&gt;In short, the vulnerability is an &lt;em&gt;out-of-bound&lt;/em&gt; access to an array
+within the Linux perf code (which is a performance measuring subsystem
+enabled when &lt;code&gt;CONFIG_PERF_EVENTS&lt;/code&gt; is enabled). This subsystem is often
+enabled as it offers a wide range of performance measurement techniques
+(see &lt;a href="https://perf.wiki.kernel.org/index.php/Main_Page"&gt;its wiki&lt;/a&gt; for
+more information). You can check on your own system through the kernel
+configuration (&lt;strong&gt;zgrep CONFIG_PERF_EVENTS /proc/config.gz&lt;/strong&gt; if you
+have the latter pseudo-file available - it is made available through
+&lt;code&gt;CONFIG_IKCONFIG_PROC&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;The public exploit maps memory in userland, fills it with known data,
+then triggers an out-of-bound decrement that tricks the kernel into
+decrementing this data (mapped in userland). By looking at where the
+decrement occurred, the exploit now knows the base address of the array.
+Next, it targets (through the same vulnerability) the IDT base
+(Interrupt Descriptor Table) and targets the overflow interrupt vector.
+It increments the top part of the address that the vector points to
+(which is 0xffffffff, becoming 0x00000000 thus pointing to the
+userland), maps this memory region itself with shellcode, and then
+triggers the overflow. The shell code used in the public exploit
+modifies the credentials of the current task, sets uid/gid with root and
+gives full capabilities, and then executes a shell.&lt;/p&gt;
+&lt;p&gt;As Brad mentions, &lt;a href="https://grsecurity.net/~spender/uderef.txt"&gt;UDEREF&lt;/a&gt;
+(an option in a grSecurity enabled kernel) should mitigate the attempt
+to get to the userland. On my system, the exploit fails with the
+following (start of) oops (without affecting the system further) when it
+tries to close the file descriptor returned from the syscall that
+invokes the decrement:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
+[ 1926.227019] BUG: unable to handle kernel paging request at 0000000381f5815c
+[ 1926.227019] IP: [] sw_perf_event_destroy+0x1a/0xa0
+[ 1926.227019] PGD 58a7c000 
+[ 1926.227019] Thread overran stack, or stack corrupted
+[ 1926.227019] Oops: 0002 [#4] PREEMPT SMP 
+[ 1926.227019] Modules linked in: libcrc32c
+[ 1926.227019] CPU 0 
+[ 1926.227019] Pid: 4267, comm: test Tainted: G      D      3.8.7-hardened #1 Bochs Bochs
+[ 1926.227019] RIP: 0010:[]  [] sw_perf_event_destroy+0x1a/0xa0
+[ 1926.227019] RSP: 0018:ffff880058a03e08  EFLAGS: 00010246
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The exploit also finds that the decrement didn't succeed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A second mitigation is that
+&lt;a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf"&gt;KERNEXEC&lt;/a&gt;
+(also offered through grSecurity) which prevents the kernel from
+executing data that is writable (including userland data). So modifying
+the IDT would be mitigated as well.&lt;/p&gt;
+&lt;p&gt;Another important mitigation is TPE - &lt;em&gt;Trusted Path Execution&lt;/em&gt;. This
+feature prevents the execution of binaries that are not located in a
+root-owned directory and owned by a trusted group (which on my system is
+10 = wheel). So users attempting to execute such code will fail with a
+&lt;em&gt;Permission denied&lt;/em&gt; error, and the following is shown in the logs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, even though a nicely hardened system should be fairly immune
+against the currently circling public exploit, it should be noted that
+it is not immune against the vulnerability itself. The methods above
+mentioned make it so that that particular way of gaining root access is
+not possible, but it still allows an attacker to decrement and increment
+memory in specific locations so other exploits might be found to modify
+the system.&lt;/p&gt;
+&lt;p&gt;Now out-of-bound vulnerabilities are not new. Recently (february this
+year), a
+&lt;a href="http://www.phoronix.com/scan.php?page=news_item&amp;amp;px=MTMxMTg"&gt;vulnerability&lt;/a&gt;
+in the networking code also provided an attack vector to get a local
+privilege escalation. A mandatory access control system like SELinux has
+little impact on such vulnerabilities if you allow users to execute
+their own code. Even confined users can modify the exploit to disable
+SELinux (since the shell code is ran with ring0 privileges it can access
+and modify the SELinux state information in the kernel).&lt;/p&gt;
+&lt;p&gt;Many thanks to Brad for the excellent write-up, and to the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo
+Hardened&lt;/a&gt; team for providing the
+grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="Security"></category><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry><entry><title>Another Gentoo Hardened month has passed</title><link href="http://blog.siphos.be/2013/04/another-gentoo-hardened-month-has-passed/" rel="alternate"></link><published>2013-04-18T23:36:00+02:00</published><updated>2013-04-18T23:36:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/another-gentoo-hardened-month-has-passed/</id><summary type="html">&lt;p&gt;Another month has passed, so time to mention again what we have all been
+doing lately ;-)&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Version 4.8 of GCC is available in the tree, but currently masked. The
+package contains a fix needed to build hardened-sources, and a fix for
+the asan (address sanitizer).
+&lt;a href="http://www.internetnews.com/blog/skerner/open-source-gcc-4.8-compiler-including-address-sanitizer-security.html"&gt;asan&lt;/a&gt;
+support in …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Another month has passed, so time to mention again what we have all been
+doing lately ;-)&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Version 4.8 of GCC is available in the tree, but currently masked. The
+package contains a fix needed to build hardened-sources, and a fix for
+the asan (address sanitizer).
+&lt;a href="http://www.internetnews.com/blog/skerner/open-source-gcc-4.8-compiler-including-address-sanitizer-security.html"&gt;asan&lt;/a&gt;
+support in GCC 4.8 might be seen as an improvement security-wise, but it
+is yet unclear if it is an integral part of GCC or could be disabled
+with a configure flag. Apparently, asan "makes building gcc 4.8 crazy".
+Seeing that it comes from Google, and building Google Chromium is also
+crazy, I start seeing a pattern here.&lt;/p&gt;
+&lt;p&gt;Anyway, it turns out that PaX/grSec and asan do not get along yet (ASAN
+assumes/uses hardcoded userland address space size values, which breaks
+when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
+sufficient to change the size value from 47 bits to 46 bits as hardened
+systems can very well boot a kernel with and another kernel without
+UDEREF, causing the binaries to fail on the other kernel. Instead, a
+proper method would be to dynamically check the size of a userland
+address.&lt;/p&gt;
+&lt;p&gt;However, GCC 4.8 also brings along some nice enhancements and features.
+uclibc profiles work just fine with GCC 4.8, including armv7a and
+mips/mipsel. The latter is especially nice to hear, since mips used to
+require significant effort with previous GCCs.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Kernel and grSecurity/PaX&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;More recent kernels have now been stabilized to stay close to the
+grSecurity/PaX upstream developments. The most recent stable kernel now
+is hardened-sources-3.8.3. Others still available are hardened-sources
+versions 3.2.40-r1 and 2.6.32-r156.&lt;/p&gt;
+&lt;p&gt;The support for XATTR_PAX is still progressing, but a few issues have
+come up. One is that non-hardened systems are seeing warnings about
+&lt;strong&gt;pax-mark&lt;/strong&gt; not being able to set the XATTR_PAX on tmpfs since vanilla
+kernels do not have the patch to support &lt;code&gt;user.*&lt;/code&gt; extended attribute
+namespaces for tmpfs. A second issue is that the &lt;strong&gt;install&lt;/strong&gt;
+application, as provided by &lt;code&gt;coreutils&lt;/code&gt;, does not copy extended
+attributes. This has impact on ebuilds where pax markings are done
+before the install phase of a package. But only doing pax markings after
+the install phase isn't sufficient either, since sometimes we need the
+binaries to be marked already for test phases or even in the compile
+phase. So this is still something on the near horizon.&lt;/p&gt;
+&lt;p&gt;Most likely the necessary tools will be patched to include extended
+attributes on copy operations. However, we need to take care only to
+copy over those attributes that make sense: &lt;code&gt;user.pax&lt;/code&gt; does, but
+security ones like &lt;code&gt;security.evm&lt;/code&gt; and &lt;code&gt;security.selinux&lt;/code&gt; shouldn't as
+those are either recomputed when needed, or governed through policy. The
+idea is that USE="pax_kernel" will enable the above on &lt;code&gt;coreutils&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;SELinux&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The SELinux support in Gentoo has seen a fair share of updates on the
+userland utilities (like policycoreutils, setools, libselinux and such).
+Most of these have already made the stable tree or are close to be
+bumped to stable. The SELinux policy also has been updated a lot: most
+changes can be tracked through bugzilla, looking for the
+&lt;code&gt;sec-policy r13&lt;/code&gt; whiteboard. The changes can be applied to the system
+immediately if you use the live ebuilds (like &lt;code&gt;selinux-base-9999&lt;/code&gt;), but
+I'm planning on releasing revision 13 of our policy set soon.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;System Integrity&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Some of the "early adopter" problems we've noticed on Gentoo Hardened
+have been integrated in the repositories upstream and are slowly
+progressing towards the main Linux kernel tree.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Profiles&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;All hardened profiles have been moved to the 13.0 base. Some people
+frowned when they noticed that the uclibc profiles do not inherit from
+any architecture-related profile. This is however with reason: the
+architecture profiles are (amongst other reasons) focusing on the glibc
+specifics of the architecture. Since the profile intended here is for
+uclibc, those changes are not needed (nor wanted). Hence, these are
+collapsed in a single profile.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Documentation&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;For SELinux, the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux/selinux-handbook.xml"&gt;SELinux
+handbook&lt;/a&gt;
+now includes information about USE="unconfined" as well as the
+&lt;code&gt;selinux_gentoo&lt;/code&gt; init script as provided by &lt;code&gt;policycoreutils&lt;/code&gt;. Users who
+are already running with SELinux enabled can just look at the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux/selinux-handbook.xml?part=2&amp;amp;chap=7"&gt;Change
+History&lt;/a&gt;
+to see which changes affect them.&lt;/p&gt;
+&lt;p&gt;A set of &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials"&gt;tutorials&lt;/a&gt;
+(which I've blogged about earlier as well) have been put online at the
+&lt;a href="https://wiki.gentoo.org"&gt;Gentoo Wiki&lt;/a&gt;. Next to the SELinux tutorials,
+an article pertaining to &lt;a href="https://wiki.gentoo.org/wiki/AIDE"&gt;AIDE&lt;/a&gt; has
+been added as well as it fits nicely within the principles/concepts of
+the &lt;a href="http://www.gentoo.org/proj/en/hardened/integrity/index.xml"&gt;System
+Integrity&lt;/a&gt;
+subproject.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Media&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;If you don't do it already, start following
+&lt;a href="https://twitter.com/GentooHardened"&gt;@GentooHardened&lt;/a&gt; ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="asan"></category><category term="gcc"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="integrity"></category><category term="irc"></category><category term="meeting"></category><category term="pax"></category><category term="selinux"></category><category term="uderef"></category></entry></feed>

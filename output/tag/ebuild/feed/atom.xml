@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - ebuild</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/ebuild/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-09-10T07:13:00+02:00</updated><entry><title>Custom CIL SELinux policies in Gentoo</title><link href="http://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/" rel="alternate"></link><published>2015-09-10T07:13:00+02:00</published><updated>2015-09-10T07:13:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-10:/2015/09/custom-cil-selinux-policies-in-gentoo/</id><summary type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
+for a while now. Unlike most other distributions, which focus on binary packages,
+Gentoo has always supported source-based packages as default (although 
+&lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary packages&lt;/a&gt; are 
+supported as well).&lt;/p&gt;
+&lt;p&gt;A recent &lt;a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4"&gt;commit&lt;/a&gt;
+now also allows CIL files to be used.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Policy ebuilds …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;In Gentoo, we have been supporting &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;custom policy packages&lt;/a&gt;
+for a while now. Unlike most other distributions, which focus on binary packages,
+Gentoo has always supported source-based packages as default (although 
+&lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary packages&lt;/a&gt; are 
+supported as well).&lt;/p&gt;
+&lt;p&gt;A recent &lt;a href="https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=8f2aa45db35bbf3a74f8db09ece9edac60e79ee4"&gt;commit&lt;/a&gt;
+now also allows CIL files to be used.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Policy ebuilds, how they work&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Gentoo provides its own SELinux policy, based on the &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Reference_policy"&gt;reference policy&lt;/a&gt;, 
+and provides per-module ebuilds (packages). For instance, the SELinux policy for
+the &lt;a href="https://packages.gentoo.org/package/app-misc/screen"&gt;screen&lt;/a&gt; package is
+provided by the &lt;a href="https://packages.gentoo.org/package/sec-policy/selinux-screen"&gt;sec-policy/selinux-screen&lt;/a&gt;
+package.&lt;/p&gt;
+&lt;p&gt;The package itself is pretty straight forward:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Copyright 1999-2015 Gentoo Foundation&lt;/span&gt;
+&lt;span class="c1"&gt;# Distributed under the terms of the GNU General Public License v2&lt;/span&gt;
+&lt;span class="c1"&gt;# $Id$&lt;/span&gt;
+&lt;span class="nv"&gt;EAPI&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;5&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;IUSE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;MODS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;screen&amp;quot;&lt;/span&gt;
+
+inherit selinux-policy-2
+
+&lt;span class="nv"&gt;DESCRIPTION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SELinux policy for screen&amp;quot;&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="nv"&gt;$PV&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="m"&gt;9999&lt;/span&gt;* &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;
+        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The real workhorse lays within a &lt;a href="https://devmanual.gentoo.org/eclass-writing/"&gt;Gentoo eclass&lt;/a&gt;,
+something that can be seen as a library for ebuilds. It allows consolidation of functions and
+activities so that a large set of ebuilds can be simplified. The more ebuilds are standardized,
+the more development can be put inside an eclass instead of in the ebuilds. As a result, some
+ebuilds are extremely simple, and the SELinux policy ebuilds are a good example of this.&lt;/p&gt;
+&lt;p&gt;The eclass for SELinux policy ebuilds is called &lt;a href="https://devmanual.gentoo.org/eclass-reference/selinux-policy-2.eclass/index.html"&gt;selinux-policy-2.eclass&lt;/a&gt;
+and holds a number of functionalities. One of these (the one we focus on right now)
+is to support custom SELinux policy modules.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Custom SELinux policy ebuilds&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Whenever a user has a SELinux policy that is not part of the Gentoo policy repository,
+then the user might want to provide these policies through packages still. This has
+the advantage that Portage (or whatever package manager is used) is aware of the
+policies on the system, and proper dependencies can be built in.&lt;/p&gt;
+&lt;p&gt;To use a custom policy, the user needs to create an ebuild which informs the eclass
+not only about the module name (through the &lt;code&gt;MODS&lt;/code&gt; variable) but also about the
+policy files themselves. These files are put in the &lt;code&gt;files/&lt;/code&gt; location of the ebuild,
+and referred to through the &lt;code&gt;POLICY_FILES&lt;/code&gt; variable:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Copyright 1999-2015 Gentoo Foundation&lt;/span&gt;
+&lt;span class="c1"&gt;# Distributed under the terms of the GNU General Public License v2&lt;/span&gt;
+&lt;span class="c1"&gt;# $Id$&lt;/span&gt;
+&lt;span class="nv"&gt;EAPI&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;5&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;IUSE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;MODS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;oracle&amp;quot;&lt;/span&gt;
+&lt;span class="nv"&gt;POLICY_FILES&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;oracle.te oracle.if oracle.fc&amp;quot;&lt;/span&gt;
+
+inherit selinux-policy-2
+
+&lt;span class="nv"&gt;DESCRIPTION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SELinux policy for screen&amp;quot;&lt;/span&gt;
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="nv"&gt;$PV&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="m"&gt;9999&lt;/span&gt;* &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;
+        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The eclass generally will try to build the policies, converting them into &lt;code&gt;.pp&lt;/code&gt;
+files. With CIL, this is no longer needed. Instead, what we do is copy the &lt;code&gt;.cil&lt;/code&gt;
+files straight into the location where we place the &lt;code&gt;.pp&lt;/code&gt; files.&lt;/p&gt;
+&lt;p&gt;From that point onwards, managing the &lt;code&gt;.cil&lt;/code&gt; files is similar to &lt;code&gt;.pp&lt;/code&gt; files.
+They are loaded with &lt;code&gt;semodule -i&lt;/code&gt; and unloaded with &lt;code&gt;semodule -r&lt;/code&gt; when needed.&lt;/p&gt;
+&lt;p&gt;Enabling CIL in our ebuilds is a small improvement (after the heavy workload
+to support the 2.4 userspace) which allows Gentoo to stay ahead in the SELinux
+world.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="cil"></category><category term="selinux"></category><category term="ebuild"></category><category term="eclass"></category></entry><entry><title>Maintaining packages and backporting</title><link href="http://blog.siphos.be/2015/09/maintaining-packages-and-backporting/" rel="alternate"></link><published>2015-09-02T20:33:00+02:00</published><updated>2015-09-02T20:33:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-02:/2015/09/maintaining-packages-and-backporting/</id><summary type="html">&lt;p&gt;A few days ago I committed a small update to &lt;code&gt;policycoreutils&lt;/code&gt;, a SELinux related
+package that provides most of the management utilities for SELinux systems. The
+fix was to get two patches (which are committed upstream) into the existing
+release so that our users can benefit from the fixed issues …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few days ago I committed a small update to &lt;code&gt;policycoreutils&lt;/code&gt;, a SELinux related
+package that provides most of the management utilities for SELinux systems. The
+fix was to get two patches (which are committed upstream) into the existing
+release so that our users can benefit from the fixed issues without having to
+wait for a new release.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Getting the patches&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To capture the patches, I used &lt;code&gt;git&lt;/code&gt; together with the commit id:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ git format-patch -n -1 73b7ff41&lt;/span&gt;
+&lt;span class="go"&gt;0001-Only-invoke-RPM-on-RPM-enabled-Linux-distributions.patch&lt;/span&gt;
+&lt;span class="go"&gt;~$ git format-patch -n -1 4fbc6623&lt;/span&gt;
+&lt;span class="go"&gt;0001-Set-self.sename-to-sename-after-calling-semanage_seu.patch&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The two generated patch files contain all information about the commit. Thanks
+to the &lt;code&gt;epatch&lt;/code&gt; support in the &lt;code&gt;eutils.eclass&lt;/code&gt;, these patch files are
+immediately usable within Gentoo's ebuilds.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Updating the ebuilds&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The SELinux userspace ebuilds in Gentoo all have &lt;a href="http://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/"&gt;live ebuilds&lt;/a&gt;
+available which are immediately usable for releases. The idea with those live
+ebuilds is that we can simply copy them and commit in order to make a new release.&lt;/p&gt;
+&lt;p&gt;So, in case of the patch backporting, the necessary patch files are first moved
+into the &lt;code&gt;files/&lt;/code&gt; subdirectory of the package. Then, the live ebuild is updated
+to use the new patches:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gu"&gt;@@ -88,6 +85,8 @@ src_prepare() {&lt;/span&gt;
+                epatch &amp;quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&amp;quot;
+                epatch &amp;quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&amp;quot;
+                epatch &amp;quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&amp;quot;
+&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&amp;quot;&lt;/span&gt;
+&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&amp;quot;&lt;/span&gt;
+        fi
+
+        # rlpkg is more useful than fixfiles
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The patches themselves do not apply for the live ebuilds themselves (they are
+ignored there) as we want the live ebuilds to be as close to the upstream
+project as possible. But because the ebuilds are immediately usable for
+releases, we add the necessary information there first.&lt;/p&gt;
+&lt;p&gt;Next, the new release is created:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Testing the changes&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The new release is then tested. I have a couple of scripts that I use
+for automated testing. So first I update these scripts to also try out
+the functionality that was failing before. On existing systems, these
+tests should fail:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Running task semanage (Various semanage related operations).
+  ...
+    Executing step &amp;quot;perm_port_on   : Marking portage_t as a permissive domain                              &amp;quot; -&amp;gt; ok
+    Executing step &amp;quot;perm_port_off  : Removing permissive mark from portage_t                               &amp;quot; -&amp;gt; ok
+    Executing step &amp;quot;selogin_modify : Modifying a SELinux login definition                                  &amp;quot; -&amp;gt; failed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then, on a test system where the new package has been installed, the same
+testset is executed (together with all other tests) to validate if the problem
+is fixed.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Pushing out the new release&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Finally, with the fixes in and validated, the new release is pushed out (into
+~arch first of course) and the bugs are marked as &lt;code&gt;RESOLVED:TEST-REQUEST&lt;/code&gt;. Users
+can confirm that it works (which would move it to &lt;code&gt;VERIFIED:TEST-REQUEST&lt;/code&gt;) or
+we stabilize it after the regular testing period is over (which moves it to
+&lt;code&gt;RESOLVED:FIXED&lt;/code&gt; or &lt;code&gt;VERIFIED:FIXED&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;I do still have to get used to Gentoo using git as its repository now. The
+&lt;a href="https://wiki.gentoo.org/wiki/Gentoo_git_workflow"&gt;workflow&lt;/a&gt; to use is
+documented though. Luckily, because I often get that the &lt;code&gt;git push&lt;/code&gt; fails
+(due to changes to the tree since my last pull). So I need to run &lt;code&gt;git
+pull --rebase=preserve&lt;/code&gt; followed by &lt;code&gt;repoman full&lt;/code&gt; and then the push again
+sufficiently quick after each other).&lt;/p&gt;
+&lt;p&gt;This simple flow is easy to get used to. Thanks to the existing foundation
+for package maintenance (such as &lt;code&gt;epatch&lt;/code&gt; for patching, live ebuilds that
+can be immediately used for releases and the ability to just cherry pick
+patches towards our repository) we can serve updates with just a few minutes
+of work.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="ebuild"></category><category term="patching"></category></entry><entry><title>No more DEPENDs for SELinux policy package dependencies</title><link href="http://blog.siphos.be/2014/11/no-more-depends-for-selinux-policy-package-dependencies/" rel="alternate"></link><published>2014-11-02T14:51:00+01:00</published><updated>2014-11-02T14:51:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-11-02:/2014/11/no-more-depends-for-selinux-policy-package-dependencies/</id><summary type="html">&lt;p&gt;I just finished updating 102 packages. The change? Removing the
+following from the ebuilds:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
+Recently however, the SELinux eclass got updated with some logic to
+relabel files after the policy package is deployed …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just finished updating 102 packages. The change? Removing the
+following from the ebuilds:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
+Recently however, the SELinux eclass got updated with some logic to
+relabel files after the policy package is deployed. As a result, the
+DEPEND variable no longer needs to refer to the SELinux policy package.&lt;/p&gt;
+&lt;p&gt;This change also means that for those moving from a regular Gentoo
+installation to an SELinux installation will have much less packages to
+rebuild. In the past, getting &lt;code&gt;USE="selinux"&lt;/code&gt; (through the SELinux
+profiles) would rebuild all packages that have a DEPEND dependency to
+the SELinux policy package. No more - only packages that depend on the
+SELinux libraries (like &lt;code&gt;libselinux&lt;/code&gt;) or utilities rebuild. The rest
+will just pull in the proper policy package.&lt;/p&gt;</content><category term="Gentoo"></category><category term="DEPEND"></category><category term="ebuild"></category><category term="Gentoo"></category><category term="RDEPEND"></category><category term="selinux"></category></entry><entry><title>Stepping through the build process with ebuild</title><link href="http://blog.siphos.be/2014/04/stepping-through-the-build-process-with-ebuild/" rel="alternate"></link><published>2014-04-20T11:59:00+02:00</published><updated>2014-04-20T11:59:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-20:/2014/04/stepping-through-the-build-process-with-ebuild/</id><summary type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
+slightly modified. As I don't use the tool myself (it was a
+user-reported issue) I decided to quickly drum up a live ebuild for the
+application and install it (as the patch was in the upstream …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
+slightly modified. As I don't use the tool myself (it was a
+user-reported issue) I decided to quickly drum up a live ebuild for the
+application and install it (as the patch was in the upstream repository
+but not in a release yet). The patch is for
+&lt;a href="http://fcron.free.fr/"&gt;fcron&lt;/a&gt;'s SELinux support, so the file I created
+is
+&lt;a href="https://github.com/sjvermeu/gentoo.overlay/tree/master/sys-process/fcron"&gt;fcron-9999.ebuild&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Sadly, the build failed at the documentation generation (something about
+"No targets to create en/HTML/index.html"). That's unfortunate, because
+that means I'm not going to ask to push the live ebuild to the Portage
+tree itself (yet). But as my primary focus is to validate the patch (and
+not create a live ebuild) I want to ignore this error and go on. I don't
+need the fcron documentation right now, so how about I just continue?&lt;/p&gt;
+&lt;p&gt;To do so, I start using the &lt;strong&gt;ebuild&lt;/strong&gt; command. As the failure occurred
+in the build phase (&lt;em&gt;compile&lt;/em&gt;) and at the end (documentation was the
+last step), I tell Portage that it should assume the build has
+completed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then I tell Portage to install the (built) files into the &lt;code&gt;images/&lt;/code&gt;
+directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The installation phase fails again (with the same error as during the
+build, which is logical as the &lt;code&gt;Makefile&lt;/code&gt; can't install files that
+haven't been properly build yet.) As documentation is the last step, I
+tell Portage to assume the installation phase has completed as well,
+continuing with the merging of the files to the life file system:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.installed
+~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild qmerge
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Et voila, &lt;code&gt;fcron-9999&lt;/code&gt; is now installed on the system, ready to validate
+the patch I had to check.&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="phase"></category><category term="portage"></category></entry><entry><title>Overriding the default SELinux policies</title><link href="http://blog.siphos.be/2013/05/overriding-the-default-selinux-policies/" rel="alternate"></link><published>2013-05-15T03:50:00+02:00</published><updated>2013-05-15T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-15:/2013/05/overriding-the-default-selinux-policies/</id><summary type="html">&lt;p&gt;Extending SELinux policies with additional rules is easy. As SELinux
+uses a &lt;em&gt;deny by default&lt;/em&gt; approach, all you need to do is to &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;create a
+policy
+module&lt;/a&gt;
+that contains the additional (allow) rules, load that and you're all
+set. But what if you want to remove some rules?&lt;/p&gt;
+&lt;p&gt;Well, sadly …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Extending SELinux policies with additional rules is easy. As SELinux
+uses a &lt;em&gt;deny by default&lt;/em&gt; approach, all you need to do is to &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;create a
+policy
+module&lt;/a&gt;
+that contains the additional (allow) rules, load that and you're all
+set. But what if you want to remove some rules?&lt;/p&gt;
+&lt;p&gt;Well, sadly, SELinux does not support deny rules. Once an allow rule is
+loaded in memory, it cannot be overturned anymore. Yes, you can disable
+the module itself that provides the rules, but you cannot selectively
+disable rules. So what to do?&lt;/p&gt;
+&lt;p&gt;Generally, you can disable the module that contains the rules you want
+to disable, and load a custom module that defines everything the
+original module did, except for those rules you don't like. For
+instance, if you do not want the &lt;code&gt;skype_t&lt;/code&gt; domain to be able to
+read/write to the video device, create your own skype-providing module
+(&lt;em&gt;myskype&lt;/em&gt;) with the exact same content (except for the module name at
+the first line) as the original skype module, except for the video
+device:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dev_read_sound(skype_t)
+# dev_read_video_dev(skype_t)
+dev_write_sound(skype_t)
+# dev_write_video_dev(skype_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Load in this policy, and you now have the &lt;code&gt;skype_t&lt;/code&gt; domain without the
+video access. You will get post-install failures when Gentoo pushes out
+an update to the policy though, since it will attempt to reload the
+&lt;code&gt;skype.pp&lt;/code&gt; file (through the &lt;code&gt;selinux-skype&lt;/code&gt; package) and fail because
+it declares types and attributes already provided (by &lt;em&gt;myskype&lt;/em&gt;). You
+can &lt;a href="http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=3&amp;amp;chap=5#doc_chap1"&gt;exclude the
+package&lt;/a&gt;
+from being updated, which works as long as no packages depend on it. Or
+live with the post-install failure ;-) But there might be a simpler
+approach: &lt;em&gt;epatch_user&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Recently, I added in support for &lt;em&gt;epatch_user&lt;/em&gt; in the policy ebuilds.
+This allows users to create patches against the policy source code that
+we use and put them in &lt;code&gt;/etc/portage/patches&lt;/code&gt; in the directory of the
+right category/package. For module patches, the working directory used
+is within the &lt;code&gt;policy/modules&lt;/code&gt; directory of the policy checkout. For
+base, it is below the policy checkout (in other words, the patch will
+need to use the &lt;code&gt;refpolicy/&lt;/code&gt; directory base). But because of how
+&lt;em&gt;epatch_user&lt;/em&gt; works, any patch taken from the base will work as it will
+start stripping directories up to the fourth one.&lt;/p&gt;
+&lt;p&gt;This approach is also needed if you want to exclude rules from
+interfaces rather than from the &lt;code&gt;.te&lt;/code&gt; file: create a small patch and put
+it in &lt;code&gt;/etc/portage/patches&lt;/code&gt; for the &lt;code&gt;sec-policy/selinux-base&lt;/code&gt; package
+(as this provides the interfaces).&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="epatch_user"></category><category term="Gentoo"></category><category term="override"></category><category term="patch"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

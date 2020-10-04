@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - selinuxnode</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/selinuxnode/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-02-23T14:04:00+01:00</updated><entry><title>Working on a new selinuxnode VM</title><link href="http://blog.siphos.be/2013/02/working-on-a-new-selinuxnode-vm/" rel="alternate"></link><published>2013-02-23T14:04:00+01:00</published><updated>2013-02-23T14:04:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-23:/2013/02/working-on-a-new-selinuxnode-vm/</id><summary type="html">&lt;p&gt;A long time ago, I made a &lt;a href="http://distfiles.gentoo.org/experimental/amd64/qemu-selinux/"&gt;SELinux enabled
+VM&lt;/a&gt; for
+people to play with, displaying a minimal Gentoo installation, including
+the hardening features it supports (PIE/PIC toolchain, grSecurity, PaX
+and SELinux). I'm currently trying to create a new one, which also
+includes IMA/EVM, but it looks like …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A long time ago, I made a &lt;a href="http://distfiles.gentoo.org/experimental/amd64/qemu-selinux/"&gt;SELinux enabled
+VM&lt;/a&gt; for
+people to play with, displaying a minimal Gentoo installation, including
+the hardening features it supports (PIE/PIC toolchain, grSecurity, PaX
+and SELinux). I'm currently trying to create a new one, which also
+includes IMA/EVM, but it looks like I still have many things to
+investigate further...&lt;/p&gt;
+&lt;p&gt;First of all, I notice that many SELinux domains want to use the mknod
+capability, even for domains of which I have no idea whatsoever why they
+need it. I don't notice any downsides though, and running in permissive
+mode doesn't change the domain behavior. But still, I'm reluctant to
+mark them dontaudit as long as I'm not 100% sure.&lt;/p&gt;
+&lt;p&gt;Second, the gettys (I think it is the getty) result in a "Cannot change
+SELinux context: permission denied" error, even though everything is
+running in the right SELinux context. I still have to confirm if it
+really is the getty process or something else (the last run I had the
+impression it was a udev-related process). But there are no denials and
+no SELinux errors in the logs.&lt;/p&gt;
+&lt;p&gt;Third, during shutdown, many domains have problems accessing their PID
+files in /var/run (which is a link to /run). I most likely need to allow
+read privileges on all domains that have access to var_run_t towards
+the var_t symlinks. It isn't a problem per se (the processes still run
+correctly) but ugly as hell, and if you introduce monitoring it'll go
+haywire (as no PID files were either found, or were stale).&lt;/p&gt;
+&lt;p&gt;Also, EVM is giving me a hard time, not allowing me to change mode and
+ownership in files on /var/run. I have received some feedback from the
+IMA user list on this so it is still very much a work-in-progress.&lt;/p&gt;
+&lt;p&gt;Finally, the first attempt to generate a new VM resulted in a download
+of 817 MB (instead of the 158 MB of the previous release), so I still
+have to correct my USE flags and doublecheck the installed applications.
+Anyway, definitely to be continued. Too bad time is a scarce resource
+:-(&lt;/p&gt;</content><category term="Gentoo"></category><category term="evm"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category><category term="selinuxnode"></category><category term="vm"></category></entry></feed>

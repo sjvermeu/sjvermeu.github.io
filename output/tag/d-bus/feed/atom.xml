@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - d-bus</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/d-bus/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-06-30T20:07:00+02:00</updated><entry><title>D-Bus and SELinux</title><link href="http://blog.siphos.be/2014/06/d-bus-and-selinux/" rel="alternate"></link><published>2014-06-30T20:07:00+02:00</published><updated>2014-06-30T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-30:/2014/06/d-bus-and-selinux/</id><summary type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
+D-Bus&lt;/a&gt; comes the
+inevitable related post about SELinux with D-Bus.&lt;/p&gt;
+&lt;p&gt;Some users might not know that D-Bus is an SELinux-aware application.
+That means it has SELinux-specific code in it, which has the D-Bus
+behavior based on the SELinux policy (and might not necessarily honor
+the "permissive …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
+D-Bus&lt;/a&gt; comes the
+inevitable related post about SELinux with D-Bus.&lt;/p&gt;
+&lt;p&gt;Some users might not know that D-Bus is an SELinux-aware application.
+That means it has SELinux-specific code in it, which has the D-Bus
+behavior based on the SELinux policy (and might not necessarily honor
+the "permissive" flag). This code is used as an additional
+authentication control within D-Bus.&lt;/p&gt;
+&lt;p&gt;Inside the SELinux policy, a &lt;em&gt;dbus&lt;/em&gt; permission class is supported, even
+though the Linux kernel doesn't do anything with this class. The class
+is purely for D-Bus, and it is D-Bus that checks the permission
+(although work is being made to &lt;a href="https://lwn.net/Articles/580194/"&gt;implement D-Bus in kernel
+(kdbus)&lt;/a&gt;). The class supports two
+permission checks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;acquire_svc&lt;/em&gt; which tells the domain(s) allowed to "own" a service
+    (which might, thanks to the SELinux support, be different from the
+    domain itself)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;send_msg&lt;/em&gt; which tells which domain(s) can send messages to a
+    service domain&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Inside the D-Bus security configuration (the &lt;code&gt;busconfig&lt;/code&gt; XML file,
+remember) a service configuration might tell D-Bus that the service
+itself is labeled differently from the process that owned the service.
+The default is that the service inherits the label from the domain, so
+when &lt;code&gt;dnsmasq_t&lt;/code&gt; registers a service on the system bus, then this
+service also inherits the &lt;code&gt;dnsmasq_t&lt;/code&gt; label.&lt;/p&gt;
+&lt;p&gt;The necessary permission checks for the &lt;code&gt;sysadm_t&lt;/code&gt; user domain to send
+messages to the dnsmasq service, and the dnsmasq service itself to
+register it as a service:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
+allow sysadm_t dnsmasq_t:dbus send_msg;
+allow dnsmasq_t sysadm_t:dbus send_msg;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For the &lt;code&gt;sysadm_t&lt;/code&gt; domain, the two rules are needed as we usually not
+only want to send a message to a D-Bus service, but also receive a reply
+(which is also handled through a &lt;em&gt;send_msg&lt;/em&gt; permission but in the
+inverse direction).&lt;/p&gt;
+&lt;p&gt;However, with the following XML snippet inside its service configuration
+file, owning a certain resource is checked against a different label:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
+  &amp;lt;selinux&amp;gt;
+    &amp;lt;associate
+      own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;
+      context=&amp;quot;system_u:object_r:dnsmasq_dbus_t:s0&amp;quot; /&amp;gt;
+  &amp;lt;/selinux&amp;gt;
+&amp;lt;/busconfig&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this, the rules would become as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
+allow dnsmasq_t self:dbus send_msg;
+allow sysadm_t dnsmasq_t:dbus send_msg;
+allow dnsmasq_t sysadm_t:dbus send_msg;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that &lt;em&gt;only&lt;/em&gt; the access for acquiring a service based on a name
+(i.e. owning a service) is checked based on the different label. Sending
+and receiving messages is still handled by the domains of the processes
+(actually the labels of the connections, but these are always the
+process domains).&lt;/p&gt;
+&lt;p&gt;I am not aware of any policy implementation that uses a different label
+for owning services, and the implementation is more suited to "force"
+D-Bus to only allow services with a correct label. This ensures that
+other domains that might have enough privileges to interact with D-Bus
+and own a service cannot own these particular services. After all, other
+services don't usually have the privileges (policy-wise) to
+&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="SELinux"></category><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

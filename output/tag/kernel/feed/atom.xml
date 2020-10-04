@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - kernel</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/kernel/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-05-10T14:18:00+02:00</updated><entry><title>Audit buffering and rate limiting</title><link href="http://blog.siphos.be/2015/05/audit-buffering-and-rate-limiting/" rel="alternate"></link><published>2015-05-10T14:18:00+02:00</published><updated>2015-05-10T14:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-10:/2015/05/audit-buffering-and-rate-limiting/</id><summary type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+experiments, sometimes you'll get in touch with a message similar to the
+following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
+audit: backlog limit exceeded
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;!-- PELICAN_END_SUMMMARY --&gt;
+
+&lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+experiments, sometimes you'll get in touch with a message similar to the
+following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
+audit: backlog limit exceeded
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;!-- PELICAN_END_SUMMMARY --&gt;
+
+&lt;p&gt;The message shows up when certain audit events could not be logged
+through the audit subsystem. Depending on the system configuration, they
+might be either ignored, sent through the kernel logging infrastructure
+or even have the system panic. And if the messages are sent to the
+kernel log then they might show up, but even that log has its
+limitations, which can lead to output similar to the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;__ratelimit: 53 callbacks suppressed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this post, I want to give some pointers in configuring the audit
+subsystem as well as understand these messages...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;There is auditd and kauditd&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you take a look at the audit processes running on the system, you'll
+notice that (assuming Linux auditing is used of course) two processes
+are running:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# ps -ef | grep audit
+root      1483     1  0 10:11 ?        00:00:00 /sbin/auditd
+root      1486     2  0 10:11 ?        00:00:00 [kauditd]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;/sbin/auditd&lt;/code&gt; daemon is the user-space audit daemon. It &lt;a href="http://man7.org/linux/man-pages/man3/audit_open.3.html"&gt;registers
+itself&lt;/a&gt; with the
+Linux kernel audit subsystem (through the audit netlink system), which
+responds with spawning the &lt;code&gt;kauditd&lt;/code&gt; kernel thread/process. The fact
+that the process is a kernel-level one is why the &lt;code&gt;kauditd&lt;/code&gt; is
+surrounded by brackets in the &lt;code&gt;ps&lt;/code&gt; output.&lt;/p&gt;
+&lt;p&gt;Once this is done, audit messages are communicated through the netlink
+socket to the user-space audit daemon. For the detail-oriented people
+amongst you, look for the &lt;em&gt;kauditd_send_skb()&lt;/em&gt; method in the
+&lt;a href="http://lxr.free-electrons.com/source/kernel/audit.c"&gt;kernel/audit.c&lt;/a&gt;
+file. Now, generated audit event messages are not directly relayed to
+the audit daemon - they are first queued in a sort-of backlog, which is
+where the backlog-related messages above come from.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Audit backlog queue&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the kernel-level audit subsystem, a socket buffer queue is used to
+hold audit events. Whenever a new audit event is received, it is logged
+and prepared to be added to this queue. Adding to this queue can be
+controlled through a few parameters.&lt;/p&gt;
+&lt;p&gt;The first parameter is the backlog limit. Be it through a kernel boot
+parameter (&lt;code&gt;audit_backlog_limit=N&lt;/code&gt;) or through a message relayed by the
+user-space audit daemon (&lt;code&gt;auditctl -b N&lt;/code&gt;), this limit will ensure that a
+queue cannot grow beyond a certain size (expressed in the amount of
+messages). If an audit event is logged which would grow the queue beyond
+this limit, then a failure occurs and is handled according to the system
+configuration (more on that later).&lt;/p&gt;
+&lt;p&gt;The second parameter is the rate limit. When more audit events are
+logged within a second than set through this parameter (which can be
+controlled through a message relayed by the user-space audit system,
+using &lt;code&gt;auditctl -r N&lt;/code&gt;) then those audit events are not added to the
+queue. Instead, a failure occurs and is handled according to the system
+configuration.&lt;/p&gt;
+&lt;p&gt;Only when the limits are not reached is the message added to the queue,
+allowing the user-space audit daemon to consume those events and log
+those according to the audit configuration. There are some good
+resources on audit configuration available on the Internet. I find &lt;a href="http://webapp5.rrz.uni-hamburg.de/SuSe-Dokumentation/manual/sles-manuals_en/cha.audit.comp.html"&gt;this
+SuSe
+chapter&lt;/a&gt;
+worth reading, but many others exist as well.&lt;/p&gt;
+&lt;p&gt;There is a useful command related to the subject of the audit backlog
+queue. It queries the audit subsystem for its current status:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# auditctl -s
+AUDIT_STATUS: enabled=1 flag=1 pid=1483 rate_limit=0 backlog_limit=8192 lost=3 backlog=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The command displays not only the audit state (enabled or not) but also
+the settings for rate limits (on the audit backlog) and backlog limit.
+It also shows how many events are currently still waiting in the backlog
+queue (which is zero in our case, so the audit user-space daemon has
+properly consumed and logged the audit events).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Failure handling&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If an audit event cannot be logged, then this failure needs to be
+resolved. The Linux audit subsystem can be configured do either silently
+discard the message, switch to the kernel log subsystem, or panic. This
+can be configured through the audit user-space (&lt;code&gt;auditctl -f [0..2]&lt;/code&gt;),
+but is usually left at the default (which is 1, being to switch to the
+kernel log subsystem).&lt;/p&gt;
+&lt;p&gt;Before that is done, the message is displayed which reveals the cause of
+the failure handling:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
+audit: backlog limit exceeded
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this case, the backlog queue was set to contain at most 320 entries
+(which is low for a production system) and more messages were being
+added (the Linux kernel in certain cases allows to have a few more
+entries than configured for performance and consistency reasons). The
+number of events already lost is displayed, as well as the current
+limitation settings. The message "backlog limit exceeded" can be "rate
+limit exceeded" if that was the limitation that was triggered.&lt;/p&gt;
+&lt;p&gt;Now, if the system is not configured to silently discard it, or to panic
+the system, then the "dropped" messages are sent to the kernel log
+subsystem. The calls however are also governed through a configurable
+limitation: it uses a rate limit which can be set through &lt;code&gt;sysctl&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sysctl -a | grep kernel.printk_rate
+kernel.printk_ratelimit = 5
+kernel.printk_ratelimit_burst = 10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the above example, this system allows one message every 5 seconds,
+but does allow a burst of up to 10 messages at once. When the rate
+limitation kicks in, then the kernel will log (at most one per second)
+the number of suppressed events:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Although this limit is kernel-wide, not all kernel log events are
+governed through it. It is the caller subsystem (in our case, the audit
+subsystem) which is responsible for having its events governed through
+this rate limitation or not.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Finishing up&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Before waving goodbye, I would like to point out that the backlog queue
+is a memory queue (and not &lt;a href="https://access.redhat.com/solutions/19327"&gt;on disk, Red
+Hat&lt;/a&gt;), just in case it wasn't
+obvious. Increasing the queue size can result in more kernel memory
+consumption. Apparently, a &lt;a href="https://www.redhat.com/archives/linux-audit/2011-October/msg00007.html"&gt;practical size
+estimate&lt;/a&gt;
+is around 9000 bytes per message. On production systems, it is advised
+not to make this setting too low. I personally set it to 8192.&lt;/p&gt;
+&lt;p&gt;Lost audit events might result in difficulties for troubleshooting,
+which is the case when dealing with new or experimental SELinux
+policies. It would also result in missing security-important events. It
+is the audit subsystem, after all. So tune it properly, and enjoy the
+power of Linux' audit subsystem.&lt;/p&gt;</content><category term="Free Software"></category><category term="audit"></category><category term="kernel"></category><category term="security"></category><category term="selinux"></category></entry><entry><title>Gentoo Hardened progress meeting of march 2013</title><link href="http://blog.siphos.be/2013/03/gentoo-hardened-progress-meeting-of-march-2013/" rel="alternate"></link><published>2013-03-07T22:46:00+01:00</published><updated>2013-03-07T22:46:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-07:/2013/03/gentoo-hardened-progress-meeting-of-march-2013/</id><summary type="html">&lt;p&gt;Another month has passed, so time for a new progress meeting...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Toolchain&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;GCC v4.7 has been unmasked, allowing a large set of users to test out
+the new GCC. It is also expected that GCC 4.8-rc1 will hit the tree next
+week. In the hardened-dev overlay, hardened support …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Another month has passed, so time for a new progress meeting...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Toolchain&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;GCC v4.7 has been unmasked, allowing a large set of users to test out
+the new GCC. It is also expected that GCC 4.8-rc1 will hit the tree next
+week. In the hardened-dev overlay, hardened support for x86, amd64 and
+arm has been added (SPEC updates) and the remainder of architectures
+will be added by the end of the week.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Kernel and grSecurity/PaX&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Kernel 3.7.5 had a security issue (local root privilege escalation) so
+3.7.5-r1 which held a fix for this was stabilized quickly. However,
+other (non-security) problems have been reported, such as one with
+dovecot, regarding the VSIZE memory size. This should be fixed in the
+3.8 series, so these are candidate for a faster stabilization. This
+faster stabilization is never fun, as it increases the likelihood that
+we miss other things, but they are needed as the vulnerability in the
+previous stable kernel was too severe.&lt;/p&gt;
+&lt;p&gt;Regarding XATTR_PAX, we are getting pretty close to the migration. The
+eclass is ready and will be announced for review on the appropriate
+mailinglists later this week. A small problem still remains on
+Paludis-using systems (Paludis does not record NEEDED.ELF.2 information
+- linkage information - so it is hard to get all the linkage information
+on a system). A different revdep-pax and migrate-pax toolset will be
+built that detects the necessary linkage information, but much slower
+than on a Portage-running system.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SELinux&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The 11th revision of the policies are now stable, and work is on the way
+for the 12th revision which will hit the tree soon. Some work is on the
+way for setools and policycoreutils (one due to a new release - setools
+- and the other one due to a build failure if PAM is not set). Both
+packages will hit the hardened-dev overlay soon.&lt;/p&gt;
+&lt;p&gt;A new "edition" of the selinuxnode virtual image has been pushed to the
+mirror system, providing a SELinux-enabled (enforcing) Gentoo Hardened
+system with grSecurity and PaX, as well as IMA and EVM enabled.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Profiles&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The 13.0 profiles have been running fine for a while at a few of our
+developer systems. No changes have been needed (yet) so things are
+looking good.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;System Integrity&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The necessary userland utilities have been moved to the main tree. The
+documentation for IMA/EVM has been updated as well to reflec the current
+state of IMA/EVM within Gentoo Hardened. IMA, even with the custom
+policies, seems to be working well. EVM on the other hand has some
+issues, so you might need to run with EVM=fix for now. Debugging on this
+issue is on the way.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Some of the user oriented documentation (integrity and SELinux) have
+been moved to the Gentoo Wiki for easier user contributions and
+simplified management. Other documents will follow soon.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category><category term="toolchain"></category></entry><entry><title>Gentoo Hardened goes onward (aka project meeting)</title><link href="http://blog.siphos.be/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/" rel="alternate"></link><published>2013-02-07T23:40:00+01:00</published><updated>2013-02-07T23:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-07:/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/</id><summary type="html">&lt;p&gt;It's been a while again, so time for another Gentoo Hardened online
+progress meeting.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;GCC 4.8 is on development stage 4, so the hardened patches will be
+worked on next week. Some help on it is needed to test the patches on
+ARM, PPC and MIPS though. For …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It's been a while again, so time for another Gentoo Hardened online
+progress meeting.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;GCC 4.8 is on development stage 4, so the hardened patches will be
+worked on next week. Some help on it is needed to test the patches on
+ARM, PPC and MIPS though. For those interested, keep a close eye on the
+hardened-dev overlay as those will contain the latest fixes. When GCC
+4.9 starts development phase 1, Zorry will again try to upstream the
+patches.&lt;/p&gt;
+&lt;p&gt;With the coming fixes, we might probably (need to) remove the various
+hardenedno* GCC profiles from the hardened Gentoo profiles. This
+shouldn't impact too many users as ebuilds add in the correct flags
+anyhow (for instance when needing to turn off PIE/PIC).&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Kernel, grSecurity and PaX&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The kernel release 3.7.0 that we have stable in our tree has seen a few
+setbacks, but no higher version is stable yet (mainly due to the
+stabilization period needed). 3.7.4-r1 and 3.7.5 are prime candidates
+with good track record,&lt;br&gt;
+so we might be stabilizing 3.7.5 in the very near future (next week
+probably).&lt;/p&gt;
+&lt;p&gt;On the PaX flag migration (you know, from ELF-header based marking to
+extended attributes marking), the documentation has seen its necessary
+upgrades and the userland utilities have been updated to reflect the use
+of xattr markings. The eclass we use for the markings will use the
+correct utility based on the environment.&lt;/p&gt;
+&lt;p&gt;One issue faced when trying to support both markings is that some
+actions (like the "paxctl -Cc" which creates the PT_PAX header if it is
+missing) make no sense with the other (as there is no header when using
+XATTR_PAX). The eclass will be updated to ignore these flags when
+XATTR_PAX is selected.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;SELinux&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Revision 10 is stable in the tree, and revision 11 is waiting
+stabilization period. A few more changes have been put in the policy
+repository already (which are installed when using the live ebuilds) and
+will of course be part of&lt;br&gt;
+revision 12.&lt;/p&gt;
+&lt;p&gt;A change in the userland utilities was also pushed out to allow
+permissive domains (so run a single domain in permissive mode instead of
+the entire system).&lt;/p&gt;
+&lt;p&gt;Finally, the SELinux eclass has been updated to remove SELinux modules
+from all defined SELinux module stores if the SELinux policy package is
+removed from the system. Before that, the user had to remove the modules
+from the store himself manually, but this is error-prone and easily
+forgotten, especially for the non-default SELinux policy stores.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Profiles&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;All hardened subprofiles are marked as deprecated now (you've seen the
+discussions on this on the mailinglist probably on this) so we now have
+a sane set of hardened profiles to manage. The subprofiles were used for
+things like&lt;br&gt;
+"desktop" or "server", whereas users can easily stack their profiles as
+they see fit anyhow - so there was little reason for the project to
+continue managing those subprofiles.&lt;/p&gt;
+&lt;p&gt;Also, now that Gentoo has released its 13.0 profile, we will need to
+migrate our profiles to the 13.0 ones as well. So, the idea is to
+temporarily support 13.0 in a subprofile, test it thoroughly, and then
+remove the subprofile and switch the main one to 13.0.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;System Integrity&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The documentation for IMA and EVM is available on the Gentoo Hardened
+project site. They currently still refer to the IMA and EVM subsystems
+as development-only, but they are available in the stable kernels now.
+Especially the default policy that is available in the kernel is pretty
+useful. When you want to consider custom policies (for instance with
+SELinux integration) you'll need a kernel patch that is already
+upstreamed but not applied to the stable kernels yet.&lt;/p&gt;
+&lt;p&gt;To support IMA/EVM, a package called ima-evm-utils is available in the
+hardened-dev overlay, which will be moved to the main tree soon.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Documentation&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;As mentioned before, the PaX documentation has seen quite a lot of
+updates. Other documents that have seen updates are the Hardened FAQ,
+Integrity subproject and SELinux documentation although most of them
+were small changes.&lt;/p&gt;
+&lt;p&gt;Another suggestion given is to clean up the Hardened project page;
+however, there has been some talk within Gentoo to move project pages to
+the Gentoo wiki. Such a move might make the suggestion easier to handle.
+And while on the subject of the wiki, we might want to move user guides
+to the wiki already.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Bugs&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bug &lt;a href="https://bugs.gentoo.org/443630"&gt;443630&lt;/a&gt; refers to segmentation
+faults with libvirt when starting Qemu domains on a SELinux-enabled
+host. Sadly, I'm not able to test libvirt myself so either someone with
+SELinux and libvirt&lt;br&gt;
+expertise can chime in, or we will need to troubleshoot it by bug
+(using gdb, strace'ing more, ...) which might take quite some time and
+is not user friendly...&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Media&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Various talks where held at FOSDEM regarding Gentoo Hardened, and a lot
+of people attended those talks. Also the round table was quite
+effective, with many users interacting with developers all around. For
+next year, chances are very high that we'll give a "What has changed
+since last year" session and a round table again.&lt;/p&gt;
+&lt;p&gt;With many thanks to the usual suspects: Zorry, blueness, prometheanfire,
+lejonet, klondike and the several dozen contributors that are going to
+kill me for not mentioning their (nick)names.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="meeting"></category><category term="minutes"></category><category term="online"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category></entry></feed>

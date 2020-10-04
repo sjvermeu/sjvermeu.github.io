@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - snapshot</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/snapshot/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-01-21T23:05:00+01:00</updated><entry><title>Old Gentoo system? Not a problem...</title><link href="http://blog.siphos.be/2015/01/old-gentoo-system-not-a-problem/" rel="alternate"></link><published>2015-01-21T23:05:00+01:00</published><updated>2015-01-21T23:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-01-21:/2015/01/old-gentoo-system-not-a-problem/</id><summary type="html">&lt;p&gt;If you have a very old Gentoo system that you want to upgrade, you might
+have some issues with too old software and Portage which can't just
+upgrade to a recent state. Although many methods exist to work around
+it, one that I have found to be very useful is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you have a very old Gentoo system that you want to upgrade, you might
+have some issues with too old software and Portage which can't just
+upgrade to a recent state. Although many methods exist to work around
+it, one that I have found to be very useful is to have access to old
+Portage snapshots. It often allows the administrator to upgrade the
+system in stages (say in 6-months blocks), perhaps not the entire world
+but at least the system set.&lt;/p&gt;
+&lt;p&gt;Finding old snapshots might be difficult though, so at one point I
+decided to create &lt;a href="http://dev.gentoo.org/~swift/snapshots/"&gt;a list of old
+snapshots&lt;/a&gt;, two months apart,
+together with the GPG signature (so people can verify that the snapshot
+was not tampered with by me in an attempt to create a Gentoo botnet). I
+haven't needed it in a while anymore, but I still try to update the list
+every two months, which I just did with the snapshot of January 20th
+this year.&lt;/p&gt;
+&lt;p&gt;I hope it at least helps a few other admins out there.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="tree"></category></entry><entry><title>Upgrading old Gentoo installations</title><link href="http://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/" rel="alternate"></link><published>2013-12-29T14:18:00+01:00</published><updated>2013-12-29T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-29:/2013/12/upgrading-old-gentoo-installations/</id><summary type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+#463240&lt;/a&gt; about the
+difficulty of upgrading a Gentoo Linux deployment after a long time of
+inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading
+Gentoo&lt;/a&gt; article on the
+Gentoo wiki that describes in great detail how upgrades can be
+accomplished. But one of the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+#463240&lt;/a&gt; about the
+difficulty of upgrading a Gentoo Linux deployment after a long time of
+inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading
+Gentoo&lt;/a&gt; article on the
+Gentoo wiki that describes in great detail how upgrades can be
+accomplished. But one of the methods I personally suggest most is to do
+small, incremental upgrades.&lt;/p&gt;
+&lt;p&gt;Say you have a system from early 2009. Not too long ago, but also not
+that recent anymore. If you would upgrade that system using the regular
+approach, your system would probably be using a non-existing profile
+(the &lt;code&gt;/etc/make.profile&lt;/code&gt; symlink would point to a non-existing
+location), and if you switch the profile to an existing one, you might
+have to deal with problems like the profile requiring certain features
+(or EAPI version) that the software currently available on your system
+doesn't support.&lt;/p&gt;
+&lt;p&gt;This problem is mentioned in the upgrade guide through the following:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Make sure your Portage is updated before performing any profile
+changes.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;However, it does not tell how to update Portage. In my opinion the best
+way forward is to install an older Portage tree snapshot (somewhat more
+recent than your own deployment) and upgrade &lt;em&gt;at least&lt;/em&gt; portage, perhaps
+also the packages belonging to the &lt;em&gt;system&lt;/em&gt; set. So for a system that
+has not been updated since January 2009, you might want to try the
+portage tree snapshot of July 2009, then January 2010, then July 2010,
+etc. until you have a recent deployment again.&lt;/p&gt;
+&lt;p&gt;All that is left for you to do is to find such a snapshot (as the
+Portage tree snapshots from the mirrors are cleaned out after a few
+months). I try to keep a set of &lt;a href="http://dev.gentoo.org/~swift/snapshots/"&gt;Portage tree snapshots
+available&lt;/a&gt; with a 2-month
+period which should be sufficient for most users to gradually upgrade
+their systems.&lt;/p&gt;
+&lt;p&gt;Considering I've used this method a few times already I'm going to add
+them to the &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;upgrading
+instructions&lt;/a&gt; as well.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="upgrade"></category></entry></feed>

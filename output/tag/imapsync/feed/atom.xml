@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - imapsync</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/imapsync/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2016-03-13T12:57:00+01:00</updated><entry><title>Trying out imapsync</title><link href="http://blog.siphos.be/2016/03/trying-out-imapsync/" rel="alternate"></link><published>2016-03-13T12:57:00+01:00</published><updated>2016-03-13T12:57:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-03-13:/2016/03/trying-out-imapsync/</id><summary type="html">&lt;p&gt;Recently, I had to migrate mail boxes for a couple of users from one mail provider to
+another. Both mail providers used IMAP, so I looked into IMAP related synchronization
+methods. I quickly found the &lt;a href="https://github.com/imapsync/imapsync"&gt;imapsync&lt;/a&gt; application,
+also supported through Gentoo's repository.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;What I required&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The migration required that all …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently, I had to migrate mail boxes for a couple of users from one mail provider to
+another. Both mail providers used IMAP, so I looked into IMAP related synchronization
+methods. I quickly found the &lt;a href="https://github.com/imapsync/imapsync"&gt;imapsync&lt;/a&gt; application,
+also supported through Gentoo's repository.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;What I required&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The migration required that all mails, except for the spam and trash e-mails, were
+migrated to another mail server. The migrated mails had to retain their status flags
+(so unread mails had to remain unread while read mails had to remain read), and the
+migration had to be done in two waves: one while the primary mail server was still
+in use (where most of the mails where synchronized) and then, after switching the
+mail servers (which was done through DNS changes) re-sync to fetch the final ones.&lt;/p&gt;
+&lt;p&gt;I did not get access to the credentials of all mail boxes, but together with the
+main administrator we enabled a sort-of shadow authentication system (a temporary
+OpenLDAP installation) in which the same users were enabled, but with passwords that
+will be used during the synchronization. The mailservers were then configured to
+have a secondary interface available which used this OpenLDAP rather than the primary
+authentication that was being used by the end users.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Using imapsync&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Using &lt;code&gt;imapsync&lt;/code&gt; is simple. It is a command-line application, and everything
+configurable is done through command arguments. The basic ones are of course the
+source and target definitions, as well as the authentication information for both
+sides.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync \
+  --host1 src-host --user1 src-user --password1 src-pw --authmech1 LOGIN --ssl1 \
+  --host2 dst-host --user2 dst-user --password2 dst-pw --authmech2 LOGIN --ssl2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The use of the &lt;code&gt;--ssl1&lt;/code&gt; and &lt;code&gt;--ssl2&lt;/code&gt; is not to enable an older or newer version of
+the SSL/TLS protocol. It just enables the use of SSL/TLS for the source host (&lt;code&gt;--ssl1&lt;/code&gt;)
+and destination host (&lt;code&gt;--ssl2&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;This would just start synchronizing messages, but we need to include the necessary
+directives to skip trash and spam mailboxes for instance. For this, the &lt;code&gt;--exclude&lt;/code&gt; parameter
+can be used:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync ... --exclude &amp;quot;Trash|Spam|Drafts&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It is also possible to transform some mailbox names. For instance, if the source host
+uses &lt;code&gt;Sent&lt;/code&gt; as the mailbox for sent mail, while the target has &lt;code&gt;Sent Items&lt;/code&gt;, then the
+following would enable migrating mails between the right folders:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync ... --folder &amp;quot;Sent&amp;quot; --regextrans2 &amp;#39;s/Sent/Sent Items/&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Conclusions and interesting resources&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Using the application was a breeze. I do recommend to create a test account on both sides
+so that you can easily see the available folders, source and target naming conventions as
+well as test if rerunning the application works flawlessly.&lt;/p&gt;
+&lt;p&gt;In my case for instance, I had to add &lt;code&gt;--skipsize&lt;/code&gt; so that the application does not use the
+mail sizes for comparing if a mail is already transferred or not, as the target mailserver
+showed different mail sizes for the same mails. This was luckily often documented on the
+various online tutorials about &lt;code&gt;imapsync&lt;/code&gt;, such as &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://seagrief.co.uk/2010/12/moving-to-google-apps-with-imapsync/"&gt;Moving to Google Apps with imapsync&lt;/a&gt; on seagrief.co.uk&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://wiki.zimbra.com/wiki/Guide_to_imapsync"&gt;Guide to imapsync&lt;/a&gt; on wiki.zimbra.com&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The migration took a while, but without major issues. Within a few hours, the mailboxes of all
+users where correctly migrated.&lt;/p&gt;</content><category term="Free Software"></category><category term="imapsync"></category></entry></feed>

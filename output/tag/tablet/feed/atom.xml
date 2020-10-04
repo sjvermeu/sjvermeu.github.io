@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - tablet</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/tablet/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-08-15T20:58:00+02:00</updated><entry><title>Today was a productive day</title><link href="http://blog.siphos.be/2013/08/today-was-a-productive-day/" rel="alternate"></link><published>2013-08-15T20:58:00+02:00</published><updated>2013-08-15T20:58:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-15:/2013/08/today-was-a-productive-day/</id><summary type="html">&lt;p&gt;Fixed 14 bugs today, with a few more pending (those for packages only
+get marked as FIXED if it is moved to the stable state). One of the
+changes is the
+&lt;a href="http://www.gentoo.org/doc/en/handbook/handbook-amd64.xml?part=1&amp;amp;chap=10#grub2"&gt;GRUB2&lt;/a&gt;
+support in the Gentoo Handbook (yes, finally, sorry about that). That
+opens up the road for the stabilization …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Fixed 14 bugs today, with a few more pending (those for packages only
+get marked as FIXED if it is moved to the stable state). One of the
+changes is the
+&lt;a href="http://www.gentoo.org/doc/en/handbook/handbook-amd64.xml?part=1&amp;amp;chap=10#grub2"&gt;GRUB2&lt;/a&gt;
+support in the Gentoo Handbook (yes, finally, sorry about that). That
+opens up the road for the stabilization of GRUB2.&lt;/p&gt;
+&lt;p&gt;I also added a dozen fixes to the Gentoo SELinux policy repository and
+sent a few others upstream that have been lingering in our policy for
+quite some time. But the highlight for me was that I got to play with my
+Wacom Bamboo pen and touch which, I must say, integrated easily with my
+system. I only had to build the &lt;code&gt;wacom.ko&lt;/code&gt; kernel module and install the
+&lt;code&gt;xf86-input-wacom&lt;/code&gt; package, but that's all - no reboot needed. Even GIMP
+immediately detected the new device and I can start drawing and fixing
+pictures more easily (I work on pictures often and a mouse just isn't
+that obvious).&lt;/p&gt;
+&lt;p&gt;One of the huge benefits is that the pressure you put on the drawing pad
+is related (and configurable) to a drawing function in GIMP, something
+you don't have with mice. For instance, if you need to Dodge or Burn on
+layers, you don't need to continuously switch between the amount - just
+adjust the pressure.&lt;/p&gt;</content><category term="Misc"></category><category term="gimp"></category><category term="tablet"></category><category term="wacom"></category></entry><entry><title>Some things sound more scary than they are</title><link href="http://blog.siphos.be/2013/08/some-things-sound-more-scary-than-they-are/" rel="alternate"></link><published>2013-08-15T10:02:00+02:00</published><updated>2013-08-15T10:02:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-15:/2013/08/some-things-sound-more-scary-than-they-are/</id><summary type="html">&lt;p&gt;A few days ago I finally got to the next thing on my &lt;em&gt;Want to do this
+year&lt;/em&gt; list: put a new android
+(&lt;a href="http://www.cyanogenmod.org/"&gt;Cyanogenmod&lt;/a&gt;) on my tablet, which was
+still running the stock Android - but hasn't seen any updates in more
+than a year. Considering the (in)security of Android …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few days ago I finally got to the next thing on my &lt;em&gt;Want to do this
+year&lt;/em&gt; list: put a new android
+(&lt;a href="http://www.cyanogenmod.org/"&gt;Cyanogenmod&lt;/a&gt;) on my tablet, which was
+still running the stock Android - but hasn't seen any updates in more
+than a year. Considering the (in)security of Android this was long
+overdue for me. But the fear of getting an unbootable tablet ("bricked"
+as it is often called) was keeping me from doing so.&lt;/p&gt;
+&lt;p&gt;So when I finally got the nerves, I first had to run around screaming
+for hours because the first step in the instructions didn't work. The
+next day I read that it might have to do with the cable - and indeed,
+tried with a different cable and the instructions just went along just
+fine. So today I'm happily running with a more up-to-date Android again
+on my tablet.&lt;/p&gt;
+&lt;p&gt;Because my systems run Gentoo Hardened with SELinux, I did had to do
+some small magic tricks to get the
+&lt;a href="http://www.clockworkmod.com/"&gt;Clockworkmod&lt;/a&gt; recovery on the tablet: the
+&lt;strong&gt;wheelie&lt;/strong&gt; binary (yes, I couldn't find the sources - if they are even
+available) that I had to run required me to disable size overflow
+detection in the kernel (a PaX countermeasure), allowed executable
+memory (both through &lt;strong&gt;paxctl-ng&lt;/strong&gt; as well as in SELinux using the
+&lt;code&gt;allow_execmem&lt;/code&gt; boolean) and had to temporarily add in the
+&lt;code&gt;dev_rw_generic_usb_dev&lt;/code&gt; right (refpolicy macro) to my user.&lt;/p&gt;
+&lt;p&gt;Also &lt;strong&gt;adb&lt;/strong&gt; had to be pax-marked, although I now know I don't need
+&lt;strong&gt;adb&lt;/strong&gt; at all - I can just download the latest Android ZIP file from
+the phone itself and refer to it from the recovery manager.&lt;/p&gt;
+&lt;p&gt;All in all nothing to worry about - everything worked like a charm.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; (so I remember next time), if the system is stuck in CMR
+(recovery), reboot with VolDown+Pwr, but don't select recovery. After 5
+seconds, it will ask if you want a cold boot. Select it, and things work
+again ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="android"></category><category term="grsecurity"></category><category term="pax"></category><category term="selinux"></category><category term="tablet"></category></entry></feed>

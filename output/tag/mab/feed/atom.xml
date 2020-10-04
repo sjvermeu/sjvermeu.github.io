@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - mab</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/mab/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-08-05T22:35:00+02:00</updated><entry><title>My application base: Obnam</title><link href="http://blog.siphos.be/2015/08/my-application-base-obnam/" rel="alternate"></link><published>2015-08-05T22:35:00+02:00</published><updated>2015-08-05T22:35:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-05:/2015/08/my-application-base-obnam/</id><summary type="html">&lt;p&gt;It is often said, yet too often forgotten: taking backups (and verifying that 
+they work). Taking backups is not purely for companies and organizations.
+Individuals should also take backups to ensure that, in case of errors or
+calamities, the all important files are readily recoverable.&lt;/p&gt;
+&lt;p&gt;For backing up files and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It is often said, yet too often forgotten: taking backups (and verifying that 
+they work). Taking backups is not purely for companies and organizations.
+Individuals should also take backups to ensure that, in case of errors or
+calamities, the all important files are readily recoverable.&lt;/p&gt;
+&lt;p&gt;For backing up files and directories, I personally use &lt;a href="http://obnam.org/"&gt;obnam&lt;/a&gt;,
+after playing around with &lt;a href="http://www.bacula.org/"&gt;Bacula&lt;/a&gt; and
+&lt;a href="https://attic-backup.org/"&gt;attic&lt;/a&gt;. Bacula is more meant for large
+distributed environments (although I also tend to use obnam for my server
+infrastructure) and was too complex for my taste. The choice between obnam and
+attic is even more personally-oriented.&lt;/p&gt;
+
+
+&lt;p&gt;I found attic to be faster, but with a small supporting community. Obnam was
+slower, but seems to have a more active community which I find important for 
+infrastructure that is meant to live quite long (you don't want to switch 
+backup solutions every year). I also found it pretty easy to work with, and
+to restore files back, and Gentoo provides the &lt;a href="https://packages.gentoo.org/package/app-backup/obnam"&gt;app-backup/obnam&lt;/a&gt;
+package.&lt;/p&gt;
+&lt;p&gt;I think both are decent solutions, so I had to make one choice and ended up
+with obnam. So, how does it work?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Configuring what to backup&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The basic configuration file for obnam is &lt;code&gt;/etc/obnam.conf&lt;/code&gt;. Inside this file,
+I tell which directories need to be backed up, as well as which subdirectories
+or files (through expressions) can be left alone. For instance, I don't want
+obnam to backup ISO files as those have been downloaded anyway.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[config]&lt;/span&gt;
+&lt;span class="na"&gt;repository&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;/srv/backup&lt;/span&gt;
+&lt;span class="na"&gt;root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home&lt;/span&gt;
+&lt;span class="na"&gt;exclude&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*&lt;/span&gt;
+&lt;span class="na"&gt;exclude-caches&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;yes&lt;/span&gt;
+
+&lt;span class="na"&gt;keep&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;8h,14d,10w,12m,10y&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;root&lt;/code&gt; parameter tells obnam which directories (and subdirectories) to
+back up. With &lt;code&gt;exclude&lt;/code&gt; a particular set of files or directories can be
+excluded, for instance because these contain downloaded resources (and as such
+do not need to be inside the backup archives).&lt;/p&gt;
+&lt;p&gt;Obnam also supports the &lt;a href="http://www.brynosaurus.com/cachedir/spec.html"&gt;CACHEDIR.TAG&lt;/a&gt;
+specification, which I use for the various cache directories. With the use of 
+these cache tag files I do not need to update the &lt;code&gt;obnam.conf&lt;/code&gt; file with every
+new cache directory (or software build directory).&lt;/p&gt;
+&lt;p&gt;The last parameter in the configuration that I want to focus on is the &lt;code&gt;keep&lt;/code&gt;
+parameter. Every time obnam takes a backup, it creates what it calls a new
+&lt;em&gt;generation&lt;/em&gt;. When the backup storage becomes too big, administrators can run
+&lt;code&gt;obnam forget&lt;/code&gt; to drop generations. The &lt;code&gt;keep&lt;/code&gt; parameter informs obnam which
+generations can be removed and which ones can be kept.&lt;/p&gt;
+&lt;p&gt;In my case, I want to keep one backup per hour for the last 8 hours (I normally
+take one backup per day, but during some development sprees or photo
+manipulations I back up multiple times), one per day for the last two weeks, 
+one per week for the last 10 weeks, one per month for the last 12 months and
+one per year for the last 10 years.&lt;/p&gt;
+&lt;p&gt;Obnam will clean up only when &lt;code&gt;obnam forget&lt;/code&gt; is executed. As storage is cheap,
+and the performance of obnam is sufficient for me, I do not need to call this
+very often.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Backing up and restoring files&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;My backup strategy is to backup to an external disk, and then synchronize this
+disk with a personal backup server somewhere else. This backup server runs no
+other software beyond OpenSSH (to allow secure transfer of the backups) and both
+the backup server disks and the external disk is &lt;a href="https://wiki.gentoo.org/wiki/Dm-crypt"&gt;LUKS&lt;/a&gt;
+encrypted. Considering that I don't have government secrets I opted not to encrypt
+the backup files themselves, but Obnam does support that (through GnuPG).&lt;/p&gt;
+&lt;p&gt;All backup enabled systems use cron jobs which execute &lt;code&gt;obnam backup&lt;/code&gt; to take
+the backup, and use rsync to synchronize the finished backup with the backup
+server. If I need to restore a file, I use &lt;code&gt;obnam ls&lt;/code&gt; to see which file(s) I
+need to restore (add in a &lt;code&gt;--generation=&lt;/code&gt; to list the files of a different
+backup generation than the last one).&lt;/p&gt;
+&lt;p&gt;Then, the command to restore is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# obnam restore --to=/var/restore /home/swift/Images/Processing/*.NCF
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Or I can restore immediately to the directory again:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# obnam restore --to=/home/swift/Images/Processing /home/swift/Images/Processing/*.NCF
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To support multiple clients, obnam by default identifies each client through
+the hostname. It is possible to use different names, but hostnames tend to be
+a common best practice which I don't deviate from either. Obnam is able to share
+blocks between clients (it is not mandatory, but supported nonetheless).&lt;/p&gt;</content><category term="Free Software"></category><category term="mab"></category><category term="backup"></category><category term="obnam"></category></entry><entry><title>My application base: graphviz</title><link href="http://blog.siphos.be/2013/06/my-application-base-graphviz/" rel="alternate"></link><published>2013-06-09T03:50:00+02:00</published><updated>2013-06-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-09:/2013/06/my-application-base-graphviz/</id><summary type="html">&lt;p&gt;Visualization of data is often needed in order to understand what the
+data means. When data needs to be visualized automatically, I often use
+the &lt;a href="http://www.graphviz.org/"&gt;graphviz&lt;/a&gt; tools. Not that they are
+extremely pretty, but it works very well and is made to be automated.&lt;/p&gt;
+&lt;p&gt;Let me give a few examples …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Visualization of data is often needed in order to understand what the
+data means. When data needs to be visualized automatically, I often use
+the &lt;a href="http://www.graphviz.org/"&gt;graphviz&lt;/a&gt; tools. Not that they are
+extremely pretty, but it works very well and is made to be automated.&lt;/p&gt;
+&lt;p&gt;Let me give a few examples of when visualization helps...&lt;/p&gt;
+&lt;p&gt;In SELinux, there is the notion of domain transitions: security contexts
+that can transition to another security context (and thus change the
+permissions that the application/process has). Knowing where domains can
+transition to (and how) as well as how domains can be transitioned to
+(so input/output, if you may) is an important aspect to validate the
+security of a system. The information can be obtained from tools such as
+&lt;strong&gt;sesearch&lt;/strong&gt;, but even on a small system you easily find hundreds of
+transitions that can occur. Visualizing the transitions in a graph
+(using &lt;strong&gt;dot&lt;/strong&gt; or &lt;strong&gt;neato&lt;/strong&gt;) shows how a starting point can move (or
+cannot move - equally important to know ;-) to another domain. So a
+simple &lt;strong&gt;sesearch&lt;/strong&gt; with a few &lt;strong&gt;awk&lt;/strong&gt; statements in the middle and a
+&lt;strong&gt;dot&lt;/strong&gt; at the end produces a nice graph in PNG format to analyze
+further.&lt;/p&gt;
+&lt;p&gt;A second visualization is about dependencies. Be it package dependencies
+or library dependencies, or even architectural dependencies (in IT
+architecturing, abstraction of assets and such also provides a
+dependency-like structure), with the Graphviz tools the generation of
+dependency graphs can be done automatically. At work, I sometimes use a
+simple home-brew web-based API to generate the data (similar to
+&lt;a href="http://ashitani.jp/gv/"&gt;Ashitani's Ajax/Graphviz&lt;/a&gt;) since the
+workstations don't allow installation of your own software - and they're
+windows.&lt;/p&gt;
+&lt;p&gt;Another purpose I use graphviz for is to quickly visualize processes
+during the design. Of course, this can be done using Visio or Draw.io
+easily as well, but these have the disadvantage that you already require
+some idea on how the process will evolve. With the dot language, I can
+just start writing processes in a simple way, combining steps into
+clusters (or in scheduling terms: streams or applications ;-) and let
+Graphviz visualize it for me. When the process is almost finished, I can
+either copy the result in Draw.io to generate a nicer drawing or use the
+Graphviz result (especially when the purpose was just rapid
+prototyping).&lt;/p&gt;
+&lt;p&gt;And sometimes it is just fun to generate graphs based on data. For
+instance, I can take the IRC logs of #gentoo or #gentoo-hardened to
+generate graphs showing interactions between people (who speaks to who
+and how frequently) or to find out the strength of topics (get the
+keywords and generate communication graphs based on those keywords).&lt;/p&gt;</content><category term="Free Software"></category><category term="dependencies"></category><category term="dot"></category><category term="graphviz"></category><category term="mab"></category><category term="neato"></category><category term="scheduling"></category><category term="visualization"></category><category term="visualize"></category></entry><entry><title>My application base: LibreOffice</title><link href="http://blog.siphos.be/2013/06/my-application-base-libreoffice/" rel="alternate"></link><published>2013-06-08T03:50:00+02:00</published><updated>2013-06-08T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-08:/2013/06/my-application-base-libreoffice/</id><summary type="html">&lt;p&gt;Of course, working with a Linux desktop eventually requires you to work
+with an office suite. Although I have used alternatives like AbiWord and
+Calligra in the past, and although I do think that Google Docs might
+eventually become powerful enough to use instead, I'm currently using
+&lt;a href="https://www.libreoffice.org/"&gt;LibreOffice&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The use …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Of course, working with a Linux desktop eventually requires you to work
+with an office suite. Although I have used alternatives like AbiWord and
+Calligra in the past, and although I do think that Google Docs might
+eventually become powerful enough to use instead, I'm currently using
+&lt;a href="https://www.libreoffice.org/"&gt;LibreOffice&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The use of LibreOffice for Linux users is well known: it has decent
+Microsoft Office support (although I hardly ever need it; most users
+don't mind exporting the files in an open document format and publishers
+often support OpenOffice/LibreOffice formats themselves) and its
+features are becoming more and more powerful, such as the CMIS support
+(for online collaboration through content management systems). It also
+has a huge community, sharing templates and other documents that make
+life with LibreOffice even much prettier. Don't forget to check out its
+&lt;a href="https://www.libreoffice.org/get-help/documentation/"&gt;extensive
+documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The aspects of LibreOffice I use the most are of course its writer (word
+processor) and calc (spreadsheet application). The writer-part is for
+when I do technical writing, whereas the spreadsheet application is for
+generating simple management sheets for startups and households that
+want to keep track of things (such as budgets, creating invoices, data
+for mail-merge, etc.). At my work, Excel is one of the most used "end
+user computing" tools, so I happen to get acquainted with quite a few
+spreadsheet tips and tricks that are beneficial for small companies or
+organizations ;-) Also, Calc has support for macro-like enhancements,
+which makes it a good start for fast application development (until the
+requests of the user/client has been stabilized, after which I usually
+suggest a &lt;em&gt;real&lt;/em&gt; application development ;-)&lt;/p&gt;
+&lt;p&gt;I generally don't use its presentation part much though - if I get a
+powerpoint, I first see if Google Docs doesn't show it sufficiently
+well. If not, then I try it out in LibreOffice. But usually, if someone
+sends me a presentation, I tend to ask for a PDF version.&lt;/p&gt;</content><category term="Free Software"></category><category term="excel"></category><category term="libreoffice"></category><category term="mab"></category><category term="openoffice"></category><category term="word"></category></entry><entry><title>My application base: firefox</title><link href="http://blog.siphos.be/2013/06/my-application-base-firefox/" rel="alternate"></link><published>2013-06-07T03:50:00+02:00</published><updated>2013-06-07T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-07:/2013/06/my-application-base-firefox/</id><summary type="html">&lt;p&gt;Browsers are becoming application disclosure frameworks rather than the
+visualization tools they were in the past. More and more services, like
+the
+&lt;a href="http://blog.siphos.be/2013/06/my-application-base-draw-io/"&gt;Draw.io&lt;/a&gt;
+one I discussed not that long ago, are using browsers are their client
+side while retaining the full capabilities of end clients (such as drag
+and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Browsers are becoming application disclosure frameworks rather than the
+visualization tools they were in the past. More and more services, like
+the
+&lt;a href="http://blog.siphos.be/2013/06/my-application-base-draw-io/"&gt;Draw.io&lt;/a&gt;
+one I discussed not that long ago, are using browsers are their client
+side while retaining the full capabilities of end clients (such as drag
+and drop, file management, editing capabilities and more).&lt;/p&gt;
+&lt;p&gt;The browser I use consistently is
+&lt;a href="https://www.mozilla.org/en-US/firefox/fx/"&gt;Firefox&lt;/a&gt;. I do think I will
+move to Chromium (or at least use it more actively) sooner or later, but
+firefox at this point in time covers all my needs. It isn't just the
+browser itself though, but also the wide support in add-ons that I am
+relying upon. This did make me push out SELinux policies to restrict the
+actions that firefox can do, because it has become almost an entire
+operating system by itself (like ChromeOS versus Chrome/Chromium). With
+a few tunable settings (SELinux booleans) I can enable/disable access to
+system devices (such as webcams), often vulnerable plugins (flash,
+java), access to sensitive user information (I don't allow firefox
+access to regular user files, only to the downloaded content) and more.&lt;/p&gt;
+&lt;p&gt;One of the add-ons that is keeping me with Firefox for now is
+&lt;a href="http://noscript.net/"&gt;NoScript&lt;/a&gt;. Being a security-conscious guy, being
+able to limit the exposure of my surfing habits to advertisement
+companies (and others) is very important to me. The NoScript add-on does
+this perfectly. The add-on is very extensible (although I don't use that
+- just the temporary/permanent allow) and easy to work with: on a site
+where you notice some functionality isn't working, right-click and seek
+the proper domain to allow methods from. Try-out a few of them
+temporarily until you find the "sweet spot" and then allow those for
+future reference.&lt;/p&gt;
+&lt;p&gt;Another extension I use often (not often enough) is the spelling checker
+capabilities. On multi-line fields, this gives me enough feedback about
+what I am typing and if it doesn't use a mixture of American English and
+British English. But with a simple javascript bookmarklet, I can even
+enable spell check on a rendered page (simple javascript that sets the
+designMode variable and the contentEditable variable to true), which is
+perfect for the Gorg integration while developing Gentoo documentation.&lt;/p&gt;
+&lt;p&gt;The abilities of a browser are endless: I have extensions that offer
+ePub reading capabilities, full web development capabilities (to
+edit/verify CSS and HTML changes), HTTPS Everywhere (to enforce SSL when
+the site supports it), SQLite manager, Tamper Data (to track and
+manipulate HTTP headers) and more. With the GoogleTalk plugins, doing
+video chats and such is all done through the browser.&lt;/p&gt;
+&lt;p&gt;This entire eco-system of plugins and extensions make the browser a big
+but powerful interface, but also an important resource to properly
+manage: keep it up-to-date, backup your settings (including auto-stored
+passwords if you enable that), verify its integrity and ensure it runs
+in its confined SELinux domain.&lt;/p&gt;</content><category term="Free Software"></category><category term="browser"></category><category term="firefox"></category><category term="mab"></category></entry><entry><title>My application base: bash and kiss tools</title><link href="http://blog.siphos.be/2013/06/my-application-base-bash-and-kiss-tools/" rel="alternate"></link><published>2013-06-06T03:50:00+02:00</published><updated>2013-06-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-06:/2013/06/my-application-base-bash-and-kiss-tools/</id><summary type="html">&lt;p&gt;Okay, this just had to be here. I'm an automation guy - partially
+because of my job in which I'm responsible for the long-term strategy
+behind batch, scheduling and workload automation, but also because I
+believe proper automation makes life just that much easier. And for
+personal work, why not automate …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Okay, this just had to be here. I'm an automation guy - partially
+because of my job in which I'm responsible for the long-term strategy
+behind batch, scheduling and workload automation, but also because I
+believe proper automation makes life just that much easier. And for
+personal work, why not automate the majority of stuff as well? For most
+of the automation I use, I use bash scripts (or POSIX sh scripts that I
+try out with the dash shell if I need to export the scripts to non-bash
+users).&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://tiswww.case.edu/php/chet/bash/bashtop.html"&gt;Bourne-Again
+SHell&lt;/a&gt; (or &lt;strong&gt;bash&lt;/strong&gt;)
+is the default shell on Gentoo Linux systems, and is a powerful shell in
+features as well. There are numerous resources available on bash
+scripting, such as the &lt;a href="http://tldp.org/LDP/abs/html/"&gt;Advanced Bash-Scripting
+Guide&lt;/a&gt; or the
+&lt;a href="http://www.commandlinefu.com/commands/browse"&gt;commandlinefu.com&lt;/a&gt; (not
+purely bash), and specific features of Bash have several posts and
+articles all over the web.&lt;/p&gt;
+&lt;p&gt;Shell scripts are easy to write, but their power comes from the various
+tools that a Linux system contains (including the often forgotten
+GNU-provided ones, of which bash is one of them). My system is filled
+with scripts, some small, some large, all with a specific function that
+I imagined I would need to use again later. I prefix almost all my
+scripts with &lt;code&gt;sw&lt;/code&gt; (first letters of SwifT) or &lt;code&gt;mgl&lt;/code&gt; (in case the scripts
+have the potential to be used by others) so I can easily find them (if
+they are within my &lt;code&gt;${PATH}&lt;/code&gt; of course, not all of them are): just type
+the first letters followed by two tabs and bash shows me the list of
+scripts I have:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sw\t\t
+swbackup               swdocbook2html      swsandboxfirefox    swletter      swpics
+swstartvm              swstripcomment      swvmconsole         swgenpdf      swcheckmistakes
+swdoctransaccuracy     swhardened-secmerge swmailman2mbox      swmassrename  swmassstable
+swmovepics             swbumpmod           swsecontribmerge    swseduplicate swfindbracket
+swmergeoverlay         swshowtree          swsetvid            swfileprocmon swlocalize
+swgendigest            swgenmkbase         swgenfinoverview    swmatchcve
+
+$ mgl\t\t
+mglshow                mglverify         mglgxml2docbook       mglautogenif  mgltellabout
+mgltellhowto           mgltellwhynot     mglgenmodoverview     mglgenoval    mglgensetup
+mglcertcli             mglcleannode      mglwaitforfile
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With the proper basic template, I can keep the scripts sane and well
+documented. None of the scripts execute something without arguments, and
+"-h" and "--help" are always mapped to the help information. Those that
+(re)move files often have a "-p" (or "--pretend") flag that instead of
+executing the logic, echo's it to the screen.&lt;/p&gt;
+&lt;p&gt;A simple example is the swpics script. It mounts the SD card, moves the
+images to a first location (&lt;code&gt;Pictures/local/raw&lt;/code&gt;), unmounts the SD card,
+renames the pictures based on the metadata information, finds duplicates
+based on two checksums (in case I forgot to wipe the SD card afterwards
+- I don't wipe it from the script) and removes the duplicates, converts
+the raws into JPEGs and moves these to a minidlna-served location so I
+can review the images from DLNA-compliant devices when I want and then
+starts the Geeqie application. When the Geeqie application has finished,
+it searches for the removed raws and removes those from the
+minidlna-served location as well. It's simple, nothing fancy, and saves
+me a few minutes of work every time.&lt;/p&gt;
+&lt;p&gt;The kiss tools are not really a toolset that is called kiss, but rather
+a set of commands that are simple in their use. Examples are exiv2 (to
+manage JPEG EXIF information, including renaming them based on the EXIF
+timestamp), inotifywait (passive waiting for file modification/writes),
+sipcalc (calculating IP addresses and subnetwork ranges), socat (network
+socket "cat" tool), screen (or tmux, to implement virtual sessions), git
+(okay, not that KISS, but perfect for what it does - versioning stuff)
+and more. Because these applications just do what they are supposed to,
+without too many bells and whistles, it makes it easy to "glue" them
+together to get an automated flow.&lt;/p&gt;
+&lt;p&gt;Automation saves you from performing repetitive steps manually, so is a
+real time-saver. And bash is a perfect scripting language for it.&lt;/p&gt;</content><category term="Free Software"></category><category term="bash"></category><category term="dash"></category><category term="mab"></category><category term="scripting"></category></entry><entry><title>My application base: geekie</title><link href="http://blog.siphos.be/2013/06/my-application-base-geekie/" rel="alternate"></link><published>2013-06-05T03:50:00+02:00</published><updated>2013-06-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-05:/2013/06/my-application-base-geekie/</id><summary type="html">&lt;p&gt;In the past, when I had to manage my images (pictures) I used
+&lt;a href="http://gqview.sourceforge.net/"&gt;GQview&lt;/a&gt; (which started back in
+&lt;a href="http://blog.siphos.be/2008/08/playing-with-gqview/"&gt;2008&lt;/a&gt;). But the
+application doesn't get many updates, and if an application does not get
+many updates, it either means it is no longer maintained or that it does
+its job perfectly …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the past, when I had to manage my images (pictures) I used
+&lt;a href="http://gqview.sourceforge.net/"&gt;GQview&lt;/a&gt; (which started back in
+&lt;a href="http://blog.siphos.be/2008/08/playing-with-gqview/"&gt;2008&lt;/a&gt;). But the
+application doesn't get many updates, and if an application does not get
+many updates, it either means it is no longer maintained or that it does
+its job perfectly. Sadly, for GQview, it is the unmaintained reason
+(even though the application seems to work pretty well for most tasks).
+Enter Geeqie, a fork of GQview to keep evolution on the application up
+to speed.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://geeqie.sourceforge.net/"&gt;Geeqie&lt;/a&gt; image viewer is a simple
+viewer that allows to easily manipulate images (like rotation). I launch
+it the moment I insert my camera's SD card into my laptop for image
+processing. It quickly shows the thumbnails of all images and I start
+processing them to see which ones are eligible for manipulations later
+on (or are just perfect - not that that occurs frequently) and which can
+be deleted immediately. You can also quickly set Exif information (to
+annotate the image further) and view some basic aspects of the picture
+(such as histogram information).&lt;/p&gt;
+&lt;p&gt;Two features however are what is keeping me with this image viewer:
+finding duplicates, and side-by-side comparison.&lt;/p&gt;
+&lt;p&gt;With the duplicate feature, geekie can compare images by name, size,
+date, dimensions, checksum, path and - most interestingly, similarity.
+If you start working on images, you often create intermediate snapshots
+or tryouts. Or, when you start taking pictures, you take several ones in
+a short time-frame. With the "find duplicate" feature, you can search
+through the images to find all images that had the same base (or are
+taking quickly after each other) and see them all simultaneously. That
+allows you to remove those you don't need anymore and keep the good
+ones. I also use this feature often when people come with their external
+hard drive filled with images - none of them having any exif information
+anymore and not in any way structured - and ask to see if there are any
+duplicates on it. A simple checksum might reveal the obvious ones, but
+the similarity search of geeqie goes much, much further.&lt;/p&gt;
+&lt;p&gt;The side-by-side comparison creates a split view of the application, in
+which each pane has another image. This feature I use when I have two
+pictures that are taken closely after another (so very, very similar in
+nature) and I need to see which one is better. With the side-by-side
+comparison, I can look at artifacts in the image or the consequences of
+the different aperture, ISO and shutter speed.&lt;/p&gt;
+&lt;p&gt;And the moment I start working on images, Gimp and Darktable are just a
+single click away.&lt;/p&gt;</content><category term="Free Software"></category><category term="geeqie"></category><category term="gimp"></category><category term="gqview"></category><category term="images"></category><category term="mab"></category></entry><entry><title>My application base: freemind</title><link href="http://blog.siphos.be/2013/06/my-application-base-freemind/" rel="alternate"></link><published>2013-06-04T03:50:00+02:00</published><updated>2013-06-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-04:/2013/06/my-application-base-freemind/</id><summary type="html">&lt;p&gt;Anyone who is even remotely busy with innovation will know what mindmaps
+are. They are a means to visualize information, ideas or tasks in
+whatever structure you like. By using graphical annotations the
+information is easier to look through, even when the mindmap becomes
+very large. In the commercial world …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Anyone who is even remotely busy with innovation will know what mindmaps
+are. They are a means to visualize information, ideas or tasks in
+whatever structure you like. By using graphical annotations the
+information is easier to look through, even when the mindmap becomes
+very large. In the commercial world, mindmapping software such as
+&lt;a href="http://www.xmind.net/"&gt;XMind&lt;/a&gt; and
+&lt;a href="http://www.mindjet.com/products/mindmanager/"&gt;Mindmanager&lt;/a&gt; are often
+used. But these companies should really start looking into Freemind.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://freemind.sourceforge.net/wiki/index.php/Main_Page"&gt;Freemind&lt;/a&gt;
+software is a java-based mind map software, running perfectly on
+Windows, Linux or other platforms. Installation is a breeze (if you are
+allowed to on your work, you can just launch it from a USB drive if you
+want, so no installation hassles whatsoever) and its interface is very
+intuitive. For all the whistles and bells that the commercial ones
+provide, I just want to create my mindmaps and export them into a format
+that others can easily use and view.&lt;/p&gt;
+&lt;p&gt;At my real-time job, we (have to) use XMind. If someone shares a mindmap
+("their mind" map as I often see it - I seem to have a different mind
+than most others in how I structure things, except for one colleague who
+imo does not structure things at all) they just share the XMind file and
+hope that the recipients can read it. Although XMind can export mindmaps
+just fine, I do like the freemind approach where a simple java applet
+can show the entire mindmap as interactively as you would navigate
+through the application itself. This makes it perfect for discussing
+ideas because you can close and open branches easily.&lt;/p&gt;
+&lt;p&gt;The
+&lt;a href="http://freemind.sourceforge.net/wiki/index.php/Import_and_export"&gt;export/import&lt;/a&gt;
+capabilities of freemind are also interesting. Before being forced to
+use XMind, we were using Mindmanager and I could just easily import the
+mindmaps into freemind. The file format that freemind uses is an
+XML-based one, so translating those onto other formats is not that
+difficult if you know some XSLT.&lt;/p&gt;
+&lt;p&gt;I personally use freemind when I embark on a new project, to structure
+the approach, centralize all information, keep track of problems (and
+their solutions), etc. The only thing I am missing is a nice interface
+for mobile devices though.&lt;/p&gt;</content><category term="Free Software"></category><category term="freemind"></category><category term="java"></category><category term="mab"></category><category term="mindmanager"></category><category term="mindmap"></category><category term="structure"></category><category term="xmind"></category></entry><entry><title>My application base: draw.io</title><link href="http://blog.siphos.be/2013/06/my-application-base-draw-io/" rel="alternate"></link><published>2013-06-03T03:50:00+02:00</published><updated>2013-06-03T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-03:/2013/06/my-application-base-draw-io/</id><summary type="html">&lt;p&gt;The next few weeks (months even) will be challenging my free time as I'm
+working on (too many) projects simultaneously (sadly, only a few of
+those are free software related, most are house renovations). But that
+shouldn't stop me from starting a new set of posts, being &lt;em&gt;my
+application base …&lt;/em&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;The next few weeks (months even) will be challenging my free time as I'm
+working on (too many) projects simultaneously (sadly, only a few of
+those are free software related, most are house renovations). But that
+shouldn't stop me from starting a new set of posts, being &lt;em&gt;my
+application base&lt;/em&gt;. In this series, I'll cover a few applications (or
+websites) that I either use often or that I should use more. In either
+case, the application does its job very well so why not give some input
+on it?&lt;/p&gt;
+&lt;p&gt;The first on the agenda is the &lt;a href="http://www.draw.io"&gt;Draw.io&lt;/a&gt; website.&lt;/p&gt;
+&lt;p&gt;With Draw.io, you get a web-browser based drawing application for
+diagrams, flowcharts, UML, BPMN etc. I came across this application
+while looking for an alternative to &lt;a href="https://live.gnome.org/Dia"&gt;Dia&lt;/a&gt;,
+which by itself was supposed to be an alternative to &lt;a href="https://office.microsoft.com/en-us/visio/"&gt;Microsoft
+Visio&lt;/a&gt; (err, no). Don't get
+me wrong, Dia is nice, but it lacks evolution and just doesn't feel
+easy. Draw.io on the other hand is evolving constantly, and it is also
+active on &lt;a href="https://plus.google.com/100634082864796769666/"&gt;Google Plus&lt;/a&gt;
+where you can follow up on all recent developments and thoughts (I hope
+I get the G+ link correctly, it's not that I don't like numbers, just
+not in URLs).&lt;/p&gt;
+&lt;p&gt;I started using Draw.io while documenting free software IT architectures
+(such as implementations of BIND, PostgreSQL, etc.) for which I needed
+some diagrams. Although Draw.io is an online application (and its
+underlying engine is not completely free software) you can easily work
+with it from different locations. It integrates with &lt;a href="https://drive.google.com"&gt;Google
+Drive&lt;/a&gt; to store the diagrams on if you want -
+and if you don't, you can always save the diagrams in their native XML
+format on your system and open them later again.&lt;/p&gt;
+&lt;p&gt;The interface is very easy to use, and I recently found out that it now
+also supports mobile devices, which is perfect for tablets (the mobile
+device support is recent afaik and still undergoing updates). The site
+also works well in various browsers (tried IExplorer 10 at work, Firefox
+and Google Chrome and they all seem to work nicely) - eat that stupid
+commercial vendors that force me into using IExplorer 8 or Firefox 10 -
+you know who you are!&lt;/p&gt;
+&lt;p&gt;A site/service to keep a close eye on. The service itself is free (and
+doesn't seem too limited due to it), but Draw.io also has commercial
+support if you want through Google Apps and Confluence integration. I
+don't have much experience with those yet but that might change in the
+near future (projects, projects).&lt;/p&gt;</content><category term="Documentation"></category><category term="appbase"></category><category term="architecturing"></category><category term="dia"></category><category term="draw"></category><category term="draw.io"></category><category term="mab"></category><category term="visio"></category></entry></feed>

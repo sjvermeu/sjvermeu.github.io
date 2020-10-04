@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - load_policy</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/load_policy/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-04-17T21:01:00+02:00</updated><entry><title>If things are weird, check for policy.29</title><link href="http://blog.siphos.be/2014/04/if-things-are-weird-check-for-policy-29/" rel="alternate"></link><published>2014-04-17T21:01:00+02:00</published><updated>2014-04-17T21:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-17:/2014/04/if-things-are-weird-check-for-policy-29/</id><summary type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
+system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
+&lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
+issue that has been resolved in our current SELinux policy repository
+but …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
+system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
+&lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
+issue that has been resolved in our current SELinux policy repository
+but which needs to be pushed to the tree (which is my job, sorry about
+that). The problem however is when he added the policy - it didn't work.&lt;/p&gt;
+&lt;p&gt;Even worse, &lt;strong&gt;sesearch&lt;/strong&gt; told us that the policy has been modified
+correctly - but it still doesn't work. Check your policy with
+&lt;strong&gt;sestatus&lt;/strong&gt; and &lt;strong&gt;seinfo&lt;/strong&gt; and they're all saying things are working
+well. And yet ... things don't. Apparently, all policy changes are
+ignored.&lt;/p&gt;
+&lt;p&gt;The reason? There was a &lt;code&gt;policy.29&lt;/code&gt; file in &lt;code&gt;/etc/selinux/mcs/policy&lt;/code&gt;
+which was always loaded, even though the user already edited
+&lt;code&gt;/etc/selinux/semanage.conf&lt;/code&gt; to have &lt;code&gt;policy-version&lt;/code&gt; set to 28.&lt;/p&gt;
+&lt;p&gt;It is already a problem that we need to tell users to edit
+&lt;code&gt;semanage.conf&lt;/code&gt; to a fixed version (because binary version 29 is not
+supported by most Linux kernels as it has been very recently introduced)
+but having &lt;strong&gt;load_policy&lt;/strong&gt; (which is called by &lt;strong&gt;semodule&lt;/strong&gt; when a
+policy needs to be loaded) loading a stale &lt;code&gt;policy.29&lt;/code&gt; file is just...
+disappointing.&lt;/p&gt;
+&lt;p&gt;Anyway - if you see weird behavior, check both the &lt;code&gt;semanage.conf&lt;/code&gt; file
+(and set &lt;code&gt;policy-version = 28&lt;/code&gt;) as well as the contents of your
+&lt;code&gt;/etc/selinux/*/policy&lt;/code&gt; directory. If you see any &lt;code&gt;policy.*&lt;/code&gt; that isn't
+version 28, delete them.&lt;/p&gt;</content><category term="SELinux"></category><category term="load_policy"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category></entry></feed>

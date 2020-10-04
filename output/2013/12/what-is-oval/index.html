@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>What is OVAL? - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2013/12/what-is-oval/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="openscap,oval,scap,sce,xccdf" />
+        <meta name="description" content="Time to discuss OVAL (Open Vulnerability Assessment Language). In all the previous posts I focused the checking of rules (does the system comply with the given rule) on scripts, through the Script Check Engine supported by openscap. The advantage of SCE is that most people can quickly provide automated checks …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="What is OVAL?"/>
+        <meta property="og:url" content="http://blog.siphos.be/2013/12/what-is-oval/"/>
+        <meta property="og:description" content="Time to discuss OVAL (Open Vulnerability Assessment Language). In all the previous posts I focused the checking of rules (does the system comply with the given rule) on scripts, through the Script Check Engine supported by openscap. The advantage of SCE is that most people can quickly provide automated checks …"/>
+        <meta property="article:published_time" content="2013-12-22" />
+            <meta property="article:section" content="Security" />
+            <meta property="article:tag" content="openscap" />
+            <meta property="article:tag" content="oval" />
+            <meta property="article:tag" content="scap" />
+            <meta property="article:tag" content="sce" />
+            <meta property="article:tag" content="xccdf" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/security.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... Security ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2013/12/what-is-oval/"
+                       rel="bookmark"
+                       title="Permalink to What is OVAL?">
+                        What is OVAL?
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-12-22T04:40:00+01:00"> Sun 22 December 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/security.html">Security</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/openscap/">openscap</a>
+        /
+	<a href="http://blog.siphos.be/tag/oval/">oval</a>
+        /
+	<a href="http://blog.siphos.be/tag/scap/">scap</a>
+        /
+	<a href="http://blog.siphos.be/tag/sce/">sce</a>
+        /
+	<a href="http://blog.siphos.be/tag/xccdf/">xccdf</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>Time to discuss <strong>OVAL (Open Vulnerability Assessment Language)</strong>. In
+all the <a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/">previous
+posts</a>
+I focused the checking of rules (does the system comply with the given
+rule) on scripts, through the Script Check Engine supported by openscap.
+The advantage of SCE is that most people can quickly provide automated
+checks to run in script format. But SCE has a few downsides.</p>
+<ul>
+<li>You cannot guarantee that the scripts will do no harm on the system.
+    A badly written script might manipulate system settings, get a huge
+    amount of resources, leave stale result files on the system, flood
+    file systems and more. If you get scripts from other parties, you'll
+    need to review them thoroughly before running them against all
+    your systems. Especially when you run the compliance validation tool
+    (openscap in our example) as root.</li>
+<li>SCE support is only available for openscap (and perhaps one or
+    two others) as it is not an international standard. If you use any
+    of the <a href="https://nvd.nist.gov/scapproducts.cfm">SCAP validated tools</a>
+    then you will not be able to benefit from the SCE scripts. And that
+    would make the XCCDF document back to a purely documenting
+    best practice.</li>
+<li>Every rule requires separate scripts, even though many of the rules
+    will be very similar and thus reuse a lot of the scripts.</li>
+</ul>
+<p>OVAL on the other hand provides those advantages. An OVAL file is an XML
+file that contains the tests to run, in an (I must say) somewhat complex
+manner. Really, OVAL is not simple, but it does contain advantages that
+SCE doesn't.</p>
+<ul>
+<li>It is a standard, part of the SCAP standards. OVAL files are
+    reusable across multiple tools, allowing you to focus once on the
+    rules rather than having to rewrite the rules for every time you
+    change the tool.</li>
+<li>OVAL can be platform-agnostic. Of course, not all tests are
+    platform-agnostic (validating registry keys is a Windows-only check)
+    but many are.</li>
+<li>All rules can be mentioned in a single file (or spread across
+    multiple files if that makes management easier), but more
+    importantly rules will also reuse definitions from other rules. If
+    you have three rules that pertain to a file (say <code>/etc/rc.conf</code>)
+    then the definition of that file is shared across all rules.</li>
+<li>The OVAL standard is designed to be non-intrusive. All declarations
+    you do in an OVAL file are pure read-only statements. This gives
+    more confidence to have OVAL statements from third parties ran
+    across your organization. Of course, reviewing them never hurts, but
+    you already know that they will not modify any setting.</li>
+</ul>
+<p>Like SCE, OVAL checks are individual checks that are executed and
+returned. They too return a success or failure (or error) and can
+deliver more detailed information as part of their result (like the SCE
+results output we looked at before) so allow administrators to
+investigate further why a rule failed (without needing to log on to the
+system and look for themselves).</p>
+<p>A basic structure of OVAL is a <em>definition</em> that describes what the rule
+is for. The definition refers to one or more <em>tests</em> that are evaluated
+on a system. These tests refer to an <em>object</em> that needs to be checked,
+and optionally a <em>state</em> to which the object should (or shouldn't)
+match.</p>
+<p>Consider the test we made with SCE to see if a platform is a Gentoo
+Linux system:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+
+<span class="c1"># If /etc/gentoo-release exists then the system is a Gentoo Linux system.</span>
+<span class="nb">test</span> -f /etc/gentoo-release <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="si">${</span><span class="nv">XCCDF_RESULT_PASS</span><span class="si">}</span><span class="p">;</span>
+<span class="nb">exit</span> <span class="si">${</span><span class="nv">XCCDF_RESULT_FAIL</span><span class="si">}</span><span class="p">;</span>
+</code></pre></div>
+</td></tr></table>
+
+<p>In OVAL, this would be structured as follows (pseudo-OVAL):</p>
+<dl>
+<dt>definition</dt>
+<dd>The system is a Gentoo Linux system</dd>
+<dt>test</dt>
+<dd>The object that represents /etc/gentoo-release must exist</dd>
+<dt>object</dt>
+<dd>The /etc/gentoo-release file</dd>
+</dl>
+<p>The resulting OVAL file is quite complex for a simple rule. I see the
+OVAL complexity as part of a normalization (similar to database
+normalization) process to allow higher reuse. If we later want to check
+the content of the <code>gentoo-release</code> file, we will reuse the definition
+(object with id <em>oval:org.gentoo.dev.swift:obj:1</em>) rather than making a
+second object for it, and use that definition to create new tests.</p>
+<p>The structure of OVAL is the same everywhere. First define the
+definitions, then the tests, then the objects and then, optionally, the
+states. A very important aspect is to have the identifiers (<code>id="..."</code>)
+correct. The structure of OVAL identifiers is standardized as well:</p>
+<p>(XML content lost during blog conversion)</p>
+<dl>
+<dt>namespace</dt>
+<dd>Like the namespace used in XCCDF documents, this is the reverse
+notation of a domainname. In the example above, this
+is org.gentoo.dev.swift.</dd>
+<dt>type</dt>
+<dd>The type of the entry in OVAL. This can be def (definition), tst
+(test), obj (object), ste (state) or var (variable).</dd>
+<dt>id</dt>
+<dd>The identifier of this particular entry. This identifier has to be a
+positive integer.</dd>
+</dl>
+<p>By standardizing the identifiers, you can create repositories within
+your organization, and have other teams reuse your OVAL components when
+needed. As the identifier remains the same (even when you update the
+OVAL object itself to be more precise) those tests keep validating
+correctly. For instance, say that Gentoo Linux would be changed in the
+future not to provide a <code>gentoo-release</code> file anymore, but
+<code>gentoo-linux-release</code> file instead (not that it is planning that, it is
+just hypothetical), then you can update the test (with description
+"Gentoo Linux is installed") to check if either of the two files exist:</p>
+<p>(XML content lost due to blog conversion)</p>
+<p>If we save all Gentoo releated OVAL statements in a file called
+<code>gentoo-oval.xml</code> then we can update the <code>gentoo-cpe.xml</code> file (which we
+discussed in the past) to the following:</p>
+<p>(XML content lost during blog conversion)</p>
+<p>With this change, openscap (or any other XCCDF interpreter) will use the
+OVAL definition to see if a platform is Gentoo Linux or not, and does
+not need to execute the <code>gentoo-platform.sh</code> script anymore, which is
+now fully deprecated and superceded by the OVAL statement.</p>
+<p>In the next posts, I'll write up one of the other tests we had (which
+checks the content of a file - one of the most used tests I think) in
+OVAL, and have the XCCDF document updated to only use OVAL statements.</p>
+<p>This post is part of a series on SCAP content:</p>
+<ol>
+<li><a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/">Documenting security best practices - XCCDF
+    introduction</a></li>
+<li><a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/">An XCCDF skeleton for
+    PostgreSQL</a></li>
+<li><a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/">Documenting a bit more than just
+    descriptions</a></li>
+<li><a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/">Running a bit with the XCCDF
+    document</a></li>
+<li><a href="http://blog.siphos.be/2013/12/remediation-through-scap/">Remediation through
+    SCAP</a></li>
+</ol>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'what-is-oval';
+                var disqus_url = 'http://blog.siphos.be/2013/12/what-is-oval/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

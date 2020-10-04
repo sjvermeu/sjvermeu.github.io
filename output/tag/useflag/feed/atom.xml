@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - useflag</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/useflag/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-08-16T09:17:00+02:00</updated><entry><title>Using CUSTOM_BUILDOPT in refpolicy for USE flag-alike functionality?</title><link href="http://blog.siphos.be/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/" rel="alternate"></link><published>2013-08-16T09:17:00+02:00</published><updated>2013-08-16T09:17:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-16:/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/</id><summary type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
+policy&lt;/a&gt; as its base for
+SELinux policies. Yes, we do customize it and not everything is already
+pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
+customizable types to further restrict user application access has been
+sent up for comments …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
+policy&lt;/a&gt; as its base for
+SELinux policies. Yes, we do customize it and not everything is already
+pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
+customizable types to further restrict user application access has been
+sent up for comments a few times but we still need to iron it out
+further) but all in all, we're pretty close to the upstream releases.
+This is also visible when there are changes upstream as we very easily
+integrate them back in our repository.&lt;/p&gt;
+&lt;p&gt;But there are still a few things that I want to implement further, and
+one of these things is perhaps too specific for Gentoo but would benefit
+us (security-wise) in great detail: enabling domain privileges based on
+USE flags. Allow me to quickly use an example to make this more
+tangible.&lt;/p&gt;
+&lt;p&gt;Consider the MPlayer application. As a media application, it of course
+offers support for ALSA and PulseAudio (amongst other things). In the
+SELinux policy, support for (and thus privileges related to) ALSA and
+PulseAudio is handled through &lt;em&gt;optional_policy&lt;/em&gt; statements:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;optional_policy(`
+  pulseaudio_tmpfs_content(mplayer_tmpfs_t)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This means that the rules defined in &lt;em&gt;pulseaudio_tmpfs_content&lt;/em&gt; are
+executed if the dependencies match:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`pulseaudio_tmpfs_content&amp;#39;,`
+        gen_require(`
+                attribute pulseaudio_tmpfsfile;
+        &amp;#39;)
+
+        typeattribute $1 pulseaudio_tmpfsfile;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute exists, then the
+&lt;code&gt;mplayer_tmpfs_t&lt;/code&gt; type gets the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute
+assigned to it.&lt;/p&gt;
+&lt;p&gt;This is flexible, because if the server/workstation does not use
+PulseAudio, then in Gentoo, no pulseaudio SELinux module will be loaded
+and thus the attribute will not exist. However, Gentoo tries to be a bit
+more flexible in this - it is very well possible to have PulseAudio
+installed, but disable PulseAudio support in MPlayer (build mplayer with
+USE="-pulseaudio"). The current definitions in the policy do not support
+this flexibility: if the pulseaudio module is loaded, then the
+privileges become active.&lt;/p&gt;
+&lt;p&gt;One way SELinux supports a more flexible approach is to use conditionals
+in the policy. One could create booleans that administrators can toggle
+to enable / disable SELinux rules. For instance, in the mplayer policy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tunable_policy(`allow_mplayer_execstack&amp;#39;,`
+        allow mencoder_t self:process { execmem execstack };
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If an administrator toggles the &lt;code&gt;allow_mplayer_execstack&lt;/code&gt; boolean to
+"on", then the mentioned &lt;code&gt;allow&lt;/code&gt; rule becomes active.&lt;/p&gt;
+&lt;p&gt;Sadly, this approach is not fully usable for USE driven decisions. Not
+all rules can be enclosed in &lt;code&gt;tunable_policy&lt;/code&gt; statements, and &lt;a href="http://oss.tresys.com/pipermail/refpolicy/2013-July/006452.html"&gt;assigning
+attributes to a
+type&lt;/a&gt;
+is one of them (cfr our pulseaudio example). A recent discussion on the
+reference policy mailinglist gave me two ideas to investigate:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;See if we can support CIL (a new language for SELinux
+    policy definitions) where such an approach would be easier&lt;/li&gt;
+&lt;li&gt;Use build-time decisions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In this post, I want to go through the &lt;em&gt;build-time decisions&lt;/em&gt; idea. The
+reference policy supports build-time options using &lt;em&gt;ifdef&lt;/em&gt; constructs.
+These look at parameters provided by the build system (M4/Makefile
+based) to see if rules need to be activated or not. For type attribute
+declarations, this is a valid approach. So one idea would be to
+transform USE flags, if they are set, into &lt;code&gt;use_${USEFLAG}&lt;/code&gt;, and make
+decisions based on this in the policy code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ifdef(`use_pulseaudio&amp;#39;,`
+  optional_policy(`
+    pulseaudio_tmpfs_content(mplayer_tmpfs_t)
+  &amp;#39;)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We can add in the USE flags, if set, through the &lt;code&gt;CUSTOM_BUILDOPT&lt;/code&gt;
+parameter that the reference policy provides. So introducing this is not
+that difficult. The only thing I'm currently a bit weary about is the
+impact on the policy files themselves (which is why I haven't done this
+already) and the fact that USE flags on the "real" package are not know
+to policy packages. In other words, if a user explicitly marks
+&lt;code&gt;USE="-pulseaudio"&lt;/code&gt; on mplayer, but has &lt;code&gt;USE="pulseaudio"&lt;/code&gt; set as
+general value, then the &lt;code&gt;selinux-mplayer&lt;/code&gt; package will still have
+pulseaudio enabled.&lt;/p&gt;
+&lt;p&gt;Still, I do like the idea. It would make it more consistent with what
+Gentoo aims to do: if you do not want a certain support/feature in the
+code, then why would the policy still have to allow it? With the proper
+documentation towards administrators, I think this would be a good
+approach.&lt;/p&gt;</content><category term="Gentoo"></category><category term="boolean"></category><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="use"></category><category term="useflag"></category></entry></feed>

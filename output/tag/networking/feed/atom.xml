@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - networking</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/networking/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-08-21T19:43:00+02:00</updated><entry><title>Network routing based on SELinux?</title><link href="http://blog.siphos.be/2013/08/network-routing-based-on-selinux/" rel="alternate"></link><published>2013-08-21T19:43:00+02:00</published><updated>2013-08-21T19:43:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-21:/2013/08/network-routing-based-on-selinux/</id><summary type="html">&lt;p&gt;Today we had a question on #selinux if it was possible to route traffic
+of a specific process using SELinux. The answer to this is "no",
+although it has to be explained a bit in more detail.&lt;/p&gt;
+&lt;p&gt;SELinux does not route traffic. SELinux is a local mandatory access
+control system …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we had a question on #selinux if it was possible to route traffic
+of a specific process using SELinux. The answer to this is "no",
+although it has to be explained a bit in more detail.&lt;/p&gt;
+&lt;p&gt;SELinux does not route traffic. SELinux is a local mandatory access
+control system; its purpose is to allow or deny certain actions, not
+route traffic. However, Linux' NetFilter does support security markings
+(SECMARK). I've &lt;a href="http://blog.siphos.be/2013/05/secmark-and-selinux/"&gt;blogged about
+it&lt;/a&gt; in the past, and
+there are good tutorials elsewhere on the Internet, such as Dan Walsh'
+&lt;a href="http://www.linux.com/learn/tutorials/421152-using-selinux-and-iptables-together"&gt;Using SELinux and iptables
+together&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Linux support for security marking does allow for routing decisions -
+but it does not "use" SELinux in this regard. To mark traffic with a
+certain label, the administrator has to put in the rules himself using
+&lt;strong&gt;iptables&lt;/strong&gt; or &lt;strong&gt;ip6tables&lt;/strong&gt; commands. And if you have to do that, then
+you are already working with the routing commands so why not just route
+immediately? Of course, the advantage of labeling the traffic is that
+you can then use SELinux to allow or deny processes to send or receive
+those packets - but SELinux is not involved with routing.&lt;/p&gt;
+&lt;p&gt;Another possibility is to use labeled networking, such as Labeled IPSec
+or NetLabel/CIPSO support.&lt;/p&gt;
+&lt;p&gt;With labeled networking, all hosts that participate in the network need
+to support the labeled networking technology. If that is the case, then
+SELinux policy can be used to deny traffic from one host or another -
+but again, not to route traffic. You can use SELinux to deny one process
+to send out data to one set of hosts and allow it to send data to
+another, but that is not routing. The advantage of Labeled IPSec is that
+contexts are retained across the network - decisions that SELinux has to
+take on one system can be made based on the context of the process on
+the other system.&lt;/p&gt;
+&lt;p&gt;So no, SELinux cannot be used to route traffic, but it plays very nicely
+with various networking controls to make proper decisions on its access
+control enforcement.&lt;/p&gt;</content><category term="SELinux"></category><category term="ipsec"></category><category term="netlabel"></category><category term="networking"></category><category term="secmark"></category><category term="selinux"></category></entry><entry><title>SELinux policy and network controls</title><link href="http://blog.siphos.be/2013/05/selinux-policy-and-network-controls/" rel="alternate"></link><published>2013-05-11T03:50:00+02:00</published><updated>2013-05-11T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-11:/2013/05/selinux-policy-and-network-controls/</id><summary type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
+reflects this into the policy).&lt;/p&gt;
+&lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
+classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
+&lt;em&gt;udp_socket&lt;/em&gt; (depending on the protocol). There used to be &lt;em&gt;node&lt;/em&gt; and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
+reflects this into the policy).&lt;/p&gt;
+&lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
+classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
+&lt;em&gt;udp_socket&lt;/em&gt; (depending on the protocol). There used to be &lt;em&gt;node&lt;/em&gt; and
+&lt;em&gt;netif&lt;/em&gt; as well, but the support (enforcement) for these have been
+&lt;a href="http://lists.openwall.net/netdev/2009/03/27/144"&gt;removed a while ago&lt;/a&gt;
+for the "old style" network control enforcement. The concepts are still
+available though, and I believe they take effect when netlabeling is
+used. But let's first look at the regular networking aspects.&lt;/p&gt;
+&lt;p&gt;The idea behind the regular network related permissions are that you
+define either daemon-like behavior (which "binds" to a port) or
+client-like behavior (which "connects" to a port). Consider an FTP
+daemon (domain &lt;code&gt;ftpd_t&lt;/code&gt;) versus FTP client (example domain &lt;code&gt;ncftp_t&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;In case of a daemon, the policy would contain the following (necessary)
+rules:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_bind_generic_node(ftpd_t) # Somewhat legacy but still needed
+corenet_tcp_bind_ftp_port(ftpd_t)
+corenet_tcp_bind_ftp_data_port(ftpd_t)
+corenet_tcp_bind_all_unreserved_ports(ftpd_t) # In case of passive mode
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This gets translated to the following "real" SELinux statements:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ftpd_t node_t:tcp_socket node_bind;
+allow ftpd_t ftp_port_t:tcp_socket name_bind;
+allow ftpd_t ftp_data_port_t:tcp_socket name_bind;
+allow ftpd_t unreserved_port_type:tcp_socket name_bind;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I mention that &lt;em&gt;corenet_tcp_bind_generic_node&lt;/em&gt; as being somewhat
+legacy. When you use netlabeling, you can define different nodes (a
+"node" in that case is a label assigned to an IP address or IP subnet)
+and as such define policy-wise where daemons can bind on (or clients can
+connect to). However, without netlabel, the only node that you get to
+work with is &lt;code&gt;node_t&lt;/code&gt; which represents any possible node. Also, the use
+of passive mode within the ftp policy is governed through the
+&lt;em&gt;ftpd_use_passive_mode&lt;/em&gt; boolean.&lt;/p&gt;
+&lt;p&gt;For a client, the following policy line would suffice:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_connect_ftp_port(ncftp_t)
+# allow ncftp_t ftp_port_t:tcp_socket name_connect;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Well, I lied. Because of how FTP works, if you use active connections,
+you need to allow the client to bind on an unreserved port, and allow
+the server to connect to unreserved ports (cfr code snippet below), but
+you get the idea.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_connect_all_unreserved_ports(ftpd_t)
+
+corenet_tcp_bind_generic_node(ncftp_t)
+corenet_tcp_bind_all_unreserved_ports(ncftp_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the past, policy developers also had to include other lines, but
+these have by time become obsolete (&lt;em&gt;corenet_tcp_sendrecv_ftp_port&lt;/em&gt;
+for instance). These methods defined the ability to send and receive
+messages on the port, but this is no longer controlled this way. If you
+need such controls, you will need to look at SELinux and SECMARK (which
+uses packets with the &lt;em&gt;packet&lt;/em&gt; class) or netlabel (which uses the &lt;em&gt;peer&lt;/em&gt;
+class and peer types to send or receive messages from).&lt;/p&gt;
+&lt;p&gt;And that'll be for a different post.&lt;/p&gt;</content><category term="SELinux"></category><category term="networking"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

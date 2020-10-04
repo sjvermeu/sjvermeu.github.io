@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - mcstrans</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/mcstrans/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-07-07T20:38:00+02:00</updated><entry><title>Adding mcstrans to Gentoo</title><link href="http://blog.siphos.be/2013/07/adding-mcstrans-to-gentoo/" rel="alternate"></link><published>2013-07-07T20:38:00+02:00</published><updated>2013-07-07T20:38:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-07-07:/2013/07/adding-mcstrans-to-gentoo/</id><summary type="html">&lt;p&gt;If you use SELinux, you might be using an MLS-enabled policy. These are
+policies that support sensitivity labels on resources and domains. In
+Gentoo, these are supported in the &lt;code&gt;mcs&lt;/code&gt; and &lt;code&gt;mls&lt;/code&gt; policy stores. Now
+sensitivity ranges are fun to work with, but the moment you have several
+sensitivity levels …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you use SELinux, you might be using an MLS-enabled policy. These are
+policies that support sensitivity labels on resources and domains. In
+Gentoo, these are supported in the &lt;code&gt;mcs&lt;/code&gt; and &lt;code&gt;mls&lt;/code&gt; policy stores. Now
+sensitivity ranges are fun to work with, but the moment you have several
+sensitivity levels, or you have several dozen categories (sets or tags
+that can be used in conjunction with pure sensitivity levels) these can
+become a burden to maintain.&lt;/p&gt;
+&lt;p&gt;The SELinux developers have had the same issue, so they wrote a tool
+called &lt;em&gt;mcstransd&lt;/em&gt;, a translation daemon that reads the sensitivity
+labels from the SELinux context (such as &lt;code&gt;s0-s0:c0.c1023&lt;/code&gt; or &lt;code&gt;s0:c12&lt;/code&gt;)
+and displays a more human readable string for this (such as
+&lt;code&gt;SystemLow-SystemHigh&lt;/code&gt; or &lt;code&gt;SalesTeam&lt;/code&gt;). The daemon is not a super
+intelligent one - we just configure it by creating a mapping file in
+&lt;code&gt;/etc/selinux/mcs&lt;/code&gt; called &lt;code&gt;setrans.conf&lt;/code&gt; which contains the mappings:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;## setrans.conf ## s0-s0:c0.c1023=SystemLow-SystemHigh s0:c12=SalesTeam&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The SELinux libraries (libselinux and libsemanage) use a socket to
+communicate with the daemon to see if "translated" values need to be
+displayed. If not (because the daemon is missing) the libraries keep the
+SELinux syntax displayed. If it is, then the translated labels are
+displayed.&lt;/p&gt;
+&lt;p&gt;Support for categories and sensitivity labels is handled through the
+&lt;strong&gt;chcat&lt;/strong&gt; tool, so you can list the current categories (and their
+translated values) as well as assign them to files (or even logins).&lt;/p&gt;
+&lt;p&gt;Although we supported categories for a while already, a recent update on
+the &lt;code&gt;policycoreutils&lt;/code&gt; package now includes the mcstrans daemon as well.
+Documentation is available, currently in the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux/selinux-handbook.xml?part=2&amp;amp;chap=7#doc_chap3"&gt;pending changes
+section&lt;/a&gt;
+of the SELinux handbook (as this is not in the stable package yet) and
+it will be moved to the main document when the package has stabilized.&lt;/p&gt;</content><category term="Gentoo"></category><category term="categories"></category><category term="mcs"></category><category term="mcstrans"></category><category term="mls"></category><category term="selinux"></category><category term="sensitivity"></category></entry></feed>

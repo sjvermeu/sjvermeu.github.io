@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - metadata</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/metadata/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-10T03:50:00+02:00</updated><entry><title>Gentoo metadata support for CPE</title><link href="http://blog.siphos.be/2013/05/gentoo-metadata-support-for-cpe/" rel="alternate"></link><published>2013-05-10T03:50:00+02:00</published><updated>2013-05-10T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-10:/2013/05/gentoo-metadata-support-for-cpe/</id><summary type="html">&lt;p&gt;Recently, the &lt;code&gt;metadata.xml&lt;/code&gt; file syntax definition (the DTD for those
+that know a bit of XML) has been updated to support CPE definitions. A
+&lt;a href="https://nvd.nist.gov/cpe.cfm"&gt;CPE&lt;/a&gt; (Common Platform Enumeration) is an
+identifier that
+&lt;a href="http://cpe.mitre.org/specification/index.html"&gt;describes&lt;/a&gt; an
+application, operating system or hardware device using its vendor,
+product name, version, update, edition and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently, the &lt;code&gt;metadata.xml&lt;/code&gt; file syntax definition (the DTD for those
+that know a bit of XML) has been updated to support CPE definitions. A
+&lt;a href="https://nvd.nist.gov/cpe.cfm"&gt;CPE&lt;/a&gt; (Common Platform Enumeration) is an
+identifier that
+&lt;a href="http://cpe.mitre.org/specification/index.html"&gt;describes&lt;/a&gt; an
+application, operating system or hardware device using its vendor,
+product name, version, update, edition and language. This CPE
+information is used in the CVE releases (Common Vulnerabilities and
+Exposures) - announcements about vulnerabilities in applications,
+operating systems or hardware. Not all security vulnerabilities are
+assigned a CVE number, but this is as close as you get towards a
+(public) elaborate dictionary of vulnerabilities.&lt;/p&gt;
+&lt;p&gt;By allowing Gentoo package maintainers to enter (part of) the CPE
+information in the &lt;code&gt;metadata.xml&lt;/code&gt; file, applications that parse the CVE
+information can now more easily match if software installed on Gentoo is
+related to a CVE. I had a &lt;a href="http://blog.siphos.be/2013/04/matching-packages-with-cves/"&gt;related
+post&lt;/a&gt; to
+this not that long ago on my blog and I'm glad this change has been
+made. With this information at hand, we can start feeding CPE
+information to the packages and then easily match this with CVEs.&lt;/p&gt;
+&lt;p&gt;I had a request to "provide" the scripts I used for the previous post.
+Mind you, these are taking too many assumptions (and probably wrong
+ones) for now (and I'm not really planning on updating them as I have
+different methods for getting information related to CVEs), but I'm
+planning on integrating CPE data in Gentoo's packages more and then
+create a small script that generates a "watchlist" that I can feed to
+&lt;a href="http://cvechecker.sourceforge.net"&gt;cvechecker&lt;/a&gt;. But anyway, here are
+the scripts.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://dev.gentoo.org/~swift/blog/01/0_createcve.txt"&gt;First&lt;/a&gt;, I took
+all CVE information and put it in a simple CSV file. The CSV is the same
+one used by cvechecker, so check out the application to see where it
+fetches the data from (there is a CVE RSS feed and a simple XSL
+transformation).
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/1_createhitlist.txt"&gt;Second&lt;/a&gt;, I
+create a "hitlist" which generates the CPEs. With the recent change to
+&lt;code&gt;metadata.xml&lt;/code&gt; this step can be simplified a lot.
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/2_matchcve.txt"&gt;Third&lt;/a&gt;, I try to
+match the CPE data with the CVE data, depending on a given time delay of
+commits. In other words, you can ask possible CVE fixes for commits made
+in the last few XXX days.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cpe"></category><category term="cve"></category><category term="Gentoo"></category><category term="metadata"></category><category term="security"></category></entry></feed>

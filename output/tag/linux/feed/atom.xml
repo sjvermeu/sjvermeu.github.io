@@ -1,0 +1,1307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - linux</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/linux/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-08-09T14:48:00+02:00</updated><entry><title>Can SELinux substitute DAC?</title><link href="http://blog.siphos.be/2015/08/can-selinux-substitute-dac/" rel="alternate"></link><published>2015-08-09T14:48:00+02:00</published><updated>2015-08-09T14:48:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-09:/2015/08/can-selinux-substitute-dac/</id><summary type="html">&lt;p&gt;A nice &lt;a href="https://twitter.com/sjvermeu/status/630107879123623936"&gt;twitter discussion&lt;/a&gt;
+with &lt;a href="https://twitter.com/erlheldata"&gt;Erling Hellenäs&lt;/a&gt; caught my full attention later
+when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
+in the current implementation, but why not and what would be needed?&lt;/p&gt;
+&lt;p&gt;SELinux is implemented through the &lt;a href="https://en.wikipedia.org/wiki/Linux_Security_Modules"&gt;Linux Security Modules framework&lt;/a&gt;
+which allows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A nice &lt;a href="https://twitter.com/sjvermeu/status/630107879123623936"&gt;twitter discussion&lt;/a&gt;
+with &lt;a href="https://twitter.com/erlheldata"&gt;Erling Hellenäs&lt;/a&gt; caught my full attention later
+when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
+in the current implementation, but why not and what would be needed?&lt;/p&gt;
+&lt;p&gt;SELinux is implemented through the &lt;a href="https://en.wikipedia.org/wiki/Linux_Security_Modules"&gt;Linux Security Modules framework&lt;/a&gt;
+which allows for different security systems to be implemented and integrated
+in the Linux kernel. Through LSM, various security-sensitive operations can be
+secured further through &lt;em&gt;additional&lt;/em&gt; access checks. This criteria was made to
+have LSM be as minimally invasive as possible.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;The LSM design&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The basic LSM design paper, called &lt;a href="http://www.kroah.com/linux/talks/usenix_security_2002_lsm_paper/lsm.pdf"&gt;Linux Security Modules: General Security
+Support for the Linux Kernel&lt;/a&gt;
+as presented in 2002, is still one of the better references for learning and
+understanding LSM. It does show that there was a whish-list from the community
+where LSM hooks could override DAC checks, and that it has been partially
+implemented through permissive hooks (not to be mistaken with SELinux' 
+permissive mode).&lt;/p&gt;
+&lt;p&gt;However, this definitely is &lt;em&gt;partially&lt;/em&gt; implemented because there are quite
+a few restrictions. One of them is that, if a request is made towards a
+resource and the UIDs match (see page 3, figure 2 of the paper) then
+the LSM hook is not consulted. When they don't match, a permissive LSM
+hook can be implemented. Support for permissive hooks is implemented
+for capabilities, a powerful DAC control that Linux supports and which is
+implemented &lt;a href="http://www.hep.by/gnu/kernel/lsm/cap.html"&gt;through LSM&lt;/a&gt; as
+well. I have &lt;a href="http://blog.siphos.be/tag/capabilities/index.html"&gt;blogged&lt;/a&gt;
+about this nice feature a while ago.&lt;/p&gt;
+&lt;p&gt;These restrictions are also why some other security-conscious developers,
+such as &lt;a href="http://grsecurity.net/lsm.php"&gt;grsecurity's team&lt;/a&gt; and &lt;a href="https://www.rsbac.org/documentation/why_rsbac_does_not_use_lsm"&gt;RSBAC&lt;/a&gt;
+do not use the LSM system. Well, it's not only through these restrictions
+of course - other reasons play a role in them as well. But knowing what
+LSM can (and cannot) do also shows what SELinux can and cannot do.&lt;/p&gt;
+&lt;p&gt;The LSM design itself is already a reason why SELinux cannot substitute
+DAC controls. But perhaps we could disable DAC completely and thus only
+rely on SELinux?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Disabling DAC in Linux would be an excessive workload&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The discretionary access controls in the Linux kernel are not easy to remove.
+They are often part of the code itself (just grep through the source code
+after &lt;code&gt;-EPERM&lt;/code&gt;). Some subsystems which use a common standard approach (such
+as VFS operations) can rely on good integrated security controls, but these
+too often allow the operation if DAC allows it, and will only consult the LSM
+hooks otherwise.&lt;/p&gt;
+&lt;p&gt;VFS operations are the most known ones, but DAC controls go beyond file access.
+It also entails reading program memory, sending signals to applications,
+accessing hardware and more. But let's focus on the easier controls (as in,
+easier to use examples for), such as sharing files between users, restricting
+access to personal documents and authorizing operations in applications based
+on the user id (for instance, the owner can modify while other users can only
+read the file).&lt;/p&gt;
+&lt;p&gt;We could "work around" the Linux DAC controls by running everything as a single user
+(the root user) and having all files and resources be fully accessible by this
+user. But the problem with that is that SELinux would not be able to take
+over controls either, because you will need some user-based access controls,
+and within SELinux this implies that a mapping is done from a user to a 
+SELinux user. Also, access controls based on the user id would no longer work,
+and unless the application is made SELinux-aware it would lack any authorization
+system (or would need to implement it itself).&lt;/p&gt;
+&lt;p&gt;With DAC Linux also provides quite some "freedom" which is well established
+in the Linux (and Unix) environment: a simple security model where the user
+and group membership versus the owner-privileges, group-privileges and
+"rest"-privileges are validated. Note that SELinux does not really know
+what a "group" is. It knows SELinux users, roles, types and sensitivities.&lt;/p&gt;
+&lt;p&gt;So, suppose we would keep multi-user support in Linux but completely remove
+the DAC controls and rely solely on LSM (and SELinux). Is this something
+reusable?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Using SELinux for DAC-alike rules&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Consider the use case of two users. One user wants another user to read a few
+of his files. With DAC controls, he can "open up" the necessary resources
+(files and directories) through &lt;a href="https://wiki.gentoo.org/wiki/Filesystem/Access_Control_List_Guide"&gt;extended access control lists&lt;/a&gt;
+so that the other user can access it. No need to involve administrators.&lt;/p&gt;
+&lt;p&gt;With a MAC(-only) system, updates on the MAC policy usually require the security
+administrator to write additional policy rules to allow something. With SELinux
+(and without DAC) it would require the users to be somewhat isolated from each
+other (otherwise the users can just access everything from each other), which
+SELinux can do through &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Constraints#UBAC_-_User_Based_Access_Control"&gt;User Based Access Control&lt;/a&gt;,
+but the target resource itself should be labeled with a type that is not managed
+through the UBAC control. Which means that the users will need the privilege to
+change labels to this type (which is possible!), &lt;em&gt;assuming&lt;/em&gt; such a type is already
+made available for them. Users can't create new types themselves.&lt;/p&gt;
+&lt;p&gt;UBAC is by default disabled in many distributions, because it has some nasty
+side-effects that need to be taken into consideration. Just recently one of these
+&lt;a href="http://oss.tresys.com/pipermail/refpolicy/2015-August/007704.html"&gt;came up on the refpolicy mailinglist&lt;/a&gt;.
+But even with UBAC enabled (I have it enabled on most of my systems, but considering
+that I only have a couple of users to manage and am administrator on these systems
+to quickly "update" rules when necessary) it does not provide equal functionality as
+DAC controls.&lt;/p&gt;
+&lt;p&gt;As mentioned before, SELinux does not know group membership. In order to create
+something group-like, we will probably need to consider roles. But in SELinux,
+roles are used to define what types are transitionable towards - it is not a
+membership approach. A type which is usable by two roles (for instance, the
+&lt;code&gt;mozilla_t&lt;/code&gt; type which is allowed for &lt;code&gt;staff_r&lt;/code&gt; and &lt;code&gt;user_r&lt;/code&gt;) does not care about
+the role. This is unlike group membership.&lt;/p&gt;
+&lt;p&gt;Also, roles only focus on &lt;em&gt;transitionable&lt;/em&gt; types (known as domains). It does not
+care about &lt;em&gt;accessible&lt;/em&gt; resources (regular file types for instance). In order to
+allow one person to read a certain file type but not another, SELinux will need
+to control that one person can read this file through a particular domain while
+the other user can't. And given that domains are part of the SELinux policy, any
+situation that the policy has not thought about before will not be easily adaptable.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;So, we can't do it?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Well, I'm pretty sure that a very extensive policy and set of rules can be made
+for SELinux which would make a number of DAC permissions obsolete, and that we could
+theoretically remove DAC from the Linux kernel.&lt;/p&gt;
+&lt;p&gt;End users would require a huge training to work with this system, and it would not
+be reusable across other systems in different environments, because the policy
+will be too specific to the system (unlike the current reference policy based ones,
+which are quite reusable across many distributions).&lt;/p&gt;
+&lt;p&gt;Furthermore, the effort to create these policies would be extremely high, whereas
+the DAC permissions are very simple to implement, and have been proven to be
+well suitable for many secured systems. &lt;/p&gt;
+&lt;p&gt;So no, unless you do massive engineering, I do not believe it is possible to
+substitute DAC with SELinux-only controls.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="refpolicy"></category><category term="linux"></category><category term="dac"></category><category term="lsm"></category></entry><entry><title>D-Bus and SELinux</title><link href="http://blog.siphos.be/2014/06/d-bus-and-selinux/" rel="alternate"></link><published>2014-06-30T20:07:00+02:00</published><updated>2014-06-30T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-30:/2014/06/d-bus-and-selinux/</id><summary type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
+D-Bus&lt;/a&gt; comes the
+inevitable related post about SELinux with D-Bus.&lt;/p&gt;
+&lt;p&gt;Some users might not know that D-Bus is an SELinux-aware application.
+That means it has SELinux-specific code in it, which has the D-Bus
+behavior based on the SELinux policy (and might not necessarily honor
+the "permissive …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
+D-Bus&lt;/a&gt; comes the
+inevitable related post about SELinux with D-Bus.&lt;/p&gt;
+&lt;p&gt;Some users might not know that D-Bus is an SELinux-aware application.
+That means it has SELinux-specific code in it, which has the D-Bus
+behavior based on the SELinux policy (and might not necessarily honor
+the "permissive" flag). This code is used as an additional
+authentication control within D-Bus.&lt;/p&gt;
+&lt;p&gt;Inside the SELinux policy, a &lt;em&gt;dbus&lt;/em&gt; permission class is supported, even
+though the Linux kernel doesn't do anything with this class. The class
+is purely for D-Bus, and it is D-Bus that checks the permission
+(although work is being made to &lt;a href="https://lwn.net/Articles/580194/"&gt;implement D-Bus in kernel
+(kdbus)&lt;/a&gt;). The class supports two
+permission checks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;acquire_svc&lt;/em&gt; which tells the domain(s) allowed to "own" a service
+    (which might, thanks to the SELinux support, be different from the
+    domain itself)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;send_msg&lt;/em&gt; which tells which domain(s) can send messages to a
+    service domain&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Inside the D-Bus security configuration (the &lt;code&gt;busconfig&lt;/code&gt; XML file,
+remember) a service configuration might tell D-Bus that the service
+itself is labeled differently from the process that owned the service.
+The default is that the service inherits the label from the domain, so
+when &lt;code&gt;dnsmasq_t&lt;/code&gt; registers a service on the system bus, then this
+service also inherits the &lt;code&gt;dnsmasq_t&lt;/code&gt; label.&lt;/p&gt;
+&lt;p&gt;The necessary permission checks for the &lt;code&gt;sysadm_t&lt;/code&gt; user domain to send
+messages to the dnsmasq service, and the dnsmasq service itself to
+register it as a service:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
+allow sysadm_t dnsmasq_t:dbus send_msg;
+allow dnsmasq_t sysadm_t:dbus send_msg;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For the &lt;code&gt;sysadm_t&lt;/code&gt; domain, the two rules are needed as we usually not
+only want to send a message to a D-Bus service, but also receive a reply
+(which is also handled through a &lt;em&gt;send_msg&lt;/em&gt; permission but in the
+inverse direction).&lt;/p&gt;
+&lt;p&gt;However, with the following XML snippet inside its service configuration
+file, owning a certain resource is checked against a different label:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
+  &amp;lt;selinux&amp;gt;
+    &amp;lt;associate
+      own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;
+      context=&amp;quot;system_u:object_r:dnsmasq_dbus_t:s0&amp;quot; /&amp;gt;
+  &amp;lt;/selinux&amp;gt;
+&amp;lt;/busconfig&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this, the rules would become as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
+allow dnsmasq_t self:dbus send_msg;
+allow sysadm_t dnsmasq_t:dbus send_msg;
+allow dnsmasq_t sysadm_t:dbus send_msg;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that &lt;em&gt;only&lt;/em&gt; the access for acquiring a service based on a name
+(i.e. owning a service) is checked based on the different label. Sending
+and receiving messages is still handled by the domains of the processes
+(actually the labels of the connections, but these are always the
+process domains).&lt;/p&gt;
+&lt;p&gt;I am not aware of any policy implementation that uses a different label
+for owning services, and the implementation is more suited to "force"
+D-Bus to only allow services with a correct label. This ensures that
+other domains that might have enough privileges to interact with D-Bus
+and own a service cannot own these particular services. After all, other
+services don't usually have the privileges (policy-wise) to
+&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="SELinux"></category><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>D-Bus, quick recap</title><link href="http://blog.siphos.be/2014/06/d-bus-quick-recap/" rel="alternate"></link><published>2014-06-29T19:16:00+02:00</published><updated>2014-06-29T19:16:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-29:/2014/06/d-bus-quick-recap/</id><summary type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
+some sort of IPC, but higher level than the POSIX IPC methods. After
+some reading, I think I start to understand how it works and how
+administrators can work with it. So a quick write-down is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
+some sort of IPC, but higher level than the POSIX IPC methods. After
+some reading, I think I start to understand how it works and how
+administrators can work with it. So a quick write-down is in place so I
+don't forget in the future.&lt;/p&gt;
+&lt;p&gt;There is one &lt;em&gt;system&lt;/em&gt; bus and, for each X session of a user, also a
+&lt;em&gt;session&lt;/em&gt; bus.&lt;/p&gt;
+&lt;p&gt;A bus is governed by a &lt;code&gt;dbus-daemon&lt;/code&gt; process. A bus itself has objects
+on it, which are represented through path-like constructs (like
+&lt;code&gt;/org/freedesktop/ConsoleKit&lt;/code&gt;). These objects are provided by a service
+(application). Applications "own" such services, and identify these
+through a namespace-like value (such as &lt;code&gt;org.freedesktop.ConsoleKit&lt;/code&gt;).&lt;br&gt;
+Applications can send signals to the bus, or messages through methods
+exposed by the service. If methods are invoked (i.e. messages send) then
+the application must specify the interface (such as
+&lt;code&gt;org.freedesktop.ConsoleKit.Manager.Stop&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Administrators can monitor the bus through &lt;strong&gt;dbus-monitor&lt;/strong&gt;, or send
+messages through &lt;strong&gt;dbus-send&lt;/strong&gt;. For instance, the following command
+invokes the &lt;code&gt;org.freedesktop.ConsoleKit.Manager.Stop&lt;/code&gt; method provided by
+the object at &lt;code&gt;/org/freedesktop/ConsoleKit&lt;/code&gt; owned by the
+service/application at &lt;code&gt;org.freedesktop.ConsoleKit&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ dbus-send --system --print-reply 
+  --dest=org.freedesktop.ConsoleKit 
+  /org/freedesktop/ConsoleKit/Manager 
+  org.freedesktop.ConsoleKit.Manager.Stop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;What I found most interesting however was to query the busses. You can
+do this with &lt;strong&gt;dbus-send&lt;/strong&gt; although it is much easier to use tools such
+as &lt;strong&gt;d-feet&lt;/strong&gt; or &lt;strong&gt;qdbus&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;To list current services on the system bus:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system
+:1.1
+ org.freedesktop.ConsoleKit
+:1.10
+:1.2
+:1.3
+ org.freedesktop.PolicyKit1
+:1.36
+ fi.epitest.hostap.WPASupplicant
+ fi.w1.wpa_supplicant1
+:1.4
+:1.42
+:1.5
+:1.6
+:1.7
+ org.freedesktop.UPower
+:1.8
+:1.9
+org.freedesktop.DBus
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The numbers are generated by D-Bus itself, the namespace-like strings
+are taken by the objects. To see what is provided by a particular
+service:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1
+/
+/org
+/org/freedesktop
+/org/freedesktop/PolicyKit1
+/org/freedesktop/PolicyKit1/Authority
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The methods made available through one of these:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1 /org/freedesktop/PolicyKit1/Authority
+method QDBusVariant org.freedesktop.DBus.Properties.Get(QString interface_name, QString property_name)
+method QVariantMap org.freedesktop.DBus.Properties.GetAll(QString interface_name)
+...
+property read uint org.freedesktop.PolicyKit1.Authority.BackendFeatures
+property read QString org.freedesktop.PolicyKit1.Authority.BackendName
+property read QString org.freedesktop.PolicyKit1.Authority.BackendVersion
+method void org.freedesktop.PolicyKit1.Authority.AuthenticationAgentResponse(QString cookie, QDBusRawType::(sa{sv} identity)
+method void org.freedesktop.PolicyKit1.Authority.CancelCheckAuthorization(QString cancellation_id)
+signal void org.freedesktop.PolicyKit1.Authority.Changed()
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Access to methods and interfaces is governed through XML files in
+&lt;code&gt;/etc/dbus-1/system.d&lt;/code&gt; (or &lt;code&gt;session.d&lt;/code&gt; depending on the bus). Let's look
+at &lt;code&gt;/etc/dbus-1/system.d/dnsmasq.conf&lt;/code&gt; as an example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
+        &amp;lt;policy user=&amp;quot;root&amp;quot;&amp;gt;
+                &amp;lt;allow own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+                &amp;lt;allow send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+        &amp;lt;/policy&amp;gt;
+        &amp;lt;policy user=&amp;quot;dnsmasq&amp;quot;&amp;gt;
+                &amp;lt;allow own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+                &amp;lt;allow send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+        &amp;lt;/policy&amp;gt;
+        &amp;lt;policy context=&amp;quot;default&amp;quot;&amp;gt;
+                &amp;lt;deny own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+                &amp;lt;deny send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+        &amp;lt;/policy&amp;gt;
+&amp;lt;/busconfig&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The configuration mentions that only the root Linux user can 'assign' a
+service/application to the &lt;code&gt;uk.org.thekelleys.dnsmasq&lt;/code&gt; name, and root
+can send messages to this same service/application name. The default is
+that no-one can own and send to this service/application name. As a
+result, only the Linux root user can interact with this object.&lt;/p&gt;
+&lt;p&gt;D-Bus also supports starting of services when a method is invoked
+(instead of running this service immediately). This is configured
+through &lt;code&gt;*.service&lt;/code&gt; files inside &lt;code&gt;/usr/share/dbus-1/system-services/&lt;/code&gt;.&lt;/p&gt;</content><category term="Free Software"></category><category term="dbus"></category><category term="linux"></category></entry><entry><title>What is that net-pf-## thingie?</title><link href="http://blog.siphos.be/2014/04/what-is-that-net-pf-thingie/" rel="alternate"></link><published>2014-04-01T19:46:00+02:00</published><updated>2014-04-01T19:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-01:/2014/04/what-is-that-net-pf-thingie/</id><summary type="html">&lt;p&gt;When checking audit logs, you might come across applications that
+request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt;##&lt;/code&gt; being an integer.
+Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
+what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
+&lt;p&gt;The answer can be found in &lt;code&gt;/usr/src/linux/include/linux/socket.h&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF_ATMPVC …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When checking audit logs, you might come across applications that
+request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt;##&lt;/code&gt; being an integer.
+Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
+what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
+&lt;p&gt;The answer can be found in &lt;code&gt;/usr/src/linux/include/linux/socket.h&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF_ATMPVC       8       /* ATM PVCs                     */
+#define AF_X25          9       /* Reserved for X.25 project    */
+#define AF_INET6        10      /* IP version 6                 */
+#define AF_ROSE         11      /* Amateur Radio X.25 PLP       */
+#define AF_DECnet       12      /* Reserved for DECnet project  */
+...
+#define AF_BLUETOOTH    31      /* Bluetooth sockets            */
+#define AF_IUCV         32      /* IUCV sockets                 */
+#define AF_RXRPC        33      /* RxRPC sockets                */
+#define AF_ISDN         34      /* mISDN sockets                */
+#define AF_PHONET       35      /* Phonet sockets               */
+#define AF_IEEE802154   36      /* IEEE802154 sockets           */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So next time you get such a weird module load request, check &lt;code&gt;socket.h&lt;/code&gt;
+for more information.&lt;/p&gt;</content><category term="Free Software"></category><category term="linux"></category><category term="module_request"></category><category term="net-pf"></category></entry><entry><title>Managing Inter-Process Communication (IPC)</title><link href="http://blog.siphos.be/2014/03/managing-inter-process-communication-ipc/" rel="alternate"></link><published>2014-03-30T12:50:00+02:00</published><updated>2014-03-30T12:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-30:/2014/03/managing-inter-process-communication-ipc/</id><summary type="html">&lt;p&gt;As a Linux administrator, you'll eventually need to concern you about
+&lt;em&gt;Inter-Process Communication (IPC)&lt;/em&gt;. The IPC primitives that most POSIX
+operating systems provide are semaphores, shared memory and message
+queues. On Linux, the first utility that helps you with those primitives
+is &lt;strong&gt;ipcs&lt;/strong&gt;. Let's start with semaphores first.&lt;/p&gt;
+&lt;p&gt;Semaphores in …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As a Linux administrator, you'll eventually need to concern you about
+&lt;em&gt;Inter-Process Communication (IPC)&lt;/em&gt;. The IPC primitives that most POSIX
+operating systems provide are semaphores, shared memory and message
+queues. On Linux, the first utility that helps you with those primitives
+is &lt;strong&gt;ipcs&lt;/strong&gt;. Let's start with semaphores first.&lt;/p&gt;
+&lt;p&gt;Semaphores in general are integer variables that have a positive value,
+and are accessible by multiple processes (users/tasks/whatever). The
+idea behind a semaphore is that it is used to streamline access to a
+shared resource. For instance, a device' control channel might be used
+by multiple applications, but only one application at a time is allowed
+to put something on the channel. Through semaphores, applications check
+the semaphore value. If it is zero, they wait. If it is higher, they
+attempt decrement the semaphore. If it fails (because another
+application in the mean time has decremented the semaphore) then the
+application waits, otherwise it continues as it has successfully
+decremented the semaphore. In effect, it acts as a sort-of lock towards
+a common resource.&lt;/p&gt;
+&lt;p&gt;An example you can come across is with ALSA. Some of the ALSA plugins
+(such as dmix) use IPC semaphores to allow multiple ALSA applications to
+connect to and use the sound subsystem. When an ALSA-enabled application
+is using the sound system, you'll see that a semaphore is active:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -s
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems     
+0x0056a4d5 32768      swift      660        1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;More information about a particular semaphore can be obtained using
+&lt;strong&gt;ipcs -s -i SEMID&lt;/strong&gt; where &lt;code&gt;SEMID&lt;/code&gt; is the value in the &lt;em&gt;semid&lt;/em&gt; column:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -s -i 32768
+Semaphore Array semid=32768
+uid=1001         gid=18  cuid=1001       cgid=100
+mode=0660, access_perms=0660
+nsems = 1
+otime = Sun Mar 30 12:33:46 2014  
+ctime = Sun Mar 30 12:33:38 2014  
+semnum     value      ncount     zcount     pid       
+0          0          0          0          32061
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As with all IPC resources, we have information about the owner of the
+semaphore (&lt;code&gt;uid&lt;/code&gt; and &lt;code&gt;gid&lt;/code&gt;), the creator of the semaphore (&lt;code&gt;cuid&lt;/code&gt; and
+&lt;code&gt;cgid&lt;/code&gt;) as well as its access mask, similar to the file access mask on
+Linux systems (&lt;code&gt;mode&lt;/code&gt; and &lt;code&gt;access_perms&lt;/code&gt;). Specific to the IPC
+semaphore, you can also notice the &lt;code&gt;nsems = 1&lt;/code&gt;. Unlike the general
+semaphores, IPC semaphores are actually a wrapper around one or more
+"real" semaphores. The &lt;code&gt;nsems&lt;/code&gt; variable shows how many "real" semaphores
+are handled by the IPC semaphore.&lt;/p&gt;
+&lt;p&gt;Another very popular IPC resource is &lt;em&gt;shared memory&lt;/em&gt;. This is memory
+that is accessible by multiple applications, and provides a very
+versatile approach to sharing information and collaboration between
+processes. Usually, a semaphore is also used to govern writes and reads
+to the shared memory, so that one process that wants to update a part of
+the shared memory takes a semaphore (a sort-of lock), makes the updates,
+and then increments the semaphore again.&lt;/p&gt;
+&lt;p&gt;You can see the currently defined shared memory using &lt;strong&gt;ipcs -m&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -m
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status      
+0x00000000 655370     swift      600        393216     2          dest
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Again, more information can be obtained through &lt;strong&gt;-i SHMID&lt;/strong&gt;. An
+interesting value to look at as well is the creator PID (just in case
+the process still runs, or through the audit logs) and the last PID used
+to operate on the shared memory (which also might no longer exist, but
+is still an important value to investigate).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -m -p
+------ Shared Memory Creator/Last-op PIDs --------
+shmid      owner      cpid       lpid      
+655370     swift      6147       6017
+
+~$ ps -ef | grep -E &amp;#39;(6147|6017)&amp;#39;
+root      6017  6016  0 09:49 tty1     00:01:30 /usr/bin/X -nolisten tcp :0 -auth /home/swift/.serverauth.6000
+swift     6147     1  2 09:50 tty1     00:05:10 firefox
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this case, the shared memory is most likely used to handle the UI of
+firefox towards the X server.&lt;/p&gt;
+&lt;p&gt;A last IPC resource are message queues, through which processes can put
+messages on a queue and remove messages (by reading them) from the
+queue. I don't have an example at hand for the moment, but just like
+semaphores and shared memory, queues can be looked at through &lt;strong&gt;ipcs
+-q&lt;/strong&gt; with more information being available through &lt;strong&gt;ipcs -q -i MSQID&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Now what if you need to operate these? For this, you can use &lt;strong&gt;ipcrm&lt;/strong&gt;
+to remove an IPC resource whereas &lt;strong&gt;ipcmk&lt;/strong&gt; can be used to create one
+(although the latter is not that often used for administrative purposes,
+whereas &lt;strong&gt;ipcrm&lt;/strong&gt; can help you troubleshoot and fix issues without
+having to reboot a system). Of course, removing IPC resources from the
+system should only be done when there is a bug in the application(s)
+that use it (for instance, a process decreased a semaphore and then
+crashed - in that case, remove the semaphore and start one of the
+application(s) that also operates on the semaphore as they usually
+recreate it and continue happily).&lt;/p&gt;
+&lt;p&gt;Now before finishing this post, I do need to tell you about the
+difference between an IPC resource key and its identifier. The &lt;em&gt;key&lt;/em&gt; is
+like a path or URL, and is a value used by the applications to find and
+obtain existing IPC resources (something like, "give me the list of
+semaphores that I can access with key 12345"). The &lt;em&gt;identifier&lt;/em&gt; is a
+unique ID generated by the Linux kernel at the moment that the IPC
+resource is created. Unlike the key, which can be used for multiple IPC
+resources, the identifier is unique. This is why the identifier is used
+in the &lt;strong&gt;ipcs -i&lt;/strong&gt; command rather than the key. Also, that means that if
+applications would properly document their IPC usage then we would
+easily know what an IPC resource is used for.&lt;/p&gt;</content><category term="Free Software"></category><category term="ipc"></category><category term="ipcrm"></category><category term="ipcs"></category><category term="linux"></category><category term="msg"></category><category term="sem"></category><category term="shmem"></category></entry><entry><title>Can Gentoo play a role in a RHEL-only environment?</title><link href="http://blog.siphos.be/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/" rel="alternate"></link><published>2014-01-09T04:13:00+01:00</published><updated>2014-01-09T04:13:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-09:/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/</id><summary type="html">&lt;p&gt;Sounds like a stupid question, as the answer is already in the title. If
+a company has only RedHat Enterprise Linux as allowed / supported Linux
+platform (be it for a support model requirement, ISV certification,
+management tooling support or what not) how could or would Gentoo still
+play a role …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sounds like a stupid question, as the answer is already in the title. If
+a company has only RedHat Enterprise Linux as allowed / supported Linux
+platform (be it for a support model requirement, ISV certification,
+management tooling support or what not) how could or would Gentoo still
+play a role in it.&lt;/p&gt;
+&lt;p&gt;But the answer is, surprisingly, that Gentoo can still be made available
+in the company architecture. One of the possible approaches is a
+&lt;em&gt;virtual appliance&lt;/em&gt; role.&lt;/p&gt;
+&lt;p&gt;Virtual appliances are entire operating systems, provided through VM
+images (be it VMDK or in an
+&lt;a href="http://en.wikipedia.org/wiki/Open_Virtualization_Format"&gt;OVF&lt;/a&gt; package),
+which offer a well defined service to its consumers. More and more
+products are being presented as virtual appliances. Why not - in the
+past, they would be in sealed hardware appliances (but still running
+some form of Linux on it) but nowadays the hypervisor and other
+infrastructure is strong and powerful enough to handle even the most
+intensive tasks in a virtual guest.&lt;/p&gt;
+&lt;p&gt;Gentoo is extremely powerful as a meta-distribution. You can tweak,
+update, enhance and tune a Gentoo Linux installation to fulfill whatever
+requirement you have. And in the end, you can easily create a virtual
+image from it, and have it run as a virtual appliance in the company.&lt;/p&gt;
+&lt;p&gt;An example could be to offer a web-based password management suite. A
+Gentoo Linux deployment could be created, fully
+&lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;hardened&lt;/a&gt; of course,
+with a MAC such as SELinux active. On it, a properly secured web server
+with the password management suite, with underlying database (of course
+only listening on localhost - don't want to expose the database to the
+wider network). Through a simple menu, the various administrative
+services needed to integrate the "appliance" in a larger environment can
+be configured: downloading an SSL certificate request (and uploading the
+signed one), (encrypted) backup/restore routines, SNMP configuration and
+more.&lt;/p&gt;
+&lt;p&gt;If properly designed, all configuration data could be easily exported
+and imported (or provided through a secundary mount) so that updates on
+the appliance are as simple as booting a new image and
+uploading/mounting the configuration data.&lt;/p&gt;
+&lt;p&gt;Building such a virtual appliance can be simplified with &lt;a href="http://www.gentoo.org/proj/en/gentoo-alt/prefix/"&gt;Gentoo
+Prefix&lt;/a&gt;, multi-tenancy
+on the web application level through the
+&lt;a href="http://www.gentoo.org/proj/en/webapps/index.xml"&gt;webapp-config&lt;/a&gt; tool
+while all necessary software is readily available in the Portage tree.&lt;/p&gt;
+&lt;p&gt;All you need is some imagination...&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="linux"></category><category term="vappliance"></category><category term="virtual appliance"></category></entry><entry><title>Linux protip: environment for a process</title><link href="http://blog.siphos.be/2014/01/linux-protip-environment-for-a-process/" rel="alternate"></link><published>2014-01-07T04:31:00+01:00</published><updated>2014-01-07T04:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-07:/2014/01/linux-protip-environment-for-a-process/</id><summary type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
+a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
+file. The file however shows the environment variables on one line, with
+a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
+a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
+file. The file however shows the environment variables on one line, with
+a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it
+with newlines instead:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;{lang="bash"}
+~$ sed -e "s:\x0:\n:g" /proc/144320/environ
+TERM=xterm
+SHELL=/bin/bash
+OLDPWD=/home/swift/docs
+USER=root
+SUDO_USER=swift
+SUDO_UID=1001
+USERNAME=root
+MAIL=/var/mail/root
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin
+PWD=/var/db/pkg/eix
+...&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The trick is to use &lt;code&gt;\x0&lt;/code&gt; (hexcode 0) for the null character, which the
+&lt;strong&gt;sed&lt;/strong&gt; command then replaces with a newline.&lt;/p&gt;</content><category term="Free Software"></category><category term="environ"></category><category term="linux"></category><category term="protip"></category></entry><entry><title>Umounting IPv6 NFS(v4) mounts</title><link href="http://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/" rel="alternate"></link><published>2013-08-23T13:46:00+02:00</published><updated>2013-08-23T13:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/umounting-ipv6-nfsv4-mounts/</id><summary type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
+trying to umount the share, it said that it couldn't find the mount in
+&lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
+/mnt/nfs/portage was not found in /proc/mounts
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
+trying to umount the share, it said that it couldn't find the mount in
+&lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
+/mnt/nfs/portage was not found in /proc/mounts
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and the umount works
+correctly again.&lt;/p&gt;</content><category term="Misc"></category><category term="ip6"></category><category term="ipv6"></category><category term="linux"></category><category term="nfs4"></category><category term="nfsv4"></category><category term="umount"></category></entry><entry><title>Using extended attributes for custom information</title><link href="http://blog.siphos.be/2013/06/using-extended-attributes-for-custom-information/" rel="alternate"></link><published>2013-06-02T03:50:00+02:00</published><updated>2013-06-02T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-02:/2013/06/using-extended-attributes-for-custom-information/</id><summary type="html">&lt;p&gt;One of the things I have been meaning to implement on my system is a way
+to properly "remove" old files from the system. Currently, I do this
+through frequently listing all files, going through them and deleting
+those I feel I no longer need (in any case, I can …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the things I have been meaning to implement on my system is a way
+to properly "remove" old files from the system. Currently, I do this
+through frequently listing all files, going through them and deleting
+those I feel I no longer need (in any case, I can retrieve them back
+from the backup within 60 days). But this isn't always easy since it
+requires me to reopen the files and consider what I want to do with
+them... again.&lt;/p&gt;
+&lt;p&gt;Most of the time, when files are created, you generally know how long
+they are needed on the system. For instance, an attachment you download
+from an e-mail to view usually has a very short lifespan (you can always
+re-retrieve it from the e-mail as long as the e-mail itself isn't
+removed). Same with output you captured from a shell command, a strace
+logfile, etc. So I'm wondering if I can't create a simple method for
+keeping track of &lt;em&gt;expiration dates&lt;/em&gt; on files, similar to the expiration
+dates supported for z/OS data sets. And to implement this, I am
+considering to use extended attributes.&lt;/p&gt;
+&lt;p&gt;The idea is simple: when working with a file, I want to be able to
+immediately set an expiration date to it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ strace -o strace.log ...
+$ expdate +7d strace.log
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This would set an extended attribute named &lt;code&gt;user.expiration&lt;/code&gt; with the
+value being the number of seconds since epoch (which you can obtain
+through &lt;strong&gt;date +%s&lt;/strong&gt; if you want) on which the file can be expired (and
+thus deleted from the system). A system cronjob can then regularly scan
+the system for files with the extended attribute set and, if the
+expiration date is beyond the current date, the file can be removed from
+the system (perhaps first into a specific area where it lingers for an
+additional while just in case).&lt;/p&gt;
+&lt;p&gt;It is just an example of course. The idea is that the extended
+attributes keep information about the file close to the file itself. I'm
+probably going to have an additional layer on top if it, checking
+SELinux contexts and automatically identifying expiration dates based on
+their last modification time. Setting the expiration dates manually
+after creating the files is prone to be forgotten after a while. And
+perhaps introduce the flexibility of setting an &lt;code&gt;user.expire_after&lt;/code&gt;
+attribute is well, telling that the file can be removed if it hasn't
+been touched (modification time) in at least XX number of days.&lt;/p&gt;</content><category term="Free Software"></category><category term="attributes"></category><category term="expiration"></category><category term="extended attributes"></category><category term="linux"></category><category term="xattr"></category></entry><entry><title>Looking at the local Linux kernel privilege escalation</title><link href="http://blog.siphos.be/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/" rel="alternate"></link><published>2013-05-17T03:50:00+02:00</published><updated>2013-05-17T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-17:/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/</id><summary type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
+escalation, which has received the
+&lt;a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2094"&gt;CVE-2013-2094&lt;/a&gt;
+ID.
+&lt;a href="http://arstechnica.com/security/2013/05/critical-linux-vulnerability-imperils-users-even-after-silent-fix/"&gt;arstechnica&lt;/a&gt;
+has a write-up with links to good resources on the Internet, but I
+definitely want to point readers to the
+&lt;a href="http://www.reddit.com/r/netsec/comments/1eb9iw/sdfucksheeporgs_semtexc_local_linux_root_exploit/c9ykrck"&gt;explanation&lt;/a&gt;
+that Brad Spengler made on the vulnerability.&lt;/p&gt;
+&lt;p&gt;In …&lt;/p&gt;</summary><content type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
+escalation, which has received the
+&lt;a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2094"&gt;CVE-2013-2094&lt;/a&gt;
+ID.
+&lt;a href="http://arstechnica.com/security/2013/05/critical-linux-vulnerability-imperils-users-even-after-silent-fix/"&gt;arstechnica&lt;/a&gt;
+has a write-up with links to good resources on the Internet, but I
+definitely want to point readers to the
+&lt;a href="http://www.reddit.com/r/netsec/comments/1eb9iw/sdfucksheeporgs_semtexc_local_linux_root_exploit/c9ykrck"&gt;explanation&lt;/a&gt;
+that Brad Spengler made on the vulnerability.&lt;/p&gt;
+&lt;p&gt;In short, the vulnerability is an &lt;em&gt;out-of-bound&lt;/em&gt; access to an array
+within the Linux perf code (which is a performance measuring subsystem
+enabled when &lt;code&gt;CONFIG_PERF_EVENTS&lt;/code&gt; is enabled). This subsystem is often
+enabled as it offers a wide range of performance measurement techniques
+(see &lt;a href="https://perf.wiki.kernel.org/index.php/Main_Page"&gt;its wiki&lt;/a&gt; for
+more information). You can check on your own system through the kernel
+configuration (&lt;strong&gt;zgrep CONFIG_PERF_EVENTS /proc/config.gz&lt;/strong&gt; if you
+have the latter pseudo-file available - it is made available through
+&lt;code&gt;CONFIG_IKCONFIG_PROC&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;The public exploit maps memory in userland, fills it with known data,
+then triggers an out-of-bound decrement that tricks the kernel into
+decrementing this data (mapped in userland). By looking at where the
+decrement occurred, the exploit now knows the base address of the array.
+Next, it targets (through the same vulnerability) the IDT base
+(Interrupt Descriptor Table) and targets the overflow interrupt vector.
+It increments the top part of the address that the vector points to
+(which is 0xffffffff, becoming 0x00000000 thus pointing to the
+userland), maps this memory region itself with shellcode, and then
+triggers the overflow. The shell code used in the public exploit
+modifies the credentials of the current task, sets uid/gid with root and
+gives full capabilities, and then executes a shell.&lt;/p&gt;
+&lt;p&gt;As Brad mentions, &lt;a href="https://grsecurity.net/~spender/uderef.txt"&gt;UDEREF&lt;/a&gt;
+(an option in a grSecurity enabled kernel) should mitigate the attempt
+to get to the userland. On my system, the exploit fails with the
+following (start of) oops (without affecting the system further) when it
+tries to close the file descriptor returned from the syscall that
+invokes the decrement:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
+[ 1926.227019] BUG: unable to handle kernel paging request at 0000000381f5815c
+[ 1926.227019] IP: [] sw_perf_event_destroy+0x1a/0xa0
+[ 1926.227019] PGD 58a7c000 
+[ 1926.227019] Thread overran stack, or stack corrupted
+[ 1926.227019] Oops: 0002 [#4] PREEMPT SMP 
+[ 1926.227019] Modules linked in: libcrc32c
+[ 1926.227019] CPU 0 
+[ 1926.227019] Pid: 4267, comm: test Tainted: G      D      3.8.7-hardened #1 Bochs Bochs
+[ 1926.227019] RIP: 0010:[]  [] sw_perf_event_destroy+0x1a/0xa0
+[ 1926.227019] RSP: 0018:ffff880058a03e08  EFLAGS: 00010246
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The exploit also finds that the decrement didn't succeed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A second mitigation is that
+&lt;a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf"&gt;KERNEXEC&lt;/a&gt;
+(also offered through grSecurity) which prevents the kernel from
+executing data that is writable (including userland data). So modifying
+the IDT would be mitigated as well.&lt;/p&gt;
+&lt;p&gt;Another important mitigation is TPE - &lt;em&gt;Trusted Path Execution&lt;/em&gt;. This
+feature prevents the execution of binaries that are not located in a
+root-owned directory and owned by a trusted group (which on my system is
+10 = wheel). So users attempting to execute such code will fail with a
+&lt;em&gt;Permission denied&lt;/em&gt; error, and the following is shown in the logs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, even though a nicely hardened system should be fairly immune
+against the currently circling public exploit, it should be noted that
+it is not immune against the vulnerability itself. The methods above
+mentioned make it so that that particular way of gaining root access is
+not possible, but it still allows an attacker to decrement and increment
+memory in specific locations so other exploits might be found to modify
+the system.&lt;/p&gt;
+&lt;p&gt;Now out-of-bound vulnerabilities are not new. Recently (february this
+year), a
+&lt;a href="http://www.phoronix.com/scan.php?page=news_item&amp;amp;px=MTMxMTg"&gt;vulnerability&lt;/a&gt;
+in the networking code also provided an attack vector to get a local
+privilege escalation. A mandatory access control system like SELinux has
+little impact on such vulnerabilities if you allow users to execute
+their own code. Even confined users can modify the exploit to disable
+SELinux (since the shell code is ran with ring0 privileges it can access
+and modify the SELinux state information in the kernel).&lt;/p&gt;
+&lt;p&gt;Many thanks to Brad for the excellent write-up, and to the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo
+Hardened&lt;/a&gt; team for providing the
+grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="Security"></category><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry><entry><title>Enabling Kernel Samepage Merging (KSM)</title><link href="http://blog.siphos.be/2013/05/enabling-kernel-samepage-merging-ksm/" rel="alternate"></link><published>2013-05-09T03:50:00+02:00</published><updated>2013-05-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-09:/2013/05/enabling-kernel-samepage-merging-ksm/</id><summary type="html">&lt;p&gt;When using virtualization extensively, you will pretty soon hit the
+limits of your system (at least, the resources on it). When the
+virtualization is used primarily for testing (such as in my case), the
+limit is memory. So it makes sense to seek memory optimization
+strategies on such systems. The …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using virtualization extensively, you will pretty soon hit the
+limits of your system (at least, the resources on it). When the
+virtualization is used primarily for testing (such as in my case), the
+limit is memory. So it makes sense to seek memory optimization
+strategies on such systems. The first thing to enable is KSM or &lt;em&gt;Kernel
+Samepage Merging&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;This Linux feature looks for memory pages that the applications have
+marked as being a possible candidate for optimization (sharing) which
+are then reused across multiple processes. The idea is that, especially
+for virtualized environments (but KSM is not limited to that), some
+processes will have the same contents in memory. Without any sharing
+abilities, these memory pages will be unique (meaning at different
+locations in your system's memory). With KSM, such memory pages are
+consolidated to a single page which is then referred to by the various
+processes. When one process wants to modify the page, it is "unshared"
+so that there is no corruption or unwanted modification of data for the
+other processes.&lt;/p&gt;
+&lt;p&gt;Such features are not new - VMWare has it named TPS (&lt;em&gt;Transparent Page
+Sharing&lt;/em&gt;) and Xen calls it "Memory CoW" (Copy-on-Write). One advantage
+of KSM is that it is simple to setup and advantageous for other
+processes as well. For instance, if you host multiple instances of the
+same service (web service, database, tomcat, whatever) there is a high
+chance that several of its memory pages are prime candidates for
+sharing.&lt;/p&gt;
+&lt;p&gt;Now before I do mention that this sharing is only enabled when the
+application has marked it as such. This is done through the &lt;em&gt;madvise()&lt;/em&gt;
+method, where applications mark the memory with &lt;em&gt;MADV_MERGEABLE&lt;/em&gt;,
+meaning that the applications explicitly need to support KSM in order
+for it to be successful. There is work on the way to support transparent
+KSM (such as
+&lt;a href="http://www.phoronix.com/scan.php?page=news_item&amp;amp;px=MTEzMTI"&gt;UKSM&lt;/a&gt; and
+&lt;a href="https://code.google.com/p/pksm/"&gt;PKSM&lt;/a&gt;) where no &lt;em&gt;madvise&lt;/em&gt; calls would
+be needed anymore. But beyond quickly reading the home pages (or
+translated home pages in case of UKSM ;-) I have no experience with
+those projects.&lt;/p&gt;
+&lt;p&gt;So let's get back to KSM. I am currently running three virtual machines
+(all configured to take at most 1.5 Gb of memory). Together, they take
+just a little over 1 Gb of memory (sum of their resident set sizes).
+When I consult KSM, I get the following information:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep -H &amp;#39;&amp;#39; /sys/kernel/mm/ksm/pages_*
+/sys/kernel/mm/ksm/pages_shared:48911
+/sys/kernel/mm/ksm/pages_sharing:90090
+/sys/kernel/mm/ksm/pages_to_scan:100
+/sys/kernel/mm/ksm/pages_unshared:123002
+/sys/kernel/mm/ksm/pages_volatile:1035
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;pages_shared&lt;/code&gt; tells me that 48911 pages are shared (which means
+about 191 Mb) through 90090 references (&lt;code&gt;pages_sharing&lt;/code&gt; - meaning the
+various processes have in total 90090 references to pages that are being
+shared). That means a gain of 41179 pages (160 Mb). Note that the
+resident set sizes do not take into account shared pages, so the sum of
+the RSS has to be subtracted with this to find the "real" memory
+consumption. The &lt;code&gt;pages_unshared&lt;/code&gt; value tells me that 123002 pages are
+marked with the &lt;code&gt;MADV_MERGEABLE&lt;/code&gt; advise flag but are not used by other
+processes.&lt;/p&gt;
+&lt;p&gt;If you want to use KSM yourself, configure your kernel with &lt;code&gt;CONFIG_KSM&lt;/code&gt;
+and start KSM by echo'ing the value "1" into &lt;code&gt;/sys/kernel/mm/ksm/run&lt;/code&gt;.
+That's all there is to it.&lt;/p&gt;</content><category term="Free Software"></category><category term="cow"></category><category term="ksm"></category><category term="kvm"></category><category term="linux"></category><category term="virtualization"></category></entry><entry><title>Overview of Linux capabilities, part 3</title><link href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-3/" rel="alternate"></link><published>2013-05-06T03:50:00+02:00</published><updated>2013-05-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-06:/2013/05/overview-of-linux-capabilities-part-3/</id><summary type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;I&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/"&gt;talked&lt;/a&gt;
+about capabilities and gave an introduction to how this powerful
+security feature within Linux can be used (and also exploited). I also
+covered a few capabilities, so let's wrap this up with the remainder of
+them.&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;CAP_AUDIT_CONTROL&lt;/dt&gt;
+&lt;dd&gt;Enable and disable kernel auditing; change auditing filter …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;I&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/"&gt;talked&lt;/a&gt;
+about capabilities and gave an introduction to how this powerful
+security feature within Linux can be used (and also exploited). I also
+covered a few capabilities, so let's wrap this up with the remainder of
+them.&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;CAP_AUDIT_CONTROL&lt;/dt&gt;
+&lt;dd&gt;Enable and disable kernel auditing; change auditing filter rules;
+retrieve auditing status and filtering rules&lt;/dd&gt;
+&lt;dt&gt;CAP_AUDIT_WRITE&lt;/dt&gt;
+&lt;dd&gt;Write records to kernel auditing log&lt;/dd&gt;
+&lt;dt&gt;CAP_BLOCK_SUSPEND&lt;/dt&gt;
+&lt;dd&gt;Employ features that can block system suspend&lt;/dd&gt;
+&lt;dt&gt;CAP_MAC_ADMIN&lt;/dt&gt;
+&lt;dd&gt;Override Mandatory Access Control (implemented for the SMACK LSM)&lt;/dd&gt;
+&lt;dt&gt;CAP_MAC_OVERRIDE&lt;/dt&gt;
+&lt;dd&gt;Allow MAC configuration or state changes (implemented for the
+SMACK LSM)&lt;/dd&gt;
+&lt;dt&gt;CAP_NET_ADMIN&lt;/dt&gt;
+&lt;dd&gt;Perform various network-related operations:
+&lt;/p&gt;
+-   interface configuration
+-   administration of IP firewall, masquerading and accounting
+-   modify routing tables
+-   bind to any address for transparent proxying
+-   set type-of-service (TOS)
+-   clear driver statistics
+-   set promiscuous mode
+-   enabling multicasting
+-   use &lt;em&gt;setsockopt()&lt;/em&gt; for privileged socket operations&lt;/dd&gt;
+&lt;dt&gt;CAP_NET_BIND_SERVICE&lt;/dt&gt;
+&lt;dd&gt;Bind a socket to Internet domain privileged ports (less than 1024)&lt;/dd&gt;
+&lt;dt&gt;CAP_NET_RAW&lt;/dt&gt;
+&lt;dd&gt;Use RAW and PACKET sockets, and bind to any address for transparent
+proxying&lt;/dd&gt;
+&lt;dt&gt;CAP_SETPCAP&lt;/dt&gt;
+&lt;dd&gt;Allow the process to add any capability from the calling thread's
+bounding set to its inheritable set, and drop capabilities from the
+bounding set (using &lt;em&gt;prctl()&lt;/em&gt;) and make changes to the
+&lt;em&gt;securebits&lt;/em&gt; flags.&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_ADMIN&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;Very powerful capability, includes:
+&lt;/p&gt;
+-   Running quota control, mount, swap management, set hostname, ...
+-   Perform &lt;em&gt;VM86_REQUEST_IRQ vm86&lt;/em&gt; command
+-   Perform &lt;em&gt;IPC_SET&lt;/em&gt; and &lt;em&gt;IPC_RMID&lt;/em&gt; operations on arbitrary
+    System V IPC objects
+-   Perform operations on &lt;code&gt;trusted.*&lt;/code&gt; and &lt;code&gt;security.*&lt;/code&gt; extended
+    attributes
+-   Use &lt;em&gt;lookup_dcookie&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;p&gt;
+and many, many more. &lt;strong&gt;man capabilities&lt;/strong&gt; gives a good overview
+of them.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_BOOT&lt;/dt&gt;
+&lt;dd&gt;Use &lt;em&gt;reboot()&lt;/em&gt; and &lt;em&gt;kexec_load()&lt;/em&gt;&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_CHROOT&lt;/dt&gt;
+&lt;dd&gt;Use &lt;em&gt;chroot()&lt;/em&gt;&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_MODULE&lt;/dt&gt;
+&lt;dd&gt;Load and unload kernel modules&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_RESOURCE&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;Another capability with many consequences, including:
+&lt;/p&gt;
+-   Use reserved space on ext2 file systems
+-   Make &lt;em&gt;ioctl()&lt;/em&gt; calls controlling ext3 journaling
+-   Override disk quota limits
+-   Increase resource limits
+-   Override &lt;code&gt;RLIMIT_NPROC&lt;/code&gt; resource limits&lt;/p&gt;
+&lt;p&gt;&lt;p&gt;
+and many more.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_TIME&lt;/dt&gt;
+&lt;dd&gt;Set system clock and real-time hardware clock&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_TTY_CONFIG&lt;/dt&gt;
+&lt;dd&gt;Use &lt;em&gt;vhangup()&lt;/em&gt; and employ various privileged &lt;em&gt;ioctl()&lt;/em&gt; operations
+on virtual terminals&lt;/dd&gt;
+&lt;dt&gt;CAP_SYSLOG&lt;/dt&gt;
+&lt;dd&gt;Perform privileged &lt;em&gt;syslog()&lt;/em&gt; operations and view kernel addresses
+exposed with &lt;code&gt;/proc&lt;/code&gt; and other interfaces (if &lt;code&gt;kptr_restrict&lt;/code&gt;
+is set)&lt;/dd&gt;
+&lt;dt&gt;CAP_WAKE_ALARM&lt;/dt&gt;
+&lt;dd&gt;Trigger something that will wake up the system&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;Now when you look through the manual page of the capabilities, you'll
+notice it talks about &lt;em&gt;securebits&lt;/em&gt; as well. This is an additional set of
+flags that govern how capabilities are used, inherited etc. System
+administrators don't set these flags - they are governed by the
+applications themselves (when creating threads, forking, etc.) These
+flags are set on a per-thread level, and govern the following behavior:&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;SECBIT_KEEP_CAPS&lt;/dt&gt;
+&lt;dd&gt;Allow a thread with UID 0 to retain its capabilities when it
+switches its UIDs to a nonzero (non-root) value. By default, this
+flag is &lt;em&gt;not&lt;/em&gt; set, and even if it is set, it is cleared on an
+&lt;em&gt;execve&lt;/em&gt; call, reducing the likelihood that capabilities
+are "leaked".&lt;/dd&gt;
+&lt;dt&gt;SECBIT_NO_SETUID_FIXUP&lt;/dt&gt;
+&lt;dd&gt;When set, the kernel will not adjust the capability sets when the
+thread's effective and file system UIDs are switched between
+zero (root) and non-zero values.&lt;/dd&gt;
+&lt;dt&gt;SECBIT_NOROOT&lt;/dt&gt;
+&lt;dd&gt;If set, the kernel does not grant capabilities when a setuid-root
+program is executed, or when a process with an effective or real UID
+of 0 (root) calls &lt;em&gt;execve&lt;/em&gt;.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;Manipulating these bits requires the &lt;code&gt;CAP_SETPCAP&lt;/code&gt; capability. Except
+for the &lt;code&gt;SECBIT_KEEP_CAPS&lt;/code&gt; security bit, the others are preserved on an
+&lt;em&gt;execve()&lt;/em&gt; call, and all bits are inherited by child processes (such as
+when &lt;em&gt;fork()&lt;/em&gt; is used).&lt;/p&gt;
+&lt;p&gt;As a user or admin, you can also see capability-related information
+through the &lt;code&gt;/proc&lt;/code&gt; file system:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep ^Cap /proc/$$/status
+CapInh: 0000000000000000
+CapPrm: 0000001fffffffff
+CapEff: 0000001fffffffff
+CapBnd: 0000001fffffffff
+
+$ grep ^Cap /proc/$$/status
+CapInh: 0000000000000000
+CapPrm: 0000000000000000
+CapEff: 0000000000000000
+CapBnd: 0000001fffffffff
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The capabilities listed therein are bitmasks for the various
+capabilities. The mask &lt;code&gt;1FFFFFFFFF&lt;/code&gt; holds 37 positions, which match the
+37 capabilities known (again, see &lt;code&gt;uapi/linux/capabilities.h&lt;/code&gt; in the
+kernel sources to see the values of each of the capabilities). Again,
+the &lt;strong&gt;pscap&lt;/strong&gt; can be used to get information about the enabled
+capabilities of running processes in a more human readable format. But
+another tool provided by the &lt;code&gt;sys-libs/libcap&lt;/code&gt; is interested as well to
+look at: &lt;strong&gt;capsh&lt;/strong&gt;. The tool offers many capability-related features,
+including decoding the &lt;code&gt;status&lt;/code&gt; fields:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ capsh --decode=0000001fffffffff
+0x0000001fffffffff=cap_chown,cap_dac_override,cap_dac_read_search,
+cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,
+cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,
+cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,
+cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,
+cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,
+cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,
+cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,
+cap_syslog,35,36
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next to fancy decoding, &lt;strong&gt;capsh&lt;/strong&gt; can also launch a shell with reduced
+capabilities. This makes it a good utility for jailing chroots even
+more.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="capsh"></category><category term="libcap"></category><category term="linux"></category></entry><entry><title>Overview of Linux capabilities, part 2</title><link href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/" rel="alternate"></link><published>2013-05-05T03:50:00+02:00</published><updated>2013-05-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-05:/2013/05/overview-of-linux-capabilities-part-2/</id><summary type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+capabilities&lt;/a&gt;
+and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
+them&lt;/a&gt;,
+I started with a small overview of
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;file-related&lt;/a&gt;
+capabilities. So next up are process-related capabilities (note, this
+isn't a conform terminology, more some categorization that I do myself).&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;CAP_IPC_LOCK&lt;/dt&gt;
+&lt;dd&gt;Allow the …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+capabilities&lt;/a&gt;
+and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
+them&lt;/a&gt;,
+I started with a small overview of
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;file-related&lt;/a&gt;
+capabilities. So next up are process-related capabilities (note, this
+isn't a conform terminology, more some categorization that I do myself).&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;CAP_IPC_LOCK&lt;/dt&gt;
+&lt;dd&gt;Allow the process to lock memory&lt;/dd&gt;
+&lt;dt&gt;CAP_IPC_OWNER&lt;/dt&gt;
+&lt;dd&gt;Bypass the permission checks for operations on System V IPC objects
+(similar to the &lt;code&gt;CAP_DAC_OVERRIDE&lt;/code&gt; for files)&lt;/dd&gt;
+&lt;dt&gt;CAP_KILL&lt;/dt&gt;
+&lt;dd&gt;Bypass permission checks for sending signals&lt;/dd&gt;
+&lt;dt&gt;CAP_SETUID&lt;/dt&gt;
+&lt;dd&gt;Allow the process to make arbitrary manipulations of process UIDs
+and create forged UID when passing socket credentials via UNIX
+domain sockets&lt;/dd&gt;
+&lt;dt&gt;CAP_SETGID&lt;/dt&gt;
+&lt;dd&gt;Same, but then for GIDs&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_NICE&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;This capability governs several permissions/abilities, namely to
+allow the process to
+&lt;/p&gt;
+-   change the &lt;em&gt;nice&lt;/em&gt; value of itself and other processes
+-   set real-time scheduling priorities for itself, and set
+    scheduling policies and priorities for arbitrary processes
+-   set the CPU affinity for arbitrary processes
+-   apply &lt;em&gt;migrate_pages&lt;/em&gt; to arbitrary processes and allow
+    processes to be migrated to arbitrary nodes
+-   apply &lt;em&gt;move_pages&lt;/em&gt; to arbitrary processes
+-   use the &lt;code&gt;MPOL_MF_MOVE_ALL&lt;/code&gt; flag with &lt;em&gt;mbind()&lt;/em&gt; and
+    &lt;em&gt;move_pages()&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;p&gt;
+The abilities related to page moving, migration and nodes is of
+importance for NUMA systems, not something most workstations have
+or need.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_PACCT&lt;/dt&gt;
+&lt;dd&gt;Use &lt;em&gt;acct()&lt;/em&gt;, to enable or disable system resource accounting for
+the process&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_PTRACE&lt;/dt&gt;
+&lt;dd&gt;Allow the process to trace arbitrary processes using &lt;em&gt;ptrace()&lt;/em&gt;,
+apply &lt;em&gt;get_robust_list()&lt;/em&gt; against arbitrary processes and inspect
+processes using &lt;em&gt;kcmp()&lt;/em&gt;.&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_RAWIO&lt;/dt&gt;
+&lt;dd&gt;Allow the process to perform I/O port operations, access
+&lt;code&gt;/proc/kcore&lt;/code&gt; and employ the &lt;code&gt;FIBMAP&lt;/code&gt; &lt;em&gt;ioctl()&lt;/em&gt; operation.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;Capabilities such as &lt;code&gt;CAP_KILL&lt;/code&gt; and &lt;code&gt;CAP_SETUID&lt;/code&gt; are very important to
+govern correctly, but this post would be rather dull (given that the
+definitions of the above capabilities can be found from the manual page)
+if I wouldn't talk a bit more about its feasibility. Take a look at the
+following C application code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#include &amp;lt;errno.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;sys/capability.h&amp;gt;
+#include &amp;lt;sys/prctl.h&amp;gt;
+#include &amp;lt;sys/types.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+
+int main(int argc, char ** argv) {
+  printf(&amp;quot;cap_setuid and cap_setgid: %d\n&amp;quot;, prctl(PR_CAPBSET_READ, CAP_SETUID|CAP_SETGID, 0, 0, 0));
+  printf(&amp;quot; %s\n&amp;quot;, cap_to_text(cap_get_file(argv[0]), NULL));
+  printf(&amp;quot; %s\n&amp;quot;, cap_to_text(cap_get_proc(), NULL));
+  if (setresuid(0, 0, 0));
+    printf(&amp;quot;setresuid(): %s\n&amp;quot;, strerror(errno));
+  execve(&amp;quot;/bin/sh&amp;quot;, NULL, NULL);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At first sight, it looks like an application to get root privileges
+(&lt;em&gt;setresuid()&lt;/em&gt;) and then spawn a shell. If that application would be
+given &lt;code&gt;CAP_SETUID&lt;/code&gt; and &lt;code&gt;CAP_SETGID&lt;/code&gt; effectively, it would allow anyone
+who executed it to automatically get a root shell, wouldn't it?&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gcc -o test -lcap test.c
+# setcap cap_setuid,cap_setgid+ep test
+$ ./test
+cap_setuid and cap_setgid: 1
+ = cap_setgid,cap_setuid+ep
+ =
+setresuid() failed: Operation not permitted
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So what happened? After all, the two capabilities are set with the &lt;em&gt;+ep&lt;/em&gt;
+flags given. Then why aren't these capabilities enabled? Well, this
+binary was stored on a file system that is mounted with the &lt;em&gt;nosuid&lt;/em&gt;
+option. As a result, this capability is &lt;em&gt;not&lt;/em&gt; enabled and the
+application didn't work. If I move the file to another file system that
+doesn't have the &lt;em&gt;nosuid&lt;/em&gt; option:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
+cap_setuid and cap_setgid: 1
+ = cap_setgid,cap_setuid+ep
+ = cap_setgid,cap_setuid+ep
+setresuid() failed: Operation not permitted
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So the capabilities now do get enabled, so why does this still fail?
+This now is due to SELinux:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&amp;quot;test&amp;quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And if you enable grSecurity's TPE, we can't even start the binary to
+begin with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ./test
+-bash: ./test: Permission denied
+$ /lib/ld-linux-x86-64.so.2 /home/test/test
+/home/test/test: error while loading shared libraries: /home/test/test: failed to map segment from shared object: Permission denied
+
+# dmesg
+...
+[ 5579.567842] grsec: From 192.168.100.1: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/test/test by /home/test/test[bash:4221] uid/euid:1002/1002 gid/egid:100/100, parent /bin/bash[bash:4195] uid/euid:1002/1002 gid/egid:100/100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When all these "security obstacles" are not enabled, then the call
+succeeds:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
+cap_setuid and cap_setgid: 1
+ = cap_setgid,cap_setuid+ep
+ = cap_setgid,cap_setuid+ep
+setresuid() failed: Success
+root@hpl tmp #
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This again shows how important it is to regularly review
+capability-enabled files on the file system, as this is a major security
+problem that cannot be detected by only looking for setuid binaries, but
+also that securing a system is not limited to one or a few settings: one
+always has to take the entire setup into consideration, hardening the
+system so it becomes more difficult for malicious users to abuse it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# filecap -a
+file                 capabilities
+/usr/local/bin/test     setgid, setuid
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="grsecurity"></category><category term="linux"></category><category term="nosuid"></category><category term="selinux"></category><category term="tpe"></category></entry><entry><title>Overview of Linux capabilities, part 1</title><link href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/" rel="alternate"></link><published>2013-05-04T03:50:00+02:00</published><updated>2013-05-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-04:/2013/05/overview-of-linux-capabilities-part-1/</id><summary type="html">&lt;p&gt;In the
+&lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;,
+I talked about capabilities and how they can be used to allow processes
+to run in a privileged fashion without granting them full root access to
+the system. An example given was how capabilities can be leveraged to
+run &lt;strong&gt;ping&lt;/strong&gt; without granting it setuid root rights …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the
+&lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+&lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;,
+I talked about capabilities and how they can be used to allow processes
+to run in a privileged fashion without granting them full root access to
+the system. An example given was how capabilities can be leveraged to
+run &lt;strong&gt;ping&lt;/strong&gt; without granting it setuid root rights. But what are the
+various capabilities that Linux is, well, capable of?&lt;/p&gt;
+&lt;p&gt;There are many, and as time goes by, more capabilities are added to the
+set. The last capability added to the main Linux kernel tree was the
+&lt;code&gt;CAP_BLOCK_SUSPEND&lt;/code&gt; in the 3.5 series. An overview of all capabilities
+can be seen with &lt;strong&gt;man capabilities&lt;/strong&gt; or by looking at the Linux kernel
+source code, &lt;code&gt;include/uapi/linux/capability.h&lt;/code&gt;. But because you are all
+lazy, and because it is a good exercise for myself, I'll go through many
+of them in this and the next few posts.&lt;/p&gt;
+&lt;p&gt;For now, let's look at file related capabilities. As a reminder, if you
+want to know which SELinux domains are "granted" a particular
+capability, you can look this up using &lt;strong&gt;sesearch&lt;/strong&gt;. The capability is
+either in the &lt;em&gt;capability&lt;/em&gt; or &lt;em&gt;capability2&lt;/em&gt; class, and is named after
+the capability itself, without the &lt;code&gt;CAP_&lt;/code&gt; prefix:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sesearch -c capability -p chown -A
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;dl&gt;
+&lt;dt&gt;CAP_CHOWN&lt;/dt&gt;
+&lt;dd&gt;Allow making changes to the file UIDs and GIDs.&lt;/dd&gt;
+&lt;dt&gt;CAP_DAC_OVERRIDE&lt;/dt&gt;
+&lt;dd&gt;Bypass file read, write and execute permission checks. I came across
+a &lt;a href="http://www.reddit.com/r/linux/comments/1cnn15/for_chmod_why_is_root_allowed_to_execute_programs/"&gt;reddit
+post&lt;/a&gt;
+that was about this capability not that long ago.&lt;/dd&gt;
+&lt;dt&gt;CAP_DAC_READ_SEARCH&lt;/dt&gt;
+&lt;dd&gt;Bypass file read permission and directory read/search
+permission checks.&lt;/dd&gt;
+&lt;dt&gt;CAP_FOWNER&lt;/dt&gt;
+&lt;dd&gt;This capability governs 5 capabilities in one:
+&lt;/p&gt;
+-   Bypass permission checks on operations that normally require the
+    file system UID of the process to match the UID of the file
+    (unless already granted through &lt;code&gt;CAP_DAC_READ_SEARCH&lt;/code&gt; and/or
+    &lt;code&gt;CAP_DAC_OVERRIDE&lt;/code&gt;)
+-   Allow to set extended file attributes
+-   Allow to set access control lists
+-   Ignore directory sticky bit on file deletion
+-   Allow specifying &lt;code&gt;O_NOATIME&lt;/code&gt; for files in &lt;em&gt;open()&lt;/em&gt; and &lt;em&gt;fnctl()&lt;/em&gt;
+    calls&lt;/dd&gt;
+&lt;dt&gt;CAP_FSETID&lt;/dt&gt;
+&lt;dd&gt;Do not clear the setuid/setgid permission bits when a file is
+modified&lt;/dd&gt;
+&lt;dt&gt;CAP_LEASE&lt;/dt&gt;
+&lt;dd&gt;Allow establishing leases on files&lt;/dd&gt;
+&lt;dt&gt;CAP_LINUX_IMMUTABLE&lt;/dt&gt;
+&lt;dd&gt;Allow setting &lt;em&gt;FS_APPEND_FL&lt;/em&gt; and &lt;em&gt;FP_IMMUTABLE_FL&lt;/em&gt; inode flags&lt;/dd&gt;
+&lt;dt&gt;CAP_MKNOD&lt;/dt&gt;
+&lt;dd&gt;Allow creating special files with &lt;strong&gt;mknod&lt;/strong&gt;&lt;/dd&gt;
+&lt;dt&gt;CAP_SETFCAP&lt;/dt&gt;
+&lt;dd&gt;Allow setting file capabilities (what I did with the &lt;strong&gt;anotherping&lt;/strong&gt;
+binary in the previous post)&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;When working with SELinux (especially when writing applications), you'll
+find that the &lt;code&gt;CAP_DAC_READ_SEARCH&lt;/code&gt; and &lt;code&gt;CAP_DAC_OVERRIDE&lt;/code&gt; capability
+come up often. This is the case when applications are written to run as
+root yet want to scan through, read or even execute non-root owned
+files. Without SELinux, because these run as root, this is all granted.
+However, when you start confining those applications, it becomes
+apparent that they require this capability. Another example is when you
+run user applications, as root, like when trying to play a movie or
+music file with &lt;strong&gt;mplayer&lt;/strong&gt; when this file is owned by a regular user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_read_search } for
+pid=8153 comm=&amp;quot;mplayer&amp;quot; capability=2  scontext=staff_u:sysadm_r:mplayer_t
+tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
+
+type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_override } for
+pid=8153 comm=&amp;quot;mplayer&amp;quot; capability=1  scontext=staff_u:sysadm_r:mplayer_t
+tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Notice the time stamp: both checks are triggered at the same time. What
+happens is that the Linux security hooks first check for
+&lt;code&gt;DAC_READ_SEARCH&lt;/code&gt; (the "lesser" grants of the two) and then for
+&lt;code&gt;DAC_OVERRIDE&lt;/code&gt; (which contains &lt;code&gt;DAC_READ_SEARCH&lt;/code&gt; and more). In both
+cases, the check failed in the above example.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;CAP_LEASE&lt;/code&gt; capability is one that I had not heard about before
+(actually, I had not heard of getting "file leases" on Linux either). A
+file lease allows for the lease holder (which requires this capability)
+to be notified when another process tries to open or truncate the file.
+When that happens, the call itself is blocked and the lease holder is
+notified (usually using SIGIO) about the access. It is not really to
+lock a file (since, if the lease holder doesn't properly release it, it
+is forcefully "broken" and the other process can continue its work) but
+rather to properly close the file descriptor or flushing caches, etc.&lt;/p&gt;
+&lt;p&gt;BTW, on my system, only 5 SELinux domains hold the &lt;em&gt;lease&lt;/em&gt; capability.&lt;/p&gt;
+&lt;p&gt;There are 37 capabilities known by the Linux kernel at this time. The
+above list has 9 file related ones. So perhaps next I can talk about
+process capabilities.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Restricting and granting capabilities</title><link href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/" rel="alternate"></link><published>2013-05-03T03:50:00+02:00</published><updated>2013-05-03T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-03:/2013/05/restricting-and-granting-capabilities/</id><summary type="html">&lt;p&gt;As
+&lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro"&gt;capabilities&lt;/a&gt;
+are a way for running processes with some privileges, without having the
+need to grant them root privileges, it is important to understand that
+they exist if you are a system administrator, but also as an auditor or
+other security-related function. Having processes run as a non-root user …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As
+&lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro"&gt;capabilities&lt;/a&gt;
+are a way for running processes with some privileges, without having the
+need to grant them root privileges, it is important to understand that
+they exist if you are a system administrator, but also as an auditor or
+other security-related function. Having processes run as a non-root user
+is no longer sufficient to assume that they do not hold any rights to
+mess up the system or read files they shouldn't be able to read.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="https://grsecurity.net/"&gt;grsecurity&lt;/a&gt; kernel patch set, which is
+applied to the Gentoo hardened kernel sources, contains for instance
+&lt;code&gt;CONFIG_GRKERNSEC_CHROOT_CAPS&lt;/code&gt; which, as per its documentation,
+"restrcts the capabilities on all root processes within a chroot jail to
+stop module insertion, raw i/o, system and net admin tasks, rebooting
+the system, modifying immutable files, modifying IPC owned by another,
+and changing the system time." But other implementations might even use
+capabilities to restrict the users. Consider
+&lt;a href="http://lxc.sourceforge.net/"&gt;LXC&lt;/a&gt; (Linux Containers). When a container
+is started, &lt;code&gt;CAP_SYS_BOOT&lt;/code&gt; (the ability to shutdown/reboot the
+system/container) is removed so that users cannot abuse this privilege.&lt;/p&gt;
+&lt;p&gt;You can also grant capabilities to users selectively, using &lt;code&gt;pam_cap.so&lt;/code&gt;
+(the Capabilities Pluggable Authentication Module). For instance, to
+allow some users to ping, instead of granting the &lt;code&gt;cap_net_raw&lt;/code&gt;
+immediately (&lt;em&gt;+ep&lt;/em&gt;), we can assign the capability to some users through
+PAM, and have the &lt;strong&gt;ping&lt;/strong&gt; binary inherit and use this capability
+instead (&lt;em&gt;+p&lt;/em&gt;). That doesn't mean that the capability is in effect, but
+rather that it is in a sort-of permitted set. Applications that are
+granted a certain permission this way can either use this capability if
+the user is allowed to have it, or won't otherwise.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setcap cap_net_raw+p anotherping
+
+# vim /etc/pam.d/system-login
+... add in something like
+auth     required     pam_cap.so
+
+# vim /etc/security/capability.conf
+... add in something like
+cap_net_raw           user1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The logic used with capabilities can be described as follows (it is not
+as difficult as it looks):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;        pI&amp;#39; = pI
+  (***) pP&amp;#39; = fP | (fI &amp;amp; pI)
+        pE&amp;#39; = pP&amp;#39; &amp;amp; fE          [NB. fE is 0 or ~0]
+
+  I=Inheritable, P=Permitted, E=Effective // p=process, f=file
+  &amp;#39; indicates post-exec().
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, for instance, the second line reads "The permitted set of
+capabilities of the newly forked process is set to the permitted set of
+capabilities of its executable file, together with the result of the AND
+operation between the inherited capabilities of the file and the
+inherited capabilities of the parent process."&lt;/p&gt;
+&lt;p&gt;As an admin, you might want to keep an eye out for binaries that have
+particular capabilities set. With &lt;strong&gt;filecap&lt;/strong&gt; you can list which
+capabilities are in the effective set of files found on the file system
+(for instance, &lt;em&gt;+ep&lt;/em&gt;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# filecap 
+file                 capabilities
+/bin/anotherping     net_raw
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Similarly, with &lt;strong&gt;pscap&lt;/strong&gt; you can see the capabilities set on running
+processes.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# pscap -a
+ppid  pid   name        command           capabilities
+6148  6152  root        bash              full
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It might be wise to take this up in the daily audit reports.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Capabilities, a short intro</title><link href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/" rel="alternate"></link><published>2013-05-02T03:50:00+02:00</published><updated>2013-05-02T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-02:/2013/05/capabilities-a-short-intro/</id><summary type="html">&lt;p&gt;Capabilities. You probably have heard of them already, but when you
+start developing SELinux policies, you'll notice that you come in closer
+contact with them than before. This is because SELinux, when
+applications want to do something "root-like", checks the capability of
+that application. Without SELinux, this either requires the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Capabilities. You probably have heard of them already, but when you
+start developing SELinux policies, you'll notice that you come in closer
+contact with them than before. This is because SELinux, when
+applications want to do something "root-like", checks the capability of
+that application. Without SELinux, this either requires the binary to
+have the proper capability set, or the application to run in root modus.
+With SELinux, the capability also needs to be granted to the SELinux
+context (the domain in which the application runs).&lt;/p&gt;
+&lt;p&gt;But forget about SELinux for now, and let's focus on capabilities.
+Capabilities in Linux are flags that tell the kernel what the
+application is allowed to do, but unlike file access, capabilities for
+an application are system-wide: there is no "target" to which it
+applies. Think about an "ability" of an application. See for yourself
+through &lt;strong&gt;man capabilities&lt;/strong&gt;. If you have no additional security
+mechanism in place, the Linux root user has all capabilities assigned to
+it. And you can remove capabilities from the root user if you want to,
+but generally, capabilities are used to grant applications that tiny bit
+more privileges, without needing to grant them root rights.&lt;/p&gt;
+&lt;p&gt;Consider the &lt;strong&gt;ping&lt;/strong&gt; utility. It is marked setuid root on some
+distributions, because the utility requires the (cap)ability to send raw
+packets. This capability is known as &lt;code&gt;CAP_NET_RAW&lt;/code&gt;. However, thanks to
+capabilities, you can now mark the &lt;strong&gt;ping&lt;/strong&gt; application with this
+capability and drop the setuid from the file. As a result, the
+application does not run with full root privileges anymore, but with the
+restricted privileges of the user plus one capability, namely the
+&lt;code&gt;CAP_NET_RAW&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Let's take this &lt;strong&gt;ping&lt;/strong&gt; example to the next level: copy the binary
+(possibly relabel it as &lt;code&gt;ping_exec_t&lt;/code&gt; if you run with SELinux), make
+sure it does not hold the setuid and try it out:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cp ping anotherping
+# chcon -t ping_exec_t anotherping
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now as a regular user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ping -c 1 127.0.0.1
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.057 ms
+
+$ anotherping -c 1 127.0.0.1
+ping: icmp open socket: Operation not permitted
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's assign the binary with the &lt;code&gt;CAP_NET_RAW&lt;/code&gt; capability flag:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setcap cap_net_raw+ep anotherping
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And tadaa:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ anotherping -c 1 127.0.0.1
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.054 ms
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;What &lt;strong&gt;setcap&lt;/strong&gt; did was place an extended attribute to the file, which
+is a binary representation of the capabilities assigned to the
+application. The additional information (&lt;code&gt;+ep&lt;/code&gt;) means that the
+capability is &lt;em&gt;p&lt;/em&gt;ermitted and &lt;em&gt;e&lt;/em&gt;ffective.&lt;/p&gt;
+&lt;p&gt;So long for the primer, I'll talk about the various capabilities in a
+later post.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category><category term="ping"></category><category term="selinux"></category></entry><entry><title>Simple drawing for I/O positioning</title><link href="http://blog.siphos.be/2013/04/simple-drawing-for-io-positionin/" rel="alternate"></link><published>2013-04-18T01:00:00+02:00</published><updated>2013-04-18T01:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/simple-drawing-for-io-positionin/</id><summary type="html">&lt;p&gt;Instead of repeatedly trying to create an overview of the various layers
+involved with I/O operations within Linux on whatever white-board is in
+the vicinity, I decided to draw one up in &lt;a href="http://www.draw.io"&gt;Draw.io&lt;/a&gt;
+that I can then update as I learn more from this fascinating world. The
+drawing's …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Instead of repeatedly trying to create an overview of the various layers
+involved with I/O operations within Linux on whatever white-board is in
+the vicinity, I decided to draw one up in &lt;a href="http://www.draw.io"&gt;Draw.io&lt;/a&gt;
+that I can then update as I learn more from this fascinating world. The
+drawing's smaller blocks within the layers are meant to give some
+guidance to what is handled where, so they are definitely not complete.&lt;/p&gt;
+&lt;p&gt;So for those interested (or those that know more of it than I ever will
+and prepared to help me out):&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://blog.siphos.be/wp-content/uploads/2013/04/io-layers.png"&gt;&lt;img alt="io-layers" src="http://blog.siphos.be/wp-content/uploads/2013/04/io-layers-231x300.png"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I hope it isn't too far from the truth.&lt;/p&gt;</content><category term="Documentation"></category><category term="io"></category><category term="linux"></category></entry></feed>

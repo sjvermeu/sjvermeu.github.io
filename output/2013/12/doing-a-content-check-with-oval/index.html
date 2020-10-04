@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>Doing a content check with OVAL - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2013/12/doing-a-content-check-with-oval/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="openscap,oval,scap,xccdf" />
+        <meta name="description" content="Let&#39;s create an OVAL check to see if /etc/inittab&#39;s single user definitions only refer to /sbin/sulogin or /sbin/rc single. First, the skeleton: (XML content lost during blog conversion) The first thing we notice is that there are several namespaces defined within OVAL. These namespaces refer to …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Doing a content check with OVAL"/>
+        <meta property="og:url" content="http://blog.siphos.be/2013/12/doing-a-content-check-with-oval/"/>
+        <meta property="og:description" content="Let&#39;s create an OVAL check to see if /etc/inittab&#39;s single user definitions only refer to /sbin/sulogin or /sbin/rc single. First, the skeleton: (XML content lost during blog conversion) The first thing we notice is that there are several namespaces defined within OVAL. These namespaces refer to …"/>
+        <meta property="article:published_time" content="2013-12-24" />
+            <meta property="article:section" content="Security" />
+            <meta property="article:tag" content="openscap" />
+            <meta property="article:tag" content="oval" />
+            <meta property="article:tag" content="scap" />
+            <meta property="article:tag" content="xccdf" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/security.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... Security ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2013/12/doing-a-content-check-with-oval/"
+                       rel="bookmark"
+                       title="Permalink to Doing a content check with OVAL">
+                        Doing a content check with OVAL
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-12-24T04:25:00+01:00"> Tue 24 December 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/security.html">Security</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/openscap/">openscap</a>
+        /
+	<a href="http://blog.siphos.be/tag/oval/">oval</a>
+        /
+	<a href="http://blog.siphos.be/tag/scap/">scap</a>
+        /
+	<a href="http://blog.siphos.be/tag/xccdf/">xccdf</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>Let's create an OVAL check to see if <code>/etc/inittab</code>'s single user
+definitions only refer to <code>/sbin/sulogin</code> or <code>/sbin/rc single</code>. First,
+the skeleton:</p>
+<p>(XML content lost during blog conversion)</p>
+<p>The first thing we notice is that there are several namespaces defined
+within OVAL. These namespaces refer to the platforms on which the tests
+can be executed. OVAL has independent definitions, unix-global
+definitions or linux-specific definitions. You can find the overview of
+<a href="http://oval.mitre.org/language/version5.10.1/">all supported schemas and definitions
+online</a> - definitely
+something to bookmark if you plan on developing your own OVAL checks.</p>
+<p>So let's create the definition:</p>
+<p>(XML content lost during blog conversion)</p>
+<p>There is lots of information to be found in this simple snippet.</p>
+<p>First of all, notice the <code>class="compliance"</code> part. OVAL definitions can
+be given a class that informs the OVAL interpreter what kind of test it
+is.</p>
+<p>Supported classes are:</p>
+<dl>
+<dt>compliance</dt>
+<dd>Does the system adhere to a predefined wanted state</dd>
+<dt>inventory</dt>
+<dd>Is the given software or hardware available/installed on the system</dd>
+<dt>patch</dt>
+<dd>Is the selected patch installed on the system</dd>
+<dt>vulnerability</dt>
+<dd>Is the system vulnerable towards this particular exposure (CVE)</dd>
+<dt>miscellaneous</dt>
+<dd>Everything that doesn't fit the above</dd>
+</dl>
+<p>Next, we see metadata that tells the OVAL interpreter that the
+definition applies to Unix family systems, and more specifically a
+Gentoo Linux system. However, this is not a CPE entry
+(<em>cpe:/o:gentoo:linux</em>). The idea is that the OVAL Interpreter should
+interpret the information as it wants without focusing on CPE details -
+I think (I might be mistaken though) because the SCAP standard does not
+want to introduce loops - a CPE that refers to an OVAL to validate,
+which in turn refers to the same CPE.</p>
+<p>Also, a reference is included in the OVAL. Remember that we also had
+references in the XCCDF document? Well, the same is true for OVAL
+statements - you can add in references that help administrators get more
+information about a definition. In this case, it refers to a <strong>CCE
+(Common Configuration Enumeration)</strong> entry. You can find all official
+CCE entries <a href="https://nvd.nist.gov/cce/index.cfm">online as well</a>. This
+particular one, CCE-4241-6, sais:</p>
+<div class="highlight"><pre><span></span><code>CCE-4241-6  Platform: rhel5     Date: (C)2011-10-07   (M)2013-11-28
+
+The requirement for a password to boot into single-user mode should be configured correctly.
+
+Parameter: enabled/disabled
+
+Technical Mechanism: via /etc/inittab
+</code></pre></div>
+
+
+<p>By requiring <strong>sulogin</strong> or <strong>rc single</strong> in <code>inittab</code>, Gentoo Linux
+will ask for the root password before granting a shell, thereby
+complying with the requirement to have a password before providing a
+shell in single-user mode.</p>
+<p>Finally, the definition refers to a single test, which we will now look
+into:</p>
+<p>(XML content lost during blog conversion)</p>
+<p>This particular test is part of the <em>independent</em> definitions. Checking
+the content of a file is something all platforms support. Within this
+independent definition set, a <a href="http://oval.mitre.org/language/version5.10.1/ovaldefinition/documentation/independent-definitions-schema.html">large set of
+tests</a>
+are supported, including file hash checking (does the checksum of a file
+still match), environment variable test (verifying the existence and
+content of an environment variable), LDAP tests and also text file
+content tests.</p>
+<p>In the test, there are two important attributes to closely look into:
+<code>check</code> and <code>check_existence</code>.</p>
+<p>The <code>check_existence</code> attribute tells the OVAL interpreter how to deal
+with the object definition. In our case, the object will refer to the
+lines in the <code>/etc/inittab</code> file that match a certain pattern. With
+<code>check_existence="at_least_one_exists"</code> the OVAL interpreter knows it
+has to have at least one line that matches the pattern before it can
+continue. If no line matches, then the test fails.</p>
+<p>Other values for <code>check_existence</code> are "all_exist" (every object
+described must exist), any_exist (doesn't matter if zero, one or more
+exists), none_exist (no object described must exist) and
+"only_one_exists" (one, and only one match for the described objects
+must exist).</p>
+<p>The <code>check</code> attributes tells the OVAL interpreter how to match the
+object (if there is one) with the state. In our example, <code>check="all"</code>
+tells the OVAL interpreter that all lines that match the object
+definition must also match the state definition.</p>
+<p>Other values for <code>check</code> are "at least one", "none satisfy" and "only
+one". These should be self-explanatory. Notice that there are no
+underscores involved here (unlike with the <code>check_existence</code> attribute).</p>
+<p>See the <a href="https://oval.mitre.org/language/version5.10.1/ovaldefinition/documentation/oval-common-schema.html">common
+schema</a>
+for more general OVAL attribute information.</p>
+<p>The test refers to the following object:</p>
+<p>(XML content lost during blog conversion)</p>
+<p>The object represents lines in the <code>/etc/inittab</code> file that match the
+expression <code>^[\S]+:S:[\S]+:.*</code>. The OVAL definition uses <a href="http://oval.mitre.org/language/about/perlre.html">perl-style
+regular expressions</a>,
+so this means that the lines must start with a non-whitespace string,
+followed by a colon (:), followed by the letter "S", followed by a
+colon, followed by non-whitespace string, followed by colon and then a
+remainder string.</p>
+<p>Also, the object evaluates if at least one such line is found.</p>
+<p>The state, also referred to by the test, looks like so:</p>
+<p>(XML content lost during blog conversion)</p>
+<p>Here again we see a regular expression; this time, the expression sais
+that the line must start with "su" and that the fourth field equals
+<code>/sbin/rc single</code> or <code>/sbin/sulogin</code>. In our example, if there is at
+least one "single user" line that does not match this expression, then
+the OVAL statement will return a failure and the system is
+non-compliant.</p>
+<p>Now you could be wondering if this is the best approach. We can create
+an object that refers to all single-user lines in <code>/etc/inittab</code> that do
+not comply with the expression just in the object definition. The
+expression would be more complex by itself, but wouldn't need a state
+anymore. True, but the advantage here is that the object itself matches
+all single user lines, and can be reused later in other tests. Also, if
+we later evaluate the OVAL statements, we will get an overview of all
+lines that match the object (and then evaluate these lines against the
+state) - similar to the script output we got with SCE tests.</p>
+<p>We can create other OVALs for all other tests. To refer to these OVAL
+tests in an XCCDF document, take a look at the following example:</p>
+<p>(XML content lost during blog conversion)</p>
+<p>Instead of referring to the SCE engine (with
+<code>system="http://open-scap.org/page/SCE"</code>) we refer to the OVAL with
+<code>system="http://oval.mitre.org/XMLSchema/oval-definitions-5"</code>, point the
+XCCDF interpreter where the OVAL statements are stored in
+<code>href="gentoo-oval.xml"</code> and what definition we want to test
+(<code>oval:org.gentoo.dev.swift:def:22</code>). The XCCDF interpreter will then
+pass this information on to the OVAL interpreter (in case of openscap,
+this is the same tool, but it doesn't have to be) so it can evaluate the
+right OVAL statement on the system.</p>
+<p>In the next post, I'll use the <a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/guide-gentoo-xccdf.html">Gentoo Security
+Benchmark</a>
+as a guide to explain how to further structure and document things in
+XCCDF/OVAL.</p>
+<p>This post is part of a series on SCAP content:</p>
+<ol>
+<li><a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/">Documenting security best practices - XCCDF
+    introduction</a></li>
+<li><a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/">An XCCDF skeleton for
+    PostgreSQL</a></li>
+<li><a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/">Documenting a bit more than just
+    descriptions</a></li>
+<li><a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/">Running a bit with the XCCDF
+    document</a></li>
+<li><a href="http://blog.siphos.be/2013/12/remediation-through-scap/">Remediation through
+    SCAP</a></li>
+<li><a href="http://blog.siphos.be/2013/12/what-is-oval/">What is OVAL?</a></li>
+</ol>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'doing-a-content-check-with-oval';
+                var disqus_url = 'http://blog.siphos.be/2013/12/doing-a-content-check-with-oval/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

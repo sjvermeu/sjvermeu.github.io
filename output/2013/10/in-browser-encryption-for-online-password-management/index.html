@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>In-browser encryption for online password management - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2013/10/in-browser-encryption-for-online-password-management/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="aes,encryption,javascript,password,passwordmanagement" />
+        <meta name="description" content="Lately I&#39;ve been trying to find a good free software project that uses PHP or cgi-bin (one of the requirements for this particular organization) that allows its users to store passwords centrally, but uses encryption on the browser level before the passwords are sent to the central server. I&#39;ve found …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="In-browser encryption for online password management"/>
+        <meta property="og:url" content="http://blog.siphos.be/2013/10/in-browser-encryption-for-online-password-management/"/>
+        <meta property="og:description" content="Lately I&#39;ve been trying to find a good free software project that uses PHP or cgi-bin (one of the requirements for this particular organization) that allows its users to store passwords centrally, but uses encryption on the browser level before the passwords are sent to the central server. I&#39;ve found …"/>
+        <meta property="article:published_time" content="2013-10-20" />
+            <meta property="article:section" content="Security" />
+            <meta property="article:tag" content="aes" />
+            <meta property="article:tag" content="encryption" />
+            <meta property="article:tag" content="javascript" />
+            <meta property="article:tag" content="password" />
+            <meta property="article:tag" content="passwordmanagement" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/security.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... Security ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2013/10/in-browser-encryption-for-online-password-management/"
+                       rel="bookmark"
+                       title="Permalink to In-browser encryption for online password management">
+                        In-browser encryption for online password management
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-10-20T21:29:00+02:00"> Sun 20 October 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/security.html">Security</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/aes/">aes</a>
+        /
+	<a href="http://blog.siphos.be/tag/encryption/">encryption</a>
+        /
+	<a href="http://blog.siphos.be/tag/javascript/">javascript</a>
+        /
+	<a href="http://blog.siphos.be/tag/password/">password</a>
+        /
+	<a href="http://blog.siphos.be/tag/passwordmanagement/">passwordmanagement</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>Lately I've been trying to find a good free software project that uses
+PHP or cgi-bin (one of the requirements for this particular
+organization) that allows its users to store passwords centrally, but
+uses encryption on the browser level before the passwords are sent to
+the central server. I've found one -
+<a href="https://www.clipperz.com">Clipperz</a> - but was not able to get it to
+build and install.</p>
+<p>With the continuous revelations regarding hacked sites and servers (and
+even potential snooping into server data by governments) the requirement
+isn't that weird: by using strong encryption (I currently still assume
+that AES-256 is safe for use) on the browser level, no unencrypted
+sensitive data (such as usernames and passwords) would be sent to the
+server, let alone stored (in plain text) on the server database.</p>
+<p>I did a small test to see how difficult it would be to implement this in
+a simple PHP password management tool called <a href="http://onlinepasswords.sourceforge.net/">online
+passwords</a>. The PHP-based
+application does not even use a database, relying on flat-files instead.
+By design, the tool encrypts the data before storing on the file system,
+but I wanted to go a bit further, implementing the in-browser
+encryption. The Javascript AES is provided by
+<a href="http://www.movable-type.co.uk/scripts/aes.html">movable-type.co.uk</a> and
+for the hashing algorithm I found <a href="http://pajhome.org.uk/crypt/md5">pajhome's
+implementation</a> often cited.</p>
+<p>The first thing I did was substitute the password information needed to
+log on to the site (and which is also used as encryption key for the
+back-end side encryption) with a hashed version of the password. For the
+application, this hardly matters - it is still the encryption key it
+will use on the backend, although most likely a bit stronger than most
+passwords would be.</p>
+<p>Next, I keep the real password in a local session storage (which is
+supported by most modern browsers nowadays) so that the user only has to
+enter it once (when logging on to the site) and it is kept in memory
+then, never leaving the browser. This is needed in order to decrypt the
+data as we get it without having to ask the user for the password over
+and over again. Of course, I don't want to keep this password in a
+Cookie (or pass it on through the URL) because that would void the idea
+of keeping the password (reasonably) secure.</p>
+<p>To accomplish this, I hide the password field of the PHP application
+itself, and create a second input field (outside the <code>&lt;form&gt; &lt;/form&gt;</code> to
+make sure its value is never POSTed to the site) in which the user
+enters his password. Upon submit of the data, the following javascript
+code will create the hash of the password (and user name) to use as the
+"site password" for the application, and put that in the (hidden) input
+field. It then also stores the site password in the local session
+storage in the browser. The code is triggered through the <em>onSubmit</em>
+handler of the form.</p>
+<div class="highlight"><pre><span></span><code>function storeAppPassword() {
+  var sitepw = document.getElementById(&#39;password&#39;);
+  var siteus = document.getElementById(&#39;login&#39;);
+  var userpw = document.getElementById(&#39;userpassword&#39;);
+
+  sessionStorage.setItem(&#39;userpassword&#39;, userpw.value);
+  sitepw.value = hex_sha1(siteus.value + userpw.value);
+}
+</code></pre></div>
+
+
+<p>Now I need to make sure that the fields that need to be encrypted (the
+various user ids and passwords that are stored on the site) are
+encrypted before they are sent to the server, and decrypted after having
+received them by the browser. For instance, if the fields are within a
+form, the following javascript function could be triggered on the
+<em>onSubmit</em> handler again:</p>
+<div class="highlight"><pre><span></span><code>function encryptFields() {
+  var useridFld = document.getElementById(&#39;userid&#39;);
+  var passwordFld = document.getElementById(&#39;password&#39;);
+  var notesFld = document.getElementById(&#39;notes&#39;);
+
+  var pw = sessionStorage.getItem(&#39;userpassword&#39;);
+  useridFld.value = Aes.Ctr.encrypt(useridFld.value, pw, 256);
+  passwordFld.value = Aes.Ctr.encrypt(passwordFld.value, pw, 256);
+  notesFld.value = Aes.Ctr.encrypt(notesFld.value, pw, 256);
+}
+</code></pre></div>
+
+
+<p>Similarly, to decrypt the fields (inside the same form), that part of
+the code would become:</p>
+<div class="highlight"><pre><span></span><code>useridFld.value = Aes.Ctr.decrypt(useridFld.value, pw, 256);
+</code></pre></div>
+
+
+<p>Decryption of the fields can be called by a simple javascript call at
+the end of the page.</p>
+<p>If the data is within regular fields (non-form related), such as a
+table, you'll need to find the right DOM element and call the decryption
+function there.</p>
+<p>With those few changes, I was able to get it up and running quickly. I
+don't think I'll use the PHP application itself in production though, as
+it doesn't look like it sanitizes the field data in the PHP code and it
+starts to show performance issues when called with only a few hundred
+accounts, each having a few dozen passwords. But that hardly matters for
+this post where I want to point out that it isn't that hard to put some
+higher security on such sites.</p>
+<p>The big downside right now is that, if the user forgets his password, he
+wont have access to all his data (similar to the Clipperz one). And
+unlike Clipperz, the approach above does not allow for password changes
+yet (although it doesn't look that hard to implement some logic
+decrypting and re-encrypting the data with a different password if that
+comes about). An approach to resolve that would be to encrypt all data
+with a static key, and then encrypt that key with the password, storing
+the encrypted key on the server. A password change only requires a
+decrypt/encrypt of the key while all values remain encrypted with the
+static key.</p>
+<p>Moral of the story: application managers of web password storage sites:
+please add in-browser encryption for those of us that want to make
+*really* sure that no sensitive data is sent over unencrypted (I don't
+count SSL/TLS as that "ends" at the remote side while this one is full
+end-to-end encryption).</p>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'in-browser-encryption-for-online-password-management';
+                var disqus_url = 'http://blog.siphos.be/2013/10/in-browser-encryption-for-online-password-management/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

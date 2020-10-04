@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - selocal</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/selocal/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-21T03:50:00+02:00</updated><entry><title>Introducing selocal for small SELinux policy enhancements</title><link href="http://blog.siphos.be/2013/04/introducing-selocal-for-small-selinux-policy-enhancements/" rel="alternate"></link><published>2013-04-21T03:50:00+02:00</published><updated>2013-04-21T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-21:/2013/04/introducing-selocal-for-small-selinux-policy-enhancements/</id><summary type="html">&lt;p&gt;When working with a SELinux-enabled system, administrators will
+eventually need to make small updates to the existing policy. Instead of
+building their own full policy (always an option, but most likely not
+maintainable in the long term) one or more SELinux policy modules are
+created (most distributions use a modular …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When working with a SELinux-enabled system, administrators will
+eventually need to make small updates to the existing policy. Instead of
+building their own full policy (always an option, but most likely not
+maintainable in the long term) one or more SELinux policy modules are
+created (most distributions use a modular approach to the SELinux policy
+development) which are then loaded on their target systems.&lt;/p&gt;
+&lt;p&gt;In the past, users had to create their own policy module by creating
+(and maintaining) the necessary &lt;code&gt;.te&lt;/code&gt; file(s), building the proper &lt;code&gt;.pp&lt;/code&gt;
+files and loading it in the active policy store. In Gentoo, from
+&lt;code&gt;policycoreutils-2.1.13-r11&lt;/code&gt; onwards, a script is provided to the users
+that hopefully makes this a bit more intuitive for regular users:
+&lt;strong&gt;selocal&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;As the name implies, &lt;strong&gt;selocal&lt;/strong&gt; aims to provide an interface for
+handling &lt;em&gt;local&lt;/em&gt; policy updates that do not need to be packaged or
+distributed otherwise. It is a command-line application that you feed
+single policy rules at one at a time. Each rule can be accompanied with
+a single-line comment, making it obvious for the user to know why he
+added the rule in the first place.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --help
+Usage: selocal [] []
+
+Command can be one of:
+  -l, --list            List the content of a SELinux module
+  -a, --add             Add an entry to a SELinux module
+  -d, --delete          Remove an entry from a SELinux module
+  -M, --list-modules    List the modules currently known by selocal
+  -u, --update-dep      Update the dependencies for the rules
+  -b, --build           Build the SELinux module (.pp) file (requires privs)
+  -L, --load            Load the SELinux module (.pp) file (requires privs)
+
+Options can be one of:
+  -m, --module          Module name to use (default: selocal)
+  -c, --comment        Comment (with --add)
+
+The option -a requires that a rule is given, like so:
+  selocal -a &amp;quot;dbadm_role_change(staff_r)&amp;quot;
+The option -d requires that a line number, as shown by the --list, is given, like so:
+  selocal -d 12
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's say that you need to launch a small script you written as a
+daemon, but you want this to run while you are still in the &lt;em&gt;staff_t&lt;/em&gt;
+domain (it is a user-sided daemon you use personally). As regular
+&lt;em&gt;staff_t&lt;/em&gt; isn't allowed to have processes bind on generic ports/nodes,
+you need to enhance the SELinux policy a bit. With &lt;strong&gt;selocal&lt;/strong&gt;, you can
+do so as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --add &amp;quot;corenet_tcp_bind_generic_node(staff_t)&amp;quot; --comment &amp;quot;Launch local webserv.py daemon&amp;quot;
+# selocal --add &amp;quot;corenet_tcp_bind_generic_port(staff_t)&amp;quot; --comment &amp;quot;Launch local webserv.my daemon&amp;quot;
+# selocal --build --load
+(some output on building the policy module)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When finished, the local policy is enhanced with the two mentioned
+rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --list
+12: corenet_tcp_bind_generic_node(staff_t) # Launch local webserv.py daemon
+13: corenet_tcp_bind_generic_port(staff_t) # Launch local webserv.py daemon
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you need to delete a rule, just pass the line number:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --delete 13
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Having this tool around also makes it easier to test out changes
+suggested through bugreports. When I test such changes, I add in the bug
+report ID as the comment so I can track which settings are still local
+and which ones have been pushed to our policy repository. Underlyingly,
+&lt;strong&gt;selocal&lt;/strong&gt; creates and maintains the necessary policy file in
+&lt;path&gt;\~/.selocal&lt;/path&gt; and by default uses the &lt;em&gt;selocal&lt;/em&gt; policy module
+name.&lt;/p&gt;
+&lt;p&gt;I hope this tool helps users with their quest on using SELinux. Feedback
+and comments are always appreciated! It is a small bash script and might
+still have a few bugs in it, but I have been using it for a few months
+so most quirks should be handled.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="selocal"></category></entry></feed>

@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - incron</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/incron/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-31T03:50:00+02:00</updated><entry><title>A SELinux policy for incron: finishing up</title><link href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-finishing-up/" rel="alternate"></link><published>2013-05-31T03:50:00+02:00</published><updated>2013-05-31T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-31:/2013/05/a-selinux-policy-for-incron-finishing-up/</id><summary type="html">&lt;p&gt;After 9 posts, it's time to wrap things up. You can review the final
+results online
+(&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.te.txt"&gt;incron.te&lt;/a&gt;,
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.if.txt"&gt;incron.if&lt;/a&gt; and
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.fc.txt"&gt;incron.fc&lt;/a&gt;) and
+adapt to your own needs if you want. But we should also review what we
+have accomplished so far...&lt;/p&gt;
+&lt;p&gt;We built the start of an entire …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After 9 posts, it's time to wrap things up. You can review the final
+results online
+(&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.te.txt"&gt;incron.te&lt;/a&gt;,
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.if.txt"&gt;incron.if&lt;/a&gt; and
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.fc.txt"&gt;incron.fc&lt;/a&gt;) and
+adapt to your own needs if you want. But we should also review what we
+have accomplished so far...&lt;/p&gt;
+&lt;p&gt;We built the start of an entire policy for a daemon (the inotify cron
+daemon) for two main types: the daemon itself, and its management
+application &lt;strong&gt;incrontab&lt;/strong&gt;. We defined new types and contexts, we used
+attributes, declared a boolean and worked with interfaces. That's a lot
+to digest, and yet it is only a part of the various capabilities that
+SELinux offers.&lt;/p&gt;
+&lt;p&gt;The policy isn't complete though. We defined a type called
+&lt;code&gt;incron_initrc_exec_t&lt;/code&gt; but don't really use it further. In practice, we
+would need to define an additional interface (probably named
+&lt;em&gt;incron_admin&lt;/em&gt;) that allows users and roles to manage &lt;em&gt;incron&lt;/em&gt; without
+needing to grant this user/role &lt;code&gt;sysadm_r&lt;/code&gt; privileges. I leave that up
+to you as an exercise for now, but I'll post more about admin interfaces
+and how to work with them on a system in the near future.&lt;/p&gt;
+&lt;p&gt;We also made a few assumptions and decisions while building the policy
+that might not be how you yourself would want to build the policy.
+SELinux is a MAC system, but the policy language is very flexible. You
+can use an entirely different approach in policies if you want. For
+instance, &lt;em&gt;incron&lt;/em&gt; supports launching the &lt;strong&gt;incrond&lt;/strong&gt; as a command-line,
+foreground process. This could help users run &lt;strong&gt;incrond&lt;/strong&gt; under their
+privileges for their own files - we did not consider this case in our
+design. Although most policies try to capture all use cases of an
+application, there will be cases when a policy developer did either not
+consider the use case or found that it infringed with his own principles
+on policy development (and allowed activities on a system).&lt;/p&gt;
+&lt;p&gt;In Gentoo Hardened, I try to write down the principles and policies that
+we follow in a &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux-policy.xml"&gt;Gentoo Hardened SELinux Development
+Policy&lt;/a&gt;
+document. As decisions need to be taken, such a document might help find
+common consensus on how to approach SELinux policy development further,
+and I seriously recommend that you consider writing up a similar
+document yourself, especially if you are going to develop policies for a
+larger organization.&lt;/p&gt;
+&lt;p&gt;One of the deficiencies of the current policy is that it worked with the
+unmodified &lt;em&gt;incron&lt;/em&gt; version. If we would patch &lt;em&gt;incron&lt;/em&gt; so that it could
+change context on executing the incrontab files of a user, then we can
+start making use of the default context approach (and perhaps even
+enhance with PAM services). In that case, user incrontabs could be
+launched entirely from the users' context (like &lt;code&gt;user_u:user_r:user_t&lt;/code&gt;)
+instead of the &lt;code&gt;system_u:system_r:incrond_t&lt;/code&gt; or transitioned
+&lt;code&gt;system_u:system_r:whatever_t&lt;/code&gt; contexts. Having user provided commands
+executed in the system context is a security risk, so in our policy we
+would &lt;em&gt;not&lt;/em&gt; grant the &lt;em&gt;incron_role&lt;/em&gt; to untrusted users - probably only
+to &lt;code&gt;sysadm_t&lt;/code&gt; and even then he probably would be better with using the
+&lt;code&gt;/etc/incron.d&lt;/code&gt; anyway.&lt;/p&gt;
+&lt;p&gt;The downside of patching code however is that this is only viable if
+upstream wants to support this - otherwise we would need to maintain the
+patches ourselves for a long time, creating delays in releases (upstream
+released a new version and we still need to reapply and refactor
+patches) and removing precious (human) resources from other, Gentoo
+Hardened/SELinux specific tasks (like bugfixing and documentation
+writing ;-)&lt;/p&gt;
+&lt;p&gt;Still, the policy returned a fairly good view on how policies &lt;em&gt;can&lt;/em&gt; be
+developed. And as I said, there are still other things that weren't
+discussed, such as:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Build-time decisions, which can change policies based on build
+    options of the policy. In the reference policy, this is most often
+    used for distribution-specific choices: if Gentoo would use one
+    approach and Redhat another, then the differences would be separated
+    through &lt;code&gt;ifdef(`distro_gentoo',`...')&lt;/code&gt; and
+    &lt;code&gt;ifdef(`distro_redhat',`...')&lt;/code&gt; calls.&lt;/li&gt;
+&lt;li&gt;Some calls might only be needed if another policy is loaded. I think
+    all calls made currently are part of base modules, so can be
+    expected to be available at all times. But if we would need
+    something like &lt;em&gt;icecast_signal(incrond_t)&lt;/em&gt;, then we would need to
+    put that call inside a &lt;code&gt;optional_policy(`...')&lt;/code&gt; statement.
+    Otherwise, our policy would fail to load because the &lt;em&gt;icecast&lt;/em&gt;
+    SELinux policy isn't loaded.&lt;/li&gt;
+&lt;li&gt;We could even introduce specific statements like &lt;em&gt;dontaudit&lt;/em&gt; or
+    &lt;em&gt;neverallow&lt;/em&gt; to fine-tune the policy. Note though that &lt;em&gt;neverallow&lt;/em&gt;
+    is a compile-time statement: it is not a way to negate &lt;em&gt;allow&lt;/em&gt;
+    rules: if there is one &lt;em&gt;allow&lt;/em&gt; that would violate the &lt;em&gt;neverallow&lt;/em&gt;,
+    then that module just refuses to build.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Furthermore, if you want to create policies to be pushed upstream to the
+reference policy project, you will need to look into the
+&lt;a href="http://oss.tresys.com/projects/refpolicy/wiki/StyleGuide"&gt;StyleGuide&lt;/a&gt;
+and
+&lt;a href="http://oss.tresys.com/projects/refpolicy/wiki/InterfaceNaming"&gt;InterfaceNaming&lt;/a&gt;
+documents as those define the order that rules should be placed and the
+name syntax for interfaces. I have been contributing a lot to the
+reference policy and I still miss a few of these, so for me they are not
+that obvious. But using a common style is important as it allows for
+simple patching, code comparison and even allows us to easily read
+through complex policies.&lt;/p&gt;
+&lt;p&gt;If you don't want to contribute it, but still use it on your Gentoo
+system, you can use a simple ebuild to install the files. Create an
+ebuild (for instance &lt;code&gt;selinux-incron&lt;/code&gt;), put the three files in the
+&lt;code&gt;files/&lt;/code&gt; subdirectory, and use the following ebuild code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Copyright 1999-2013 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header$
+EAPI=&amp;quot;4&amp;quot;
+
+IUSE=&amp;quot;&amp;quot;
+MODS=&amp;quot;incron&amp;quot;
+BASEPOL=&amp;quot;2.20130424-r1&amp;quot;
+POLICY_FILES=&amp;quot;incron.te incron.fc incron.if&amp;quot;
+
+inherit selinux-policy-2
+
+DESCRIPTION=&amp;quot;SELinux policy for incron, the inotify cron daemon&amp;quot;
+
+KEYWORDS=&amp;quot;~amd64 ~x86&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When installed, the interface files will be published as well and can
+then be used by other modules (something we couldn't do in the past few
+posts) or by the &lt;strong&gt;selocal&lt;/strong&gt; tool.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: using booleans</title><link href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/" rel="alternate"></link><published>2013-05-30T03:50:00+02:00</published><updated>2013-05-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-30:/2013/05/a-selinux-policy-for-incron-using-booleans/</id><summary type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+to mark other
+types&lt;/a&gt;
+as such as well, let's consider another approach for making the policy
+more flexible: booleans. The idea now is that a boolean called
+&lt;em&gt;incron_notify_non_security_files&lt;/em&gt; enables &lt;strong&gt;incrond&lt;/strong&gt; to be
+notified on changes on all possible …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+to mark other
+types&lt;/a&gt;
+as such as well, let's consider another approach for making the policy
+more flexible: booleans. The idea now is that a boolean called
+&lt;em&gt;incron_notify_non_security_files&lt;/em&gt; enables &lt;strong&gt;incrond&lt;/strong&gt; to be
+notified on changes on all possible non-security related files (the
+latter is merely an approach, you can define other sets as well if you
+want, including all possible files).&lt;/p&gt;
+&lt;p&gt;Booleans in SELinux policy can be generated in the &lt;code&gt;incron.te&lt;/code&gt; file as
+follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;## &amp;lt;desc&amp;gt;
+## &amp;lt;p&amp;gt;
+##      Determine whether incron can watch all non-security
+##      file types
+## &amp;lt;/p&amp;gt;
+## &amp;lt;/desc&amp;gt;
+gen_tunable(incron_notify_non_security_files, false)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this boolean in place, the policy can be enhanced with code like
+the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tunable_policy(`incron_notify_non_security_files&amp;#39;,`
+        files_read_non_security_files(incrond_t)
+        files_read_all_dirs_except(incrond_t)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This code tells SELinux that, &lt;em&gt;if&lt;/em&gt; the
+&lt;em&gt;incron_notify_non_security_files&lt;/em&gt; boolean is set (which by default
+is not the case), then &lt;code&gt;incrond_t&lt;/code&gt; is able to read non security files.&lt;/p&gt;
+&lt;p&gt;Let's try to watch for changes in the AIDE log directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail audit.log
+type=AVC msg=audit(1368777675.597:28611): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;log&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=13 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:var_log_t tclass=dir
+type=AVC msg=audit(1368777675.597:28612): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;log&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=13 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:var_log_t tclass=dir
+
+# tail cron.log
+May 17 10:01:15 test incrond[11704]: access denied on /var/log/aide - events will be discarded silently
+
+# getsebool incron_notify_non_security_files
+incron_notify_non_security_files --&amp;gt; off
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's enable the boolean and try again:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setsebool incron_notify_non_security_files on
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Reloading the incrontab tables now works, and the notifications work as
+well.&lt;/p&gt;
+&lt;p&gt;As you can see, once a policy is somewhat working, policy developers are
+considering the various "use cases" of an application, trying to write
+down policies that can be used by the majority of users, without
+granting too many rights automatically.&lt;/p&gt;</content><category term="SELinux"></category><category term="boolean"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: new types and transitions</title><link href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/" rel="alternate"></link><published>2013-05-26T03:50:00+02:00</published><updated>2013-05-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-26:/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/</id><summary type="html">&lt;p&gt;So I've shown the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/"&gt;iterative approach
+used&lt;/a&gt;
+to develop policies. Again, please be aware that this is my way of
+developing policies, other policy developers might have a different
+approach. We were working on the &lt;strong&gt;incrontab&lt;/strong&gt; command, so let's
+continue with trying to create a new user incrontab:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;So I've shown the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/"&gt;iterative approach
+used&lt;/a&gt;
+to develop policies. Again, please be aware that this is my way of
+developing policies, other policy developers might have a different
+approach. We were working on the &lt;strong&gt;incrontab&lt;/strong&gt; command, so let's
+continue with trying to create a new user incrontab:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e
+cannot create temporary file: Permission denied
+
+# tail audit.log
+type=AVC msg=audit(1368709633.285:28211): avc:  denied  { setgid } for  pid=8159 comm=&amp;quot;incrontab&amp;quot; capability=6  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
+type=AVC msg=audit(1368709633.285:28212): avc:  denied  { setuid } for  pid=8159 comm=&amp;quot;incrontab&amp;quot; capability=7  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
+type=AVC msg=audit(1368709633.287:28213): avc:  denied  { search } for  pid=8159 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;/&amp;quot; dev=&amp;quot;tmpfs&amp;quot; ino=3927 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:tmp_t tclass=dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The requests for the setuid and setgid capabilities are needed for the
+application to safely handle the user incrontabs. Note that SELinux does
+not "remove" the setuid bit on the binary itself, but does govern the
+related capabilities. Since this is required, we will add these
+capabilities to the policy. We also notice that &lt;strong&gt;incrontab&lt;/strong&gt; searched
+in the &lt;code&gt;/tmp&lt;/code&gt; location.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t self:capability { setuid setgid };
+...
+files_search_tmp(incrontab_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the next round of iteration, we notice the same error message with
+the following denial:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368728433.521:28215): avc:  denied  { write } for  pid=8913 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;/&amp;quot; dev=&amp;quot;tmpfs&amp;quot; ino=3927 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:tmp_t tclass=dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It is safe to assume here that the process wants to create a temporary
+file (if it is a directory, we will find out later and can adapt). But
+when temporary files are created, we better make those files a specific
+type, like &lt;code&gt;incrontab_tmp_t&lt;/code&gt;. So we define that on top of the policy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type incrontab_tmp_t;
+files_tmp_file(incrontab_tmp_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Also, we need to allow the &lt;code&gt;incrontab_t&lt;/code&gt; domain write privileges into
+the &lt;code&gt;tmp_t&lt;/code&gt; labeled directory, but with an automatic file transition
+towards &lt;code&gt;incrontab_tmp_t&lt;/code&gt; for every file written. This is done through
+the &lt;em&gt;files_tmp_filetrans&lt;/em&gt; method:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;files_tmp_filetrans(incrontab_t, incrontab_tmp_t, file)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;What this sais is that, if a domain &lt;code&gt;incrontab_t&lt;/code&gt; wants to create a
+&lt;code&gt;file&lt;/code&gt; inside &lt;code&gt;tmp_t&lt;/code&gt;, then this file is automatically labeled
+&lt;code&gt;incrontab_tmp_t&lt;/code&gt;. With SELinux, you can make this more precise: if you
+know what the file name would be, then you can add that as a fourth
+argument. However, this does not seem necessary now since we definitely
+want all files created in &lt;code&gt;tmp_t&lt;/code&gt; to become &lt;code&gt;incrontab_tmp_t&lt;/code&gt;. All that
+rests us is to allow &lt;strong&gt;incrontab&lt;/strong&gt; to actually manage those files:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t incrontab_tmp_t:file manage_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With those in place, let's look at the outcome:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e
+editor finished with error: No such file or directory
+
+# tail audit.log
+type=AVC msg=audit(1368729268.465:28217): avc:  denied  { search } for  pid=8981 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;bin&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=524289 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:bin_t tclass=dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Considering that here, &lt;strong&gt;incrontab&lt;/strong&gt; is going to launch the users
+&lt;code&gt;$EDITOR&lt;/code&gt; application to allow him (or her) to create an incrontab, we
+need to allow &lt;code&gt;incrontab_t&lt;/code&gt; not only search privileges inside &lt;code&gt;bin_t&lt;/code&gt;
+directories, but also execute rights:
+&lt;em&gt;corecmd_exec_bin(incrontab_t)&lt;/em&gt;. We choose here to execute the editor
+inside the existing domain (&lt;code&gt;incrontab_t&lt;/code&gt;) instead of creating a
+different domain for the editor for the following reasons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If we would create a separate domain for the editor, the editor
+    would eventually need to have major permissions, depending on when
+    it is used. Editors can be used to modify the sudoers files, passwd
+    files, the &lt;code&gt;/etc/selinux/config&lt;/code&gt; file, etc. Instead, it makes much
+    more sense to just be able to launch the editor in the current
+    domain (which is much more confined to its specific purpose)&lt;/li&gt;
+&lt;li&gt;The additional privileges needed to launch the editor are usually
+    very slim, or even nonexistent. It generally only makes sense if, by
+    executing it, the existing domain would need many more privileges,
+    because then a new (confined) domain keeps the privileges for the
+    current domain low.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let's see if things work now:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e
+(Editor opened, so I added in an incrontab line. Upon closing:)
+cannot move temporary table: Permission denied
+
+# tail audit.log
+type=AVC msg=audit(1368729825.673:28237): avc:  denied  { dac_read_search } for  pid=9030 comm=&amp;quot;incrontab&amp;quot; capability=2  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
+type=AVC msg=audit(1368729825.673:28237): avc:  denied  { dac_override } for  pid=9030 comm=&amp;quot;incrontab&amp;quot; capability=1  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;From a quick look through &lt;strong&gt;ps&lt;/strong&gt;, I notice that the application runs as
+the user (luckily, otherwise I could use the editor to escape and get a
+root shell) after which it tries to do something. Of course, it makes
+sense that it wants to move this newly created incrontab file somewhere
+in &lt;code&gt;/var/spool/incron&lt;/code&gt; so we grant it the permission to
+&lt;code&gt;dac_read_search&lt;/code&gt; (which is lower than &lt;code&gt;dac_override&lt;/code&gt; as &lt;a href="http://blog.siphos.be/2013/05/the-weird-audit_access-permission/"&gt;explained
+before&lt;/a&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t self:capability { dac_read_search setuid setgid };
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On to the next failure:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e 
+cannot move temporary table: Permission denied
+
+# tail audit.log
+type=AVC msg=audit(1368730155.706:28296): avc:  denied  { write } for  pid=9088 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;incron&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=19725 scontext=user_u:user_r:incrontab_t tcontext=root:object_r:incron_spool_t tclass=dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now the application wants to write this file there. Now remember we
+already have &lt;code&gt;search_dir_perms&lt;/code&gt; permissions into &lt;code&gt;incron_spool_t&lt;/code&gt;? We
+need to expand those with read/write permissions into the directory, and
+manage permissions on files (manage because users should be able to
+create, modify and delete their files). These two permissions are
+combined in the &lt;em&gt;manage_files_pattern&lt;/em&gt; interface, and makes the search
+one obsolete:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;manage_files_pattern(incrontab_t, incron_spool_t, incron_spool_t)
+
+$ incrontab -e
+...
+table updated
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally! And looking at the other options in &lt;strong&gt;incrontab&lt;/strong&gt;, it seems
+that the policy for &lt;code&gt;incrontab_t&lt;/code&gt; is finally complete, and looks like
+so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;###########################################
+#
+# incrontab policy
+#
+
+allow incrontab_t self:capability { setuid setgid dac_read_search };
+
+manage_files_pattern(incrontab_t, incron_spool_t, incron_spool_t)
+
+allow incrontab_t incrontab_tmp_t:file manage_file_perms;
+files_tmp_filetrans(incrontab_t, incrontab_tmp_t, file)
+
+corecmd_exec_bin(incrontab_t)
+
+domain_use_interactive_fds(incrontab_t)
+
+files_search_spool(incrontab_t)
+files_search_tmp(incrontab_t)
+
+auth_use_nsswitch(incrontab_t)
+
+userdom_use_user_terminals(incrontab_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next on the agenda: the &lt;code&gt;incrond_t&lt;/code&gt; domain.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: basic set for incrontab</title><link href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/" rel="alternate"></link><published>2013-05-25T03:50:00+02:00</published><updated>2013-05-25T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-25:/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/</id><summary type="html">&lt;p&gt;Now that our &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/"&gt;regular user is
+allowed&lt;/a&gt;
+to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at the denials to
+build up the policy.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
+(or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Now that our &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/"&gt;regular user is
+allowed&lt;/a&gt;
+to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at the denials to
+build up the policy.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
+(or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials. If you are
+developing a policy, it is wise to clear the entire log and reproduce
+the "situation" so you get a proper idea of the scope.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cd /var/log/audit
+# &amp;gt; audit.log
+# tail -f audit.log | grep AVC
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now let's run &lt;strong&gt;incrontab --help&lt;/strong&gt; again and look at the denials:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368707274.429:28180): avc:  denied  { read write } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=user_u:object_r:user_tty_device_t tclass=chr_file
+type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
+type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
+type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can start piping this information into &lt;strong&gt;audit2allow&lt;/strong&gt; to generate
+policy statements, but I personally prefer not to use &lt;strong&gt;audit2allow&lt;/strong&gt;
+for building new policies. For one, it is not intelligent enough to
+deduce if a denial should be fixed by allowing it, or by relabeling or
+even by creating a new type. Instead, it always grants it. Second, it
+does not know if a denial is cosmetic (and thus can be ignored) or not.&lt;/p&gt;
+&lt;p&gt;This latter is also why I don't run domains in permissive mode to see
+the majority of denials first and to build from those: you might see
+denials that are actually never triggered when running in enforcing
+mode. So let's look at the access to &lt;code&gt;/dev/tty2&lt;/code&gt;. Given that this is a
+user application where we expect output to the screen, we want to grant
+it the proper access. With &lt;strong&gt;sefindif&lt;/strong&gt; as
+&lt;a href="http://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/"&gt;documented&lt;/a&gt;
+before, we can look for the proper interfaces we need. I look for
+&lt;code&gt;user_tty_device_t&lt;/code&gt; with &lt;code&gt;rw&lt;/code&gt; (commonly used for read-write):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif user_tty_device_t.*rw
+system/userdomain.if: template(`userdom_base_user_template&amp;#39;,`
+system/userdomain.if:   allow $1_t user_tty_device_t:chr_file { setattr rw_chr_file_perms };
+system/userdomain.if: interface(`userdom_use_user_ttys&amp;#39;,`
+system/userdomain.if:   allow $1 user_tty_device_t:chr_file rw_term_perms;
+system/userdomain.if: interface(`userdom_use_user_terminals&amp;#39;,`
+system/userdomain.if:   allow $1 user_tty_device_t:chr_file rw_term_perms;
+system/userdomain.if: interface(`userdom_dontaudit_use_user_terminals&amp;#39;,`
+system/userdomain.if:   dontaudit $1 user_tty_device_t:chr_file rw_term_perms;
+system/userdomain.if: interface(`userdom_dontaudit_use_user_ttys&amp;#39;,`
+system/userdomain.if:   dontaudit $1 user_tty_device_t:chr_file rw_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Two of these look interesting: &lt;em&gt;userdom_use_user_ttys&lt;/em&gt; and
+&lt;em&gt;userdom_use_user_terminals&lt;/em&gt;. Looking at the API documentation (or
+the rules defined therein using &lt;strong&gt;seshowif&lt;/strong&gt;) reveals that
+&lt;em&gt;userdom_use_user_terminals&lt;/em&gt; is needed if you also want the
+application to work when invoked through a devpts terminal, which is
+probably also something our user(s) want to do, so we'll add that. The
+second one - using the file descriptor that has the &lt;code&gt;getty_t&lt;/code&gt; context -
+is related to this, but not granted through the
+&lt;em&gt;userdom_use_user_ttys&lt;/em&gt;. We could grant &lt;em&gt;getty_use_fds&lt;/em&gt; but my
+experience tells me that &lt;em&gt;domain_use_interactive_fds&lt;/em&gt; is more likely
+to be needed: the application inherits and uses a file descriptor
+currently owned by &lt;code&gt;getty_t&lt;/code&gt; but it could be from any of the other
+domains that has such file descriptors. For instance, if you grant the
+&lt;em&gt;incron_role&lt;/em&gt; to &lt;code&gt;sysadm_r&lt;/code&gt;, then a user that switched roles through
+&lt;strong&gt;newrole&lt;/strong&gt; will see denials for using a file descriptor owned by
+&lt;code&gt;newrole_t&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Experience is an important aspect in developing policies. If you would
+go through with &lt;em&gt;getty_use_fds&lt;/em&gt; it would work as well, and you'll
+probably hit the above mentioned experience later when you try the
+application through a few different paths (such as within a screen
+session or so). When you &lt;em&gt;think&lt;/em&gt; that the target context (in this case
+&lt;code&gt;getty_t&lt;/code&gt;) could be a placeholder (so other types are likely to be
+needed as well), make sure you check which attributes are assigned to
+the type:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -tgetty_t -x
+   getty_t
+      privfd
+      mcssetcats
+      mlsfileread
+      mlsfilewrite
+      application_domain_type
+      domain
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Of the above ones, &lt;code&gt;privfd&lt;/code&gt; is the important one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif privfd.*use
+kernel/domain.if: interface(`domain_use_interactive_fds&amp;#39;,`
+kernel/domain.if:       allow $1 privfd:fd use;
+kernel/domain.if: interface(`domain_dontaudit_use_interactive_fds&amp;#39;,`
+kernel/domain.if:       dontaudit $1 privfd:fd use;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So let's update &lt;code&gt;incron.te&lt;/code&gt; accordingly:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+type incron_spool_t;
+files_type(incron_spool_t)
+
+###########################################
+#
+# incrontab policy
+#
+
+userdom_use_user_terminals(incrontab_t)
+domain_use_interactive_fds(incrontab_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Rebuild the policy and load it in memory.&lt;/p&gt;
+&lt;p&gt;If we now run &lt;strong&gt;incrontab&lt;/strong&gt; we get the online help as we expected. Let's
+now look at the currently installed incrontabs (there shouldn't be any
+of course):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+cannot determine current user
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the denials, we notice:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368708632.060:28192): avc:  denied  { create } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=unix_stream_socket
+type=AVC msg=audit(1368708632.060:28194): avc:  denied  { read } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;nsswitch.conf&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=393768 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:etc_t tclass=file
+type=AVC msg=audit(1368708632.062:28196): avc:  denied  { read } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;passwd&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=394223 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:etc_t tclass=file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's first focus on &lt;code&gt;nsswitch.conf&lt;/code&gt; and &lt;code&gt;passwd&lt;/code&gt;. Although both require
+read access to &lt;code&gt;etc_t&lt;/code&gt; files, it might be wrong to just add in
+&lt;em&gt;files_read_etc&lt;/em&gt; (which is what &lt;strong&gt;audit2allow&lt;/strong&gt; is probably going to
+suggest). For nsswitch, there is a special interface available:
+&lt;em&gt;auth_use_nsswitch&lt;/em&gt;. It is very, very likely that you'll need this
+one, especially if you want to share the policy with others who might
+not have all of the system databases in local files (as &lt;code&gt;etc_t&lt;/code&gt; files).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+domain_use_interactive_fds(incrontab_t)
+auth_use_nsswitch(incrontab_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's retry:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+cannot read table for &amp;#39;user&amp;#39;: Permission denied
+
+# tail audit.log
+type=AVC msg=audit(1368708893.260:28199): avc:  denied  { search } for  pid=7997 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;spool&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=20 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:var_spool_t tclass=dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So we need to grant search privileges on &lt;code&gt;var_spool_t&lt;/code&gt;. This is offered
+through &lt;em&gt;files_search_spool&lt;/em&gt;. Add it to the policy, rebuild and retry.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+cannot read table for &amp;#39;user&amp;#39;: Permission denied
+
+# tail audit.log
+type=AVC msg=audit(1368709146.426:28201): avc:  denied  { search } for  pid=8046 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;incron&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=19725 scontext=user_u:user_r:incrontab_t tcontext=root:object_r:incron_spool_t tclass=dir
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For this one, no interface exists yet. We might be able to create one
+for ourselves, but as long as other domains don't need it, we can just
+add it locally in our policy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t incron_spool_t:dir search_dir_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Adding raw allow rules in a policy is, according to the &lt;a href="http://oss.tresys.com/projects/refpolicy/wiki/StyleGuide"&gt;refpolicy
+styleguide&lt;/a&gt;,
+only allowed if the policy module defines both the source and the
+destination type of the rule. If you look into other policies you might
+also find that you can use the &lt;em&gt;search_dirs_patter&lt;/em&gt; call. However,
+that one only makes sense if you need to do this on top of another
+directory - just look at the definition of &lt;em&gt;search_dirs_pattern&lt;/em&gt;. So
+with this permission set, let's retry.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+no table for user
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Great, we have successfully updated the policy until the commands
+worked. In the next post, we'll enhance it even further while creating
+new incrontabs.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="incrontab"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: our first interface</title><link href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/" rel="alternate"></link><published>2013-05-24T03:50:00+02:00</published><updated>2013-05-24T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-24:/2013/05/a-selinux-policy-for-incron-our-first-interface/</id><summary type="html">&lt;p&gt;The next step after having &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/"&gt;a basic
+skeleton&lt;/a&gt;
+is to get &lt;strong&gt;incrontab&lt;/strong&gt; running. We know however that everything invoked
+from the main daemon will be running with the rights of the daemon
+context (unless we would patch the source code, but that is beyond the
+scope of this set of …&lt;/p&gt;</summary><content type="html">&lt;p&gt;The next step after having &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/"&gt;a basic
+skeleton&lt;/a&gt;
+is to get &lt;strong&gt;incrontab&lt;/strong&gt; running. We know however that everything invoked
+from the main daemon will be running with the rights of the daemon
+context (unless we would patch the source code, but that is beyond the
+scope of this set of posts). As a result, we probably do not want
+everyone to be able to launch commands through this application.&lt;/p&gt;
+&lt;p&gt;What we want to do is to limit who can invoke &lt;strong&gt;incrontab&lt;/strong&gt; and, as
+such, limit who can decide what is invoked through &lt;strong&gt;incrond&lt;/strong&gt;. First of
+all, we define a &lt;em&gt;role attribute&lt;/em&gt; called &lt;code&gt;incrontab_roles&lt;/code&gt;. Every role
+that gets this attribute assigned will be able to transition to the
+&lt;code&gt;incrontab_t&lt;/code&gt; domain.&lt;/p&gt;
+&lt;p&gt;We can accomplish this by editing the &lt;code&gt;incron.te&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(incron, 0.2)
+
+# Declare the incrontab_roles attribute
+attribute_role incrontab_roles;
+
+...
+type incrontab_t;
+type incrontab_exec_t;
+application_domain(incrontab_t, incrontab_exec_t)
+# Allow incrontab_t for all incrontab_roles 
+role incrontab_roles types incrontab_t;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next, we need something where we can allow user domains to call
+incrontab. This will be done through an interface. Let's look at
+&lt;code&gt;incron.if&lt;/code&gt; with one such interface in it: the &lt;em&gt;incron_role&lt;/em&gt; interface.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;## inotify-based cron-like daemon
+
+#########################################
+## &amp;lt;summary&amp;gt;
+##      Role access for incrontab
+## &amp;lt;/summary&amp;gt;
+## &amp;lt;param name=&amp;quot;role&amp;quot;&amp;gt;
+##      &amp;lt;summary&amp;gt;
+##      Role allowed access.
+##      &amp;lt;/summary&amp;gt;
+## &amp;lt;/param&amp;gt;
+## &amp;lt;param name=&amp;quot;domain&amp;quot;&amp;gt;
+##      &amp;lt;summary&amp;gt;
+##      User domain for the role.
+##      &amp;lt;/summary&amp;gt;
+## &amp;lt;/param&amp;gt;
+#
+interface(`incron_role&amp;#39;,`
+        gen_require(`
+                attribute_role incrontab_roles;
+                type incrontab_exec_t, incrontab_t;
+        &amp;#39;)
+
+        roleattribute $1 incrontab_roles;
+
+        domtrans_pattern($2, incrontab_exec_t, incrontab_t)
+
+        ps_process_pattern($2, incrontab_t)
+        allow $2 incrontab_t:process signal;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The comments in the file are somewhat special: if the comments start
+with two hashes (&lt;code&gt;##&lt;/code&gt;) then it is taken into account while building the
+policy documentation in &lt;code&gt;/usr/share/doc/selinux-base-*&lt;/code&gt;. The interface
+itself, &lt;em&gt;incron_role&lt;/em&gt;, grants a user role and domain the necessary
+privileges to transition to the &lt;code&gt;incrontab_t&lt;/code&gt; domain as well as read
+process information (as used through &lt;strong&gt;ps&lt;/strong&gt;, hence the name of the
+pattern being &lt;code&gt;ps_process_pattern&lt;/code&gt;) and send a standard signal to it.
+Most of the time, you can use &lt;code&gt;signal_perms&lt;/code&gt; here but from looking at
+the application we see that the application is setuid root, so we don't
+want to grant too many privileges by default if they are not needed.&lt;/p&gt;
+&lt;p&gt;With this interface file created, we can rebuild the module and load it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
+# semodule -i incron.pp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;But how to assign this interface to users? Well, what we want to do is
+something like the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;incron_role(user_r, user_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When interfaces are part of the policy provided by the distribution, the
+definitions of it are stored in the proper location and you can easily
+add it. For instance, in Gentoo, if you want to allow the &lt;code&gt;user_r&lt;/code&gt; role
+and &lt;code&gt;user_t&lt;/code&gt; domain the &lt;em&gt;cron_role&lt;/em&gt; access (and assuming it doesn't
+have so already), then you can call &lt;strong&gt;selocal&lt;/strong&gt; as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal -a &amp;quot;cron_role(user_r, user_t)&amp;quot; -c &amp;quot;Granting user_t cron access&amp;quot; -Lb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, because the interface is currently not known yet, we need to
+create a second small policy that does this. Create a file (called
+&lt;code&gt;localuser.te&lt;/code&gt; or so) with the following content:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(localuser, 0.1)
+
+gen_require(`
+        type user_t;
+        role user_r;
+&amp;#39;)
+
+incron_role(user_r, user_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now build the policies and load them. We'll now just build and load all
+the policies in the current directory (which will be the incron and
+localuser ones):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile
+# semodule -i *.pp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can now verify that the user is allowed to transition to the
+&lt;code&gt;incrontab_t&lt;/code&gt; domain:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -ruser_r -x | grep incron
+         incrontab_t
+# sesearch -s user_t -t incrontab_exec_t -AdCTS
+Found 1 semantic av rules:
+   allow user_t incrontab_exec_t : file { read getattr execute open } ;
+
+Found 1 semantic te rules:
+   type_transition user_t incrontab_exec_t : process incrontab_t;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Great, let's get to our first failure to resolve... in the next post ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="interface"></category><category term="policy"></category></entry><entry><title>A SELinux policy for incron: the basic skeleton</title><link href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/" rel="alternate"></link><published>2013-05-23T03:50:00+02:00</published><updated>2013-05-23T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-23:/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/</id><summary type="html">&lt;p&gt;So, in the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/"&gt;previous
+post&lt;/a&gt;
+I talked about &lt;em&gt;incron&lt;/em&gt; and why I think moving it into the existing cron
+policy would not be a good idea. It works, somewhat, but is probably not
+that future-proof. So we're going to create our own policy for it.&lt;/p&gt;
+&lt;p&gt;In SELinux, policies are generally …&lt;/p&gt;</summary><content type="html">&lt;p&gt;So, in the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/"&gt;previous
+post&lt;/a&gt;
+I talked about &lt;em&gt;incron&lt;/em&gt; and why I think moving it into the existing cron
+policy would not be a good idea. It works, somewhat, but is probably not
+that future-proof. So we're going to create our own policy for it.&lt;/p&gt;
+&lt;p&gt;In SELinux, policies are generally written through 3 files:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;a &lt;em&gt;type enforcement&lt;/em&gt; file that contains the SELinux rules applicable
+    to the domain(s) related to the application (in our example,
+    &lt;em&gt;incron&lt;/em&gt;)&lt;/li&gt;
+&lt;li&gt;a &lt;em&gt;file context&lt;/em&gt; file that tells the SELinux utilities how the files
+    and directories offered by the application should be labeled&lt;/li&gt;
+&lt;li&gt;an &lt;em&gt;interface definition&lt;/em&gt; file that allows other SELinux policy
+    modules to gain rights offered through the (to be written) &lt;em&gt;incron&lt;/em&gt;
+    policy&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We now need to create a skeleton for the policy. This skeleton will
+define the types related to the application. Such types can be the
+domains for the processes (the context of the &lt;strong&gt;incrond&lt;/strong&gt; and perhaps
+also &lt;strong&gt;incrontab&lt;/strong&gt; applications), the contexts for the directories (if
+any) and files, etc.&lt;/p&gt;
+&lt;p&gt;So let's take a look at the content of the &lt;em&gt;incron&lt;/em&gt; package. On Gentoo,
+we can use &lt;strong&gt;qlist incron&lt;/strong&gt; for this. In the output of &lt;strong&gt;qlist&lt;/strong&gt;, I
+added comments to show you how contexts can be (easily) deduced.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Application binary for managing user crontabs. We want to give this a specific
+# context because we want the application (which will manage the incrontabs in
+# /var/spool/incron) in a specific domain
+/usr/bin/incrontab  ## incrontab_exec_t
+
+# General application information files, do not need specific attention
+# (the default context is fine)
+/usr/share/doc/incron-0.5.10/README.bz2
+/usr/share/doc/incron-0.5.10/TODO.bz2
+/usr/share/doc/incron-0.5.10/incron.conf.example.bz2
+/usr/share/doc/incron-0.5.10/CHANGELOG.bz2
+/usr/share/man/man8/incrond.8.bz2
+/usr/share/man/man5/incron.conf.5.bz2
+/usr/share/man/man5/incrontab.5.bz2
+/usr/share/man/man1/incrontab.1.bz2
+
+# Binary for the incrond daemon. This definitely needs its own context, since
+# it will be launched from an init script and we do not want it to run in the
+# initrc_t domain.
+/usr/sbin/incrond ## incrond_exec_t
+
+# This is the init script for the incrond daemon. If we want to allow 
+# some users the rights to administer incrond without needing to grant
+# those users the sysadm_r role, we need to give this file a different
+# context as well.
+/etc/init.d/incrond ## incrond_initrc_exec_t
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this information at hand, and the behavior of the application we
+know from the previous post, can lead to the following &lt;code&gt;incron.fc&lt;/code&gt; file,
+which defines the file contexts for the application.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/incron.d(/.*)?     gen_context(system_u:object_r:incron_spool_t,s0)
+
+/etc/rc\.d/init\.d/incrond      --      gen_context(system_u:object_r:incrond_initrc_exec_t,s0)
+
+/usr/bin/incrontab      --      gen_context(system_u:object_r:incrontab_exec_t,s0)
+
+/usr/sbin/incrond       --      gen_context(system_u:object_r:incrond_exec_t,s0)
+
+/var/spool/incron(/.*)?         gen_context(system_u:object_r:incron_spool_t,s0)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The syntax of this file closely follows the syntax that &lt;strong&gt;semanage
+fcontext&lt;/strong&gt; takes - at least for the regular expressions in the
+beginning. The last column is specifically for policy development to
+generate a context based on the policies' requirements: an MCS/MLS
+enabled policy will get the trailing sensitivity with it, but when
+MCS/MLS is disabled then it is dropped. The middle column is to specify
+if the label should only be set on regular files (&lt;code&gt;--&lt;/code&gt;), directories
+(&lt;code&gt;-d&lt;/code&gt;), sockets (&lt;code&gt;-s&lt;/code&gt;), symlinks (&lt;code&gt;-l&lt;/code&gt;), etc. If it is omitted, it
+matches whatever class the path matches.&lt;/p&gt;
+&lt;p&gt;The second file needed for the skeleton is the &lt;code&gt;incron.te&lt;/code&gt; file, which
+would look like so. I added in inline comments here to explain why
+certain lines are prepared, but generally this is omitted when the
+policy is &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;upstreamed&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(incron, 0.1)
+# The above line declares that this file is a SELinux policy file. Its name
+# is incron, so the file should saved as incron.te
+
+# First, we declare the incrond_t domain, used for the &amp;quot;incrond&amp;quot; process.
+# Because it is launched from an init script, we tell the policy that
+# incrond_exec_t (the context of incrond), when launched from init, should
+# transition to incrond_t.
+#
+# Basically, the syntax here is:
+# type 
+# type 
+# 
+type incrond_t;
+type incrond_exec_t;
+init_daemon_domain(incrond_t, incrond_exec_t)
+
+# Next we declare that the incrond_initrc_exec_t is an init script context
+# so that init can execute it (remember, SELinux is a mandatory access control
+# system, so if we do not tell that init can execute it, it won&amp;#39;t).
+type incrond_initrc_exec_t;
+init_script_file(incrond_initrc_exec_t)
+
+# We also create the incrontab_t domain (for the &amp;quot;incrontab&amp;quot; application), which
+# is triggered through the incrontab_exec_t labeled file. This again follows a bit
+# the syntax as we used above, but now the interface call is &amp;quot;application_domain&amp;quot;.
+type incrontab_t;
+type incrontab_exec_t;
+application_domain(incrontab_t, incrontab_exec_t)
+
+# Finally we declare the spool type as well (incron_spool_t) and tell SELinux that
+# it will be used for regular files.
+type incron_spool_t;
+files_type(incron_spool_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Knowing which interface calls, like &lt;em&gt;init_daemon_domain&lt;/em&gt; and
+&lt;em&gt;application_domain&lt;/em&gt;, we should use is not obvious at first. Most of
+this can be gathered from existing policies. Other frequently occurring
+interfaces to be used immediately at the skeleton side are (examples for
+a &lt;code&gt;foo_t&lt;/code&gt; domain):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;logging_log_file(foo_log_t)&lt;/em&gt; to inform SELinux that the context
+    is used for logging purposes. This allows generic log-related
+    daemons to do "their thing" with the file.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;files_tmp_file(foo_tmp_t)&lt;/em&gt; to identify the context as being
+    used for temporary files&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;files_tmpfs_file(foo_tmpfs_t)&lt;/em&gt; for tmpfs files (which could be
+    shared memory)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;files_pid_file(foo_var_run_t)&lt;/em&gt; for PID files (and other run
+    metadata files)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;files_config_file(foo_conf_t)&lt;/em&gt; for configuration files (often
+    within &lt;code&gt;/etc&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;files_lock_file(foo_lock_t)&lt;/em&gt; for lock files (often within
+    &lt;code&gt;/run/lock&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We might be using these later as we progress with the policy (for
+instance, the PID file is a very high candidate for needing to be
+included). However, with the information currently at hand, we have our
+first policy module ready for building. Save the type enforcement rules
+in &lt;code&gt;incron.te&lt;/code&gt; and the file contexts in &lt;code&gt;incron.fc&lt;/code&gt; and you can then
+build the SELinux policy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
+# semodule -i incron.pp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On Gentoo, you can then relabel the files and directories offered
+through the package using &lt;strong&gt;rlpkg&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# rlpkg incron
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next is to start looking at the &lt;strong&gt;incrontab&lt;/strong&gt; application.&lt;/p&gt;</content><category term="SELinux"></category><category term="fc"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category><category term="skeleton"></category><category term="te"></category></entry><entry><title>A SELinux policy for incron: what does it do?</title><link href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/" rel="alternate"></link><published>2013-05-22T03:50:00+02:00</published><updated>2013-05-22T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-22:/2013/05/a-selinux-policy-for-incron-what-does-it-do/</id><summary type="html">&lt;p&gt;In this series of posts, we'll go through the creation of a SELinux
+policy for
+&lt;a href="http://inotify.aiken.cz/?section=incron&amp;amp;page=doc⟨=en"&gt;incron&lt;/a&gt;, a simple
+inotify based cron-like application. I will talk about the various steps
+that I would take in the creation of this policy, and give feedback when
+certain decisions are taken and why. At …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this series of posts, we'll go through the creation of a SELinux
+policy for
+&lt;a href="http://inotify.aiken.cz/?section=incron&amp;amp;page=doc⟨=en"&gt;incron&lt;/a&gt;, a simple
+inotify based cron-like application. I will talk about the various steps
+that I would take in the creation of this policy, and give feedback when
+certain decisions are taken and why. At the end of the series, we'll
+have a hopefully well working policy.&lt;/p&gt;
+&lt;p&gt;The first step in developing a policy is to know what the application
+does and how/where it works. This allows us to check if its behavior
+matches an existing policy (and as such might be best just added to this
+policy) or if a new policy needs to be written. So, what does incron do?&lt;/p&gt;
+&lt;p&gt;From the documentation, we know that &lt;em&gt;incron&lt;/em&gt; is a cron-like application
+that, unlike cron, works with file system notification events instead of
+time-related events. Other than that, it uses a similar way of working:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A daemon called &lt;strong&gt;incrond&lt;/strong&gt; is the run-time application that reads
+    in the &lt;em&gt;incrontab&lt;/em&gt; files and creates the proper inotify watches.
+    When a watch is triggered, it will execute the matching rule.&lt;/li&gt;
+&lt;li&gt;The daemon looks at two definitions (incrontabs): one system-wide
+    (in &lt;code&gt;/etc/incron.d&lt;/code&gt;) and one for users (in &lt;code&gt;/var/spool/incron&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;The user tabfiles are managed through &lt;strong&gt;incrontab&lt;/strong&gt; (the command)&lt;/li&gt;
+&lt;li&gt;Logging is done through syslog&lt;/li&gt;
+&lt;li&gt;User commands are executed with the users' privileges (so the
+    application calls &lt;em&gt;setuid()&lt;/em&gt; and &lt;em&gt;setgid()&lt;/em&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With this, one can create a script to be executed when a file is
+uploaded (or deleted) to/from a file server, or when a process coredump
+occurred, or whatever automation you want to trigger when some file
+system event occurred. Events are plenty and can be found in
+&lt;code&gt;/usr/include/sys/inotify.h&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;So, with this information, it is safe to assume that we might be able to
+push incron in the existing &lt;em&gt;cron&lt;/em&gt; policy. After all, it defines the
+contexts for all these and probably doesn't need any additional
+tweaking. And this seems to work at first, but a few tests reveal that
+the behavior is not that optimal.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# chcon -t crond_exec_t /usr/sbin/incrond
+# chcon -t crontab_exec_t /usr/bin/incrontab
+# chcon -R -t system_cron_spool_t /etc/incron.d
+# chcon -t cron_log_t /var/log/cron.log
+# chcon -R -t cron_spool_t /var/spool/incron
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;System tables work somewhat, but all commands are executed in the
+&lt;code&gt;crond_t&lt;/code&gt; domain, not in a &lt;code&gt;system_cronjob_t&lt;/code&gt; or related domain.&lt;br&gt;
+User tables fail when dealing with files in the users directories,
+since these too run in &lt;code&gt;crond_t&lt;/code&gt; and thus have no read access to the
+user home directories.&lt;/p&gt;
+&lt;p&gt;The problems we notice come from the fact that the application is very
+simple in its code: it is not SELinux-aware (so it doesn't change the
+runtime context) as most cron daemons are, and when it changes the user
+id it does not call PAM, so we cannot trigger &lt;code&gt;pam_selinux.so&lt;/code&gt; to handle
+context changes either. As a result, the entire daemon keeps running in
+&lt;code&gt;crond_t&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This is one reason why a separate domain could be interesting: we might
+want to extend the rights of the daemon domain a bit, but don't want to
+extend these rights to the other cron daemons (who also run in
+&lt;code&gt;crond_t&lt;/code&gt;). Another reason is that the cron policy has a few booleans
+that would not affect the behavior at all, making it less obvious for
+users to troubleshoot. As a result, we'll go for the separate policy
+instead - which will be for the next post.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

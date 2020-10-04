@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - haskell</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/haskell/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-03-06T20:02:00+01:00</updated><entry><title>Trying out Pelican, part one</title><link href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/" rel="alternate"></link><published>2015-03-06T20:02:00+01:00</published><updated>2015-03-06T20:02:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-03-06:/2015/03/trying-out-pelican-part-one/</id><summary type="html">&lt;p&gt;One of the goals I've set myself to do this year (not as a new year
+resolution though, I *really* want to accomplish this ;-) is to move
+my blog from Wordpress to a statically built website. And
+&lt;a href="http://docs.getpelican.com/en/3.5.0/"&gt;Pelican&lt;/a&gt; looks to be a good
+solution to do so. It's based on …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the goals I've set myself to do this year (not as a new year
+resolution though, I *really* want to accomplish this ;-) is to move
+my blog from Wordpress to a statically built website. And
+&lt;a href="http://docs.getpelican.com/en/3.5.0/"&gt;Pelican&lt;/a&gt; looks to be a good
+solution to do so. It's based on Python, which is readily available and
+supported on Gentoo, and is quite readable. Also, it looks to be very
+active in development and support. And also: it supports taking data
+from an existing Wordpress installation, so that none of the posts are
+lost (with some rounding error that's inherit to such migrations of
+course).&lt;/p&gt;
+&lt;p&gt;Before getting Pelican ready (which is available through Gentoo btw) I
+also needed to install &lt;a href="http://johnmacfarlane.net/pandoc/"&gt;pandoc&lt;/a&gt;, and
+that became more troublesome than expected. While installing &lt;code&gt;pandoc&lt;/code&gt; I
+got hit by its massive amount of dependencies towards &lt;code&gt;dev-haskell/*&lt;/code&gt;
+packages, and many of those packages really failed to install. It does
+some internal dependency checking and fails, informing me to run
+&lt;code&gt;haskell-updater&lt;/code&gt;. Sadly, multiple re-runs of said command did not
+resolve the issue. In fact, it wasn't until I hit a &lt;a href="http://forums.gentoo.org/viewtopic-p-7712250.html?sid=7707e62264dadf8bad4b8a1273b19f77"&gt;forum post about
+the same
+issue&lt;/a&gt;
+that a first step to a working solution was found.&lt;/p&gt;
+&lt;p&gt;It turns out that the &lt;code&gt;~arch&lt;/code&gt; versions of the haskell packages are
+better working. So I enabled &lt;code&gt;dev-haskell/*&lt;/code&gt; in my
+&lt;code&gt;package.accept_keywords&lt;/code&gt; file. And then started updating the
+packages... which also failed. Then I ran &lt;code&gt;haskell-updater&lt;/code&gt; multiple
+times, but that also failed. After a while, I had to run the following
+set of commands (in random order) just to get everything to build fine:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge -u $(qlist -IC dev-haskell) --keep-going
+~# for n in $(qlist -IC dev-haskell); do emerge -u $n; done
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It took quite some reruns, but it finally got through. I never thought I
+had this much Haskell-related packages installed on my system (89
+packages here to be exact), as I never intended to do any Haskell
+development since I left the university. Still, I finally got &lt;code&gt;pandoc&lt;/code&gt;
+to work. So, on to the migration of my Wordpress site... I thought.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This is a good time to ask for stabilization requests (I'll look into
+it myself as well of course) but also to see if you can help out our
+arch testing teams to support the stabilization requests on Gentoo! We
+need you!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I started with the &lt;a href="http://docs.getpelican.com/en/latest/importer.html"&gt;official docs on
+importing&lt;/a&gt;. Looks
+promising, but it didn't turn out too well for me. Importing was okay,
+but then immediately building the site again resulted in issues about
+wrong arguments (file names being interpreted as an argument name or
+function when an underscore was used) and interpretation of code inside
+the posts. Then I found Jason Antman's &lt;a href="http://blog.jasonantman.com/2014/02/converting-wordpress-posts-to-pelican-markdown/"&gt;converting wordpress posts to
+pelican
+markdown&lt;/a&gt;
+post to inform me I had to try using markdown instead of restructured
+text. And lo and behold - that's much better.&lt;/p&gt;
+&lt;p&gt;The first builds look promising. Of all the posts that I made on
+Wordpress, only one gives a build failure. The next thing to investigate
+is theming, as well as seeing how good the migration goes (it isn't
+because there are no errors otherwise that the migration is successful
+of course) so that I know how much manual labor I have to take into
+consideration when I finally switch (right now, I'm still running
+Wordpress).&lt;/p&gt;</content><category term="Gentoo"></category><category term="blog"></category><category term="Gentoo"></category><category term="haskell"></category><category term="pandoc"></category><category term="pelican"></category><category term="wordpress"></category></entry></feed>

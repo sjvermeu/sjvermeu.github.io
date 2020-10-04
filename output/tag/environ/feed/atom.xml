@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - environ</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/environ/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-01-07T04:31:00+01:00</updated><entry><title>Linux protip: environment for a process</title><link href="http://blog.siphos.be/2014/01/linux-protip-environment-for-a-process/" rel="alternate"></link><published>2014-01-07T04:31:00+01:00</published><updated>2014-01-07T04:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-07:/2014/01/linux-protip-environment-for-a-process/</id><summary type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
+a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
+file. The file however shows the environment variables on one line, with
+a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
+a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
+file. The file however shows the environment variables on one line, with
+a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it
+with newlines instead:&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;{lang="bash"}
+~$ sed -e "s:\x0:\n:g" /proc/144320/environ
+TERM=xterm
+SHELL=/bin/bash
+OLDPWD=/home/swift/docs
+USER=root
+SUDO_USER=swift
+SUDO_UID=1001
+USERNAME=root
+MAIL=/var/mail/root
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin
+PWD=/var/db/pkg/eix
+...&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The trick is to use &lt;code&gt;\x0&lt;/code&gt; (hexcode 0) for the null character, which the
+&lt;strong&gt;sed&lt;/strong&gt; command then replaces with a newline.&lt;/p&gt;</content><category term="Free Software"></category><category term="environ"></category><category term="linux"></category><category term="protip"></category></entry></feed>

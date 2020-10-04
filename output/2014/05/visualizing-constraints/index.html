@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>Visualizing constraints - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2014/05/visualizing-constraints/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="constrain,constraints,dot,graphviz,seinfo,selinux" />
+        <meta name="description" content="SELinux constraints are an interesting way to implement specific, well, constraints on what SELinux allows. Most SELinux rules that users come in contact with are purely type oriented: allow something to do something against something. In fact, most of the SELinux rules applied on a system are such allow rules …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Visualizing constraints"/>
+        <meta property="og:url" content="http://blog.siphos.be/2014/05/visualizing-constraints/"/>
+        <meta property="og:description" content="SELinux constraints are an interesting way to implement specific, well, constraints on what SELinux allows. Most SELinux rules that users come in contact with are purely type oriented: allow something to do something against something. In fact, most of the SELinux rules applied on a system are such allow rules …"/>
+        <meta property="article:published_time" content="2014-05-31" />
+            <meta property="article:section" content="SELinux" />
+            <meta property="article:tag" content="constrain" />
+            <meta property="article:tag" content="constraints" />
+            <meta property="article:tag" content="dot" />
+            <meta property="article:tag" content="graphviz" />
+            <meta property="article:tag" content="seinfo" />
+            <meta property="article:tag" content="selinux" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/selinux.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... SELinux ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2014/05/visualizing-constraints/"
+                       rel="bookmark"
+                       title="Permalink to Visualizing constraints">
+                        Visualizing constraints
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-05-31T03:47:00+02:00"> Sat 31 May 2014</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/constrain/">constrain</a>
+        /
+	<a href="http://blog.siphos.be/tag/constraints/">constraints</a>
+        /
+	<a href="http://blog.siphos.be/tag/dot/">dot</a>
+        /
+	<a href="http://blog.siphos.be/tag/graphviz/">graphviz</a>
+        /
+	<a href="http://blog.siphos.be/tag/seinfo/">seinfo</a>
+        /
+	<a href="http://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>SELinux constraints are an interesting way to implement specific, well,
+constraints on what SELinux allows. Most SELinux rules that users come
+in contact with are purely type oriented: allow something to do
+something against something. In fact, most of the SELinux rules applied
+on a system are such <code>allow</code> rules.</p>
+<p>The restriction of such <code>allow</code> rules is that they only take into
+consideration the <em>type</em> of the contexts that participate. This is the
+<a href="https://wiki.gentoo.org/wiki/SELinux/Type_enforcement">type
+enforcement</a> part
+of the SELinux mandatory access control system.</p>
+<p>Constraints on the other hand work on the user, role and type part of a
+context. Consider this piece of constraint code:</p>
+<div class="highlight"><pre><span></span><code>constrain file all_file_perms (
+  u1 == u2
+  or u1 == system_u
+  or u2 == system_u
+  or t1 != ubac_constrained_type
+  or t2 != ubac_constrained_type
+);
+</code></pre></div>
+
+
+<p>This particular constraint definition tells the SELinux subsystem that,
+when an operation against a <em>file</em> class is performed (any operation, as
+<em>all_file_perms</em> is used, but individual, specific permissions can be
+listed as well), this is denied if none of the following conditions are
+met:</p>
+<ul>
+<li>The SELinux user of the subject and object are the same</li>
+<li>The SELinux user of the subject or object is <code>system_u</code></li>
+<li>The SELinux type of the subject does not have the
+    <code>ubac_constrained_type</code> attribute set</li>
+<li>The SELinux type of the object does not have the
+    <code>ubac_constrained_type</code> attribute set</li>
+</ul>
+<p>If none of the conditions are met, then the action is denied, regardless
+of the <code>allow</code> rules set otherwise. If at least one condition is met,
+then the <code>allow</code> rules (and other SELinux rules) decide if an action can
+be taken or not.</p>
+<p>Constraints are currently difficult to query though. There is <strong>seinfo
+--constrain</strong> which gives all constraints, using the Reverse Polish
+Notation - not something easily readable by users:</p>
+<div class="highlight"><pre><span></span><code>~$ seinfo --constrain
+constrain { sem } { create destroy getattr setattr read write associate unix_read unix_write  } 
+(  u1 u2 ==  u1 system_u ==  ||  u2 system_u ==  ||  t1 { screen_var_run_t gnome_xdg_config_home_t admin_crontab_t 
+links_input_xevent_t gpg_pinentry_tmp_t virt_content_t print_spool_t crontab_tmp_t httpd_user_htaccess_t ssh_keysign_t 
+remote_input_xevent_t gnome_home_t mozilla_tmpfs_t staff_gkeyringd_t consolekit_input_xevent_t user_mail_tmp_t 
+chromium_xdg_config_t mozilla_input_xevent_t chromium_tmp_t httpd_user_script_exec_t gnome_keyring_tmp_t links_tmpfs_t 
+skype_tmp_t user_gkeyringd_t svirt_home_t sysadm_su_t virt_home_t skype_home_t wireshark_tmp_t xscreensaver_xproperty_t 
+consolekit_xproperty_t user_home_dir_t gpg_pinentry_xproperty_t mplayer_home_t mozilla_plugin_input_xevent_t mozilla_plugin_tmp_t 
+mozilla_xproperty_t xdm_input_xevent_t chromium_input_xevent_t java_tmpfs_t googletalk_plugin_xproperty_t sysadm_t gorg_t gpg_t 
+java_t links_t staff_dbusd_t httpd_user_ra_content_t httpd_user_rw_content_t googletalk_plugin_tmp_t gpg_agent_tmp_t 
+ssh_agent_tmp_t sysadm_ssh_agent_t user_fonts_cache_t user_tmp_t googletalk_plugin_input_xevent_t user_dbusd_t xserver_tmpfs_t 
+iceauth_home_t qemu_input_xevent_t xauth_home_t mutt_home_t sysadm_dbusd_t remote_xproperty_t gnome_xdg_config_t screen_home_t 
+chromium_xproperty_t chromium_tmpfs_t wireshark_tmpfs_t xdg_videos_home_t pulseaudio_input_xevent_t krb5_home_t 
+pulseaudio_xproperty_t xscreensaver_input_xevent_t gpg_pinentry_input_xevent_t httpd_user_script_t gnome_xdg_cache_home_t 
+mozilla_plugin_tmpfs_t user_home_t user_sudo_t ssh_input_xevent_t ssh_tmpfs_t xdg_music_home_t gconf_tmp_t flash_home_t 
+java_home_t skype_tmpfs_t xdg_pictures_home_t xdg_data_home_t gnome_keyring_home_t wireshark_home_t chromium_renderer_xproperty_t 
+gpg_pinentry_t mozilla_t session_dbusd_tmp_t staff_sudo_t xdg_config_home_t user_su_t pan_input_xevent_t user_devpts_t 
+mysqld_home_t pan_tmpfs_t root_input_xevent_t links_home_t sysadm_screen_t pulseaudio_tmpfs_t sysadm_gkeyringd_t mail_home_rw_t 
+gconf_home_t mozilla_plugin_xproperty_t mutt_tmp_t httpd_user_content_t mozilla_xdg_cache_t mozilla_home_t alsa_home_t 
+pulseaudio_t mencoder_t admin_crontab_tmp_t xdg_documents_home_t user_tty_device_t java_tmp_t gnome_xdg_data_home_t wireshark_t 
+mozilla_plugin_home_t googletalk_plugin_tmpfs_t user_cron_spool_t mplayer_input_xevent_t skype_input_xevent_t xxe_home_t 
+mozilla_tmp_t gconfd_t lpr_t mutt_t pan_t ssh_t staff_t user_t xauth_t skype_xproperty_t mozilla_plugin_config_t 
+links_xproperty_t mplayer_xproperty_t xdg_runtime_home_t cert_home_t mplayer_tmpfs_t user_fonts_t user_tmpfs_t mutt_conf_t 
+gpg_secret_t gpg_helper_t staff_ssh_agent_t pulseaudio_tmp_t xscreensaver_t googletalk_plugin_xdg_config_t staff_screen_t 
+user_fonts_config_t ssh_home_t staff_su_t screen_tmp_t mozilla_plugin_t user_input_xevent_t xserver_tmp_t wireshark_xproperty_t 
+user_mail_t pulseaudio_home_t xdg_cache_home_t user_ssh_agent_t xdg_downloads_home_t chromium_renderer_input_xevent_t cronjob_t 
+crontab_t pan_home_t session_dbusd_home_t gpg_agent_t xauth_tmp_t xscreensaver_tmpfs_t iceauth_t mplayer_t chromium_xdg_cache_t 
+lpr_tmp_t gpg_pinentry_tmpfs_t pan_xproperty_t ssh_xproperty_t xdm_xproperty_t java_xproperty_t sysadm_sudo_t qemu_xproperty_t 
+root_xproperty_t user_xproperty_t mail_home_t xserver_t java_input_xevent_t user_screen_t wireshark_input_xevent_t } !=  ||  t2 { 
+screen_var_run_t gnome_xdg_config_home_t admin_crontab_t links_input_xevent_t gpg_pinentry_tmp_t virt_content_t print_spool_t 
+crontab_tmp_t httpd_user_htaccess_t ssh_keysign_t remote_input_xevent_t gnome_home_t mozilla_tmpfs_t staff_gkeyringd_t 
+consolekit_input_xevent_t user_mail_tmp_t chromium_xdg_config_t mozilla_input_xevent_t chromium_tmp_t httpd_user_script_exec_t 
+gnome_keyring_tmp_t links_tmpfs_t skype_tmp_t user_gkeyringd_t svirt_home_t sysadm_su_t virt_home_t skype_home_t wireshark_tmp_t 
+xscreensaver_xproperty_t consolekit_xproperty_t user_home_dir_t gpg_pinentry_xproperty_t mplayer_home_t 
+mozilla_plugin_input_xevent_t mozilla_plugin_tmp_t mozilla_xproperty_t xdm_input_xevent_t chromium_input_xevent_t java_tmpfs_t 
+googletalk_plugin_xproperty_t sysadm_t gorg_t gpg_t java_t links_t staff_dbusd_t httpd_user_ra_content_t httpd_user_rw_content_t 
+googletalk_plugin_tmp_t gpg_agent_tmp_t ssh_agent_tmp_t sysadm_ssh_agent_t user_fonts_cache_t user_tmp_t 
+googletalk_plugin_input_xevent_t user_dbusd_t xserver_tmpfs_t iceauth_home_t qemu_input_xevent_t xauth_home_t mutt_home_t 
+sysadm_dbusd_t remote_xproperty_t gnome_xdg_config_t screen_home_t chromium_xproperty_t chromium_tmpfs_t wireshark_tmpfs_t 
+xdg_videos_home_t pulseaudio_input_xevent_t krb5_home_t pulseaudio_xproperty_t xscreensaver_input_xevent_t 
+gpg_pinentry_input_xevent_t httpd_user_script_t gnome_xdg_cache_home_t mozilla_plugin_tmpfs_t user_home_t user_sudo_t 
+ssh_input_xevent_t ssh_tmpfs_t xdg_music_home_t gconf_tmp_t flash_home_t java_home_t skype_tmpfs_t xdg_pictures_home_t 
+xdg_data_home_t gnome_keyring_home_t wireshark_home_t chromium_renderer_xproperty_t gpg_pinentry_t mozilla_t session_dbusd_tmp_t 
+staff_sudo_t xdg_config_home_t user_su_t pan_input_xevent_t user_devpts_t mysqld_home_t pan_tmpfs_t root_input_xevent_t 
+links_home_t sysadm_screen_t pulseaudio_tmpfs_t sysadm_gkeyringd_t mail_home_rw_t gconf_home_t mozilla_plugin_xproperty_t 
+mutt_tmp_t httpd_user_content_t mozilla_xdg_cache_t mozilla_home_t alsa_home_t pulseaudio_t mencoder_t admin_crontab_tmp_t 
+xdg_documents_home_t user_tty_device_t java_tmp_t gnome_xdg_data_home_t wireshark_t mozilla_plugin_home_t 
+googletalk_plugin_tmpfs_t user_cron_spool_t mplayer_input_xevent_t skype_input_xevent_t xxe_home_t mozilla_tmp_t gconfd_t lpr_t 
+mutt_t pan_t ssh_t staff_t user_t xauth_t skype_xproperty_t mozilla_plugin_config_t links_xproperty_t mplayer_xproperty_t 
+xdg_runtime_home_t cert_home_t mplayer_tmpfs_t user_fonts_t user_tmpfs_t mutt_conf_t gpg_secret_t gpg_helper_t staff_ssh_agent_t 
+pulseaudio_tmp_t xscreensaver_t googletalk_plugin_xdg_config_t staff_screen_t user_fonts_config_t ssh_home_t staff_su_t 
+screen_tmp_t mozilla_plugin_t user_input_xevent_t xserver_tmp_t wireshark_xproperty_t user_mail_t pulseaudio_home_t 
+xdg_cache_home_t user_ssh_agent_t xdg_downloads_home_t chromium_renderer_input_xevent_t cronjob_t crontab_t pan_home_t 
+session_dbusd_home_t gpg_agent_t xauth_tmp_t xscreensaver_tmpfs_t iceauth_t mplayer_t chromium_xdg_cache_t lpr_tmp_t 
+gpg_pinentry_tmpfs_t pan_xproperty_t ssh_xproperty_t xdm_xproperty_t java_xproperty_t sysadm_sudo_t qemu_xproperty_t 
+root_xproperty_t user_xproperty_t mail_home_t xserver_t java_input_xevent_t user_screen_t wireshark_input_xevent_t } !=  ||  t1 
+ ==  || );
+</code></pre></div>
+
+
+<p>There RPN notation however isn't the only reason why constraints are
+difficult to read. The other reason is that <strong>seinfo</strong> does not know
+(anymore) about the attributes used to generate the constraints. As a
+result, we get a huge list of all possible types that match a common
+attribute - but we don't know which anymore.</p>
+<p>Not everyone can read the source files in which the constraints are
+defined, so I hacked together a script that generates
+<a href="http://graphviz.org/">GraphViz</a> dot file based on the <strong>seinfo
+--constrain</strong> output for a given <em>class</em> and <em>permission</em> and,
+optionally, limiting the huge list of types to a set that the user (err,
+that is me ;-) is interested in.</p>
+<p>For instance, to generate a graph of the constraints related to file
+reads, limited to the <code>user_t</code> and <code>staff_t</code> types if huge lists would
+otherwise be shown:</p>
+<div class="highlight"><pre><span></span><code>~$ seshowconstraint file read &quot;user_t staff_t&quot; &gt; constraint-file.dot
+~$ dot -Tsvg -O constraint-file.dot
+</code></pre></div>
+
+
+<p>This generates the following graph:</p>
+<p>!SELinux constraint flow<a href="http://dev.gentoo.org/~swift/blog/201405/constraint-flow.svg"></a></p>
+<p>If you're interested in the (ugly) script that does this, you can find
+it on my
+<a href="https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowconstraint">github</a>
+location.</p>
+<p>There are some patches laying around to support naming constraints and
+taking the name up in the policy, so that denials based on constraints
+can at least give feedback to the user which constraint is holding an
+access back (rather than just a denial that the user doesn't know why).
+Hopefully such patches can be made available in the kernel and user
+space utilities soon.</p>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'visualizing-constraints';
+                var disqus_url = 'http://blog.siphos.be/2014/05/visualizing-constraints/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

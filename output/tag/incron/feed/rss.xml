@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Simplicity is a form of art... - incron</title><link>http://blog.siphos.be/</link><description></description><lastBuildDate>Fri, 31 May 2013 03:50:00 +0200</lastBuildDate><item><title>A SELinux policy for incron: finishing up</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-finishing-up/</link><description>&lt;p&gt;After 9 posts, it's time to wrap things up. You can review the final
+results online
+(&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.te.txt"&gt;incron.te&lt;/a&gt;,
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.if.txt"&gt;incron.if&lt;/a&gt; and
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.fc.txt"&gt;incron.fc&lt;/a&gt;) and
+adapt to your own needs if you want. But we should also review what we
+have accomplished so far...&lt;/p&gt;
+&lt;p&gt;We built the start of an entire …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Fri, 31 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-31:/2013/05/a-selinux-policy-for-incron-finishing-up/</guid><category>SELinux</category><category>incron</category><category>policy</category><category>selinux</category></item><item><title>A SELinux policy for incron: using booleans</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/</link><description>&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+to mark other
+types&lt;/a&gt;
+as such as well, let's consider another approach for making the policy
+more flexible: booleans. The idea now is that a boolean called
+&lt;em&gt;incron_notify_non_security_files&lt;/em&gt; enables &lt;strong&gt;incrond&lt;/strong&gt; to be
+notified on changes on all possible …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 30 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-30:/2013/05/a-selinux-policy-for-incron-using-booleans/</guid><category>SELinux</category><category>boolean</category><category>incron</category><category>policy</category><category>selinux</category></item><item><title>A SELinux policy for incron: new types and transitions</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/</link><description>&lt;p&gt;So I've shown the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/"&gt;iterative approach
+used&lt;/a&gt;
+to develop policies. Again, please be aware that this is my way of
+developing policies, other policy developers might have a different
+approach. We were working on the &lt;strong&gt;incrontab&lt;/strong&gt; command, so let's
+continue with trying to create a new user incrontab:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 26 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-26:/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/</guid><category>SELinux</category><category>incron</category><category>policy</category><category>selinux</category></item><item><title>A SELinux policy for incron: basic set for incrontab</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/</link><description>&lt;p&gt;Now that our &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/"&gt;regular user is
+allowed&lt;/a&gt;
+to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at the denials to
+build up the policy.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
+(or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 25 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-25:/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/</guid><category>SELinux</category><category>incron</category><category>incrontab</category><category>policy</category><category>selinux</category></item><item><title>A SELinux policy for incron: our first interface</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/</link><description>&lt;p&gt;The next step after having &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/"&gt;a basic
+skeleton&lt;/a&gt;
+is to get &lt;strong&gt;incrontab&lt;/strong&gt; running. We know however that everything invoked
+from the main daemon will be running with the rights of the daemon
+context (unless we would patch the source code, but that is beyond the
+scope of this set of …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Fri, 24 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-24:/2013/05/a-selinux-policy-for-incron-our-first-interface/</guid><category>SELinux</category><category>incron</category><category>interface</category><category>policy</category></item><item><title>A SELinux policy for incron: the basic skeleton</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/</link><description>&lt;p&gt;So, in the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/"&gt;previous
+post&lt;/a&gt;
+I talked about &lt;em&gt;incron&lt;/em&gt; and why I think moving it into the existing cron
+policy would not be a good idea. It works, somewhat, but is probably not
+that future-proof. So we're going to create our own policy for it.&lt;/p&gt;
+&lt;p&gt;In SELinux, policies are generally …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 23 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-23:/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/</guid><category>SELinux</category><category>fc</category><category>incron</category><category>policy</category><category>selinux</category><category>skeleton</category><category>te</category></item><item><title>A SELinux policy for incron: what does it do?</title><link>http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/</link><description>&lt;p&gt;In this series of posts, we'll go through the creation of a SELinux
+policy for
+&lt;a href="http://inotify.aiken.cz/?section=incron&amp;amp;page=doc⟨=en"&gt;incron&lt;/a&gt;, a simple
+inotify based cron-like application. I will talk about the various steps
+that I would take in the creation of this policy, and give feedback when
+certain decisions are taken and why. At …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 22 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-22:/2013/05/a-selinux-policy-for-incron-what-does-it-do/</guid><category>SELinux</category><category>incron</category><category>policy</category><category>selinux</category></item></channel></rss>

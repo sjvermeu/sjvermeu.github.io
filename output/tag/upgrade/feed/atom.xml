@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - upgrade</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/upgrade/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-10-30T19:44:00+01:00</updated><entry><title>Migrating to SELinux userspace 2.4 (small warning for users)</title><link href="http://blog.siphos.be/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/" rel="alternate"></link><published>2014-10-30T19:44:00+01:00</published><updated>2014-10-30T19:44:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</id><summary type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
+(either globally or for the SELinux utilities in particular) will notice
+that the SELinux userspace will upgrade to version 2.4 (release
+candidate 5 for now). This upgrade comes with a manual step that needs
+to be performed …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
+(either globally or for the SELinux utilities in particular) will notice
+that the SELinux userspace will upgrade to version 2.4 (release
+candidate 5 for now). This upgrade comes with a manual step that needs
+to be performed after upgrade. The information is mentioned as
+post-installation message of the &lt;code&gt;policycoreutils&lt;/code&gt; package, and
+basically sais that you need to execute:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
+module store (and the semanage related files) to be in
+&lt;code&gt;/var/lib/selinux&lt;/code&gt; and no longer in &lt;code&gt;/etc/selinux&lt;/code&gt;. Note that this does
+not mean that the SELinux policy itself is moved outside of that
+location, nor is the basic configuration file (&lt;code&gt;/etc/selinux/config&lt;/code&gt;).
+It is what tools such as &lt;strong&gt;semanage&lt;/strong&gt; manage that is moved outside that
+location.&lt;/p&gt;
+&lt;p&gt;I tried to automate the migration as part of the packages themselves,
+but this would require the &lt;code&gt;portage_t&lt;/code&gt; domain to be able to move,
+rebuild and load policies, which it can't (and to be honest, shouldn't).
+Instead of augmenting the policy or making updates to the migration
+script as delivered by the upstream project, we currently decided to
+have the migration done manually. It is a one-time migration anyway.&lt;/p&gt;
+&lt;p&gt;If for some reason end users forget to do the migration, then that does
+not mean that the system breaks or becomes unusable. SELinux still
+works, SELinux aware applications still work; the only thing that will
+fail are updates on the SELinux configuration through tools like
+&lt;strong&gt;semanage&lt;/strong&gt; or &lt;strong&gt;setsebool&lt;/strong&gt; - the latter when you want to persist
+boolean changes.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -l
+ValueError: SELinux policy is not managed or store cannot be accessed.
+
+~# setsebool -P allow_ptrace on
+Cannot set persistent booleans without managed policy.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
+migration. Note in the following that there is a warning about 'else'
+blocks that are no longer supported: that's okay, as far as I know (and
+it was mentioned on the upstream mailinglist as well as not something to
+worry about) it does not have any impact.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
+Migrating from /etc/selinux/mcs/modules/active to /var/lib/selinux/mcs/active
+Attempting to rebuild policy from /var/lib/selinux
+sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
+up. You can also rerun the command multiple times:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
+warning: Policy type mcs has already been migrated, but modules still exist in the old store. Skipping store.
+Attempting to rebuild policy from /var/lib/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So... don't worry - the change is small and does not break stuff. And
+for those wondering about CIL I'll talk about it in one of my next
+posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>Upgrading old Gentoo installations</title><link href="http://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/" rel="alternate"></link><published>2013-12-29T14:18:00+01:00</published><updated>2013-12-29T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-29:/2013/12/upgrading-old-gentoo-installations/</id><summary type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+#463240&lt;/a&gt; about the
+difficulty of upgrading a Gentoo Linux deployment after a long time of
+inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading
+Gentoo&lt;/a&gt; article on the
+Gentoo wiki that describes in great detail how upgrades can be
+accomplished. But one of the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+#463240&lt;/a&gt; about the
+difficulty of upgrading a Gentoo Linux deployment after a long time of
+inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading
+Gentoo&lt;/a&gt; article on the
+Gentoo wiki that describes in great detail how upgrades can be
+accomplished. But one of the methods I personally suggest most is to do
+small, incremental upgrades.&lt;/p&gt;
+&lt;p&gt;Say you have a system from early 2009. Not too long ago, but also not
+that recent anymore. If you would upgrade that system using the regular
+approach, your system would probably be using a non-existing profile
+(the &lt;code&gt;/etc/make.profile&lt;/code&gt; symlink would point to a non-existing
+location), and if you switch the profile to an existing one, you might
+have to deal with problems like the profile requiring certain features
+(or EAPI version) that the software currently available on your system
+doesn't support.&lt;/p&gt;
+&lt;p&gt;This problem is mentioned in the upgrade guide through the following:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Make sure your Portage is updated before performing any profile
+changes.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;However, it does not tell how to update Portage. In my opinion the best
+way forward is to install an older Portage tree snapshot (somewhat more
+recent than your own deployment) and upgrade &lt;em&gt;at least&lt;/em&gt; portage, perhaps
+also the packages belonging to the &lt;em&gt;system&lt;/em&gt; set. So for a system that
+has not been updated since January 2009, you might want to try the
+portage tree snapshot of July 2009, then January 2010, then July 2010,
+etc. until you have a recent deployment again.&lt;/p&gt;
+&lt;p&gt;All that is left for you to do is to find such a snapshot (as the
+Portage tree snapshots from the mirrors are cleaned out after a few
+months). I try to keep a set of &lt;a href="http://dev.gentoo.org/~swift/snapshots/"&gt;Portage tree snapshots
+available&lt;/a&gt; with a 2-month
+period which should be sufficient for most users to gradually upgrade
+their systems.&lt;/p&gt;
+&lt;p&gt;Considering I've used this method a few times already I'm going to add
+them to the &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;upgrading
+instructions&lt;/a&gt; as well.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="upgrade"></category></entry></feed>

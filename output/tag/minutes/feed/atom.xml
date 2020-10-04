@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - minutes</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/minutes/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-08-29T20:27:00+02:00</updated><entry><title>Gentoo Hardened progress report</title><link href="http://blog.siphos.be/2013/08/gentoo-hardened-progress-report/" rel="alternate"></link><published>2013-08-29T20:27:00+02:00</published><updated>2013-08-29T20:27:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-29:/2013/08/gentoo-hardened-progress-report/</id><summary type="html">&lt;p&gt;Today, we had our monthly online meeting to discuss the progress amongst
+the various Gentoo Hardened projects. As usual, here is a small
+write-up.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Lead election&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;As every year, we also reviewed the current project leads. No surprises
+here, everybody is happy with the current leads so they are re-elected …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today, we had our monthly online meeting to discuss the progress amongst
+the various Gentoo Hardened projects. As usual, here is a small
+write-up.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Lead election&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;As every year, we also reviewed the current project leads. No surprises
+here, everybody is happy with the current leads so they are re-elected
+for another term. We did have two candidates for the lead position, but
+even the other candidate vote for Zorry - so we had a unanimous vote ;-)&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;GCC version 4.8.1 will be unmasked pretty soon, and the &lt;code&gt;hardenedno*&lt;/code&gt;
+specs on it will work. However, there is still no progress on the asan
+(Address Sanitizer) support together with UDEREF. As mentioned in a
+previous post, UDEREF "reduces" the address space a bit which doesn't
+play well with asan. Still, it isn't inevitable, since PowerPC also has
+a reduced address space and so does Windows. So perhaps we can use the
+same model for UDEREF enabled kernels? We'll send the suggestion and the
+already-existing fixes upstream and hope for the best.&lt;/p&gt;
+&lt;p&gt;In GCC 4.8.1, the &lt;code&gt;-fstack-check&lt;/code&gt; option might be enabled by default,
+but the question is for which architectures and platforms. We know a few
+packages, such as &lt;em&gt;ffmpeg&lt;/em&gt; and &lt;em&gt;libav&lt;/em&gt; have problems with it. In those
+cases, the ebuild will be modified to use &lt;code&gt;-fno-stack-check&lt;/code&gt; (if
+hardened). We opt to enable it for all as we don't really expect much
+(if any) breakage that can't be dealt with swiftly.&lt;/p&gt;
+&lt;p&gt;Support for hardened uClibc is still going steadily. Blueness is heating
+his room a bit with it, seeing that mips32r2 takes about 2 weeks to
+build hardened and vanilla stages - he is using an Ubiquity router
+station for this.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Kernel and Grsecurity/PaX&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Due to some boot freezes, as explained in bugs
+&lt;a href="https://bugs.gentoo.org/482010"&gt;482010&lt;/a&gt; and
+&lt;a href="https://bugs.gentoo.org/481790"&gt;481790&lt;/a&gt;, we don't have a stable 3.10.x
+kernel yet. However, most of the issues should be resolved and we're
+waiting for confirmation, so we can be looking at a stable 3.10.x kernel
+soon.&lt;/p&gt;
+&lt;p&gt;The 3.10 kernel will probably not be a long-term support kernel for PaX
+and Grsecurity - such LTS kernel will be picked next year, most likely
+the same kernel version that Ubuntu LTS settles on.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;SELinux&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;A small update on &lt;code&gt;policycoreutils&lt;/code&gt; has been made that updates &lt;strong&gt;rlpkg&lt;/strong&gt;
+and &lt;strong&gt;selocal&lt;/strong&gt;. Other than that, our policies are in nice shape. A new
+revision will be pushed to the tree soon.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Integrity&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;On the Integrity side, recent kernels support custom IMA policies
+(again) so our documentation is accurate again. Next to IMA/EVM, I'll be
+working on documentation for cryptographically signed kernel module
+support soon as well as SCAP-based security baselines for Gentoo.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Profiles&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Blueness added a MUSL-based Gentoo profile (&lt;code&gt;hardened/linux/musl&lt;/code&gt;). Musl
+is an even more slim libc and its profile is extremely experimental for
+now. The profile structure is still a bit off though, a reorganization
+will be suggested soon so that the profile inheritance is clear and
+predictable, starting off with a non-hardened one
+(&lt;code&gt;default/linux/{uclibc,musl}&lt;/code&gt;) and then a hardened specific one that
+inherits from the default.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Documentation&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;Gentoo Hardened
+project&lt;/a&gt; now has its main
+project page on the &lt;a href="https://wiki.gentoo.org"&gt;Gentoo Wiki&lt;/a&gt;, and all
+(most) documentation is moved to there as well for the Gentoo Hardened
+subprojects.&lt;/p&gt;
+&lt;p&gt;I also explained to the folks that I have authored a book on SELinux
+System Administration (for Packt Publishing), which was why I was less
+active the last few months. However, that is now done so I'm back on
+track. More information about the book follows later on my blog ;-)&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Media&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;And as usual, klondike has been tweeting the entire meeting through our
+&lt;code&gt;@GentooHardened&lt;/code&gt; twitter account ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="irc"></category><category term="meeting"></category><category term="minutes"></category><category term="progress_report"></category><category term="report"></category></entry><entry><title>And now, 31 days later...</title><link href="http://blog.siphos.be/2013/08/and-now-31-days-later/" rel="alternate"></link><published>2013-08-01T22:43:00+02:00</published><updated>2013-08-01T22:43:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/and-now-31-days-later/</id><summary type="html">&lt;p&gt;... the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo Hardened&lt;/a&gt; team
+had its monthly online meeting again ;-)&lt;/p&gt;
+&lt;p&gt;On the agenda were the usual suspects, such as the &lt;em&gt;toolchain&lt;/em&gt;. In this
+category, Zorry mentioned that he has a fix for GCC 4.8.1 for the
+&lt;code&gt;hardenedno*&lt;/code&gt; and vanilla &lt;code&gt;gcc-config&lt;/code&gt; options which will be added to
+the tree …&lt;/p&gt;</summary><content type="html">&lt;p&gt;... the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo Hardened&lt;/a&gt; team
+had its monthly online meeting again ;-)&lt;/p&gt;
+&lt;p&gt;On the agenda were the usual suspects, such as the &lt;em&gt;toolchain&lt;/em&gt;. In this
+category, Zorry mentioned that he has a fix for GCC 4.8.1 for the
+&lt;code&gt;hardenedno*&lt;/code&gt; and vanilla &lt;code&gt;gcc-config&lt;/code&gt; options which will be added to
+the tree after some more testing. The problem is that with GCC 4.8,
+certain settings need to be set sooner than before (in the code path),
+which is what the fix focuses on. The ASAN issue is still unresolved,
+but otherwise GCC 4.8 is working fine.&lt;/p&gt;
+&lt;p&gt;On &lt;em&gt;SELinux&lt;/em&gt;, the policycoreutils package has been bumped to include
+support for &lt;code&gt;mcstrans&lt;/code&gt;, a translation daemon that visualizes humanly
+readable strings instead of the standard sensitivity/category sets in
+case of MCS/MLS policies.&lt;/p&gt;
+&lt;p&gt;Regarding documentation, the wiki team (most notably a3li) is working
+hard to support project pages on the &lt;a href="https://wiki.gentoo.org"&gt;Gentoo
+Wiki&lt;/a&gt;. Once we can, we will be moving our
+project page with all related documentation to the wiki, allowing for
+easier documentation development and a more modern look. To support
+this, an XML-to-wiki stylesheet is available that translates ProjectXML
+and GuideXML to the wiki language.&lt;/p&gt;
+&lt;p&gt;During the meeting, we also mentioned the stabilization policy (or at
+least, no-longer-stabilization) of the vanilla sources (plain kernel.org
+Linux kernel sources). This doesn't immediately effect the hardened
+project, but is important to know nonetheless, especially for users of
+hardened technologies that are in the main kernel already (like SELinux
+or IMA/EVM) as they have to be aware to either use the latest
+(regardless of the keywords in use) or switch to gentoo-sources or
+(preferably) hardened-sources.&lt;/p&gt;
+&lt;p&gt;For uclibc support, the stages will be provided every 2 months rather
+than every month as this is a resource-intensive process that isn't
+fully automated yet (except for amd64 and x86 which are automated).&lt;/p&gt;
+&lt;p&gt;Finally, on PaX and grSecurity support, the XATTR patch for tmpfs is now
+in the kernel, and the problem about loosing PaX markings during
+installation is fixed as Portage (2.1.12.9 and higher) now preserves the
+flags during installation (a wrapper on &lt;code&gt;install&lt;/code&gt; is used that preserves
+&lt;code&gt;usr.pax.flags&lt;/code&gt;).&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="irc"></category><category term="irl"></category><category term="meeting"></category><category term="minutes"></category><category term="pax"></category><category term="project"></category><category term="selinux"></category><category term="toolchain"></category></entry><entry><title>Gentoo Hardened goes onward (aka project meeting)</title><link href="http://blog.siphos.be/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/" rel="alternate"></link><published>2013-02-07T23:40:00+01:00</published><updated>2013-02-07T23:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-07:/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/</id><summary type="html">&lt;p&gt;It's been a while again, so time for another Gentoo Hardened online
+progress meeting.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;GCC 4.8 is on development stage 4, so the hardened patches will be
+worked on next week. Some help on it is needed to test the patches on
+ARM, PPC and MIPS though. For …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It's been a while again, so time for another Gentoo Hardened online
+progress meeting.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;GCC 4.8 is on development stage 4, so the hardened patches will be
+worked on next week. Some help on it is needed to test the patches on
+ARM, PPC and MIPS though. For those interested, keep a close eye on the
+hardened-dev overlay as those will contain the latest fixes. When GCC
+4.9 starts development phase 1, Zorry will again try to upstream the
+patches.&lt;/p&gt;
+&lt;p&gt;With the coming fixes, we might probably (need to) remove the various
+hardenedno* GCC profiles from the hardened Gentoo profiles. This
+shouldn't impact too many users as ebuilds add in the correct flags
+anyhow (for instance when needing to turn off PIE/PIC).&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Kernel, grSecurity and PaX&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The kernel release 3.7.0 that we have stable in our tree has seen a few
+setbacks, but no higher version is stable yet (mainly due to the
+stabilization period needed). 3.7.4-r1 and 3.7.5 are prime candidates
+with good track record,&lt;br&gt;
+so we might be stabilizing 3.7.5 in the very near future (next week
+probably).&lt;/p&gt;
+&lt;p&gt;On the PaX flag migration (you know, from ELF-header based marking to
+extended attributes marking), the documentation has seen its necessary
+upgrades and the userland utilities have been updated to reflect the use
+of xattr markings. The eclass we use for the markings will use the
+correct utility based on the environment.&lt;/p&gt;
+&lt;p&gt;One issue faced when trying to support both markings is that some
+actions (like the "paxctl -Cc" which creates the PT_PAX header if it is
+missing) make no sense with the other (as there is no header when using
+XATTR_PAX). The eclass will be updated to ignore these flags when
+XATTR_PAX is selected.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;SELinux&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Revision 10 is stable in the tree, and revision 11 is waiting
+stabilization period. A few more changes have been put in the policy
+repository already (which are installed when using the live ebuilds) and
+will of course be part of&lt;br&gt;
+revision 12.&lt;/p&gt;
+&lt;p&gt;A change in the userland utilities was also pushed out to allow
+permissive domains (so run a single domain in permissive mode instead of
+the entire system).&lt;/p&gt;
+&lt;p&gt;Finally, the SELinux eclass has been updated to remove SELinux modules
+from all defined SELinux module stores if the SELinux policy package is
+removed from the system. Before that, the user had to remove the modules
+from the store himself manually, but this is error-prone and easily
+forgotten, especially for the non-default SELinux policy stores.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Profiles&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;All hardened subprofiles are marked as deprecated now (you've seen the
+discussions on this on the mailinglist probably on this) so we now have
+a sane set of hardened profiles to manage. The subprofiles were used for
+things like&lt;br&gt;
+"desktop" or "server", whereas users can easily stack their profiles as
+they see fit anyhow - so there was little reason for the project to
+continue managing those subprofiles.&lt;/p&gt;
+&lt;p&gt;Also, now that Gentoo has released its 13.0 profile, we will need to
+migrate our profiles to the 13.0 ones as well. So, the idea is to
+temporarily support 13.0 in a subprofile, test it thoroughly, and then
+remove the subprofile and switch the main one to 13.0.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;System Integrity&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The documentation for IMA and EVM is available on the Gentoo Hardened
+project site. They currently still refer to the IMA and EVM subsystems
+as development-only, but they are available in the stable kernels now.
+Especially the default policy that is available in the kernel is pretty
+useful. When you want to consider custom policies (for instance with
+SELinux integration) you'll need a kernel patch that is already
+upstreamed but not applied to the stable kernels yet.&lt;/p&gt;
+&lt;p&gt;To support IMA/EVM, a package called ima-evm-utils is available in the
+hardened-dev overlay, which will be moved to the main tree soon.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Documentation&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;As mentioned before, the PaX documentation has seen quite a lot of
+updates. Other documents that have seen updates are the Hardened FAQ,
+Integrity subproject and SELinux documentation although most of them
+were small changes.&lt;/p&gt;
+&lt;p&gt;Another suggestion given is to clean up the Hardened project page;
+however, there has been some talk within Gentoo to move project pages to
+the Gentoo wiki. Such a move might make the suggestion easier to handle.
+And while on the subject of the wiki, we might want to move user guides
+to the wiki already.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Bugs&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Bug &lt;a href="https://bugs.gentoo.org/443630"&gt;443630&lt;/a&gt; refers to segmentation
+faults with libvirt when starting Qemu domains on a SELinux-enabled
+host. Sadly, I'm not able to test libvirt myself so either someone with
+SELinux and libvirt&lt;br&gt;
+expertise can chime in, or we will need to troubleshoot it by bug
+(using gdb, strace'ing more, ...) which might take quite some time and
+is not user friendly...&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Media&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Various talks where held at FOSDEM regarding Gentoo Hardened, and a lot
+of people attended those talks. Also the round table was quite
+effective, with many users interacting with developers all around. For
+next year, chances are very high that we'll give a "What has changed
+since last year" session and a round table again.&lt;/p&gt;
+&lt;p&gt;With many thanks to the usual suspects: Zorry, blueness, prometheanfire,
+lejonet, klondike and the several dozen contributors that are going to
+kill me for not mentioning their (nick)names.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="meeting"></category><category term="minutes"></category><category term="online"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category></entry></feed>

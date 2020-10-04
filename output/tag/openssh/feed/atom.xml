@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - openssh</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/openssh/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2017-05-18T18:20:00+02:00</updated><entry><title>Matching MD5 SSH fingerprint</title><link href="http://blog.siphos.be/2017/05/matching-md5-ssh-fingerprint/" rel="alternate"></link><published>2017-05-18T18:20:00+02:00</published><updated>2017-05-18T18:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-05-18:/2017/05/matching-md5-ssh-fingerprint/</id><summary type="html">&lt;p&gt;Today I was attempting to update a local repository, when SSH complained
+about a changed fingerprint, something like the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Today I was attempting to update a local repository, when SSH complained
+about a changed fingerprint, something like the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+SHA256:p4ZGs+YjsBAw26tn2a+HPkga1dPWWAWX+NEm4Cv4I9s.
+Please contact your system administrator.
+Add correct host key in /home/user/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /home/user/.ssh/known_hosts:9
+ECDSA host key for 192.168.56.101 has changed and you have requested strict checking.
+Host key verification failed.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+
+
+&lt;p&gt;I checked if the host was changed recently, or the alias through
+which I connected switched host, or the SSH key changed. But that
+wasn't the case. Or at least, it wasn't the case recently, and I
+distinctly remember connecting to the same host two weeks ago.&lt;/p&gt;
+&lt;p&gt;Now, what happened I don't know yet, but I do know I didn't want
+to connect until I reviewed the received SSH key fingerprint. I
+obtained the fingerprint from the administration (who graceously
+documented it on the wiki)...&lt;/p&gt;
+&lt;p&gt;... only to realize that the documented fingerprint are MD5
+hashes (and in hexadecimal result) whereas the key shown by the
+SSH command shows it in base64 SHA256 by default.&lt;/p&gt;
+&lt;p&gt;Luckily, a quick search revealed this &lt;a href="https://superuser.com/questions/929566/sha256-ssh-fingerprint-given-by-the-client-but-only-md5-fingerprint-known-for-se"&gt;superuser&lt;/a&gt;
+post which told me to connect to the host using the
+&lt;code&gt;FingerprintHash md5&lt;/code&gt; option:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -o FingerprintHash=md5 192.168.56.11
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The result is SSH displaying the MD5 hashed fingerprint which I
+can now validate against the documented one. Once I validated that
+the key is the correct one, I accepted the change and continued
+with my endeavour.&lt;/p&gt;
+&lt;p&gt;I later discovered (or, more precisely, have strong assumptions)
+that I had an old elliptic curve key registered in my &lt;code&gt;known_hosts&lt;/code&gt;
+file, which was not used for the communication for quite some time.
+I recently re-enabled elliptic curve support in OpenSSH (with Gentoo's
+USE="-bindist") which triggered the validation of the old key.&lt;/p&gt;</content><category term="Security"></category><category term="openssh"></category><category term="fingerprint"></category><category term="md5"></category></entry><entry><title>Using multiple OpenSSH daemons</title><link href="http://blog.siphos.be/2015/09/using-multiple-openssh-daemons/" rel="alternate"></link><published>2015-09-06T16:37:00+02:00</published><updated>2015-09-06T16:37:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-06:/2015/09/using-multiple-openssh-daemons/</id><summary type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
+and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
+However, I also use this for administrative access to the system, and I tend to
+have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
+&lt;p&gt;For instance, on one …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
+and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
+However, I also use this for administrative access to the system, and I tend to
+have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
+&lt;p&gt;For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Running multiple instances&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Although I might get a similar result with a single OpenSSH instance, I
+prefer to have multiple instances for this. The default OpenSSH port is used
+for the non-administrative access whereas administrative access is on a
+non-default port. This has a number of advantages...&lt;/p&gt;
+&lt;p&gt;First of all, the SSH configurations are simple and clean. No complex
+configurations, and more importantly: easy to manage through configuration
+management tools like &lt;a href="http://saltstack.com/"&gt;SaltStack&lt;/a&gt;, my current favorite
+orchestration/automation tool.&lt;/p&gt;
+&lt;p&gt;Different instances also allow for different operational support services.
+There is different monitoring for end-user SSH access versus administrative
+SSH access. Also the &lt;a href="https://wiki.gentoo.org/wiki/Fail2ban"&gt;fail2ban&lt;/a&gt; configuration
+is different for these instances.&lt;/p&gt;
+&lt;p&gt;I can also easily shut down the non-administrative service while ensuring that
+administrative access remains operational - something important in case of
+changes and maintenance.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dealing with multiple instances and SELinux&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Beyond enabling a non-default port for SSH (i.e. by marking it as &lt;code&gt;ssh_port_t&lt;/code&gt;
+as well) there is little additional tuning necessary, but that doesn't mean that
+there is no additional tuning possible.&lt;/p&gt;
+&lt;p&gt;For instance, we could leverage MCS' categories to only allow users (and thus the
+SSH daemon) access to the files assigned only that category (and not the rest)
+whereas the administrative SSH daemon can access all categories.&lt;/p&gt;
+&lt;p&gt;On an MLS enabled system we could even use different sensitivity levels, allowing
+the administrative SSH to access the full scala whereas the user-facing SSH can
+only access the lowest sensitivity level. But as I don't use MLS myself, I won't go
+into detail for this.&lt;/p&gt;
+&lt;p&gt;A third possibility would be to fine-tune the permissions of the SSH daemons. However,
+that would require different types for the daemon, which requires the daemons to be
+started through different scripts (so that we first transition to dedicated 
+types) before they execute the SSHd binary (which has the &lt;code&gt;sshd_exec_t&lt;/code&gt; type
+assigned).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Requiring pubkey and password authentication&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Recent OpenSSH daemons allow &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining multiple authentication methods&lt;/a&gt;
+before access is granted. This allows the systems to force SSH key authentication first, and then -
+after succesful authentication - require the password to be passed on as well. Or a
+second step such as &lt;a href="https://wiki.archlinux.org/index.php/Google_Authenticator"&gt;Google Authenticator&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;AuthenticationMethods publickey,password
+PasswordAuthentication yes
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I don't use the Google Authenticator, but the &lt;a href="https://developers.yubico.com/yubico-pam/"&gt;Yubico PAM module&lt;/a&gt;
+to require additional authentication through my U2F dongle (so ssh key, password
+and u2f key). Don't consider this three-factor authentication: one thing I know
+(password) and two things I have (U2F and ssh key). It's more that I have a couple
+of devices with a valid SSH key (laptop, tablet, mobile) which are of course targets
+for theft.&lt;/p&gt;
+&lt;p&gt;The chance that both one of those devices is stolen &lt;em&gt;together&lt;/em&gt; with the U2F
+dongle (which I don't keep attached to those devices of course) is somewhat less.&lt;/p&gt;</content><category term="Free Software"></category><category term="openssh"></category><category term="ssh"></category><category term="u2f"></category><category term="selinux"></category></entry><entry><title>Switching OpenSSH to ed25519 keys</title><link href="http://blog.siphos.be/2015/08/switching-openssh-to-ed25519-keys/" rel="alternate"></link><published>2015-08-19T18:26:00+02:00</published><updated>2015-08-19T18:26:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-19:/2015/08/switching-openssh-to-ed25519-keys/</id><summary type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
+on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm"&gt;DSA algorithm&lt;/a&gt;
+for the public key authentication, I started switching the few keys I still had
+using DSA to the suggested &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; algorithm. Of
+course, I wouldn't be a security-interested party if I did not do some additional
+investigation into the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
+on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm"&gt;DSA algorithm&lt;/a&gt;
+for the public key authentication, I started switching the few keys I still had
+using DSA to the suggested &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; algorithm. Of
+course, I wouldn't be a security-interested party if I did not do some additional
+investigation into the DSA versus Ed25519 discussion.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;The issue with DSA&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You might find DSA a bit slower than RSA:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ openssl speed rsa1024 rsa2048 dsa1024 dsa2048
+...
+                  sign    verify    sign/s verify/s
+rsa 1024 bits 0.000127s 0.000009s   7874.0 111147.6
+rsa 2048 bits 0.000959s 0.000029s   1042.9  33956.0
+                  sign    verify    sign/s verify/s
+dsa 1024 bits 0.000098s 0.000103s  10213.9   9702.8
+dsa 2048 bits 0.000293s 0.000339s   3407.9   2947.0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see, RSA verification outperforms DSA in verification, while signing
+with DSA is better than RSA. But for what OpenSSH is concerned, this speed
+difference should not be noticeable on the vast majority of OpenSSH servers.&lt;/p&gt;
+&lt;p&gt;So no, it is not the speed, but the secure state of the DSS standard.&lt;/p&gt;
+&lt;p&gt;The OpenSSH developers find that &lt;a href="http://www.openssh.com/legacy.html"&gt;ssh-dss (DSA) is too weak&lt;/a&gt;,
+which is followed by &lt;a href="http://meyering.net/nuke-your-DSA-keys/"&gt;various&lt;/a&gt; 
+&lt;a href="https://docs.moodle.org/dev/SSH_key"&gt;sources&lt;/a&gt;. Considering the impact of these keys,
+it is important that they follow the state-of-the-art cryptographic services. &lt;/p&gt;
+&lt;p&gt;Instead, they suggest to switch to elliptic curve cryptography based algorithms,
+with Ed25519 and &lt;a href="https://en.wikipedia.org/wiki/Curve25519"&gt;Curve25519&lt;/a&gt; coming out
+on top.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Switch to RSA or ED25519?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Given that RSA is still considered very secure, one of the questions is of
+course if &lt;a href="http://ed25519.cr.yp.to/"&gt;ED25519&lt;/a&gt; is the right choice here or not.
+I don't consider myself anything in cryptography, but I do like to validate stuff
+through academic and (hopefully) reputable sources for information (not that I don't
+trust the OpenSSH and OpenSSL folks, but more from a broader interest in the subject).&lt;/p&gt;
+&lt;p&gt;Ed25519 should be written fully as &lt;em&gt;Ed25519-SHA-512&lt;/em&gt; and is a signature
+algorithm. It uses elliptic curve cryptography as explained on the
+&lt;a href="https://en.wikipedia.org/wiki/EdDSA"&gt;EdDSA wikipedia page&lt;/a&gt;. An often cited
+paper is &lt;a href="http://aspartame.shiftleft.org/papers/fff/fff.pdf"&gt;Fast and compact elliptic-curve cryptography&lt;/a&gt;
+by Mike Hamburg, which talks about the performance improvements, but the main
+paper is called &lt;a href="http://ed25519.cr.yp.to/ed25519-20110705.pdf"&gt;High-speed high-security signatures&lt;/a&gt;
+which introduces the Ed25519 implementation.&lt;/p&gt;
+&lt;p&gt;Of the references I was able to (quickly) go through (not all papers are
+publicly reachable) none showed any concerns about the secure state of the 
+algorithm. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The (simple) process of switching&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Switching to Ed25519 is simple. First, generate the (new) SSH key (below
+just an example run):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh-keygen -t ed25519
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/testuser/.ssh/id_ed25519): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/testuser/.ssh/id_ed25519.
+Your public key has been saved in /home/testuser/.ssh/id_ed25519.pub.
+The key fingerprint is:
+SHA256:RDaEw3tNAKBGMJ2S4wmN+6P3yDYIE+v90Hfzz/0r73M testuser@testserver
+The key&amp;#39;s randomart image is:
++--[ED25519 256]--+
+|o*...o.+*.       |
+|*o+.  +o ..      |
+|o++    o.o       |
+|o+    ... .      |
+| +     .S        |
+|+ o .            |
+|o+.o . . o       |
+|oo+o. . . o ....E|
+| oooo.     ..o+=*|
++----[SHA256]-----+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then, make sure that the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; file contains the public key
+(as generated as &lt;code&gt;id_ed25519.pub&lt;/code&gt;). Don't remove the other keys yet until the
+communication is validated. For me, all I had to do was to update the file in
+the Salt repository and have the master push the changes to all nodes (starting
+with non-production first of course).&lt;/p&gt;
+&lt;p&gt;Next, try to log on to the system using the Ed25519 key:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -i ~/.ssh/id_ed25519 testuser@testserver
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Make sure that your SSH agent is not running as it might still try to revert
+back to another key if the Ed25519 one does not work. You can validate if the
+connection was using Ed25519 through the &lt;code&gt;auth.log&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ sudo tail -f auth.log&lt;/span&gt;
+&lt;span class="go"&gt;Aug 17 21:20:48 localhost sshd[13962]: Accepted publickey for root from \&lt;/span&gt;
+&lt;span class="go"&gt;  192.168.100.1 port 43152 ssh2: ED25519 SHA256:-------redacted----------------&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If this communication succeeds, then you can remove the old key from the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; files.&lt;/p&gt;
+&lt;p&gt;On the client level, you might want to hide &lt;code&gt;~/.ssh/id_dsa&lt;/code&gt; from the SSH agent:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Obsolete - keychain ~/.ssh/id_dsa&lt;/span&gt;
+keychain ~/.ssh/id_ed25519
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If a server update was forgotten, then the authentication will fail and, depending
+on the configuration, either fall back to the regular authentication or fail
+immediately. This gives a nice heads-up to you to update the server, while keeping
+the key handy just in case. Just refer to the old &lt;code&gt;id_dsa&lt;/code&gt; key during the authentication
+and fix up the server.&lt;/p&gt;</content><category term="Free Software"></category><category term="openssh"></category><category term="ssh"></category><category term="gentoo"></category></entry></feed>

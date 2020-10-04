@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - ksm</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/ksm/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-09T03:50:00+02:00</updated><entry><title>Enabling Kernel Samepage Merging (KSM)</title><link href="http://blog.siphos.be/2013/05/enabling-kernel-samepage-merging-ksm/" rel="alternate"></link><published>2013-05-09T03:50:00+02:00</published><updated>2013-05-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-09:/2013/05/enabling-kernel-samepage-merging-ksm/</id><summary type="html">&lt;p&gt;When using virtualization extensively, you will pretty soon hit the
+limits of your system (at least, the resources on it). When the
+virtualization is used primarily for testing (such as in my case), the
+limit is memory. So it makes sense to seek memory optimization
+strategies on such systems. The …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using virtualization extensively, you will pretty soon hit the
+limits of your system (at least, the resources on it). When the
+virtualization is used primarily for testing (such as in my case), the
+limit is memory. So it makes sense to seek memory optimization
+strategies on such systems. The first thing to enable is KSM or &lt;em&gt;Kernel
+Samepage Merging&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;This Linux feature looks for memory pages that the applications have
+marked as being a possible candidate for optimization (sharing) which
+are then reused across multiple processes. The idea is that, especially
+for virtualized environments (but KSM is not limited to that), some
+processes will have the same contents in memory. Without any sharing
+abilities, these memory pages will be unique (meaning at different
+locations in your system's memory). With KSM, such memory pages are
+consolidated to a single page which is then referred to by the various
+processes. When one process wants to modify the page, it is "unshared"
+so that there is no corruption or unwanted modification of data for the
+other processes.&lt;/p&gt;
+&lt;p&gt;Such features are not new - VMWare has it named TPS (&lt;em&gt;Transparent Page
+Sharing&lt;/em&gt;) and Xen calls it "Memory CoW" (Copy-on-Write). One advantage
+of KSM is that it is simple to setup and advantageous for other
+processes as well. For instance, if you host multiple instances of the
+same service (web service, database, tomcat, whatever) there is a high
+chance that several of its memory pages are prime candidates for
+sharing.&lt;/p&gt;
+&lt;p&gt;Now before I do mention that this sharing is only enabled when the
+application has marked it as such. This is done through the &lt;em&gt;madvise()&lt;/em&gt;
+method, where applications mark the memory with &lt;em&gt;MADV_MERGEABLE&lt;/em&gt;,
+meaning that the applications explicitly need to support KSM in order
+for it to be successful. There is work on the way to support transparent
+KSM (such as
+&lt;a href="http://www.phoronix.com/scan.php?page=news_item&amp;amp;px=MTEzMTI"&gt;UKSM&lt;/a&gt; and
+&lt;a href="https://code.google.com/p/pksm/"&gt;PKSM&lt;/a&gt;) where no &lt;em&gt;madvise&lt;/em&gt; calls would
+be needed anymore. But beyond quickly reading the home pages (or
+translated home pages in case of UKSM ;-) I have no experience with
+those projects.&lt;/p&gt;
+&lt;p&gt;So let's get back to KSM. I am currently running three virtual machines
+(all configured to take at most 1.5 Gb of memory). Together, they take
+just a little over 1 Gb of memory (sum of their resident set sizes).
+When I consult KSM, I get the following information:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep -H &amp;#39;&amp;#39; /sys/kernel/mm/ksm/pages_*
+/sys/kernel/mm/ksm/pages_shared:48911
+/sys/kernel/mm/ksm/pages_sharing:90090
+/sys/kernel/mm/ksm/pages_to_scan:100
+/sys/kernel/mm/ksm/pages_unshared:123002
+/sys/kernel/mm/ksm/pages_volatile:1035
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;pages_shared&lt;/code&gt; tells me that 48911 pages are shared (which means
+about 191 Mb) through 90090 references (&lt;code&gt;pages_sharing&lt;/code&gt; - meaning the
+various processes have in total 90090 references to pages that are being
+shared). That means a gain of 41179 pages (160 Mb). Note that the
+resident set sizes do not take into account shared pages, so the sum of
+the RSS has to be subtracted with this to find the "real" memory
+consumption. The &lt;code&gt;pages_unshared&lt;/code&gt; value tells me that 123002 pages are
+marked with the &lt;code&gt;MADV_MERGEABLE&lt;/code&gt; advise flag but are not used by other
+processes.&lt;/p&gt;
+&lt;p&gt;If you want to use KSM yourself, configure your kernel with &lt;code&gt;CONFIG_KSM&lt;/code&gt;
+and start KSM by echo'ing the value "1" into &lt;code&gt;/sys/kernel/mm/ksm/run&lt;/code&gt;.
+That's all there is to it.&lt;/p&gt;</content><category term="Free Software"></category><category term="cow"></category><category term="ksm"></category><category term="kvm"></category><category term="linux"></category><category term="virtualization"></category></entry></feed>

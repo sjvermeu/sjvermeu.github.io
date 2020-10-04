@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>SELinux tutorial series - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2013/03/selinux-tutorial-series/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="articles,documentation,Gentoo,hardened,selinux,tutorials,wiki" />
+        <meta name="description" content="As we get a growing number of SELinux users within Gentoo Hardened and because the SELinux usage at the firm I work at is most likely going to grow as well, I decided to join the bunch of documents on SELinux that are &#34;out there&#34; and start a series of …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="SELinux tutorial series"/>
+        <meta property="og:url" content="http://blog.siphos.be/2013/03/selinux-tutorial-series/"/>
+        <meta property="og:description" content="As we get a growing number of SELinux users within Gentoo Hardened and because the SELinux usage at the firm I work at is most likely going to grow as well, I decided to join the bunch of documents on SELinux that are &#34;out there&#34; and start a series of …"/>
+        <meta property="article:published_time" content="2013-03-15" />
+            <meta property="article:section" content="SELinux" />
+            <meta property="article:tag" content="articles" />
+            <meta property="article:tag" content="documentation" />
+            <meta property="article:tag" content="Gentoo" />
+            <meta property="article:tag" content="hardened" />
+            <meta property="article:tag" content="selinux" />
+            <meta property="article:tag" content="tutorials" />
+            <meta property="article:tag" content="wiki" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/selinux.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... SELinux ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2013/03/selinux-tutorial-series/"
+                       rel="bookmark"
+                       title="Permalink to SELinux tutorial series">
+                        SELinux tutorial series
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-03-15T00:34:00+01:00"> Fri 15 March 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/articles/">articles</a>
+        /
+	<a href="http://blog.siphos.be/tag/documentation/">documentation</a>
+        /
+	<a href="http://blog.siphos.be/tag/gentoo/">Gentoo</a>
+        /
+	<a href="http://blog.siphos.be/tag/hardened/">hardened</a>
+        /
+	<a href="http://blog.siphos.be/tag/selinux/">selinux</a>
+        /
+	<a href="http://blog.siphos.be/tag/tutorials/">tutorials</a>
+        /
+	<a href="http://blog.siphos.be/tag/wiki/">wiki</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>As we get a growing number of SELinux users within Gentoo Hardened and
+because the SELinux usage at the firm I work at is most likely going to
+grow as well, I decided to join the bunch of documents on SELinux that
+are "out there" and start a series of my own. After all, too much
+documentation probably doesn't hurt, and SELinux definitely deserves a
+lot of documentation.</p>
+<p>I decided to use the <a href="https://wiki.gentoo.org">Gentoo Wiki</a> for this
+endeavour instead of a GuideXML approach (which is the format used for
+Gentoo documentation on the main site). The set of tutorials that I
+already wrote can be found under the
+<a href="https://wiki.gentoo.org/wiki/SELinux">SELinux</a> : <a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials">Gentoo Hardened
+SELinux Tutorials</a>
+location. Although of course meant to support the Gentoo Hardened
+SELinux users, I'm hoping to keep the initial set of tutorial articles
+deliberately distribution-independent so I can refer to them at work as
+well.</p>
+<p>For now (this is a week's work, so don't expect this amount of tutorials
+to double in the next few days) I wrote about the security context of a
+process, how SELinux controls file and directory accesses, where to find
+SELinux permission denial details, controlling file contexts yourself
+and how a process gets into a certain context.</p>
+<p>I hope I can keep the articles in good shape and with a gradual step-up
+in complexity. That does mean that most articles are not complete (for
+instance, when talking about domain transitions, I don't talk about
+constraints that might prohibit them, or about the role and type
+mismatches (invalid context) that you might get, etc.) and that those
+details will follow in later articles. Hopefully that allows users to
+learn step by step.</p>
+<p>At the end of each tutorial, you will find a "What you need to remember"
+section. This is a very short overview of what was said in the tutorial
+and that you will need to know in future articles. If you ever read a
+tutorial article, then this section might be sufficient for you to
+remember again what it was about - no need to reread the entire article.</p>
+<p>Consider it an attempt at a <code>tl;dr</code> for articles ;-) Enjoy your reading,
+and if you have any remarks, don't hesitate to contribute on the wiki or
+talk through the "Talk" pages.</p>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'selinux-tutorial-series';
+                var disqus_url = 'http://blog.siphos.be/2013/03/selinux-tutorial-series/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

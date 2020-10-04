@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - encryption</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/encryption/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-10-20T21:29:00+02:00</updated><entry><title>In-browser encryption for online password management</title><link href="http://blog.siphos.be/2013/10/in-browser-encryption-for-online-password-management/" rel="alternate"></link><published>2013-10-20T21:29:00+02:00</published><updated>2013-10-20T21:29:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-10-20:/2013/10/in-browser-encryption-for-online-password-management/</id><summary type="html">&lt;p&gt;Lately I've been trying to find a good free software project that uses
+PHP or cgi-bin (one of the requirements for this particular
+organization) that allows its users to store passwords centrally, but
+uses encryption on the browser level before the passwords are sent to
+the central server. I've found …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately I've been trying to find a good free software project that uses
+PHP or cgi-bin (one of the requirements for this particular
+organization) that allows its users to store passwords centrally, but
+uses encryption on the browser level before the passwords are sent to
+the central server. I've found one -
+&lt;a href="https://www.clipperz.com"&gt;Clipperz&lt;/a&gt; - but was not able to get it to
+build and install.&lt;/p&gt;
+&lt;p&gt;With the continuous revelations regarding hacked sites and servers (and
+even potential snooping into server data by governments) the requirement
+isn't that weird: by using strong encryption (I currently still assume
+that AES-256 is safe for use) on the browser level, no unencrypted
+sensitive data (such as usernames and passwords) would be sent to the
+server, let alone stored (in plain text) on the server database.&lt;/p&gt;
+&lt;p&gt;I did a small test to see how difficult it would be to implement this in
+a simple PHP password management tool called &lt;a href="http://onlinepasswords.sourceforge.net/"&gt;online
+passwords&lt;/a&gt;. The PHP-based
+application does not even use a database, relying on flat-files instead.
+By design, the tool encrypts the data before storing on the file system,
+but I wanted to go a bit further, implementing the in-browser
+encryption. The Javascript AES is provided by
+&lt;a href="http://www.movable-type.co.uk/scripts/aes.html"&gt;movable-type.co.uk&lt;/a&gt; and
+for the hashing algorithm I found &lt;a href="http://pajhome.org.uk/crypt/md5"&gt;pajhome's
+implementation&lt;/a&gt; often cited.&lt;/p&gt;
+&lt;p&gt;The first thing I did was substitute the password information needed to
+log on to the site (and which is also used as encryption key for the
+back-end side encryption) with a hashed version of the password. For the
+application, this hardly matters - it is still the encryption key it
+will use on the backend, although most likely a bit stronger than most
+passwords would be.&lt;/p&gt;
+&lt;p&gt;Next, I keep the real password in a local session storage (which is
+supported by most modern browsers nowadays) so that the user only has to
+enter it once (when logging on to the site) and it is kept in memory
+then, never leaving the browser. This is needed in order to decrypt the
+data as we get it without having to ask the user for the password over
+and over again. Of course, I don't want to keep this password in a
+Cookie (or pass it on through the URL) because that would void the idea
+of keeping the password (reasonably) secure.&lt;/p&gt;
+&lt;p&gt;To accomplish this, I hide the password field of the PHP application
+itself, and create a second input field (outside the &lt;code&gt;&amp;lt;form&amp;gt; &amp;lt;/form&amp;gt;&lt;/code&gt; to
+make sure its value is never POSTed to the site) in which the user
+enters his password. Upon submit of the data, the following javascript
+code will create the hash of the password (and user name) to use as the
+"site password" for the application, and put that in the (hidden) input
+field. It then also stores the site password in the local session
+storage in the browser. The code is triggered through the &lt;em&gt;onSubmit&lt;/em&gt;
+handler of the form.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;function storeAppPassword() {
+  var sitepw = document.getElementById(&amp;#39;password&amp;#39;);
+  var siteus = document.getElementById(&amp;#39;login&amp;#39;);
+  var userpw = document.getElementById(&amp;#39;userpassword&amp;#39;);
+
+  sessionStorage.setItem(&amp;#39;userpassword&amp;#39;, userpw.value);
+  sitepw.value = hex_sha1(siteus.value + userpw.value);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now I need to make sure that the fields that need to be encrypted (the
+various user ids and passwords that are stored on the site) are
+encrypted before they are sent to the server, and decrypted after having
+received them by the browser. For instance, if the fields are within a
+form, the following javascript function could be triggered on the
+&lt;em&gt;onSubmit&lt;/em&gt; handler again:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;function encryptFields() {
+  var useridFld = document.getElementById(&amp;#39;userid&amp;#39;);
+  var passwordFld = document.getElementById(&amp;#39;password&amp;#39;);
+  var notesFld = document.getElementById(&amp;#39;notes&amp;#39;);
+
+  var pw = sessionStorage.getItem(&amp;#39;userpassword&amp;#39;);
+  useridFld.value = Aes.Ctr.encrypt(useridFld.value, pw, 256);
+  passwordFld.value = Aes.Ctr.encrypt(passwordFld.value, pw, 256);
+  notesFld.value = Aes.Ctr.encrypt(notesFld.value, pw, 256);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Similarly, to decrypt the fields (inside the same form), that part of
+the code would become:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;useridFld.value = Aes.Ctr.decrypt(useridFld.value, pw, 256);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Decryption of the fields can be called by a simple javascript call at
+the end of the page.&lt;/p&gt;
+&lt;p&gt;If the data is within regular fields (non-form related), such as a
+table, you'll need to find the right DOM element and call the decryption
+function there.&lt;/p&gt;
+&lt;p&gt;With those few changes, I was able to get it up and running quickly. I
+don't think I'll use the PHP application itself in production though, as
+it doesn't look like it sanitizes the field data in the PHP code and it
+starts to show performance issues when called with only a few hundred
+accounts, each having a few dozen passwords. But that hardly matters for
+this post where I want to point out that it isn't that hard to put some
+higher security on such sites.&lt;/p&gt;
+&lt;p&gt;The big downside right now is that, if the user forgets his password, he
+wont have access to all his data (similar to the Clipperz one). And
+unlike Clipperz, the approach above does not allow for password changes
+yet (although it doesn't look that hard to implement some logic
+decrypting and re-encrypting the data with a different password if that
+comes about). An approach to resolve that would be to encrypt all data
+with a static key, and then encrypt that key with the password, storing
+the encrypted key on the server. A password change only requires a
+decrypt/encrypt of the key while all values remain encrypted with the
+static key.&lt;/p&gt;
+&lt;p&gt;Moral of the story: application managers of web password storage sites:
+please add in-browser encryption for those of us that want to make
+*really* sure that no sensitive data is sent over unencrypted (I don't
+count SSL/TLS as that "ends" at the remote side while this one is full
+end-to-end encryption).&lt;/p&gt;</content><category term="Security"></category><category term="aes"></category><category term="encryption"></category><category term="javascript"></category><category term="password"></category><category term="passwordmanagement"></category></entry></feed>

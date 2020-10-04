@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - security</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/security/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2017-09-11T18:25:00+02:00</updated><entry><title>Authenticating with U2F</title><link href="http://blog.siphos.be/2017/09/authenticating-with-u2f/" rel="alternate"></link><published>2017-09-11T18:25:00+02:00</published><updated>2017-09-11T18:25:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-09-11:/2017/09/authenticating-with-u2f/</id><summary type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
+sources&lt;/a&gt;, I now enabled two-factor authentication through my Yubico U2F
+USB device. Well, at least for local access - remote access through SSH requires
+both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
+sources&lt;/a&gt;, I now enabled two-factor authentication through my Yubico U2F
+USB device. Well, at least for local access - remote access through SSH requires
+both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication
+methods in OpenSSH&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Enabling U2F on (Gentoo) Linux is fairly easy. The various guides online which talk
+about the &lt;code&gt;pam_u2f&lt;/code&gt; setup are indeed correct that it is fairly simple. For completeness
+sake, I've documented what I know on the Gentoo Wiki, as the &lt;a href="https://wiki.gentoo.org/wiki/Pam_u2f"&gt;pam_u2f article&lt;/a&gt;.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;The setup, basically&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The setup of U2F is done in a number of steps:
+1. Validate that the kernel is ready for the USB device
+2. Install the PAM module and supporting tools
+3. Generate the necessary data elements for each user (keys and such)
+4. Configure PAM to require authentication through the U2F key&lt;/p&gt;
+&lt;p&gt;For the kernel, the configuration item needed is the raw HID device support.
+Now, in current kernels, two settings are available that both talk about
+raw HID device support: &lt;code&gt;CONFIG_HIDRAW&lt;/code&gt; is the general raw HID device support,
+while &lt;code&gt;CONFIG_USB_HIDDEV&lt;/code&gt; is the USB-specific raw HID device support.&lt;/p&gt;
+&lt;p&gt;It is very well possible that only a single one is needed, but both where active
+on my kernel configuration already, and Internet sources are not clear which one is
+needed, so let's assume for now both are.&lt;/p&gt;
+&lt;p&gt;Next, the PAM module needs to be installed. On Gentoo, this is a matter of installing
+the &lt;code&gt;pam\_u2f&lt;/code&gt; package, as the necessary dependencies will be pulled in automatically:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge pam_u2f
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next, for each user, a registration has to be made. This registration is needed for the
+U2F components to be able to correctly authenticate the use of a U2F key for a particular
+user. This is done with &lt;code&gt;pamu2fcfg&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ pamu2fcfg -u&amp;lt;username&amp;gt; &amp;gt; ~/.config/Yubico/u2f_keys
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The U2F USB key must be plugged in when the command is executed, as a succesful keypress (on the
+U2F device) is needed to complete the operation.&lt;/p&gt;
+&lt;p&gt;Finally, enable the use of the &lt;code&gt;pam\_u2f&lt;/code&gt; module in PAM. On my system, this is done
+through the &lt;code&gt;/etc/pam.d/system-local-login&lt;/code&gt; PAM configuration file used by all
+local logon services.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auth     required     pam_u2f.so
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Consider the problems you might face&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When fiddling with PAM, it is important to keep in mind what could fail. During the setup, it
+is recommended to have an open administrative session on the system so that you can validate if
+the PAM configuration works, without locking yourself out of the system.&lt;/p&gt;
+&lt;p&gt;But other issues need to be considered as well.&lt;/p&gt;
+&lt;p&gt;My Yubico U2F USB key might have a high MTBF (Mean Time Between Failures) value, but once it fails,
+it would lock me out of my workstation (and even remote services and servers that use it). For
+that reason, I own a second one, safely stored, but is a valid key nonetheless for my workstation
+and remote systems/services. Given the low cost of a simple U2F key, it is a simple solution for
+this threat.&lt;/p&gt;
+&lt;p&gt;Another issue that could come up is a malfunction in the PAM module itself. For me, this is handled
+by having remote SSH access done without this PAM module (although other PAM modules are still involved,
+so a generic PAM failure itself wouldn't resolve this). Of course, worst case, the system needs to be
+rebooted in single user mode.&lt;/p&gt;
+&lt;p&gt;One issue that I faced was the SELinux policy. Some applications that provide logon services don't have
+the proper rights to handle U2F, and because PAM just works in the address space (and thus SELinux
+domain) of the application, the necessary privileges need to be added to these services. My initial
+investigation revealed the following necessary policy rules (refpolicy-style);&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;udev_search_pids(...)
+udev_read_db(...)
+dev_rw_generic_usb_dev(...)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first two rules are needed because the operation to trigger the USB key uses the udev tables
+to find out where the key is located/attached, before it interacts with it. This interaction is then
+controlled through the first rule.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Simple yet effective&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Enabling the U2F authentication on the system is very simple, and gives a higher confidence that
+malicious activities through regular accounts will have it somewhat more challenging to switch to
+a more privileged session (one control is the SELinux policy of course, but for those domains that
+are allowed to switch then the PAM-based authentication is another control), as even evesdropping on
+my password (or extracting it from memory) won't suffice to perform a successful authentication.&lt;/p&gt;
+&lt;p&gt;If you want to use a different two-factor authentication, check out the use of the &lt;a href="https://wiki.gentoo.org/wiki/Google_Authenticator"&gt;Google
+authenticator&lt;/a&gt;, another nice article on the Gentoo wiki. It is also possible to use Yubico keys
+for remote authentication, but that uses the OTP (One Time Password) functionality which isn't active
+on the Yubico keys that I own.&lt;/p&gt;</content><category term="Security"></category><category term="gentoo"></category><category term="security"></category><category term="yubico"></category><category term="u2f"></category><category term="pam"></category></entry><entry><title>Audit buffering and rate limiting</title><link href="http://blog.siphos.be/2015/05/audit-buffering-and-rate-limiting/" rel="alternate"></link><published>2015-05-10T14:18:00+02:00</published><updated>2015-05-10T14:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-10:/2015/05/audit-buffering-and-rate-limiting/</id><summary type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+experiments, sometimes you'll get in touch with a message similar to the
+following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
+audit: backlog limit exceeded
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;!-- PELICAN_END_SUMMMARY --&gt;
+
+&lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+experiments, sometimes you'll get in touch with a message similar to the
+following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
+audit: backlog limit exceeded
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;!-- PELICAN_END_SUMMMARY --&gt;
+
+&lt;p&gt;The message shows up when certain audit events could not be logged
+through the audit subsystem. Depending on the system configuration, they
+might be either ignored, sent through the kernel logging infrastructure
+or even have the system panic. And if the messages are sent to the
+kernel log then they might show up, but even that log has its
+limitations, which can lead to output similar to the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;__ratelimit: 53 callbacks suppressed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this post, I want to give some pointers in configuring the audit
+subsystem as well as understand these messages...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;There is auditd and kauditd&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you take a look at the audit processes running on the system, you'll
+notice that (assuming Linux auditing is used of course) two processes
+are running:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# ps -ef | grep audit
+root      1483     1  0 10:11 ?        00:00:00 /sbin/auditd
+root      1486     2  0 10:11 ?        00:00:00 [kauditd]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;/sbin/auditd&lt;/code&gt; daemon is the user-space audit daemon. It &lt;a href="http://man7.org/linux/man-pages/man3/audit_open.3.html"&gt;registers
+itself&lt;/a&gt; with the
+Linux kernel audit subsystem (through the audit netlink system), which
+responds with spawning the &lt;code&gt;kauditd&lt;/code&gt; kernel thread/process. The fact
+that the process is a kernel-level one is why the &lt;code&gt;kauditd&lt;/code&gt; is
+surrounded by brackets in the &lt;code&gt;ps&lt;/code&gt; output.&lt;/p&gt;
+&lt;p&gt;Once this is done, audit messages are communicated through the netlink
+socket to the user-space audit daemon. For the detail-oriented people
+amongst you, look for the &lt;em&gt;kauditd_send_skb()&lt;/em&gt; method in the
+&lt;a href="http://lxr.free-electrons.com/source/kernel/audit.c"&gt;kernel/audit.c&lt;/a&gt;
+file. Now, generated audit event messages are not directly relayed to
+the audit daemon - they are first queued in a sort-of backlog, which is
+where the backlog-related messages above come from.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Audit backlog queue&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the kernel-level audit subsystem, a socket buffer queue is used to
+hold audit events. Whenever a new audit event is received, it is logged
+and prepared to be added to this queue. Adding to this queue can be
+controlled through a few parameters.&lt;/p&gt;
+&lt;p&gt;The first parameter is the backlog limit. Be it through a kernel boot
+parameter (&lt;code&gt;audit_backlog_limit=N&lt;/code&gt;) or through a message relayed by the
+user-space audit daemon (&lt;code&gt;auditctl -b N&lt;/code&gt;), this limit will ensure that a
+queue cannot grow beyond a certain size (expressed in the amount of
+messages). If an audit event is logged which would grow the queue beyond
+this limit, then a failure occurs and is handled according to the system
+configuration (more on that later).&lt;/p&gt;
+&lt;p&gt;The second parameter is the rate limit. When more audit events are
+logged within a second than set through this parameter (which can be
+controlled through a message relayed by the user-space audit system,
+using &lt;code&gt;auditctl -r N&lt;/code&gt;) then those audit events are not added to the
+queue. Instead, a failure occurs and is handled according to the system
+configuration.&lt;/p&gt;
+&lt;p&gt;Only when the limits are not reached is the message added to the queue,
+allowing the user-space audit daemon to consume those events and log
+those according to the audit configuration. There are some good
+resources on audit configuration available on the Internet. I find &lt;a href="http://webapp5.rrz.uni-hamburg.de/SuSe-Dokumentation/manual/sles-manuals_en/cha.audit.comp.html"&gt;this
+SuSe
+chapter&lt;/a&gt;
+worth reading, but many others exist as well.&lt;/p&gt;
+&lt;p&gt;There is a useful command related to the subject of the audit backlog
+queue. It queries the audit subsystem for its current status:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# auditctl -s
+AUDIT_STATUS: enabled=1 flag=1 pid=1483 rate_limit=0 backlog_limit=8192 lost=3 backlog=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The command displays not only the audit state (enabled or not) but also
+the settings for rate limits (on the audit backlog) and backlog limit.
+It also shows how many events are currently still waiting in the backlog
+queue (which is zero in our case, so the audit user-space daemon has
+properly consumed and logged the audit events).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Failure handling&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If an audit event cannot be logged, then this failure needs to be
+resolved. The Linux audit subsystem can be configured do either silently
+discard the message, switch to the kernel log subsystem, or panic. This
+can be configured through the audit user-space (&lt;code&gt;auditctl -f [0..2]&lt;/code&gt;),
+but is usually left at the default (which is 1, being to switch to the
+kernel log subsystem).&lt;/p&gt;
+&lt;p&gt;Before that is done, the message is displayed which reveals the cause of
+the failure handling:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
+audit: backlog limit exceeded
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this case, the backlog queue was set to contain at most 320 entries
+(which is low for a production system) and more messages were being
+added (the Linux kernel in certain cases allows to have a few more
+entries than configured for performance and consistency reasons). The
+number of events already lost is displayed, as well as the current
+limitation settings. The message "backlog limit exceeded" can be "rate
+limit exceeded" if that was the limitation that was triggered.&lt;/p&gt;
+&lt;p&gt;Now, if the system is not configured to silently discard it, or to panic
+the system, then the "dropped" messages are sent to the kernel log
+subsystem. The calls however are also governed through a configurable
+limitation: it uses a rate limit which can be set through &lt;code&gt;sysctl&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sysctl -a | grep kernel.printk_rate
+kernel.printk_ratelimit = 5
+kernel.printk_ratelimit_burst = 10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the above example, this system allows one message every 5 seconds,
+but does allow a burst of up to 10 messages at once. When the rate
+limitation kicks in, then the kernel will log (at most one per second)
+the number of suppressed events:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Although this limit is kernel-wide, not all kernel log events are
+governed through it. It is the caller subsystem (in our case, the audit
+subsystem) which is responsible for having its events governed through
+this rate limitation or not.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Finishing up&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Before waving goodbye, I would like to point out that the backlog queue
+is a memory queue (and not &lt;a href="https://access.redhat.com/solutions/19327"&gt;on disk, Red
+Hat&lt;/a&gt;), just in case it wasn't
+obvious. Increasing the queue size can result in more kernel memory
+consumption. Apparently, a &lt;a href="https://www.redhat.com/archives/linux-audit/2011-October/msg00007.html"&gt;practical size
+estimate&lt;/a&gt;
+is around 9000 bytes per message. On production systems, it is advised
+not to make this setting too low. I personally set it to 8192.&lt;/p&gt;
+&lt;p&gt;Lost audit events might result in difficulties for troubleshooting,
+which is the case when dealing with new or experimental SELinux
+policies. It would also result in missing security-important events. It
+is the audit subsystem, after all. So tune it properly, and enjoy the
+power of Linux' audit subsystem.&lt;/p&gt;</content><category term="Free Software"></category><category term="audit"></category><category term="kernel"></category><category term="security"></category><category term="selinux"></category></entry><entry><title>Talk about SELinux on GSE Linux/Security</title><link href="http://blog.siphos.be/2014/03/talk-about-selinux-on-gse-linuxsecurity/" rel="alternate"></link><published>2014-03-25T23:11:00+01:00</published><updated>2014-03-25T23:11:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-25:/2014/03/talk-about-selinux-on-gse-linuxsecurity/</id><summary type="html">&lt;p&gt;On today's &lt;a href="http://www.gsebelux.com"&gt;GSE Linux / GSE Security&lt;/a&gt; meeting
+(in cooperation with
+&lt;a href="http://www.imug.be/events_be/IMUG_LinuxSecurity_Event.asp"&gt;IMUG&lt;/a&gt;) I
+gave a small (30 minutes) presentation about what SELinux is. The
+&lt;a href="http://dev.gentoo.org/~swift/blog/201403/20140325_GSE_SELinux.pdf"&gt;slides are
+online&lt;/a&gt;
+and cover two aspects of SELinux: some of its design principles, and
+then a set of features provided by SELinux. The talk is directed …&lt;/p&gt;</summary><content type="html">&lt;p&gt;On today's &lt;a href="http://www.gsebelux.com"&gt;GSE Linux / GSE Security&lt;/a&gt; meeting
+(in cooperation with
+&lt;a href="http://www.imug.be/events_be/IMUG_LinuxSecurity_Event.asp"&gt;IMUG&lt;/a&gt;) I
+gave a small (30 minutes) presentation about what SELinux is. The
+&lt;a href="http://dev.gentoo.org/~swift/blog/201403/20140325_GSE_SELinux.pdf"&gt;slides are
+online&lt;/a&gt;
+and cover two aspects of SELinux: some of its design principles, and
+then a set of features provided by SELinux. The talk is directed towards
+less technical folks - still IT of course, but not immediately involved
+in daily operations - so no commands and example/output.&lt;/p&gt;
+&lt;p&gt;SELinux came across the board a few times during the entire day. In the
+talks about &lt;em&gt;Open Source Security&lt;/em&gt; and &lt;em&gt;Security Guidelines for z/VM and
+Linux on System z&lt;/em&gt; SELinux came (of course) up as the technology of
+choice for providing in-operating system mandatory access control (on
+the zEnterprise' Z/VM level - the hypervisor - this is handled through
+RACF Mandatory Access Control) and the &lt;em&gt;Security Enablement on Virtual
+Machines&lt;/em&gt; had SELinux in the front line for the sVirt security
+protection measures (which focuses on the segregation through MLS
+categories).&lt;/p&gt;
+&lt;p&gt;And during the talk about &lt;em&gt;A customer story about logging and audit&lt;/em&gt;,
+well, you can guess which technology is also one of the many sources of
+logging. Right. SELinux ;-)&lt;/p&gt;
+&lt;p&gt;Anyway, if your company is interested in such GSE events, make sure to
+follow the &lt;a href="http://www.gsebelux.com"&gt;gsebelux.com&lt;/a&gt; site for updates.
+It's a great way for networking as well as sharing experiences.&lt;/p&gt;</content><category term="Security"></category><category term="gse"></category><category term="mainframe"></category><category term="s390x"></category><category term="security"></category><category term="selinux"></category><category term="zenterprise"></category></entry><entry><title>Putting OVAL at work</title><link href="http://blog.siphos.be/2013/08/putting-oval-at-work/" rel="alternate"></link><published>2013-08-01T15:01:00+02:00</published><updated>2013-08-01T15:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/putting-oval-at-work/</id><summary type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
+you might get the feeling of "How does this work". The underlying
+interfaces, like OVAL and XCCDF, might seem a bit daunting to implement.&lt;/p&gt;
+&lt;p&gt;This is correct, but you need to remember that the standards are
+protocols, agreements that can be made …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
+you might get the feeling of "How does this work". The underlying
+interfaces, like OVAL and XCCDF, might seem a bit daunting to implement.&lt;/p&gt;
+&lt;p&gt;This is correct, but you need to remember that the standards are
+protocols, agreements that can be made across products so that several
+products, each with their own expertise, can work together easily. It is
+a matter of interoperability between components.&lt;/p&gt;
+&lt;p&gt;Let's look at the following diagram to see how OVAL and XCCDF &lt;em&gt;can&lt;/em&gt; be
+used. I'm not saying this is the only way forward, but it is a possible
+approach.&lt;/p&gt;
+&lt;p&gt;(Diagram lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;On the local side (and local here doesn't mean a single server, but
+rather an organization or company) a list of checks is maintained. These
+checks are OVAL checks, which can be downloaded from reputable sites
+like NVD or are given to you by vendors (some vendors provide OVAL as
+part of vulnerability reports). Do not expect this list to be hundreds
+of checks - start small, the local database of checks will grow anyhow.&lt;/p&gt;
+&lt;p&gt;The advantage is that the downloaded checks (OVALs) already have a
+unique identifier (the OVAL ID). For instance, the check "Disable Java
+in Firefox" for Windows is &lt;code&gt;oval:org.mitre.oval:def:12609&lt;/code&gt;. If
+additional Windows operating systems are added, this ID remains the same
+(it is updated) because the check (and purpose) remains the same.&lt;/p&gt;
+&lt;p&gt;Locally, the OVAL checks are ran against targets by an OVAL interpreter.
+Usually, you will have multiple interpreters in the organization, some
+of them focused on desktops, some on servers, some perhaps on network
+equipment, etc. By itself that doesn't matter, as long as they interpret
+the OVAL checks. The list of targets to check against are usually
+managed in a configuration management database.&lt;/p&gt;
+&lt;p&gt;Targets can be of various granularity. The "Disable Java in Firefox"
+will be against an operating system (where the check then sees if the
+installed Firefox indeed has the setting disabled), but a check that
+validates the permissions (rights) of a user will be against this user
+account.&lt;/p&gt;
+&lt;p&gt;The results of the OVAL checks are stored in a database that maps the
+result against the target. By itself this result database does not
+contain much more logic than "This rule is OK against this target and
+that rule isn't" (well, there is some granularity, but not much more)
+and the time stamp when this was done.&lt;/p&gt;
+&lt;p&gt;Next comes the XCCDF. XCCDF defines the state that you want the system
+to be in. It is a benchmark, a document describing how the system /
+target should be configured. XCCDF documents usually contain the whole
+shebang of configuration settings, and then differentiate them based on
+profiles. For instance, a web server attached to the Internet might have
+a different profile than a web server used internally or for development
+purposes.&lt;/p&gt;
+&lt;p&gt;The XCCDF document refers to OVAL checks, and thus uses the results from
+the OVAL result database to see if a target is fully aligned with the
+requirements or not. The XCCDF results themselves are also stored, often
+together with exceptions (if any) that are approved (for instance, you
+want to keep track of the workstations where Java &lt;em&gt;is&lt;/em&gt; enabled in
+Firefox and only report for those systems where it is enabled by the
+user without approval). Based on these results, reports can be generated
+on the state of your park.&lt;/p&gt;
+&lt;p&gt;Not all checks are already available as OVAL checks. Of course you can
+write them yourself, but there are also other possibilities. Next to
+OVAL, there are (less standardized) methods for doing checks which
+integrate with XCCDF as well. The idea you'll need to focus on then is
+the same as with OVAL: what is your source, how do you store it, you
+need interpreters that can "play" it, and on the reporting side you'll
+need to store the results so you can combine them later in your
+reporting.&lt;/p&gt;</content><category term="Security"></category><category term="baseline"></category><category term="benchmark"></category><category term="oval"></category><category term="security"></category><category term="xccdf"></category></entry><entry><title>Gentoo metadata support for CPE</title><link href="http://blog.siphos.be/2013/05/gentoo-metadata-support-for-cpe/" rel="alternate"></link><published>2013-05-10T03:50:00+02:00</published><updated>2013-05-10T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-10:/2013/05/gentoo-metadata-support-for-cpe/</id><summary type="html">&lt;p&gt;Recently, the &lt;code&gt;metadata.xml&lt;/code&gt; file syntax definition (the DTD for those
+that know a bit of XML) has been updated to support CPE definitions. A
+&lt;a href="https://nvd.nist.gov/cpe.cfm"&gt;CPE&lt;/a&gt; (Common Platform Enumeration) is an
+identifier that
+&lt;a href="http://cpe.mitre.org/specification/index.html"&gt;describes&lt;/a&gt; an
+application, operating system or hardware device using its vendor,
+product name, version, update, edition and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Recently, the &lt;code&gt;metadata.xml&lt;/code&gt; file syntax definition (the DTD for those
+that know a bit of XML) has been updated to support CPE definitions. A
+&lt;a href="https://nvd.nist.gov/cpe.cfm"&gt;CPE&lt;/a&gt; (Common Platform Enumeration) is an
+identifier that
+&lt;a href="http://cpe.mitre.org/specification/index.html"&gt;describes&lt;/a&gt; an
+application, operating system or hardware device using its vendor,
+product name, version, update, edition and language. This CPE
+information is used in the CVE releases (Common Vulnerabilities and
+Exposures) - announcements about vulnerabilities in applications,
+operating systems or hardware. Not all security vulnerabilities are
+assigned a CVE number, but this is as close as you get towards a
+(public) elaborate dictionary of vulnerabilities.&lt;/p&gt;
+&lt;p&gt;By allowing Gentoo package maintainers to enter (part of) the CPE
+information in the &lt;code&gt;metadata.xml&lt;/code&gt; file, applications that parse the CVE
+information can now more easily match if software installed on Gentoo is
+related to a CVE. I had a &lt;a href="http://blog.siphos.be/2013/04/matching-packages-with-cves/"&gt;related
+post&lt;/a&gt; to
+this not that long ago on my blog and I'm glad this change has been
+made. With this information at hand, we can start feeding CPE
+information to the packages and then easily match this with CVEs.&lt;/p&gt;
+&lt;p&gt;I had a request to "provide" the scripts I used for the previous post.
+Mind you, these are taking too many assumptions (and probably wrong
+ones) for now (and I'm not really planning on updating them as I have
+different methods for getting information related to CVEs), but I'm
+planning on integrating CPE data in Gentoo's packages more and then
+create a small script that generates a "watchlist" that I can feed to
+&lt;a href="http://cvechecker.sourceforge.net"&gt;cvechecker&lt;/a&gt;. But anyway, here are
+the scripts.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://dev.gentoo.org/~swift/blog/01/0_createcve.txt"&gt;First&lt;/a&gt;, I took
+all CVE information and put it in a simple CSV file. The CSV is the same
+one used by cvechecker, so check out the application to see where it
+fetches the data from (there is a CVE RSS feed and a simple XSL
+transformation).
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/1_createhitlist.txt"&gt;Second&lt;/a&gt;, I
+create a "hitlist" which generates the CPEs. With the recent change to
+&lt;code&gt;metadata.xml&lt;/code&gt; this step can be simplified a lot.
+&lt;a href="http://dev.gentoo.org/~swift/blog/01/2_matchcve.txt"&gt;Third&lt;/a&gt;, I try to
+match the CPE data with the CVE data, depending on a given time delay of
+commits. In other words, you can ask possible CVE fixes for commits made
+in the last few XXX days.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cpe"></category><category term="cve"></category><category term="Gentoo"></category><category term="metadata"></category><category term="security"></category></entry><entry><title>Mitigating DDoS attacks</title><link href="http://blog.siphos.be/2013/04/mitigating-ddos-attacks/" rel="alternate"></link><published>2013-04-22T03:50:00+02:00</published><updated>2013-04-22T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-22:/2013/04/mitigating-ddos-attacks/</id><summary type="html">&lt;p&gt;Lately, DDoS attacks have been in the news more than I was hoping for.
+It seems that the botnets or other methods that are used to generate
+high-volume traffic to a legitimate service are becoming more and more
+easy to get and direct. At the time that I'm writing this …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately, DDoS attacks have been in the news more than I was hoping for.
+It seems that the botnets or other methods that are used to generate
+high-volume traffic to a legitimate service are becoming more and more
+easy to get and direct. At the time that I'm writing this post (a few
+days before its published though), the popular
+&lt;a href="http://www.reddit.com"&gt;Reddit&lt;/a&gt; site is undergoing a DDoS attack which I
+hope will be finished (or mitigated) soon.&lt;/p&gt;
+&lt;p&gt;But what can a service do against DDoS attacks? After all, DDoS is like
+gasping for air if you can't swim and are (almost) drowning: the air is
+the legitimate traffic, but the water is overwhelming and your mouth,
+pharynx and trachea just aren't made to deal with this properly. And
+unlike specific Denial-of-Service attacks that use a vulnerability or
+malcrafted URL, you cannot just install some filter or upgrade a
+component to be safe again.&lt;/p&gt;
+&lt;p&gt;Methods for mitigating DDoS attacks (beyond increasing your bandwidth as
+that is very expensive and the botnets involved can go &lt;a href="http://arstechnica.com/security/2013/04/fueled-by-super-botnets-ddos-attacks-grow-meaner-and-ever-more-powerful/"&gt;up to 130
+Gbps&lt;/a&gt;,
+not a bandwidth you are probably willing to pay for if legitimate
+services on your site have enough with 10 Mbps) that come to mind are of
+all sorts of "classes"...&lt;/p&gt;
+&lt;p&gt;Configure your servers and services that they &lt;strong&gt;stay alive under
+pressure&lt;/strong&gt;. Look for the sweet spot where performance of the services is
+still stable where a higher load means performance degradation. If you
+have some experience with load testing, you know that throughput on a
+service initially goes up linearly with the load (first phase). Then, it
+slows down (but still rises - phase 2) up to a point that, when you
+increase the load even further just a bit, the service degrades (and
+sometimes doesn't even get back to its feed when you remove the
+additional load again - phase3). You need to look for the spot where
+load and performance is stable (somewhere at the middle of the second
+phase) and configure your systems so that additional load is dropped.
+Yes, this means that the DDoS will be more effective, but also means
+that your systems can easily get back up to their feet when the attack
+has finished (and you get a more predictable load and consequences).&lt;/p&gt;
+&lt;p&gt;Investigate if you can have a &lt;strong&gt;backup service&lt;/strong&gt; that has a higher
+throughput ability (with reduced functionality). If the DDoS attack
+focuses on the system resources rather than network resources involved,
+such a backup "lighter" service can be used to still provide basic
+functionality (for instance a more static website), but even in case of
+network resource consumption it can have the advantage that the network
+consumption that your servers are placing (while replying to the
+requests) are lower.&lt;/p&gt;
+&lt;p&gt;Depending on the service you offer (and financial means you have at your
+disposal) you can look at &lt;strong&gt;redirecting traffic&lt;/strong&gt; to more specialized
+services. Companies like &lt;a href="http://www.prolexic.com"&gt;Prolexic&lt;/a&gt; have
+systems that "scrub" the DDoS traffic from all traffic and only send
+legitimate requests to your systems. There are several methods for
+redirecting load, but a common one is to change the DNS records for your
+service(s) to point to the addresses of those specialized services
+instead. The lower the TTL (Time To Live) is of the records, the faster
+the redirect might take place. If you want to be able to handle an
+increase in load without specialized services, you might want to be able
+to redirect traffic to cloud services (where you host your service as
+well) which are generally capable of handling higher throughput than
+your own equipment (but this too comes at an additional cost).&lt;/p&gt;
+&lt;p&gt;Some people mention that you can &lt;strong&gt;switch IP address&lt;/strong&gt;. This is true
+only if the DDoS attack is targeting IP addresses and not (DNS-resolved)
+URIs. You could set up additional IP addresses that are not registered
+in DNS (yet) and during the attack, extend the service resolving towards
+the additional addresses as well. If you do not notice a load spread of
+the DDoS attack towards the new addresses, you can remove the old
+addresses from DNS. But again, this won't work generally - not only are
+most DDoS attacks using DNS-resolved URIs, most of the time attackers
+are actively involved in the attack and will quickly notice if such a
+"failover" has occurred (and react against it).&lt;/p&gt;
+&lt;p&gt;Depending on your relationship with your provider or location service,
+you can ask if the edge routers (preferably those of the ISP) can have
+&lt;strong&gt;fallback source filtering rules&lt;/strong&gt; available to quickly enable. Those
+fallback rules would then only allow traffic from networks that you know
+most (all?) of your customers and clients are at. This isn't always
+possible, but if you have a service that targets mainly people within
+your country, have the filter only allow traffic from networks of that
+country. If the DDoS attack uses geographically spread resources, it
+might be that the number of bots inside those allowed networks are low
+enough that your service can continue.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Configure your firewalls&lt;/strong&gt; (and ask that your ISP does the same) to
+not accept (drop) traffic not expected. If the services on your
+architecture do not use external DNS, then you can drop incoming DNS
+response packets (a popular DDoS attack method is by using spoofed
+addresses towards open DNS resolvers; called a DNS reflection attack).&lt;/p&gt;
+&lt;p&gt;And finally, if you are not bound to a single data center, you might
+want to spread services across &lt;strong&gt;multiple locations&lt;/strong&gt;. Although more
+difficult from a management point of view, a dispersed/distributed
+architecture allows other services to continue running while one is
+being attacked.&lt;/p&gt;</content><category term="Security"></category><category term="ddos"></category><category term="dns"></category><category term="mitigation"></category><category term="security"></category></entry><entry><title>How far reaching vulnerabilities can go</title><link href="http://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/" rel="alternate"></link><published>2013-04-09T19:39:00+02:00</published><updated>2013-04-09T19:39:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-09:/2013/04/how-far-reaching-vulnerabilities-can-go/</id><summary type="html">&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
+significant security vulnerability. The PostgreSQL team announced it up
+front and communicated how they would deal with the vulnerability (which
+basically comes down to saying that it is severe, that the public
+repositories will be temporarily …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
+significant security vulnerability. The PostgreSQL team announced it up
+front and communicated how they would deal with the vulnerability (which
+basically comes down to saying that it is severe, that the public
+repositories will be temporarily frozen as developers add in the
+necessary fixes and start building the necessary software for a new
+release, and at the release moment give more details about the
+vulnerability.&lt;/p&gt;
+&lt;p&gt;The exploitability of the vulnerability was quickly identified, and we
+know that compromises wouldn't take long. A &lt;a href="http://schemaverse.tumblr.com/post/47312545952/the-schemaverse-was-hacked"&gt;blog
+post&lt;/a&gt;
+from the schemaverse tells us that exploits won't take long (less than
+24 hours) and due to the significance of the vulnerability, it cannot be
+stressed enough that patching should really be part of the minimal
+security requirements of any security-conscious organization. But
+patching alone isn't the only thing to consider.&lt;/p&gt;
+&lt;p&gt;The notice that PostgreSQL mentions also that restricting access to the
+database through &lt;code&gt;pg_hba.conf&lt;/code&gt; isn't sufficient, as the vulnerable code
+is executed before the &lt;code&gt;pg_hba.conf&lt;/code&gt; file is read. So one of the
+mitigations for the vulnerability would be a firewall (hostbased or
+network) that restricts access to the database so only trusted addresses
+are allowed. I'm personally an advocate in favor of hostbased firewalls.&lt;/p&gt;
+&lt;p&gt;But the thing that hits me the most, is the amount of applications that
+use "embedded" postgresql database services in their product. If you
+take part of a larger organization with a large portfolio of software
+titles running in the data center, you'll undoubtedly have seen lists
+(through network scans or otherwise) of systems that are running
+PostgreSQL as part of the product installation (and not as a "managed"
+database service). The HP GUIDManager or the NNMI components or the
+Systems Insight Manager use embedded PostgreSQL services. The cloudera
+manager can be easily set up with an "embedded" PostgreSQL (which
+doesn't mean it isn't a full-fledged PostgreSQL, but rather that the
+setup and management of the service is handled by the product instead of
+by "your own" DBA team). Same with Servoy.&lt;/p&gt;
+&lt;p&gt;I don't disagree with all products providing embedded database
+platforms, and especially not with choosing for PostgreSQL which I
+consider a very mature, stable and feature-rich (and not to be
+forgotten, very active community) database platform. But I do hope that
+these products take up their responsibility and release updated versions
+or patches for their installations to their customers &lt;em&gt;very&lt;/em&gt; soon.&lt;/p&gt;
+&lt;p&gt;Perhaps I should ask our security operational team to take a scan to
+actively follow-up on these...&lt;/p&gt;</content><category term="Security"></category><category term="firewall"></category><category term="patching"></category><category term="postgresql"></category><category term="security"></category></entry></feed>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - backup</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/backup/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-08-05T22:35:00+02:00</updated><entry><title>My application base: Obnam</title><link href="http://blog.siphos.be/2015/08/my-application-base-obnam/" rel="alternate"></link><published>2015-08-05T22:35:00+02:00</published><updated>2015-08-05T22:35:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-05:/2015/08/my-application-base-obnam/</id><summary type="html">&lt;p&gt;It is often said, yet too often forgotten: taking backups (and verifying that 
+they work). Taking backups is not purely for companies and organizations.
+Individuals should also take backups to ensure that, in case of errors or
+calamities, the all important files are readily recoverable.&lt;/p&gt;
+&lt;p&gt;For backing up files and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It is often said, yet too often forgotten: taking backups (and verifying that 
+they work). Taking backups is not purely for companies and organizations.
+Individuals should also take backups to ensure that, in case of errors or
+calamities, the all important files are readily recoverable.&lt;/p&gt;
+&lt;p&gt;For backing up files and directories, I personally use &lt;a href="http://obnam.org/"&gt;obnam&lt;/a&gt;,
+after playing around with &lt;a href="http://www.bacula.org/"&gt;Bacula&lt;/a&gt; and
+&lt;a href="https://attic-backup.org/"&gt;attic&lt;/a&gt;. Bacula is more meant for large
+distributed environments (although I also tend to use obnam for my server
+infrastructure) and was too complex for my taste. The choice between obnam and
+attic is even more personally-oriented.&lt;/p&gt;
+
+
+&lt;p&gt;I found attic to be faster, but with a small supporting community. Obnam was
+slower, but seems to have a more active community which I find important for 
+infrastructure that is meant to live quite long (you don't want to switch 
+backup solutions every year). I also found it pretty easy to work with, and
+to restore files back, and Gentoo provides the &lt;a href="https://packages.gentoo.org/package/app-backup/obnam"&gt;app-backup/obnam&lt;/a&gt;
+package.&lt;/p&gt;
+&lt;p&gt;I think both are decent solutions, so I had to make one choice and ended up
+with obnam. So, how does it work?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Configuring what to backup&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The basic configuration file for obnam is &lt;code&gt;/etc/obnam.conf&lt;/code&gt;. Inside this file,
+I tell which directories need to be backed up, as well as which subdirectories
+or files (through expressions) can be left alone. For instance, I don't want
+obnam to backup ISO files as those have been downloaded anyway.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[config]&lt;/span&gt;
+&lt;span class="na"&gt;repository&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;/srv/backup&lt;/span&gt;
+&lt;span class="na"&gt;root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home&lt;/span&gt;
+&lt;span class="na"&gt;exclude&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*&lt;/span&gt;
+&lt;span class="na"&gt;exclude-caches&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;yes&lt;/span&gt;
+
+&lt;span class="na"&gt;keep&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;8h,14d,10w,12m,10y&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;root&lt;/code&gt; parameter tells obnam which directories (and subdirectories) to
+back up. With &lt;code&gt;exclude&lt;/code&gt; a particular set of files or directories can be
+excluded, for instance because these contain downloaded resources (and as such
+do not need to be inside the backup archives).&lt;/p&gt;
+&lt;p&gt;Obnam also supports the &lt;a href="http://www.brynosaurus.com/cachedir/spec.html"&gt;CACHEDIR.TAG&lt;/a&gt;
+specification, which I use for the various cache directories. With the use of 
+these cache tag files I do not need to update the &lt;code&gt;obnam.conf&lt;/code&gt; file with every
+new cache directory (or software build directory).&lt;/p&gt;
+&lt;p&gt;The last parameter in the configuration that I want to focus on is the &lt;code&gt;keep&lt;/code&gt;
+parameter. Every time obnam takes a backup, it creates what it calls a new
+&lt;em&gt;generation&lt;/em&gt;. When the backup storage becomes too big, administrators can run
+&lt;code&gt;obnam forget&lt;/code&gt; to drop generations. The &lt;code&gt;keep&lt;/code&gt; parameter informs obnam which
+generations can be removed and which ones can be kept.&lt;/p&gt;
+&lt;p&gt;In my case, I want to keep one backup per hour for the last 8 hours (I normally
+take one backup per day, but during some development sprees or photo
+manipulations I back up multiple times), one per day for the last two weeks, 
+one per week for the last 10 weeks, one per month for the last 12 months and
+one per year for the last 10 years.&lt;/p&gt;
+&lt;p&gt;Obnam will clean up only when &lt;code&gt;obnam forget&lt;/code&gt; is executed. As storage is cheap,
+and the performance of obnam is sufficient for me, I do not need to call this
+very often.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Backing up and restoring files&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;My backup strategy is to backup to an external disk, and then synchronize this
+disk with a personal backup server somewhere else. This backup server runs no
+other software beyond OpenSSH (to allow secure transfer of the backups) and both
+the backup server disks and the external disk is &lt;a href="https://wiki.gentoo.org/wiki/Dm-crypt"&gt;LUKS&lt;/a&gt;
+encrypted. Considering that I don't have government secrets I opted not to encrypt
+the backup files themselves, but Obnam does support that (through GnuPG).&lt;/p&gt;
+&lt;p&gt;All backup enabled systems use cron jobs which execute &lt;code&gt;obnam backup&lt;/code&gt; to take
+the backup, and use rsync to synchronize the finished backup with the backup
+server. If I need to restore a file, I use &lt;code&gt;obnam ls&lt;/code&gt; to see which file(s) I
+need to restore (add in a &lt;code&gt;--generation=&lt;/code&gt; to list the files of a different
+backup generation than the last one).&lt;/p&gt;
+&lt;p&gt;Then, the command to restore is:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# obnam restore --to=/var/restore /home/swift/Images/Processing/*.NCF
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Or I can restore immediately to the directory again:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# obnam restore --to=/home/swift/Images/Processing /home/swift/Images/Processing/*.NCF
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To support multiple clients, obnam by default identifies each client through
+the hostname. It is possible to use different names, but hostnames tend to be
+a common best practice which I don't deviate from either. Obnam is able to share
+blocks between clients (it is not mandatory, but supported nonetheless).&lt;/p&gt;</content><category term="Free Software"></category><category term="mab"></category><category term="backup"></category><category term="obnam"></category></entry></feed>

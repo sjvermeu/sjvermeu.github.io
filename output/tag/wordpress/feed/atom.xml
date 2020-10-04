@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - wordpress</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/wordpress/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-08-16T19:50:00+02:00</updated><entry><title>Updates on my Pelican adventure</title><link href="http://blog.siphos.be/2015/08/updates-on-my-pelican-adventure/" rel="alternate"></link><published>2015-08-16T19:50:00+02:00</published><updated>2015-08-16T19:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-16:/2015/08/updates-on-my-pelican-adventure/</id><summary type="html">&lt;p&gt;It's been a few weeks that I &lt;a href="http://blog.siphos.be/2015/08/switching-to-pelican/"&gt;switched&lt;/a&gt;
+my blog to &lt;a href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt;, a static site generator build
+with Python. A number of adjustments have been made since, which I'll happily
+talk about.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;The full article view on index page&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;One of the features I wanted was to have my latest …&lt;/p&gt;</summary><content type="html">&lt;p&gt;It's been a few weeks that I &lt;a href="http://blog.siphos.be/2015/08/switching-to-pelican/"&gt;switched&lt;/a&gt;
+my blog to &lt;a href="http://blog.getpelican.com/"&gt;Pelican&lt;/a&gt;, a static site generator build
+with Python. A number of adjustments have been made since, which I'll happily
+talk about.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;The full article view on index page&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;One of the features I wanted was to have my latest blog post to be fully
+readable from the front page (called the &lt;em&gt;index&lt;/em&gt; page within Pelican). Sadly,
+I could not find a plugin of setting that would do this, but I did find
+a plugin that I can use to work around this: the &lt;a href="https://github.com/getpelican/pelican-plugins/tree/master/summary"&gt;summary&lt;/a&gt;
+plugin.&lt;/p&gt;
+&lt;p&gt;Enabling the plugin was a breeze. Extract the plugin sources in the &lt;code&gt;plugin/&lt;/code&gt;
+folder, and enable it in &lt;code&gt;pelicanconf.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;PLUGINS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;summary&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this plug-in, articles can use inline comments to tell the system at which
+point the summary of the article stops. Usually, the summary (which is displayed
+on index pages) is a first paragraph (or set of paragraphs). What I do is I now
+manually set the summmary to the entire blog post for the latest post, and adjust
+later when a new post comes up.&lt;/p&gt;
+&lt;p&gt;It might be some manual labour, but it fits nicely and doesn't hack around in the
+code too much.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Commenting with Disqus&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I had some remarks that the &lt;a href="https://disqus.com/home/welcome/"&gt;Disqus&lt;/a&gt; integration
+is not as intuitive as expected. Some readers had difficulties finding out how
+to comment as a guest (without the need to log on through popular social media
+or through Disqus itself).&lt;/p&gt;
+&lt;p&gt;Agreed, it is not easy to see at first sight that people need to start typing
+their name in the &lt;em&gt;Or sign up with disqus&lt;/em&gt; before they can select &lt;em&gt;I'd rather post
+as guest&lt;/em&gt;. As I don't have any way of controlling the format and rendered code
+with Disqus, I updated the theme a bit to add in two paragraphs on commenting.
+The first paragraph tells how to comment as guest.&lt;/p&gt;
+&lt;p&gt;The second paragraph for now informs readers that non-verified comments are put
+in the moderation queue. Once I get a feeling of how the spam and bots act on the
+commenting system, I will adjust the filters and also allow guest comments to be
+readily accessible (no moderation queue). Give it a few more weeks to get myself
+settled and I'll adjust it.&lt;/p&gt;
+&lt;p&gt;If the performance of the site is slowed down due to the Disqus javascripts: both
+Firefox (excuse me, Aurora) and Chromium have this at the initial load. Later, the
+scripts are properly cached and load in relatively fast (a quick test shows
+all pages I tried load in less than 2 seconds - WordPress was at 4). And if you're
+not interested in commenting, then you can even use &lt;a href="https://noscript.net/"&gt;NoScript&lt;/a&gt;
+or similar plugins to disallow any remote javascript.&lt;/p&gt;
+&lt;p&gt;Still, I will continue to look at how to make commenting easier. I recently allowed
+unmoderated comments (unless a number of keywords are added, and comments with links
+are also put in the moderation queue). If someone knows of another comment-like
+system that I could integrate I'm happy to hear about it as well.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Search&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;My issue with Tipue Search has been fixed by reverting a change in &lt;code&gt;tipue_search.py&lt;/code&gt;
+(the plugin) where the URL was assigned to the &lt;code&gt;loc&lt;/code&gt; key instead of &lt;code&gt;url&lt;/code&gt;. It is
+probably a mismatch between the plugin and the theme (the change of the key was done
+in May in Tipue Search itself).&lt;/p&gt;
+&lt;p&gt;With this minor issue changed, the search capabilities are back on track on my blog.
+Enabling is was a matter of:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;PLUGINS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="n"&gt;tipue_search&lt;/span&gt;&lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;DIRECT_TEMPLATES&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;search&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Tags and categories&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;WordPress supports multiple categories, but Pelican does not. So I went through
+the various posts that had multiple categories and decided on a single one. While
+doing so, I also reduced the &lt;a href="http://blog.siphos.be/categories.html"&gt;categories&lt;/a&gt; to
+a small set:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Databases&lt;/li&gt;
+&lt;li&gt;Documentation&lt;/li&gt;
+&lt;li&gt;Free Software&lt;/li&gt;
+&lt;li&gt;Gentoo&lt;/li&gt;
+&lt;li&gt;Misc&lt;/li&gt;
+&lt;li&gt;Security&lt;/li&gt;
+&lt;li&gt;SELinux&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I will try to properly tag all posts so that, if someone is interested in a very
+particular topic, such as &lt;a href="http://blog.siphos.be/tag/postgresql/index.html"&gt;PostgreSQL&lt;/a&gt;, he can reach
+those posts through the tag.&lt;/p&gt;</content><category term="Free Software"></category><category term="blog"></category><category term="pelican"></category><category term="wordpress"></category></entry><entry><title>Switching to Pelican</title><link href="http://blog.siphos.be/2015/08/switching-to-pelican/" rel="alternate"></link><published>2015-08-02T04:09:00+02:00</published><updated>2015-08-02T04:09:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-02:/2015/08/switching-to-pelican/</id><summary type="html">&lt;p&gt;Nothing beats a few hours of flying to get things moving on stuff. Being
+offline for a few hours with a good workstation helps to not be disturbed
+by external actions (air pockets notwithstanding).&lt;/p&gt;
+&lt;p&gt;Early this year, I expressed my &lt;a href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/"&gt;intentions to move to Pelican&lt;/a&gt;
+from WordPress. I wasn't actually …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Nothing beats a few hours of flying to get things moving on stuff. Being
+offline for a few hours with a good workstation helps to not be disturbed
+by external actions (air pockets notwithstanding).&lt;/p&gt;
+&lt;p&gt;Early this year, I expressed my &lt;a href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/"&gt;intentions to move to Pelican&lt;/a&gt;
+from WordPress. I wasn't actually unhappy with WordPress, but the security
+concerns I had were a bit too much for blog as simple as mine. Running a
+PHP-enabled site with a database for something that I can easily handle through
+a static site, well, I had to try.&lt;/p&gt;
+
+
+&lt;p&gt;Today I finally moved the blog, imported all past articles as well as
+comments. For the commenting, I now use &lt;a href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/"&gt;disqus&lt;/a&gt;
+which integrates nicely with Pelican and has a fluid feel to it. I wanted to
+use the &lt;a href="http://www.tipue.com/search/"&gt;Tipue Search&lt;/a&gt; plug-in as well for
+searching through the blog, but I had to put that on hold as I couldn't get
+the results of a search to display nicely (all I got were links to
+"undefined"). But I'll work on this.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Configuring Pelican&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Pelican configuration is done through &lt;code&gt;pelicanconf.py&lt;/code&gt; and &lt;code&gt;publishconf.py&lt;/code&gt;. 
+The former contains all definitions and settings for the site which are also
+useful when previewing changes. The latter contains additional (or overruled)
+settings related to publication.&lt;/p&gt;
+&lt;p&gt;In order to keep the same links as before (to keep web crawlers happy, as well
+as links to the blog from other sites and even the comments themselves) I did
+had to update some variables, but the Internet was strong on this one and I had
+little problems finding the right settings:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Link structure of the site&lt;/span&gt;
+&lt;span class="n"&gt;ARTICLE_URL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{date:%Y}/{date:%m}/&lt;/span&gt;&lt;span class="si"&gt;{slug}&lt;/span&gt;&lt;span class="s1"&gt;/&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;ARTICLE_SAVE_AS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{date:%Y}/{date:%m}/&lt;/span&gt;&lt;span class="si"&gt;{slug}&lt;/span&gt;&lt;span class="s1"&gt;/index.html&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;CATEGORY_URL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;category/&lt;/span&gt;&lt;span class="si"&gt;{slug}&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;CATEGORY_SAVE_AS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;category/&lt;/span&gt;&lt;span class="si"&gt;{slug}&lt;/span&gt;&lt;span class="s1"&gt;/index.html&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;TAG_URL&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;tag/&lt;/span&gt;&lt;span class="si"&gt;{slug}&lt;/span&gt;&lt;span class="s1"&gt;/&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;TAG_SAVE_AS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;tag/&lt;/span&gt;&lt;span class="si"&gt;{slug}&lt;/span&gt;&lt;span class="s1"&gt;/index.html&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The next challenges were (and still are, I will have to check if this is working
+or not soon by checking the blog aggregation sites I am usually aggregated on)
+the RSS and Atom feeds. From the access logs of my previous blog, I believe that
+most of the aggregation sites are using the &lt;code&gt;/feed/&lt;/code&gt;, &lt;code&gt;/feed/atom&lt;/code&gt; and 
+&lt;code&gt;/category/*/feed&lt;/code&gt; links.&lt;/p&gt;
+&lt;p&gt;Now, I would like to move the aggregations to XML files, so that the RSS feed is
+available at &lt;code&gt;/feed/rss.xml&lt;/code&gt; and the Atom feed at &lt;code&gt;/feed/atom.xml&lt;/code&gt;, but then the
+existing aggregations would most likely fail because they currently don't use
+these URLs. To fix this, I am now trying to generate the XML files as I would
+like them to be, and create symbolic links afterwards from &lt;code&gt;index.html&lt;/code&gt; to the
+right XML file.&lt;/p&gt;
+&lt;p&gt;The RSS/ATOM settings I am currently using are as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;CATEGORY_FEED_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;category/&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;/feed/atom.xml&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;CATEGORY_FEED_RSS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;category/&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;/feed/rss.xml&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;FEED_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;feed/atom.xml&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;FEED_ALL_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;feed/all.atom.xml&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;FEED_RSS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;feed/rss.xml&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;FEED_ALL_RSS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;feed/all.rss.xml&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;TAG_FEED_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;tag/&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;/feed/atom.xml&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;TAG_FEED_RSS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;tag/&lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s1"&gt;/feed/rss.xml&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;TRANSLATION_FEED_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+&lt;span class="n"&gt;AUTHOR_FEED_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+&lt;span class="n"&gt;AUTHOR_FEED_RSS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Hopefully, the existing aggregations still work, and I can then start asking
+the planets to move to the XML URL itself. Some tracking on the access logs
+should allow me to see how well this is going.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Next steps&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The first thing to make sure is happening correctly is the blog aggregation and
+the comment system. Then, a few tweaks are still on the pipeline.&lt;/p&gt;
+&lt;p&gt;One is to optimize the front page a bit. Right now, all articles are
+summarized, and I would like to have the last (or last few) article(s) fully
+expanded whereas the rest is summarized. If that isn't possible, I'll probably
+switch to fully expanded articles (which is a matter of setting a single
+variable).&lt;/p&gt;
+&lt;p&gt;Next, I really want the search functionality to work again. Enabling the Tipue
+search worked almost flawlessly - search worked as it should, and the resulting
+search entries are all correct. The problem is that the URLs that the entries
+point to (which is what users will click on) all point to an invalid
+("undefined") URL.&lt;/p&gt;
+&lt;p&gt;Finally, I want the printer-friendly one to be without the social / links on
+the top right. This is theme-oriented, and I'm happily using
+&lt;a href="https://github.com/DandyDev/pelican-bootstrap3"&gt;pelican-bootstrap3&lt;/a&gt; right now,
+so I don't expect this to be much of a hassle. But considering that my blog is
+mainly technology oriented for now (although I am planning on expanding that)
+being able to have the articles saved in PDF or printed in a nice format is
+an important use case for me.&lt;/p&gt;</content><category term="Free Software"></category><category term="blog"></category><category term="pelican"></category><category term="wordpress"></category></entry><entry><title>Trying out Pelican, part one</title><link href="http://blog.siphos.be/2015/03/trying-out-pelican-part-one/" rel="alternate"></link><published>2015-03-06T20:02:00+01:00</published><updated>2015-03-06T20:02:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-03-06:/2015/03/trying-out-pelican-part-one/</id><summary type="html">&lt;p&gt;One of the goals I've set myself to do this year (not as a new year
+resolution though, I *really* want to accomplish this ;-) is to move
+my blog from Wordpress to a statically built website. And
+&lt;a href="http://docs.getpelican.com/en/3.5.0/"&gt;Pelican&lt;/a&gt; looks to be a good
+solution to do so. It's based on …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the goals I've set myself to do this year (not as a new year
+resolution though, I *really* want to accomplish this ;-) is to move
+my blog from Wordpress to a statically built website. And
+&lt;a href="http://docs.getpelican.com/en/3.5.0/"&gt;Pelican&lt;/a&gt; looks to be a good
+solution to do so. It's based on Python, which is readily available and
+supported on Gentoo, and is quite readable. Also, it looks to be very
+active in development and support. And also: it supports taking data
+from an existing Wordpress installation, so that none of the posts are
+lost (with some rounding error that's inherit to such migrations of
+course).&lt;/p&gt;
+&lt;p&gt;Before getting Pelican ready (which is available through Gentoo btw) I
+also needed to install &lt;a href="http://johnmacfarlane.net/pandoc/"&gt;pandoc&lt;/a&gt;, and
+that became more troublesome than expected. While installing &lt;code&gt;pandoc&lt;/code&gt; I
+got hit by its massive amount of dependencies towards &lt;code&gt;dev-haskell/*&lt;/code&gt;
+packages, and many of those packages really failed to install. It does
+some internal dependency checking and fails, informing me to run
+&lt;code&gt;haskell-updater&lt;/code&gt;. Sadly, multiple re-runs of said command did not
+resolve the issue. In fact, it wasn't until I hit a &lt;a href="http://forums.gentoo.org/viewtopic-p-7712250.html?sid=7707e62264dadf8bad4b8a1273b19f77"&gt;forum post about
+the same
+issue&lt;/a&gt;
+that a first step to a working solution was found.&lt;/p&gt;
+&lt;p&gt;It turns out that the &lt;code&gt;~arch&lt;/code&gt; versions of the haskell packages are
+better working. So I enabled &lt;code&gt;dev-haskell/*&lt;/code&gt; in my
+&lt;code&gt;package.accept_keywords&lt;/code&gt; file. And then started updating the
+packages... which also failed. Then I ran &lt;code&gt;haskell-updater&lt;/code&gt; multiple
+times, but that also failed. After a while, I had to run the following
+set of commands (in random order) just to get everything to build fine:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge -u $(qlist -IC dev-haskell) --keep-going
+~# for n in $(qlist -IC dev-haskell); do emerge -u $n; done
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It took quite some reruns, but it finally got through. I never thought I
+had this much Haskell-related packages installed on my system (89
+packages here to be exact), as I never intended to do any Haskell
+development since I left the university. Still, I finally got &lt;code&gt;pandoc&lt;/code&gt;
+to work. So, on to the migration of my Wordpress site... I thought.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This is a good time to ask for stabilization requests (I'll look into
+it myself as well of course) but also to see if you can help out our
+arch testing teams to support the stabilization requests on Gentoo! We
+need you!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I started with the &lt;a href="http://docs.getpelican.com/en/latest/importer.html"&gt;official docs on
+importing&lt;/a&gt;. Looks
+promising, but it didn't turn out too well for me. Importing was okay,
+but then immediately building the site again resulted in issues about
+wrong arguments (file names being interpreted as an argument name or
+function when an underscore was used) and interpretation of code inside
+the posts. Then I found Jason Antman's &lt;a href="http://blog.jasonantman.com/2014/02/converting-wordpress-posts-to-pelican-markdown/"&gt;converting wordpress posts to
+pelican
+markdown&lt;/a&gt;
+post to inform me I had to try using markdown instead of restructured
+text. And lo and behold - that's much better.&lt;/p&gt;
+&lt;p&gt;The first builds look promising. Of all the posts that I made on
+Wordpress, only one gives a build failure. The next thing to investigate
+is theming, as well as seeing how good the migration goes (it isn't
+because there are no errors otherwise that the migration is successful
+of course) so that I know how much manual labor I have to take into
+consideration when I finally switch (right now, I'm still running
+Wordpress).&lt;/p&gt;</content><category term="Gentoo"></category><category term="blog"></category><category term="Gentoo"></category><category term="haskell"></category><category term="pandoc"></category><category term="pelican"></category><category term="wordpress"></category></entry></feed>

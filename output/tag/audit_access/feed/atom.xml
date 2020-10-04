@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - audit_access</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/audit_access/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-19T03:50:00+02:00</updated><entry><title>The weird "audit_access" permission</title><link href="http://blog.siphos.be/2013/05/the-weird-audit_access-permission/" rel="alternate"></link><published>2013-05-19T03:50:00+02:00</published><updated>2013-05-19T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-19:/2013/05/the-weird-audit_access-permission/</id><summary type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
+was to give some additional information on frequently occurring denials,
+such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
+when they are triggered. For the DAC-related capabilities, policy
+developers often notice that these capabilities are triggered without …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
+was to give some additional information on frequently occurring denials,
+such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
+when they are triggered. For the DAC-related capabilities, policy
+developers often notice that these capabilities are triggered without a
+real need for them. So in the majority of cases, the policy developer
+wants to disable auditing of this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dontaudit &amp;lt;somedomain&amp;gt; self:capability { dac_read_search dac_override };
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When applications wants to search through directories not owned by the
+user as which the application runs, &lt;em&gt;both&lt;/em&gt; capabilities will be checked
+- first the &lt;em&gt;dac_read_search&lt;/em&gt; one and, if that is denied (it will be
+audited though) then &lt;em&gt;dac_override&lt;/em&gt; is checked. If that one is denied
+as well, it too will be audited. That is why many developers
+automatically &lt;em&gt;dontaudit&lt;/em&gt; both capability calls if the application
+itself doesn't really need the permission.&lt;/p&gt;
+&lt;p&gt;Let's say you allow this because the application needs it. But then
+another issue comes up when the application checks file attributes or
+access permissions (which is a second occurring denial that developers
+come across with). Such applications use &lt;em&gt;access()&lt;/em&gt; or &lt;em&gt;faccessat()&lt;/em&gt; to
+get information about files, but other than that don't do anything with
+the files. When this occurs and the domain does not have read, write or
+execute permissions on the target, then the denial is shown even when
+the application doesn't really read, write or execute the file.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+
+int main(int argc, char ** argv) {
+  printf(&amp;quot;%s: Exists (%d), Readable (%d), Writeable (%d), Executable (%d)\n&amp;quot;, argv[1],
+    access(argv[1], F_OK), access(argv[1], R_OK),
+    access(argv[1], W_OK), access(argv[1], X_OK));
+}
+
+$ check /var/lib/logrotate.status
+/var/lib/logrotate.status: Exists (0), Readable (-1), Writeable (-1), Executable (-1)
+
+$ tail -1 /var/log/audit.log
+...
+type=AVC msg=audit(1367400559.273:5224): avc:  denied  { read } for  pid=12270 comm=&amp;quot;test&amp;quot; name=&amp;quot;logrotate.status&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=2849 scontext=staff_u:staff_r:staff_t tcontext=system_u:object_r:logrotate_var_lib_t tclass=file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This gives the impression that the application is doing nasty stuff,
+even when it is merely checking permissions. One way would be to
+dontaudit read as well, but if the application does the check against
+several files of various types, that might mean you need to include
+dontaudit statements for various domains. That by itself isn't wrong,
+but perhaps you do not want to audit such checks but do want to audit
+real read attempts. This is what the &lt;em&gt;audit_access&lt;/em&gt; permission is for.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://marc.info/?l=selinux&amp;amp;m=125349740623497&amp;amp;w=2"&gt;audit_access&lt;/a&gt;
+&lt;a href="http://marc.info/?l=selinux&amp;amp;m=127239846604513"&gt;permission&lt;/a&gt; is meant to
+be used only for &lt;em&gt;dontaudit&lt;/em&gt; statements: it has no effect on the
+security of the system itself, so using it in &lt;em&gt;allow&lt;/em&gt; statements has no
+effect. The purpose of the permission is to allow policy developers to
+not audit access checks without really dontauditing other, possibly
+malicious, attempts. In other words, checking the access can be
+dontaudited while actually attempting to use the access (reading,
+writing or executing the file) will still result in the proper denial.&lt;/p&gt;</content><category term="SELinux"></category><category term="access"></category><category term="audit"></category><category term="audit_access"></category><category term="selinux"></category></entry></feed>

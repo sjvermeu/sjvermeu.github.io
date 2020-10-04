@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - mutex</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/mutex/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-19T04:11:00+02:00</updated><entry><title>Comparing performance with sysbench: memory, threads and mutexes</title><link href="http://blog.siphos.be/2013/04/comparing-performance-with-sysbench-part-2/" rel="alternate"></link><published>2013-04-19T04:11:00+02:00</published><updated>2013-04-19T04:11:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-19:/2013/04/comparing-performance-with-sysbench-part-2/</id><summary type="html">&lt;p&gt;In the previous post, I gave some feedback on the cpu and fileio
+workload tests that &lt;a href="http://sysbench.sf.net"&gt;sysbench&lt;/a&gt; can handle. Next
+on the agenda are the &lt;em&gt;memory&lt;/em&gt;, &lt;em&gt;threads&lt;/em&gt; and &lt;em&gt;mutex&lt;/em&gt; workloads.&lt;/p&gt;
+&lt;p&gt;When using the &lt;em&gt;memory&lt;/em&gt; workload, &lt;strong&gt;sysbench&lt;/strong&gt; will allocate a buffer
+(provided through the &lt;em&gt;--memory-block-size&lt;/em&gt; parameter, defaults to
+1kbyte) and each …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the previous post, I gave some feedback on the cpu and fileio
+workload tests that &lt;a href="http://sysbench.sf.net"&gt;sysbench&lt;/a&gt; can handle. Next
+on the agenda are the &lt;em&gt;memory&lt;/em&gt;, &lt;em&gt;threads&lt;/em&gt; and &lt;em&gt;mutex&lt;/em&gt; workloads.&lt;/p&gt;
+&lt;p&gt;When using the &lt;em&gt;memory&lt;/em&gt; workload, &lt;strong&gt;sysbench&lt;/strong&gt; will allocate a buffer
+(provided through the &lt;em&gt;--memory-block-size&lt;/em&gt; parameter, defaults to
+1kbyte) and each execution will read or write to this memory
+(&lt;em&gt;--memory-oper&lt;/em&gt;, defaults to write) in a random or sequential manner
+(&lt;em&gt;--memory-access-mode&lt;/em&gt;, defaults to &lt;strong&gt;seq&lt;/strong&gt;uential).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=memory --memory-block-size=1M --memory-total-size=10G run
+Host throughput, 1M:  3959,78 MB/sec
+Guest throughput, 1M: 3079,29 MB/sec
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The guest has a lower throughput (about 77% of the host), which is lower
+than what most online posts provide on KVM performance. We'll get back
+to that later. Let's look at the default block size of 1k (meaning that
+the benchmark will do a lot more executions before it reaches the total
+memory (in load):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=memory --memory-total-size=1G run
+Host throughput, 1k:  1702,59 MB/sec
+Guest throughput, 1k:   23,67 MB/sec
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is a lot worse: the guest' throughput is only 1,4% of the host
+throughput! The &lt;code&gt;qemu-kvm&lt;/code&gt; process on the host is also taking up a lot
+of CPU.&lt;/p&gt;
+&lt;p&gt;Now let's take a look at the other workload, &lt;em&gt;threads&lt;/em&gt;. In this
+particular workload, you identify the number of threads
+(&lt;em&gt;--num-threads&lt;/em&gt;), the number of locks (&lt;em&gt;--thread-locks&lt;/em&gt;) and the number
+of times a thread should run its 'lock-yield..unlock' workload
+(&lt;em&gt;--thread-yields&lt;/em&gt;). The more locks you identify, the less number of
+threads will have the same lock (each thread is allocated a single lock
+during an execution, but every new execution will give it a new lock so
+the threads do not always take the same lock).&lt;/p&gt;
+&lt;p&gt;Note that parts of this is also handled by the other tests: mutex'es are
+used when a new operation (execution) for the thread is prepared. In
+case of the memory-related workload above, the smaller the buffer size,
+the more frequent thread operations are needed. In the last run we did
+(with the bad performance), millions of operations were executed
+(although no yields were performed). Something similar can be simulated
+using a single lock, single thread and a very high number of operations
+and no yields:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=threads --num-threads=1 --thread-yields=0 --max-requests=1000000 --thread-locks=1 run
+Host runtime:    0,3267 s  (event:    0,2278)
+Guest runtime:  40,7672 s  (event:   30,6084)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This means that the guest "throughput" problems from the memory
+identified above seem to be related to this rather than memory-specific
+regressions. To verify if the scheduler itself also shows regressions,
+we can run more threads concurrently. For instance, running 128 threads
+simultaneously, using the otherwise default settings, during 10 seconds:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=threads --num-threads=128 --max-time=10s run
+Host:   9765 executions (events)
+Guest:   512 executions (events)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here we get only 5% throughput.&lt;/p&gt;
+&lt;p&gt;Let's focus on the mutex again, as sysbench has an additional mutex
+workload test. The workload has each thread running a local fast loop
+(simple increments, &lt;em&gt;--mutex-loops&lt;/em&gt;) after which it takes a random mutex
+(one of &lt;em&gt;--mutex-num&lt;/em&gt;), locks it, increments a global variable and then
+releases the mutex again. This is repeated for the number of locks
+identified (&lt;em&gt;--mutex-locks&lt;/em&gt;). If mutex operations would be the cause of
+the performance issues above, then we would notice that the mutex
+operations are a major performance regression on my system.&lt;/p&gt;
+&lt;p&gt;Let's run that workload with a single thread (default), no loops and a
+single mutex.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=mutex --mutex-num=1 --mutex-locks=50000000 --mutex-loops=1 run
+Host (duration):   2600,57 ms
+Guest (duration):  2571,44 ms
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this example, we see that the mutex operations are almost at the same
+speed (99%) of the host, so pure mutex operations are not likely to be
+the cause of the performance regressions earlier on. So what does give
+the performance problems? Well, that investigation will be for the third
+and last post in this series ;-)&lt;/p&gt;</content><category term="Free Software"></category><category term="memory"></category><category term="mutex"></category><category term="performance"></category><category term="sysbench"></category><category term="threading"></category><category term="threads"></category></entry></feed>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - test</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/test/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-05-18T13:40:00+02:00</updated><entry><title>Testing with permissive domains</title><link href="http://blog.siphos.be/2015/05/testing-with-permissive-domains/" rel="alternate"></link><published>2015-05-18T13:40:00+02:00</published><updated>2015-05-18T13:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-18:/2015/05/testing-with-permissive-domains/</id><summary type="html">&lt;p&gt;When testing out new technologies or new setups, not having (proper)
+SELinux policies can be a nuisance. Not only are the number of SELinux
+policies that are available through the standard repositories limited,
+some of these policies are not even written with the same level of
+confinement that an administrator …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When testing out new technologies or new setups, not having (proper)
+SELinux policies can be a nuisance. Not only are the number of SELinux
+policies that are available through the standard repositories limited,
+some of these policies are not even written with the same level of
+confinement that an administrator might expect. Or perhaps the
+technology to be tested is used in a completely different manner.&lt;/p&gt;
+&lt;p&gt;Without proper policies, any attempt to start such a daemon or
+application might or will cause permission violations. In many cases,
+developers or users tend to disable SELinux enforcing then so that they
+can continue playing with the new technology. And why not? After all,
+policy development is to be done &lt;em&gt;after&lt;/em&gt; the technology is understood.&lt;/p&gt;
+
+
+&lt;p&gt;But completely putting the system in permissive mode is overshooting. It
+is much easier to make a very simple policy to start with, and then mark
+the domain as a permissive domain. What happens is that the software
+then, after transitioning into the "simple" domain, is not part of the
+SELinux enforcements anymore whereas the rest of the system remains in
+SELinux enforcing mode.&lt;/p&gt;
+&lt;p&gt;For instance, create a minuscule policy like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(testdom, 1.0)
+
+type testdom_t;
+type testdom_exec_t;
+init_daemon_domain(testdom_t, testdom_exec_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Mark the executable for the daemon as &lt;code&gt;testdom_exec_t&lt;/code&gt; (after building
+and loading the minuscule policy):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# chcon -t testdom_exec_t /opt/something/bin/daemond
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally, tell SELinux that &lt;code&gt;testdom_t&lt;/code&gt; is to be seen as a permissive
+domain:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage permissive -a testdom_t
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When finished, don't forget to remove the permissive bit
+(&lt;code&gt;semanage permissive -d testdom_t&lt;/code&gt;) and unload/remove the SELinux
+policy module.&lt;/p&gt;
+&lt;p&gt;And that's it. If the daemon is now started (through a standard init
+script) it will run as &lt;code&gt;testdom_t&lt;/code&gt; and everything it does will be
+logged, but not enforced by SELinux. That might even help in
+understanding the application better.&lt;/p&gt;</content><category term="SELinux"></category><category term="permissive"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category><category term="test"></category></entry><entry><title>New SELinux userspace release</title><link href="http://blog.siphos.be/2013/04/new-selinux-userspace-release/" rel="alternate"></link><published>2013-04-26T03:50:00+02:00</published><updated>2013-04-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-26:/2013/04/new-selinux-userspace-release/</id><summary type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong VM, one that
+didn't contain the new packages. Result: no regressions (of course). My
+fault for not using in-ebuild tests properly, as I
+&lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=465846"&gt;should&lt;/a&gt;. So you'll
+probably see me blogging about the in-ebuild testing soon ;-)&lt;/p&gt;
+&lt;p&gt;In any case, the regressions I did find out (quite fast after I updated
+my main laptop with them as well) where a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467258"&gt;missing function in
+libselinux&lt;/a&gt;, a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467264"&gt;referral
+to a non-existing makefile when using "semanage
+permissive"&lt;/a&gt; and the new
+&lt;strong&gt;sepolicy&lt;/strong&gt; application &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467268"&gt;requiring yum python
+bindings&lt;/a&gt;. At least,
+with the missing function (hopefully correctly) resolved, all tests I
+usually do (except for the permissive domains) are now running well
+again.&lt;/p&gt;
+&lt;p&gt;This only goes to show how important testing is. Of course, I
+&lt;a href="http://marc.info/?l=selinux&amp;amp;m=136692033821285&amp;amp;w=2"&gt;reported&lt;/a&gt; the bugs
+on the mailinglist of the userspace utilities as well. Hopefully they
+can look at them while I'm asleep so I can integrate fixes tomorrow more
+easily ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="automation"></category><category term="regression"></category><category term="release"></category><category term="selinux"></category><category term="test"></category><category term="testing"></category><category term="userspace"></category></entry></feed>

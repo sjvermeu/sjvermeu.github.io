@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - userspace</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/userspace/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2017-09-26T14:50:00+02:00</updated><entry><title>SELinux Userspace 2.7</title><link href="http://blog.siphos.be/2017/09/selinux-userspace-2.7/" rel="alternate"></link><published>2017-09-26T14:50:00+02:00</published><updated>2017-09-26T14:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-09-26:/2017/09/selinux-userspace-2.7/</id><summary type="html">&lt;p&gt;A few days ago, &lt;a href="http://blog.perfinion.com/"&gt;Jason "perfinion" Zaman&lt;/a&gt; stabilized the 2.7 SELinux userspace on
+Gentoo. This release has quite a &lt;a href="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20170804/RELEASE-20170804.txt"&gt;few new features&lt;/a&gt;, which I'll cover in later
+posts, but for distribution packagers the main change is that the userspace
+now has many more components to package. The project has …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few days ago, &lt;a href="http://blog.perfinion.com/"&gt;Jason "perfinion" Zaman&lt;/a&gt; stabilized the 2.7 SELinux userspace on
+Gentoo. This release has quite a &lt;a href="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20170804/RELEASE-20170804.txt"&gt;few new features&lt;/a&gt;, which I'll cover in later
+posts, but for distribution packagers the main change is that the userspace
+now has many more components to package. The project has split up the
+policycoreutils package in separate packages so that deployments can be made
+more specific.&lt;/p&gt;
+&lt;p&gt;Let's take a look at all the various userspace packages again, learn what their
+purpose is, so that you can decide if they're needed or not on a system. Also,
+when I cover the contents of a package, be aware that it is based on the deployment
+on my system, which might or might not be a complete installation (as with Gentoo,
+different USE flags can trigger different package deployments).&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;libsepol - manipulating SELinux binary policies&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The first package, known in Gentoo as &lt;code&gt;sys-libs/libsepol&lt;/code&gt;, is the library that
+enables manipulating the SELinux binary policies. This is a core library, and is
+the first SELinux userspace package that is installed on a system.&lt;/p&gt;
+&lt;p&gt;It contains one command, &lt;code&gt;chkcon&lt;/code&gt;, which allows users to validate if a specific
+security context exists within a binary policy file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ chkcon policy.29 user_u:user_r:mozilla_t:s0
+user_u:user_r:mozilla_t:s0 is valid
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The package does contain two manpages of old commands which are no longer available
+(or I'm blind, either way, they're not installed and not found in the SELinux userspace
+repository either) such as genpolusers and genpolbools.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;libselinux - the main SELinux handling library&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The libselinux library, known in Gentoo as &lt;code&gt;sys-libs/libselinux&lt;/code&gt;, is the main SELinux
+library. Almost all applications that are SELinux-aware (meaning they not only know SELinux
+is a thing, but are actively modifying their behavior with SELinux-specific code) will
+link to libselinux.&lt;/p&gt;
+&lt;p&gt;Because it is so core, the package also provides the necessary bindings for different
+scripting languages besides the standard shared objects approach, namely Python (as
+many SELinux related tooling is written in Python) and Ruby.&lt;/p&gt;
+&lt;p&gt;Next to the bindings and libraries, libselinux also offers quite a few executables
+to query and manipulate SELinux settings on the system, which are shortly described
+on the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Tools"&gt;SELinux userspace wiki&lt;/a&gt; but repeated here for convenience. Most of these
+are meant for debugging purposes, as they are simple wrappers toward the libselinux
+provided functions, but some of them are often used by administrations.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;avcstat&lt;/code&gt; gives statistics about the in-kernel access vector cache, such as number
+  of lookups, hits and misses&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;compute_create&lt;/code&gt; queries the kernel security server for a transition decision&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;compute_av&lt;/code&gt; queries the kernel security server for an access vector decision&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;compute_relabel&lt;/code&gt; queries the kernel security server for a relabel decision&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;compute_member&lt;/code&gt; queries the kernel security server for a labeling decision on a
+  polyinstantiated object&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getconlist&lt;/code&gt; uses the &lt;code&gt;security\_compute\_user()&lt;/code&gt; function, and orders the resulting
+  list based on the &lt;code&gt;default\_contexts&lt;/code&gt; file and per-user context files&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getdefaultcon&lt;/code&gt; is like &lt;code&gt;getconlist&lt;/code&gt; but only returns the first context&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;compute_user&lt;/code&gt; queries the kernel security server fo a set of reachable user contexts
+  from a source context&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getfilecon&lt;/code&gt; gets the context of a file by path&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getpidcon&lt;/code&gt; gets the context of a process by PID&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getseuser&lt;/code&gt; queries the &lt;code&gt;seuser&lt;/code&gt; file for the resulting SELinux user and contxt for a
+  particular linux login and login context&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getsebool&lt;/code&gt; gets the current state of a SELinux boolean in the SELinux security server&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;matchpathcon&lt;/code&gt; queries the active filecontext file for how a particular path should
+  be labeled&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;policyvers&lt;/code&gt; queries the kernel security server for the maximum policy version supported&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;getenforce&lt;/code&gt; gets the enforcing state of the kernel access vector cache&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sefcontext_compile&lt;/code&gt; generates binary filecontext files, optimized for fast querying&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selabel_lookup&lt;/code&gt; looks up what the target default context is for various classes
+  (supporting the X related SELinux types, database types, etc.)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selabel_digest&lt;/code&gt; calculates the SHA1 digest of spec files, and returns a list
+  of the specfiles used to calculate the digest. This is used by Android.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selabel_partial_match&lt;/code&gt; determines if a direct or partial match is possible
+  on a file path&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selabel_lookup_best_match&lt;/code&gt; obtains the best matching SELinux security context
+  for file-based operations&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selinux_check_securetty_context&lt;/code&gt; checks whether a SELinux tty security context
+  is defined as a securetty context&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selinux_check_access&lt;/code&gt; checks if the source context has the access permission
+  for the specified class on the target context&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selinuxexeccon&lt;/code&gt; reports the SELinux context for an executable&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selinuxenabled&lt;/code&gt; returns if SELinux is enabled or not&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;setfilecon&lt;/code&gt; sets the context of a path&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;setenforce&lt;/code&gt; sets the enforcing state of the kernel access vector cache&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;togglesebool&lt;/code&gt; toggles a SELinux boolean, but only runtime (so it does not
+  persist across reboots)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;checkpolicy - policy compiler&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The checkpolicy package, known in Gentoo as &lt;code&gt;sys-apps/checkpolicy&lt;/code&gt;, provides two
+main applications, &lt;code&gt;checkpolicy&lt;/code&gt; and &lt;code&gt;checkmodule&lt;/code&gt;. Both applications are compilers
+(unlike what the name implies) which build a binary SELinux policy. The main difference
+between these two is that one builds a policy binary, whereas the other one builds a 
+SELinux module binary.&lt;/p&gt;
+&lt;p&gt;Developers don't often call these applications themselves, but use the build scripts.
+For instance, the &lt;code&gt;semodule_package&lt;/code&gt; binary would be used to combine the binary policy
+with additional files such as file contexts.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;libsemanage - facilitating use of SELinux overall&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The libsemanage library, known in Gentoo as &lt;code&gt;sys-libs/libsemanage&lt;/code&gt;, contains SELinux
+supporting functions that are needed for any regular SELinux use. Whereas libselinux
+would be used everywhere, even for embedded systems, libsemanage is generally not for
+embedded systems but is very important for Linux systems in overall.&lt;/p&gt;
+&lt;p&gt;Most SELinux management applications that administrators come in contact with will be
+linked with the libsemanage library. As can be expected, the &lt;code&gt;semanage&lt;/code&gt; application
+as offered by the &lt;code&gt;selinux-python&lt;/code&gt; package is one of them.&lt;/p&gt;
+&lt;p&gt;The only application that is provided by libsemanage is the &lt;code&gt;semanage_migrate_store&lt;/code&gt;,
+used to migrate the policy store from the &lt;code&gt;/etc/selinux&lt;/code&gt; to the &lt;code&gt;/var/lib/selinux&lt;/code&gt;
+location. This was done with the introduction of the 2.4 userspace.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;selinux-python - Python-based command-line management utilities&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The selinux-python package, known in Gentoo as &lt;code&gt;sys-apps/selinux-python&lt;/code&gt;, is one of
+the split packages that originally where part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. It
+contains the majority of management utilities that administrators use for handling
+SELinux on their systems.&lt;/p&gt;
+&lt;p&gt;The most known application here is &lt;code&gt;semanage&lt;/code&gt;, but it contains quite a few others
+as well:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;sepolgen&lt;/code&gt; generates an initial SELinux policy module template, and is short for
+  the &lt;code&gt;sepolicy generate&lt;/code&gt; command&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audit2why&lt;/code&gt; translates SELinux audit messages into a description of why the access
+  was denied. It is short for the &lt;code&gt;audit2allow -w&lt;/code&gt; command.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;audit2allow&lt;/code&gt; generates SELinux policy allow/dontaudit rules from logs of denied
+  operations&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sepolgen-ifgen&lt;/code&gt; generates an overview of available interfaces. This overview is used
+  by &lt;code&gt;audit2allow&lt;/code&gt; to guess the right interface to use when allowing or dontauditing certain
+  operations.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sepolicy&lt;/code&gt; is the SELinux policy inspection tool, allowing to query various aspects of
+  a SELinux configuration (namely booleans, communication flows, interfaces, network information
+  and transition information). It also provides the ability to generate skeleton policies (as
+  described with &lt;code&gt;sepolgen&lt;/code&gt;) and manual pages.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;chcat&lt;/code&gt; changes a file's SELinux security category&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sepolgen-ifgen-attr-helper&lt;/code&gt; generates an overview of attributes and attribute mappings.
+  This overview is used by &lt;code&gt;audit2allow&lt;/code&gt; to guess the right attribute to use when allowing
+  or dontauditing certain operations.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;semanage&lt;/code&gt; is a SELinux policy management tool, allowing a multitude of operations
+  against the SELinux policy and the configuration. This includes definition import/export,
+  login mappings, user definitions, ports and interface management, module handling, 
+  file contexts, booleans and more.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;semodule-utils - Developing SELinux modules&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The semodule-utils package, known in Gentoo as &lt;code&gt;sys-apps/semodule-utils&lt;/code&gt;, is another split package
+that originally was part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. In it, SELinux policy module
+development utilities are provided. The package is not needed for basic operations such
+as loading and unloading modules though.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;semodule_expand&lt;/code&gt; expands a SELinux base module package into a kernel binary policy file&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;semodule_deps&lt;/code&gt; shows the dependencies between SELinux policy packages&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;semodule_link&lt;/code&gt; links SELinux policy module packages together into a single SELinux policy
+  module&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;semodule_unpackage&lt;/code&gt; extracts a SELinux module into the binary policy and its associated
+  files (such as file context definitions)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;semodule_package&lt;/code&gt; combines a modular binary policy file with its associated files (such
+  as file context definitions) into a module package&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;mcstrans - Translate context info in human readable names&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The mcstrans package, known in Gentoo as &lt;code&gt;sys-apps/mcstrans&lt;/code&gt;, is another split package
+that originally was part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. In it, the MCS translation
+daemon is hosted. This daemon translates the SELinux-specific context ranges, like 
+&lt;code&gt;s0-s0:c0.c1024&lt;/code&gt; to a human-readable set, like &lt;code&gt;SystemLow-SystemHigh&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This is a purely cosmetic approach (as SELinux internally always uses the sensitivity
+and category numbers) but helps when dealing with a large number of separate categories.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;restorecond - Automatically resetting file contexts&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The restorecond package, known in Gentoo as &lt;code&gt;sys-apps/restorecond&lt;/code&gt;, is another split
+package that originally was part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. It contains the
+&lt;code&gt;restorecond&lt;/code&gt; daemon, which watches over files and directories and forces the right
+SELinux label on it.&lt;/p&gt;
+&lt;p&gt;This daemon was originally intended to resolve a missing feature in SELinux (having
+more fine-grained rules for label naming) but with the named file transition support, the
+need for this daemon has diminished a lot.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;secilc - SELinux common intermediate language compiler&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The secilc package, known in Gentoo as &lt;code&gt;sys-apps/secilc&lt;/code&gt;, is the CIL compiler which
+builds kernel binary policies based on the passed on CIL code. Although the majority
+of policy development still uses the more traditional SELinux language (and supporting
+macro's from the reference policy), developers can already use CIL code for policy generation.&lt;/p&gt;
+&lt;p&gt;With &lt;code&gt;secilc&lt;/code&gt;, a final policy file can be generated through the CIL code.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;selinux-dbus - SELinux DBus server&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The selinux-dbus package (not packaged in Gentoo at this moment) provides a SELinux DBus
+service which systems can use to query and interact with SELinux management utilities
+on the system. If installed, the &lt;code&gt;org.selinux&lt;/code&gt; domain is used for various supported
+operations (such as listing SELinux modules, through &lt;code&gt;org.selinux.semodule_list&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;selinux-gui - Graphical SELinux settings manager&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The selinux-gui package (not packaged in Gentoo at this moment) provides the
+&lt;code&gt;system-config-selinux&lt;/code&gt; application which offers basic SELinux management support
+in a graphical application. It supports boolean handling, file labeling, user mapping,
+SELinux user management, network port definitions and module handling. As such, it can
+be seen as the graphical helper utility for the &lt;code&gt;semanage&lt;/code&gt; command.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;selinux-sandbox - Sandbox utility utilizing SELinux sandbox domains&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The selinux-sandbox package (not packaged in Gentoo at this moment) is a set of scripts
+to facilitate the creation of SELinux sandboxes. With these utilities, which not only
+use SELinux sandbox domains like &lt;code&gt;sandbox_t&lt;/code&gt; but also Linux namespaces, end users can
+launch applications in a restricted environment.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;policycoreutils - Core SELinux management utilities&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The policycoreutils package, known in Gentoo as &lt;code&gt;sys-apps/policycoreutils&lt;/code&gt;, contains 
+basic SELinux tooling which is necessary to handle SELinux in a regular environment.
+Supported utilities are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;newrole&lt;/code&gt; to switch a user session from one role to another&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;secon&lt;/code&gt; to query the SELinux context of a file, program or user input&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;genhomedircon&lt;/code&gt; to regenerate home directory context files, necessary when new users are
+  defined on the system&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;setfiles&lt;/code&gt; to set SELinux file security contexts on resources&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;semodule&lt;/code&gt; to list, load and unload SELinux modules&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;run_init&lt;/code&gt; to launch an init script in the right domain&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;open_init_pty&lt;/code&gt; to run a program under a pseudo terminal with the right context set&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sestatus&lt;/code&gt; to query current policy status&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;setsebool&lt;/code&gt; to set and, if wanted, persist a SELinux boolean value&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;selinuxconfig&lt;/code&gt; to display the current active configuration paths&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;restorecon&lt;/code&gt; to set SELinux file security contexts on resources&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;load_policy&lt;/code&gt; to load the SELinux policy, generally called from initramfs systems if the
+  init system is not SELinux-aware&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;restorecon_xattr&lt;/code&gt; manages the &lt;code&gt;security.restorecon_last&lt;/code&gt; extended attribute which is set
+  by &lt;code&gt;setfiles&lt;/code&gt; or &lt;code&gt;restorecon&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Gentoo also adds in two additional scripts:
+* &lt;code&gt;rlpkg&lt;/code&gt; to reset file contexts on files provided by a Gentoo package
+* &lt;code&gt;selocal&lt;/code&gt; to easily handle small SELinux rule additions to the active policy&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;There are even more&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Attentive readers will notice that the &lt;code&gt;setools&lt;/code&gt; package is not discussed here. This package
+is not provided by the SELinux userspace project, but is an important package for SELinux
+policy developers as it contains the &lt;code&gt;sesearch&lt;/code&gt; command - an often used command to query
+the active policy.&lt;/p&gt;
+&lt;p&gt;The above list is thus a picture of the SELinux userspace utilities, which is becoming
+quite a big application set now that some functionality is split off from the &lt;code&gt;policycoreutils&lt;/code&gt;
+package.&lt;/p&gt;</content><category term="SELinux"></category><category term="gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Where does CIL play in the SELinux system?</title><link href="http://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/" rel="alternate"></link><published>2015-06-13T23:12:00+02:00</published><updated>2015-06-13T23:12:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-13:/2015/06/where-does-cil-play-in-the-selinux-system/</id><summary type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
+with. Currently, policy code is written in a set of three files:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
+    enforcement rules)&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;.if&lt;/code&gt; file contains functions which turn a set of arguments into
+    blocks of SELinux …&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
+with. Currently, policy code is written in a set of three files:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
+    enforcement rules)&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;.if&lt;/code&gt; file contains functions which turn a set of arguments into
+    blocks of SELinux policy code (interfaces). These functions are
+    called by other interface files or type enforcement files&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;.fc&lt;/code&gt; file contains mappings of file path expressions towards
+    labels (file contexts)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These files are compiled into loadable modules (or a base module) which
+are then transformed to an active policy. But this is not a single-step
+approach.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Transforming policy code into policy file&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For the Linux kernel SELinux subsystem, only a single file matters - the
+&lt;code&gt;policy.##&lt;/code&gt; file (for instance &lt;code&gt;policy.29&lt;/code&gt;). The suffix denotes the
+binary format used as higher numbers mean that additional SELinux
+features are supported which require different binary formats for the
+SELinux code in the Linux kernel.&lt;/p&gt;
+&lt;p&gt;With the 2.4 userspace, the transformation of the initial files as
+mentioned above towards a policy file is done as follows:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="SELinux transformation diagram" src="http://dev.gentoo.org/~swift/blog/201506/formats_selinux.png"&gt;&lt;/p&gt;
+&lt;p&gt;When a developer builds a policy module, first &lt;code&gt;checkmodule&lt;/code&gt; is used to
+build a &lt;code&gt;.mod&lt;/code&gt; intermediate file. This file contains the type
+enforcement rules with the expanded rules of the various interface
+files. Next, &lt;code&gt;semodule_package&lt;/code&gt; is called which transforms this
+intermediate file, together with the file context file, into a &lt;code&gt;.pp&lt;/code&gt;
+file.&lt;/p&gt;
+&lt;p&gt;This &lt;code&gt;.pp&lt;/code&gt; file is, in the 2.4 userspace, called a "high level language"
+file. There is little high-level about it, but the idea is that such
+high-level language files are then transformed into &lt;code&gt;.cil&lt;/code&gt; files (CIL
+stands for &lt;em&gt;Common Intermediate Language&lt;/em&gt;). If at any moment other
+frameworks come around, they could create high-level languages
+themselves and provide a transformation engine to convert these HLL
+files into CIL files.&lt;/p&gt;
+&lt;p&gt;For the current &lt;code&gt;.pp&lt;/code&gt; files, this transformation is supported through
+the &lt;code&gt;/usr/libexec/selinux/hll/pp&lt;/code&gt; binary which, given a &lt;code&gt;.pp&lt;/code&gt; file,
+outputs CIL code.&lt;/p&gt;
+&lt;p&gt;Finally, all CIL files (together) are compiled into a binary &lt;code&gt;policy.29&lt;/code&gt;
+file. All the steps coming from a &lt;code&gt;.pp&lt;/code&gt; file towards the final binary
+file are handled by the &lt;code&gt;semodule&lt;/code&gt; command. For instance, if an
+administrator loads an additional &lt;code&gt;.pp&lt;/code&gt; file, its (generated) CIL code
+is added to the other active CIL code and together, a new policy binary
+file is created.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Adding some CIL code&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The SELinux userspace development repository contains a &lt;code&gt;secilc&lt;/code&gt; command
+which can compile CIL code into a binary policy file. As such, it can
+perform the (very) last step of the file conversions above. However, it
+is not &lt;em&gt;integrated&lt;/em&gt; in the sense that, if additional code is added, the
+administrator can "play" with it as he would with SELinux policy
+modules.&lt;/p&gt;
+&lt;p&gt;Still, that shouldn't prohibit us from playing around with it to
+experiment with the CIL language construct. Consider the following CIL
+SELinux policy code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;; Declare a test_port_t type
+(type test_port_t)
+; Assign the type to the object_r role
+(roletype object_r test_port_t)
+
+; Assign the right set of attributes to the port
+(typeattributeset defined_port_type test_port_t)
+(typeattributeset port_type test_port_t)
+
+; Declare tcp:1440 as test_port_t
+(portcon tcp 1440 (system_u object_r test_port_t ((s0) (s0))))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The code declares a port type (&lt;code&gt;test_port_t&lt;/code&gt;) and uses it for the TCP
+port 1440.&lt;/p&gt;
+&lt;p&gt;In order to use this code, we have to build a policy file which includes
+all currently active CIL code, together with the test code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The result is a &lt;code&gt;policy.29&lt;/code&gt; (the command forces version 29 as the
+current Linux kernel used on this system does not support version 30)
+file, which can now be copied to &lt;code&gt;/etc/selinux/mcs/policy&lt;/code&gt;. Then, after
+having copied the file, load the new policy file using &lt;code&gt;load_policy&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;And lo and behold, the port type is now available:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage port -l | grep 1440
+test_port_t           tcp      1440
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To verify that it really is available and not just parsed by the
+userspace, let's connect to it and hope for a nice denial message:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -p 1440 localhost
+ssh: connect to host localhost port 1440: Permission denied
+
+~$ sudo ausearch -ts recent
+time-&amp;gt;Thu Jun 11 19:35:45 2015
+type=PROCTITLE msg=audit(1434044145.829:296): proctitle=737368002D700031343430006C6F63616C686F7374
+type=SOCKADDR msg=audit(1434044145.829:296): saddr=0A0005A0000000000000000000000000000000000000000100000000
+type=SYSCALL msg=audit(1434044145.829:296): arch=c000003e syscall=42 success=no exit=-13 a0=3 a1=6d4d1ce050 a2=1c a3=0 items=0 ppid=2005 pid=18045 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001 egid=1001 sgid=1001 fsgid=1001 tty=pts0 ses=1 comm=&amp;quot;ssh&amp;quot; exe=&amp;quot;/usr/bin/ssh&amp;quot; subj=staff_u:staff_r:ssh_t:s0 key=(null)
+type=AVC msg=audit(1434044145.829:296): avc:  denied  { name_connect } for  pid=18045 comm=&amp;quot;ssh&amp;quot; dest=1440 scontext=staff_u:staff_r:ssh_t:s0 tcontext=system_u:object_r:test_port_t:s0 tclass=tcp_socket permissive=0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="cil"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Live SELinux userspace ebuilds</title><link href="http://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/" rel="alternate"></link><published>2015-06-10T20:07:00+02:00</published><updated>2015-06-10T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-10:/2015/06/live-selinux-userspace-ebuilds/</id><summary type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
+applications: libselinux, policycoreutils, libsemanage, libsepol,
+sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
+version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux
+userspace&lt;/a&gt; so that developers
+and contributors can already work with in-progress code developments …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
+applications: libselinux, policycoreutils, libsemanage, libsepol,
+sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
+version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux
+userspace&lt;/a&gt; so that developers
+and contributors can already work with in-progress code developments as
+well as see how they work on a Gentoo platform.&lt;/p&gt;
+
+
+&lt;p&gt;That being said, I do not recommend using the live ebuilds for anyone
+else except developers and contributors in development zones (definitely
+not on production). One of the reasons is that the ebuilds do not apply
+Gentoo-specific patches to the ebuilds. I would also like to remove the
+Gentoo-specific manipulations that we do, such as small Makefile
+adjustments, but let's start with just ignoring the Gentoo patches.&lt;/p&gt;
+&lt;p&gt;Dropping the patches makes sure that we track upstream libraries and
+userspace closely, and allows developers to try and send out patches to
+the SELinux project to fix Gentoo related build problems. But as not all
+packages can be deployed successfully on a Gentoo system some patches
+need to be applied anyway. For this, users can drop the necessary
+patches inside &lt;code&gt;/etc/portage/patches&lt;/code&gt; as all userspace ebuilds use the
+&lt;em&gt;epatch_user&lt;/em&gt; method.&lt;/p&gt;
+&lt;p&gt;Finally, observant users will notice that "secilc" is also provided.
+This is a new package, which is probably going to have an official
+release with a new userspace release. It allows for building CIL-based
+SELinux policy code, and was one of the drivers for me to create the
+live ebuilds as I'm experimenting with the CIL constructions. So expect
+more on that later.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Moving closer to 2.4 stabilization</title><link href="http://blog.siphos.be/2015/04/moving-closer-to-2-4-stabilization/" rel="alternate"></link><published>2015-04-27T19:18:00+02:00</published><updated>2015-04-27T19:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-04-27:/2015/04/moving-closer-to-2-4-stabilization/</id><summary type="html">&lt;p&gt;The &lt;a href="https://github.com/SELinuxProject/selinux/wiki"&gt;SELinux userspace&lt;/a&gt;
+project has released version 2.4 in february this year, after release
+candidates have been tested for half a year. After its release, we at
+the &lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;Gentoo Hardened&lt;/a&gt;
+project have been working hard to integrate it within Gentoo. This
+effort has been made a bit more difficult …&lt;/p&gt;</summary><content type="html">&lt;p&gt;The &lt;a href="https://github.com/SELinuxProject/selinux/wiki"&gt;SELinux userspace&lt;/a&gt;
+project has released version 2.4 in february this year, after release
+candidates have been tested for half a year. After its release, we at
+the &lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;Gentoo Hardened&lt;/a&gt;
+project have been working hard to integrate it within Gentoo. This
+effort has been made a bit more difficult due to the migration of the
+policy store from one location to another while at the same time
+switching to HLL- and CIL based builds.&lt;/p&gt;
+&lt;p&gt;Lately, 2.4 itself has been pretty stable, and we're focusing on the
+proper migration from 2.3 to 2.4. The SELinux policy has been adjusted
+to allow the migrations to work, and a few final fixes are being tested
+so that we can safely transition our stable users from 2.3 to 2.4.
+Hopefully we'll be able to stabilize the userspace this month or
+beginning of next month.&lt;/p&gt;</content><category term="Gentoo"></category><category term="2.4"></category><category term="Gentoo"></category><category term="hardened"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Migrating to SELinux userspace 2.4 (small warning for users)</title><link href="http://blog.siphos.be/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/" rel="alternate"></link><published>2014-10-30T19:44:00+01:00</published><updated>2014-10-30T19:44:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</id><summary type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
+(either globally or for the SELinux utilities in particular) will notice
+that the SELinux userspace will upgrade to version 2.4 (release
+candidate 5 for now). This upgrade comes with a manual step that needs
+to be performed …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
+(either globally or for the SELinux utilities in particular) will notice
+that the SELinux userspace will upgrade to version 2.4 (release
+candidate 5 for now). This upgrade comes with a manual step that needs
+to be performed after upgrade. The information is mentioned as
+post-installation message of the &lt;code&gt;policycoreutils&lt;/code&gt; package, and
+basically sais that you need to execute:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
+module store (and the semanage related files) to be in
+&lt;code&gt;/var/lib/selinux&lt;/code&gt; and no longer in &lt;code&gt;/etc/selinux&lt;/code&gt;. Note that this does
+not mean that the SELinux policy itself is moved outside of that
+location, nor is the basic configuration file (&lt;code&gt;/etc/selinux/config&lt;/code&gt;).
+It is what tools such as &lt;strong&gt;semanage&lt;/strong&gt; manage that is moved outside that
+location.&lt;/p&gt;
+&lt;p&gt;I tried to automate the migration as part of the packages themselves,
+but this would require the &lt;code&gt;portage_t&lt;/code&gt; domain to be able to move,
+rebuild and load policies, which it can't (and to be honest, shouldn't).
+Instead of augmenting the policy or making updates to the migration
+script as delivered by the upstream project, we currently decided to
+have the migration done manually. It is a one-time migration anyway.&lt;/p&gt;
+&lt;p&gt;If for some reason end users forget to do the migration, then that does
+not mean that the system breaks or becomes unusable. SELinux still
+works, SELinux aware applications still work; the only thing that will
+fail are updates on the SELinux configuration through tools like
+&lt;strong&gt;semanage&lt;/strong&gt; or &lt;strong&gt;setsebool&lt;/strong&gt; - the latter when you want to persist
+boolean changes.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -l
+ValueError: SELinux policy is not managed or store cannot be accessed.
+
+~# setsebool -P allow_ptrace on
+Cannot set persistent booleans without managed policy.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
+migration. Note in the following that there is a warning about 'else'
+blocks that are no longer supported: that's okay, as far as I know (and
+it was mentioned on the upstream mailinglist as well as not something to
+worry about) it does not have any impact.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
+Migrating from /etc/selinux/mcs/modules/active to /var/lib/selinux/mcs/active
+Attempting to rebuild policy from /var/lib/selinux
+sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
+up. You can also rerun the command multiple times:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
+warning: Policy type mcs has already been migrated, but modules still exist in the old store. Skipping store.
+Attempting to rebuild policy from /var/lib/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So... don't worry - the change is small and does not break stuff. And
+for those wondering about CIL I'll talk about it in one of my next
+posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>New SELinux userspace release</title><link href="http://blog.siphos.be/2013/04/new-selinux-userspace-release/" rel="alternate"></link><published>2013-04-26T03:50:00+02:00</published><updated>2013-04-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-26:/2013/04/new-selinux-userspace-release/</id><summary type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong VM, one that
+didn't contain the new packages. Result: no regressions (of course). My
+fault for not using in-ebuild tests properly, as I
+&lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=465846"&gt;should&lt;/a&gt;. So you'll
+probably see me blogging about the in-ebuild testing soon ;-)&lt;/p&gt;
+&lt;p&gt;In any case, the regressions I did find out (quite fast after I updated
+my main laptop with them as well) where a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467258"&gt;missing function in
+libselinux&lt;/a&gt;, a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467264"&gt;referral
+to a non-existing makefile when using "semanage
+permissive"&lt;/a&gt; and the new
+&lt;strong&gt;sepolicy&lt;/strong&gt; application &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=467268"&gt;requiring yum python
+bindings&lt;/a&gt;. At least,
+with the missing function (hopefully correctly) resolved, all tests I
+usually do (except for the permissive domains) are now running well
+again.&lt;/p&gt;
+&lt;p&gt;This only goes to show how important testing is. Of course, I
+&lt;a href="http://marc.info/?l=selinux&amp;amp;m=136692033821285&amp;amp;w=2"&gt;reported&lt;/a&gt; the bugs
+on the mailinglist of the userspace utilities as well. Hopefully they
+can look at them while I'm asleep so I can integrate fixes tomorrow more
+easily ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="automation"></category><category term="regression"></category><category term="release"></category><category term="selinux"></category><category term="test"></category><category term="testing"></category><category term="userspace"></category></entry></feed>

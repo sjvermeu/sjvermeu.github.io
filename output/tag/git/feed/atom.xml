@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - git</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/git/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-08-09T21:45:00+02:00</updated><entry><title>Some changes under the hood</title><link href="http://blog.siphos.be/2014/08/some-changes-under-the-hood/" rel="alternate"></link><published>2014-08-09T21:45:00+02:00</published><updated>2014-08-09T21:45:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-08-09:/2014/08/some-changes-under-the-hood/</id><summary type="html">&lt;p&gt;In between conferences, technical writing jobs and traveling, we did a
+few changes under the hood for SELinux in Gentoo.&lt;/p&gt;
+&lt;p&gt;First of all, new policies are bumped and also stabilized (2.20130411-r3
+is now stable, 2.20130411-r5 is \~arch). These have a few updates
+(mergers from upstream), and r5 also …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In between conferences, technical writing jobs and traveling, we did a
+few changes under the hood for SELinux in Gentoo.&lt;/p&gt;
+&lt;p&gt;First of all, new policies are bumped and also stabilized (2.20130411-r3
+is now stable, 2.20130411-r5 is \~arch). These have a few updates
+(mergers from upstream), and r5 also has preliminary support for
+&lt;a href="http://www.freedesktop.org/software/systemd/man/tmpfiles.d.html"&gt;tmpfiles&lt;/a&gt;
+(at least the OpenRC implementation of it), which is made part of the
+&lt;a href="http://packages.gentoo.org/package/sec-policy/selinux-base-policy"&gt;selinux-base-policy&lt;/a&gt;
+package.&lt;/p&gt;
+&lt;p&gt;The ebuilds to support new policy releases now are relatively simple
+copies of the live ebuilds (which always contain the latest policies) so
+that bumping (either by me or other developers) is easy enough. There's
+also a release script in our policy repository which tags the right git
+commit (the point at which the release is made), creates the necessary
+patches, uploads them, etc.&lt;/p&gt;
+&lt;p&gt;One of the changes made is to "drop" the &lt;code&gt;BASEPOL&lt;/code&gt; variable. In the
+past, &lt;code&gt;BASEPOL&lt;/code&gt; was a variable inside the ebuilds that pointed to the
+right patchset (and base policy) as we initially supported policy
+modules of different base releases. However, that was a mistake and we
+quickly moved to bumping all policies with every releaes, but kept the
+&lt;code&gt;BASEPOL&lt;/code&gt; variable in it. Now, &lt;code&gt;BASEPOL&lt;/code&gt; is "just" the &lt;code&gt;${PVR}&lt;/code&gt; value of
+the ebuild so no longer needs to be provided. In the future, I'll
+probably remove &lt;code&gt;BASEPOL&lt;/code&gt; from the internal eclass and the
+&lt;code&gt;selinux-base*&lt;/code&gt; packages as well.&lt;/p&gt;
+&lt;p&gt;A more important change to the eclass is support for the
+&lt;code&gt;SELINUX_GIT_REPO&lt;/code&gt; and &lt;code&gt;SELINUX_GIT_BRANCH&lt;/code&gt; variables (for live ebuilds,
+i.e. those with the 9999 version). If set, then they pull from the
+mentioned repository (and branch) instead of the default
+&lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;hardened-refpolicy.git&lt;/a&gt;
+repository. This allows for developers to do some testing on a different
+branch easily, or for other users to use their own policy repository
+while still enjoying the SELinux integration support in Gentoo through
+the &lt;code&gt;sec-policy/*&lt;/code&gt; packages.&lt;/p&gt;
+&lt;p&gt;Finally, I wrote up a first attempt at our &lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/CodingStyle"&gt;coding
+style&lt;/a&gt;,
+heavily based on the coding style from the reference policy of course
+(as our policy is still following this upstream project). This should
+allow the team to work better together and to decide on namings
+autonomously (instead of hours of discussing and settling for something
+as silly as an interface or boolean name ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="eclass"></category><category term="Gentoo"></category><category term="git"></category><category term="hardened"></category><category term="refpolicy"></category><category term="selinux"></category></entry></feed>

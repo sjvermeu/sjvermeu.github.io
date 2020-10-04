@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - uefi</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/uefi/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-12-23T18:08:00+01:00</updated><entry><title>Added UEFI instructions to AMD64/x86 handbooks</title><link href="http://blog.siphos.be/2014/12/added-uefi-instructions-to-amd64x86-handbooks/" rel="alternate"></link><published>2014-12-23T18:08:00+01:00</published><updated>2014-12-23T18:08:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-23:/2014/12/added-uefi-instructions-to-amd64x86-handbooks/</id><summary type="html">&lt;p&gt;I just finished up adding some UEFI instructions to the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;Gentoo
+handbooks&lt;/a&gt; for AMD64
+and x86 (I don't know how many systems are still using x86 instead of
+the AMD64 one, and if those support UEFI, but the instructions are
+shared and they don't collide). The entire EFI stuff can …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just finished up adding some UEFI instructions to the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;Gentoo
+handbooks&lt;/a&gt; for AMD64
+and x86 (I don't know how many systems are still using x86 instead of
+the AMD64 one, and if those support UEFI, but the instructions are
+shared and they don't collide). The entire EFI stuff can probably be
+improved a lot, but basically the things that were added are:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;boot the system using UEFI already if possible (which is needed for
+    efibootmgr to access the EFI variables). This is not entirely
+    mandatory (as efibootmgr is not mandatory to boot a system)
+    but recommended.&lt;/li&gt;
+&lt;li&gt;use vfat for the &lt;code&gt;/boot/&lt;/code&gt; location, as this now becomes the EFI
+    System Partition.&lt;/li&gt;
+&lt;li&gt;configure the Linux kernel to support EFI stub and EFI variables&lt;/li&gt;
+&lt;li&gt;install the Linux kernel as the &lt;code&gt;bootx64.efi&lt;/code&gt; file to boot the
+    system with&lt;/li&gt;
+&lt;li&gt;use efibootmgr to add boot options (if required) and create an EFI
+    boot entry called "Gentoo"&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;If you find grave errors, please do mention them (either on a talk page
+on the wiki, as a &lt;a href="https://bugs.gentoo.org"&gt;bug&lt;/a&gt; or through IRC) so it
+is picked up. All developers and trusted contributors on the wiki have
+access to the files so can edit where needed (but do take care that, if
+something is edited, that it is either architecture-specific or shared
+across all architectures - check the page when editing; if it is
+&lt;em&gt;Handbook:Parts&lt;/em&gt; then it is shared, and &lt;em&gt;Handbook:AMD64&lt;/em&gt; is specific for
+the architecture). And if I'm online I'll of course act on it quickly.&lt;/p&gt;
+&lt;p&gt;Oh, and no - it is not a bug that there is a (now not used) &lt;code&gt;/dev/sda1&lt;/code&gt;
+"bios" partition. Due to the differences with the possible installation
+alternatives, it is easier for us (me) to just document a common
+partition layout than to try and write everything out (making it just
+harder for new users to follow the instructions).&lt;/p&gt;</content><category term="Documentation"></category><category term="efi"></category><category term="Gentoo"></category><category term="handbook"></category><category term="uefi"></category></entry></feed>

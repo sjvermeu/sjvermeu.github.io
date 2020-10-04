@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>Using strace to troubleshoot SELinux problems - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2013/04/using-strace-to-troubleshoot-selinux-problems/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="debug,selinux,strace" />
+        <meta name="description" content="When SELinux is playing tricks on you, you can just &#34;allow&#34; whatever it wants to do, but that is not always an option: sometimes, there is no denial in sight because the problem lays within SELinux-aware applications (applications that might change their behavior based on what the policy sais or …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Using strace to troubleshoot SELinux problems"/>
+        <meta property="og:url" content="http://blog.siphos.be/2013/04/using-strace-to-troubleshoot-selinux-problems/"/>
+        <meta property="og:description" content="When SELinux is playing tricks on you, you can just &#34;allow&#34; whatever it wants to do, but that is not always an option: sometimes, there is no denial in sight because the problem lays within SELinux-aware applications (applications that might change their behavior based on what the policy sais or …"/>
+        <meta property="article:published_time" content="2013-04-24" />
+            <meta property="article:section" content="SELinux" />
+            <meta property="article:tag" content="debug" />
+            <meta property="article:tag" content="selinux" />
+            <meta property="article:tag" content="strace" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/selinux.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... SELinux ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2013/04/using-strace-to-troubleshoot-selinux-problems/"
+                       rel="bookmark"
+                       title="Permalink to Using strace to troubleshoot SELinux problems">
+                        Using strace to troubleshoot SELinux problems
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-04-24T03:50:00+02:00"> Wed 24 April 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/debug/">debug</a>
+        /
+	<a href="http://blog.siphos.be/tag/selinux/">selinux</a>
+        /
+	<a href="http://blog.siphos.be/tag/strace/">strace</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>When SELinux is playing tricks on you, you can just "allow" whatever it
+wants to do, but that is not always an option: sometimes, there is no
+denial in sight because the problem lays within SELinux-aware
+applications (applications that might change their behavior based on
+what the policy sais or even based on if SELinux is enabled or not). At
+other times, you get a strange behavior that isn't directly visible what
+the cause is. But mainly, if you want to make sure that allowing
+something is correct (and not just a corrective action), you need to be
+absolutely certain that what you want to allow is security-wise
+acceptable.</p>
+<p>To debug such issues, I often take the <strong>strace</strong> command to debug the
+application at hand. To use <strong>strace</strong>, I toggle the <em>allow_ptrace</em>
+boolean (<strong>strace</strong> uses <code>ptrace()</code> which, by default, isn't allowed
+policy-wise) and then run the offending application through <strong>strace</strong>
+(or attach to the running process if it is a daemon). For instance, to
+debug a <a href="https://bugs.gentoo.org/show_bug.cgi?id=463222">tmux issue</a> we
+had with the policy not that long ago:</p>
+<div class="highlight"><pre><span></span><code># setsebool allow_ptrace on
+# strace -o strace.log -f -s 256 tmux
+</code></pre></div>
+
+
+<p>The resulting log file (strace.log) might seem daunting at first to look
+at. What you see are the system calls that the process is performing,
+together with their options but also the return code of each call. This
+is especially important as SELinux, if it denies something, often
+returns something like EACCESS (Permission Denied).</p>
+<div class="highlight"><pre><span></span><code>7313  futex(0x349e016f080, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+7313  futex(0x5aad58fd84, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+7313  stat(&quot;/&quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+7313  stat(&quot;/home&quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+7313  stat(&quot;/home/swift&quot;, {st_mode=S_IFDIR|0755, st_size=12288, ...}) = 0
+7313  stat(&quot;/home/swift/.pki&quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}) = 0
+7313  stat(&quot;/home/swift/.pki/nssdb&quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}) = 0
+7313  statfs(&quot;/home/swift/.pki/nssdb&quot;, 0x3c3cab6fa50) = -1 EACCES (Permission denied)
+</code></pre></div>
+
+
+<p>Most (if not all) of the methods shown in a strace log are documented
+through manpages, so you can quickly find out that <code>futex()</code> is about
+fast user-space locking, <code>stat()</code> (<strong>man 2 stat</strong> to see the information
+about the method instead of the application) is about getting file
+status and <code>statfs()</code> is for getting file system statistics.</p>
+<p>The most common permission issues you'll find are file related:</p>
+<div class="highlight"><pre><span></span><code>7313  open(&quot;/proc/filesystems&quot;, O_RDONLY) = -1 EACCES (Permission denied)
+</code></pre></div>
+
+
+<p>In the above case, you notice that the application is trying to open the
+<code>/proc/filesystems</code> file read-only. In the SELinux logs, this might be
+displayed as follows:</p>
+<div class="highlight"><pre><span></span><code>audit.log:type=AVC msg=audit(1365794728.180:3192): avc:  denied  { read } for  
+pid=860 comm=&quot;nacl_helper_boo&quot; name=&quot;filesystems&quot; dev=&quot;proc&quot; ino=4026532034 
+scontext=staff_u:staff_r:chromium_naclhelper_t tcontext=system_u:object_r:proc_t tclass=file
+</code></pre></div>
+
+
+<p>Now the case of <strong>tmux</strong> before was not an obvious one. In the end, I
+compared the strace output's of two runs (one in enforcing and one in
+permissive) to find what the difference would be. This is the result:</p>
+<div class="highlight"><pre><span></span><code>Enforcing:
+
+10905 fcntl(9, F_GETFL) = 0x8000 (flags O_RDONLY|O_LARGEFILE) 
+10905 fcntl(9, F_SETFL, O_RDONLY|O_NONBLOCK|O_LARGEFILE) = 0
+
+Permissive:
+
+10905 fcntl(9, F_GETFL) = 0x8002 (flags O_RDWR|O_LARGEFILE) 
+10905 fcntl(9, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
+</code></pre></div>
+
+
+<p>You notice the difference? In enforcing-mode, one of the flags on the
+file descriptor has <code>O_RDONLY</code> whereas the one in permissive mode as
+<code>O_RDWR</code>. This means that the file descriptor in enforcing mode is
+read-only whereas in permissive-mode is read-write. What we then do in
+the strace logs is to see where this file descriptor (with id=9) comes
+from:</p>
+<div class="highlight"><pre><span></span><code>10905 dup(0)     = 9
+10905 dup(1)     = 10
+10905 dup(2)     = 11
+</code></pre></div>
+
+
+<p>As the man-pages sais, <code>dup()</code> duplicates a file descriptor. And
+because, by convention, the first three file descriptors of an
+application correspond with standard input (0), standard output (1) and
+error output (2), we now know that the file descriptor with id=9 comes
+from the standard input file descriptor. Although this one should be
+read-only (it is the input that the application gets = reads), it seems
+that tmux might want to use this for writes as well. And that is what
+happens - tmux sends the file descriptor to the tmux server to check if
+it is a tty and then uses it to write to the screen.</p>
+<p>Now what does that have to do with SELinux? It has to mean something,
+otherwise running in permissive mode would give the same result. After
+some investigation, we found out that using <strong>newrole</strong> to switch roles
+changes the flags of the standard input (as then provided by
+<strong>newrole</strong>) from <code>O_RDWR</code> to <code>O_RDONLY</code> (code snippet from <code>newrole.c</code>
+- look at the first call to <code>open()</code>):</p>
+<div class="highlight"><pre><span></span><code>/* Close the tty and reopen descriptors 0 through 2 */
+if (ttyn) {
+        if (close(fd) || close(0) || close(1) || close(2)) {
+                fprintf(stderr, _(&quot;Could not close descriptors.\n&quot;));
+                goto err_close_pam;
+        }
+        fd = open(ttyn, O_RDONLY | O_NONBLOCK);
+        if (fd != 0)
+                goto err_close_pam;
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp; ~O_NONBLOCK);
+        fd = open(ttyn, O_RDWR | O_NONBLOCK);
+        if (fd != 1)
+                goto err_close_pam;
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp; ~O_NONBLOCK);
+        fd = open(ttyn, O_RDWR | O_NONBLOCK);
+        if (fd != 2)
+                goto err_close_pam;
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp; ~O_NONBLOCK);
+}
+</code></pre></div>
+
+
+<p>Such obscure problems are much easier to detect and troubleshoot thanks
+to tools like <strong>strace</strong>.</p>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'using-strace-to-troubleshoot-selinux-problems';
+                var disqus_url = 'http://blog.siphos.be/2013/04/using-strace-to-troubleshoot-selinux-problems/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

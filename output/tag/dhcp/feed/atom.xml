@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - dhcp</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/dhcp/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-02-08T16:50:00+01:00</updated><entry><title>Have dhcpcd wait before backgrounding</title><link href="http://blog.siphos.be/2015/02/have-dhcpcd-wait-before-backgrounding/" rel="alternate"></link><published>2015-02-08T16:50:00+01:00</published><updated>2015-02-08T16:50:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-02-08:/2015/02/have-dhcpcd-wait-before-backgrounding/</id><summary type="html">&lt;p&gt;Many of my systems use DHCP for obtaining IP addresses. Even though they
+all receive a static IP address, it allows me to have them moved over
+(migrations), use TFTP boot, cloning (in case of quick testing), etc.
+But one of the things that was making my efforts somewhat more …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Many of my systems use DHCP for obtaining IP addresses. Even though they
+all receive a static IP address, it allows me to have them moved over
+(migrations), use TFTP boot, cloning (in case of quick testing), etc.
+But one of the things that was making my efforts somewhat more difficult
+was that the &lt;code&gt;dhcpcd&lt;/code&gt; service continued (the &lt;code&gt;dhcpcd&lt;/code&gt; daemon immediately
+went in the background) even though no IP address was received yet.
+Subsequent service scripts that required a working network connection
+failed to start then.&lt;/p&gt;
+&lt;p&gt;The solution is to configure &lt;code&gt;dhcpcd&lt;/code&gt; to wait for an IP address. This is
+done through the &lt;code&gt;-w&lt;/code&gt; option, or the &lt;code&gt;waitip&lt;/code&gt; instruction in the
+&lt;code&gt;dhcpcd.conf&lt;/code&gt; file. With that in place, the service script now waits
+until an IP address is assigned.&lt;/p&gt;</content><category term="Gentoo"></category><category term="dhcp"></category><category term="dhcpcd"></category><category term="Gentoo"></category></entry></feed>

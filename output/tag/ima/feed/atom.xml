@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - ima</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/ima/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-14T03:50:00+02:00</updated><entry><title>Highlevel assessment of Cdorked and Gentoo Hardened/SELinux</title><link href="http://blog.siphos.be/2013/05/highlevel-assessment-of-cdorked-and-gentoo-hardenedselinux/" rel="alternate"></link><published>2013-05-14T03:50:00+02:00</published><updated>2013-05-14T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-14:/2013/05/highlevel-assessment-of-cdorked-and-gentoo-hardenedselinux/</id><summary type="html">&lt;p&gt;With all the
+&lt;a href="http://www.welivesecurity.com/2013/05/07/linuxcdorked-malware-lighttpd-and-nginx-web-servers-also-affected/"&gt;reports&lt;/a&gt;
+surrounding
+&lt;a href="https://threatpost.com/attack-using-backdoored-apache-binaries-to-lead-to-blackhole-kit/"&gt;Cdorked&lt;/a&gt;,
+I took a look at if SELinux and/or other Gentoo Hardened technologies
+could reduce the likelihood that this infection occurs on your system.&lt;/p&gt;
+&lt;p&gt;First of all, we don't know yet how the malware gets installed on the
+server. We do know that the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With all the
+&lt;a href="http://www.welivesecurity.com/2013/05/07/linuxcdorked-malware-lighttpd-and-nginx-web-servers-also-affected/"&gt;reports&lt;/a&gt;
+surrounding
+&lt;a href="https://threatpost.com/attack-using-backdoored-apache-binaries-to-lead-to-blackhole-kit/"&gt;Cdorked&lt;/a&gt;,
+I took a look at if SELinux and/or other Gentoo Hardened technologies
+could reduce the likelihood that this infection occurs on your system.&lt;/p&gt;
+&lt;p&gt;First of all, we don't know yet how the malware gets installed on the
+server. We do know that the Apache binaries themselves are modified, so
+the first thing to look at is to see if this risk can be reduced. Of
+course, using an intrusion detection system like
+&lt;a href="https://wiki.gentoo.org/wiki/AIDE"&gt;AIDE&lt;/a&gt; helps, but even with Gentoo's
+&lt;strong&gt;qcheck&lt;/strong&gt; command you can test the integrity of the files:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# qcheck www-servers/apache
+Checking www-servers/apache-2.2.24 ...
+  * 424 out of 424 files are good
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If the binary is modified, this would result in something equivalent to:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Checking www-servers/apache-2.2.24 ...
+ MD5-DIGEST: /usr/sbin/apache2
+  * 423 out of 424 files are good
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I don't know if the modified binary would otherwise work just fine, I
+have not been able to find exact details on the infected binary to (in a
+sandbox environment of course) analyze this further. Also, because we
+don't know how they are installed, it is not easy to know if binaries
+that you built yourself are equally likely to be modified/substituted or
+if the attack checks checksums of the binaries against a known list.&lt;/p&gt;
+&lt;p&gt;Assuming that it would run, then the infecting malware would need to set
+the proper SELinux context on the file (if it overwrites the existing
+binary, then the context is retained, otherwise it gets the default
+context of &lt;code&gt;bin_t&lt;/code&gt;). If the context is wrong, then starting Apache
+results in:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is because the modified binary stays in the calling domain context
+(&lt;code&gt;initrc_t&lt;/code&gt;). If you use a targeted policy, then this will not present
+itself as &lt;code&gt;initrc_t&lt;/code&gt; is an unconfined domain. But with strict policies,
+&lt;code&gt;initrc_t&lt;/code&gt; is not allowed to read &lt;code&gt;httpd_modules_t&lt;/code&gt;. Even worse, the
+remainder of SELinux protections don't apply anymore, since with
+unconfined domains, all bets are off. That is why Gentoo focuses this
+hard on using a strict policy.&lt;/p&gt;
+&lt;p&gt;So, what if the binary runs in the proper domain? Well then, from the
+articles I read, the malware can do a reverse connect. That means that
+the domain will attempt to connect to an IP address provided by the
+attacker (in a specifically crafted URL). For SELinux, this means that
+the &lt;em&gt;name_connect&lt;/em&gt; permission is checked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sesearch -s httpd_t -c tcp_socket -p name_connect -ACTS
+Found 20 semantic av rules:
+   allow nsswitch_domain dns_port_t : tcp_socket { name_connect } ; 
+DT allow httpd_t port_type : tcp_socket { name_connect } ; [ httpd_can_network_connect ]
+DT allow httpd_t ftp_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
+DT allow httpd_t smtp_port_t : tcp_socket { name_connect } ; [ httpd_can_sendmail ]
+DT allow httpd_t postgresql_port_t : tcp_socket { name_connect } ; [ httpd_can_network_connect_db ]
+DT allow httpd_t oracledb_port_t : tcp_socket { name_connect } ; [ httpd_can_network_connect_db ]
+DT allow httpd_t squid_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
+DT allow httpd_t mssql_port_t : tcp_socket { name_connect } ; [ httpd_can_network_connect_db ]
+DT allow httpd_t kerberos_port_t : tcp_socket { name_connect } ; [ allow_kerberos ]
+DT allow nsswitch_domain ldap_port_t : tcp_socket { name_connect } ; [ authlogin_nsswitch_use_ldap ]
+DT allow httpd_t http_cache_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
+DT allow httpd_t http_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
+DT allow httpd_t http_port_t : tcp_socket { name_connect } ; [ httpd_graceful_shutdown ]
+DT allow httpd_t mysqld_port_t : tcp_socket { name_connect } ; [ httpd_can_network_connect_db ]
+DT allow httpd_t ocsp_port_t : tcp_socket { name_connect } ; [ allow_kerberos ]
+DT allow nsswitch_domain kerberos_port_t : tcp_socket { name_connect } ; [ allow_kerberos ]
+DT allow httpd_t pop_port_t : tcp_socket { name_connect } ; [ httpd_can_sendmail ]
+DT allow nsswitch_domain ocsp_port_t : tcp_socket { name_connect } ; [ allow_kerberos ]
+DT allow httpd_t gds_db_port_t : tcp_socket { name_connect } ; [ httpd_can_network_connect_db ]
+DT allow httpd_t gopher_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So by default, the Apache (&lt;code&gt;httpd_t&lt;/code&gt;) domain is allowed to connect to
+DNS port (to resolve hostnames). All other &lt;em&gt;name_connect&lt;/em&gt; calls depend
+on SELinux booleans (mentioned after it) that are by default disabled
+(at least on Gentoo). Disabling hostname resolving is not really
+feasible, so if the attacker uses a DNS port as port that the malware
+needs to connect to, SELinux will not deny it (unless you use additional
+networking constraints).&lt;/p&gt;
+&lt;p&gt;Now, the reverse connect is an interesting feature of the malware, but
+not the main one. The main focus of the malware is to redirect customers
+to particular sites that can trick the user in downloading additional
+(client) malware. Because this is done internally within Apache, SELinux
+cannot deal with this. As a user, make sure you configure your browser
+not to trust non-local iframes and such (always do this, not just
+because there is a possible threat right now). The configuration of
+Cdorked is a shared memory segment of Apache itself. Of course, since
+Apache uses shared memory, the malware embedded within will also have
+access to the shared memory. However, if this shared memory would need
+to be accessed by third party applications (the malware seems to grant
+read/write rights on everybody to this segment) SELinux will prevent
+this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sesearch -t httpd_t -c shm -ACTS
+Found 2 semantic av rules:
+   allow unconfined_domain_type domain : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ; 
+   allow httpd_t httpd_t : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Only unconfined domains and the &lt;code&gt;httpd_t&lt;/code&gt; domain itself have access to
+&lt;code&gt;httpd_t&lt;/code&gt; labeled shared memory.&lt;/p&gt;
+&lt;p&gt;So what about IMA/EVM? Well, those will not help here since IMA checks
+for integrity of files that were modified &lt;em&gt;offline&lt;/em&gt;. As the modification
+of the Apache binaries is most likely done online, IMA would just accept
+this.&lt;/p&gt;
+&lt;p&gt;For now, it seems that a good system integrity approach is the most
+effective until we know more about how the malware-infected binary is
+written to the system in the first place (as this is better protected by
+MAC controls like SELinux).&lt;/p&gt;</content><category term="Security"></category><category term="apache"></category><category term="cdorked"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category></entry><entry><title>Uploading selinuxnode test VM</title><link href="http://blog.siphos.be/2013/02/uploading-selinuxnode-test-vm/" rel="alternate"></link><published>2013-02-25T03:05:00+01:00</published><updated>2013-02-25T03:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-25:/2013/02/uploading-selinuxnode-test-vm/</id><summary type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
+few hours), I'm uploading a new SELinux-enabled KVM guest image. This is
+not an update on the previous image though (it's a reinstalled system -
+after all, I use VMs for testing, so it makes sense to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
+few hours), I'm uploading a new SELinux-enabled KVM guest image. This is
+not an update on the previous image though (it's a reinstalled system -
+after all, I use VMs for testing, so it makes sense to reinstall from
+time to time to check if the installation instructions are still
+accurate). However, the focus remains the same:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A minimal Gentoo Linux installation for amd64 (x86_64) as guest
+    within a KVM hypervisor. The image is about 190 Mb in size
+    compressed, and 1.6 Gb in size uncompressed. The file format is
+    Qemu's QCOW2 so expect the image to grow as you work with it. The
+    file systems are, in total, sized to about 50 Gb.&lt;/li&gt;
+&lt;li&gt;The installation has SELinux enabled (strict policy, enforcing
+    mode), various grSecurity settings enabled (including PaX and TPE),
+    but now also includes IMA (Integrity Measurement Architecture) and
+    EVM (Extended Verification Module) although EVM is by default
+    started in fix mode.&lt;/li&gt;
+&lt;li&gt;The image will not start any network-facing daemons by default
+    (unlike the previous image) for security reasons (if I let this
+    image stay around this long as I did with the previous, it's prone
+    to have some vulnerabilities in the future, although I'm hoping I
+    can update the image more frequently). This includes SSH, so you'll
+    need access to the image console first after which you can configure
+    the network and start SSH (&lt;strong&gt;run_init rc-service sshd start&lt;/strong&gt; does
+    the trick).&lt;/li&gt;
+&lt;li&gt;A couple of default accounts are created, and the image will display
+    those accounts and their passwords on the screen (it is a test/play
+    VM, not a production VM).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are still a few minor issues with it, that I hope to fix by the
+next upload:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=457812"&gt;Bug 457812&lt;/a&gt; is
+    still applicable to the image, so you'll notice lots of SELinux
+    denials on the mknod capability. They seem to be cosmetic though.&lt;/li&gt;
+&lt;li&gt;At shutdown, udev somewhere fails with a SELinux initial
+    context problem. I thought I had it covered, but I noticed after
+    compressing the image that it is still there. I'll fix it - I
+    promise ;)&lt;/li&gt;
+&lt;li&gt;EVM is enabled in fix mode, because otherwise EVM is &lt;a href="http://sourceforge.net/mailarchive/forum.php?thread_name=1361476641.29360.114.camel%40falcor1&amp;amp;forum_name=linux-ima-user"&gt;prohibiting
+    mode
+    changes&lt;/a&gt;
+    on files in /run. I still have to investigate this further though -
+    I had to use the EVM=fix workaround due to time pressure.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When uploaded, I'll ask the Gentoo infrastructure team to synchronise
+the image with our mirrors so you can enjoy it. It'll be on the
+distfiles, under experimental/amd64/qemu-selinux (it has the 20130224
+date in the name, so you can see for yourself if the sync has already
+occurred or not).&lt;/p&gt;</content><category term="Gentoo"></category><category term="evm"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="ima"></category><category term="kvm"></category><category term="selinux"></category><category term="virtual"></category></entry><entry><title>Working on a new selinuxnode VM</title><link href="http://blog.siphos.be/2013/02/working-on-a-new-selinuxnode-vm/" rel="alternate"></link><published>2013-02-23T14:04:00+01:00</published><updated>2013-02-23T14:04:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-23:/2013/02/working-on-a-new-selinuxnode-vm/</id><summary type="html">&lt;p&gt;A long time ago, I made a &lt;a href="http://distfiles.gentoo.org/experimental/amd64/qemu-selinux/"&gt;SELinux enabled
+VM&lt;/a&gt; for
+people to play with, displaying a minimal Gentoo installation, including
+the hardening features it supports (PIE/PIC toolchain, grSecurity, PaX
+and SELinux). I'm currently trying to create a new one, which also
+includes IMA/EVM, but it looks like …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A long time ago, I made a &lt;a href="http://distfiles.gentoo.org/experimental/amd64/qemu-selinux/"&gt;SELinux enabled
+VM&lt;/a&gt; for
+people to play with, displaying a minimal Gentoo installation, including
+the hardening features it supports (PIE/PIC toolchain, grSecurity, PaX
+and SELinux). I'm currently trying to create a new one, which also
+includes IMA/EVM, but it looks like I still have many things to
+investigate further...&lt;/p&gt;
+&lt;p&gt;First of all, I notice that many SELinux domains want to use the mknod
+capability, even for domains of which I have no idea whatsoever why they
+need it. I don't notice any downsides though, and running in permissive
+mode doesn't change the domain behavior. But still, I'm reluctant to
+mark them dontaudit as long as I'm not 100% sure.&lt;/p&gt;
+&lt;p&gt;Second, the gettys (I think it is the getty) result in a "Cannot change
+SELinux context: permission denied" error, even though everything is
+running in the right SELinux context. I still have to confirm if it
+really is the getty process or something else (the last run I had the
+impression it was a udev-related process). But there are no denials and
+no SELinux errors in the logs.&lt;/p&gt;
+&lt;p&gt;Third, during shutdown, many domains have problems accessing their PID
+files in /var/run (which is a link to /run). I most likely need to allow
+read privileges on all domains that have access to var_run_t towards
+the var_t symlinks. It isn't a problem per se (the processes still run
+correctly) but ugly as hell, and if you introduce monitoring it'll go
+haywire (as no PID files were either found, or were stale).&lt;/p&gt;
+&lt;p&gt;Also, EVM is giving me a hard time, not allowing me to change mode and
+ownership in files on /var/run. I have received some feedback from the
+IMA user list on this so it is still very much a work-in-progress.&lt;/p&gt;
+&lt;p&gt;Finally, the first attempt to generate a new VM resulted in a download
+of 817 MB (instead of the 158 MB of the previous release), so I still
+have to correct my USE flags and doublecheck the installed applications.
+Anyway, definitely to be continued. Too bad time is a scarce resource
+:-(&lt;/p&gt;</content><category term="Gentoo"></category><category term="evm"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category><category term="selinuxnode"></category><category term="vm"></category></entry></feed>

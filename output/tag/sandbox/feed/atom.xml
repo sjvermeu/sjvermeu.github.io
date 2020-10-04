@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - sandbox</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/sandbox/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2016-09-27T20:47:00+02:00</updated><entry><title>We do not ship SELinux sandbox</title><link href="http://blog.siphos.be/2016/09/we-do-not-ship-selinux-sandbox/" rel="alternate"></link><published>2016-09-27T20:47:00+02:00</published><updated>2016-09-27T20:47:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-09-27:/2016/09/we-do-not-ship-selinux-sandbox/</id><summary type="html">&lt;p&gt;A few days ago a vulnerability was reported in the SELinux sandbox user space
+utility. The utility is part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. Luckily, Gentoo's
+&lt;code&gt;sys-apps/policycoreutils&lt;/code&gt; package is not vulnerable - and not because we were
+clairvoyant about this issue, but because we don't ship this utility.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;What is the …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;A few days ago a vulnerability was reported in the SELinux sandbox user space
+utility. The utility is part of the &lt;code&gt;policycoreutils&lt;/code&gt; package. Luckily, Gentoo's
+&lt;code&gt;sys-apps/policycoreutils&lt;/code&gt; package is not vulnerable - and not because we were
+clairvoyant about this issue, but because we don't ship this utility.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;What is the SELinux sandbox?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The SELinux sandbox utility, aptly named &lt;code&gt;sandbox&lt;/code&gt;, is a simple C application which
+executes its arguments, but only after ensuring that the task it launches is
+going to run in the &lt;code&gt;sandbox_t&lt;/code&gt; domain.&lt;/p&gt;
+&lt;p&gt;This domain is specifically crafted to allow applications most standard privileges
+needed for interacting with the user (so that the user can of course still use the
+application) but removes many permissions that might be abused to either obtain 
+information from the system, or use to try and exploit vulnerabilities to gain
+more privileges. It also hides a number of resources on the system through
+namespaces.&lt;/p&gt;
+&lt;p&gt;It was &lt;a href="http://danwalsh.livejournal.com/28545.html"&gt;developed in 2009&lt;/a&gt; for Fedora
+and Red Hat. Given the necessary SELinux policy support though, it was usable on
+other distributions as well, and thus became part of the SELinux user space itself.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What is the vulnerability about?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The SELinux sandbox utility used an execution approach that did not shield off
+the users' terminal access sufficiently. In the &lt;a href="http://www.openwall.com/lists/oss-security/2016/09/25/1"&gt;POC post&lt;/a&gt;
+we notice that characters could be sent to the terminal through the &lt;code&gt;ioctl()&lt;/code&gt;
+function (which executes the ioctl system call used for input/output operations
+against devices) which are eventually executed when the application finishes.&lt;/p&gt;
+&lt;p&gt;That's bad of course. Hence the CVE-2016-7545 registration, and of course also
+a possible &lt;a href="https://github.com/SELinuxProject/selinux/commit/acca96a135a4d2a028ba9b636886af99c0915379"&gt;fix has been committed upstream&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Why isn't Gentoo vulnerable / shipping with SELinux sandbox?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There's some history involved why Gentoo does not ship the SELinux sandbox (anymore).&lt;/p&gt;
+&lt;p&gt;First of all, Gentoo already has a command that is called &lt;code&gt;sandbox&lt;/code&gt;, installed through
+the &lt;code&gt;sys-apps/sandbox&lt;/code&gt; application. So back in the days that we still shipped with
+the SELinux sandbox, we continuously had to patch &lt;code&gt;policycoreutils&lt;/code&gt; to use a
+different name for the sandbox application (we used &lt;code&gt;sesandbox&lt;/code&gt; then).&lt;/p&gt;
+&lt;p&gt;But then we had a couple of security issues with the SELinux sandbox application.
+In 2011, &lt;a href="http://www.cvedetails.com/cve/CVE-2011-1011/"&gt;CVE-2011-1011&lt;/a&gt;
+came up in which the &lt;code&gt;seunshare_mount&lt;/code&gt; function had a security issue. And in 2014,
+&lt;a href="http://www.cvedetails.com/cve/CVE-2014-3215/"&gt;CVE-2014-3215&lt;/a&gt; came up with - again -
+a security issue with &lt;code&gt;seunshare&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;At that point, I had enough of this sandbox utility. First of all, it never quite worked
+enough on Gentoo as it is (as it also requires a policy which is not part of the
+upstream release) and given its wide open access approach (it was meant to contain
+various types of workloads, so security concessions had to be made), I decided to
+&lt;a href="http://blog.siphos.be/2014/05/dropping-sesandbox-support/"&gt;no longer support the SELinux sandbox in Gentoo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;None of the Gentoo SELinux users ever approached me with the question to add it back.&lt;/p&gt;
+&lt;p&gt;And that is why Gentoo is not vulnerable to this specific issue.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="sandbox"></category><category term="gentoo"></category><category term="vulnerability"></category><category term="seunshare"></category></entry></feed>

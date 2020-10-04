@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - network</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/network/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-08-07T03:49:00+02:00</updated><entry><title>Filtering network access per application</title><link href="http://blog.siphos.be/2015/08/filtering-network-access-per-application/" rel="alternate"></link><published>2015-08-07T03:49:00+02:00</published><updated>2015-08-07T03:49:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-07:/2015/08/filtering-network-access-per-application/</id><summary type="html">&lt;p&gt;Iptables (and the successor nftables) is a powerful packet filtering system in
+the Linux kernel, able to create advanced firewall capabilities. One of the 
+features that it &lt;em&gt;cannot&lt;/em&gt; provide is per-application filtering. Together with
+SELinux however, it is possible to implement this on a &lt;em&gt;per domain&lt;/em&gt; basis.&lt;/p&gt;
+&lt;p&gt;SELinux does not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Iptables (and the successor nftables) is a powerful packet filtering system in
+the Linux kernel, able to create advanced firewall capabilities. One of the 
+features that it &lt;em&gt;cannot&lt;/em&gt; provide is per-application filtering. Together with
+SELinux however, it is possible to implement this on a &lt;em&gt;per domain&lt;/em&gt; basis.&lt;/p&gt;
+&lt;p&gt;SELinux does not know applications, but it knows domains. If we ensure that each
+application runs in its own domain, then we can leverage the firewall
+capabilities with SELinux to only allow those domains access that we need.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;SELinux network control: packet types&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The basic network control we need to enable is SELinux' packet types. Most
+default policies will grant application domains the right set of packet types:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# sesearch -s mozilla_t -c packet -A
+Found 13 semantic av rules:
+   allow mozilla_t ipp_client_packet_t : packet { send recv } ; 
+   allow mozilla_t soundd_client_packet_t : packet { send recv } ; 
+   allow nsswitch_domain dns_client_packet_t : packet { send recv } ; 
+   allow mozilla_t speech_client_packet_t : packet { send recv } ; 
+   allow mozilla_t ftp_client_packet_t : packet { send recv } ; 
+   allow mozilla_t http_client_packet_t : packet { send recv } ; 
+   allow mozilla_t tor_client_packet_t : packet { send recv } ; 
+   allow mozilla_t squid_client_packet_t : packet { send recv } ; 
+   allow mozilla_t http_cache_client_packet_t : packet { send recv } ; 
+ DT allow mozilla_t server_packet_type : packet recv ; [ mozilla_bind_all_unreserved_ports ]
+ DT allow mozilla_t server_packet_type : packet send ; [ mozilla_bind_all_unreserved_ports ]
+ DT allow nsswitch_domain ldap_client_packet_t : packet recv ; [ authlogin_nsswitch_use_ldap ]
+ DT allow nsswitch_domain ldap_client_packet_t : packet send ; [ authlogin_nsswitch_use_ldap ]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As we can see, the &lt;code&gt;mozilla_t&lt;/code&gt; domain is able to send and receive packets of
+type &lt;code&gt;ipp_client_packet_t&lt;/code&gt;, &lt;code&gt;soundd_client_packet_t&lt;/code&gt;, &lt;code&gt;dns_client_packet_t&lt;/code&gt;, 
+&lt;code&gt;speech_client_packet_t&lt;/code&gt;, &lt;code&gt;ftp_client_packet_t&lt;/code&gt;, &lt;code&gt;http_client_packet_t&lt;/code&gt;, 
+&lt;code&gt;tor_client_packet_t&lt;/code&gt;, &lt;code&gt;squid_client_packet_t&lt;/code&gt; and &lt;code&gt;http_cache_client_packet_t&lt;/code&gt;.
+If the SELinux booleans mentioned at the end are enabled, additional packet
+types are alloed to be used as well.&lt;/p&gt;
+&lt;p&gt;But even with this default policy in place, SELinux is not being consulted for
+filtering. To accomplish this, &lt;code&gt;iptables&lt;/code&gt; will need to be told to label the
+incoming and outgoing packets. This is the &lt;a href="http://blog.siphos.be/2013/05/secmark-and-selinux/"&gt;SECMARK&lt;/a&gt;
+functionality that I've blogged about earlier.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Enabling SECMARK filtering through iptables&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To enable SECMARK filtering, we use the &lt;code&gt;iptables&lt;/code&gt; command and tell it to label
+SSH incoming and outgoing packets as &lt;code&gt;ssh_server_packet_t&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# iptables -t mangle -A INPUT -m state --state ESTABLISHED,RELATED -j CONNSECMARK --restore
+~# iptables -t mangle -A INPUT -p tcp --dport 22 -j SECMARK --selctx system_u:object_r:ssh_server_packet_t:s0
+~# iptables -t mangle -A OUTPUT -m state --state ESTABLISHED,RELATED -j CONNSECMARK --restore
+~# iptables -t mangle -A OUTPUT -p tcp --sport 22 -j SECMARK --selctx system_u:object_r:ssh_server_packet_t:s0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;But be warned: the moment iptables starts with its SECMARK support, &lt;em&gt;all packets&lt;/em&gt;
+will be labeled. Those that are not explicitly labeled through one of the above
+commands will be labeled with the &lt;code&gt;unlabeled_t&lt;/code&gt; type, and most domains are not
+allowed any access to &lt;code&gt;unlabeled_t&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;There are two things we can do to improve this situation:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Define the necessary SECMARK rules for all supported ports (which is something
+   that &lt;a href="https://www.linux.com/learn/tutorials/421152:using-selinux-and-iptables-together"&gt;secmarkgen&lt;/a&gt;
+   does), and/or&lt;/li&gt;
+&lt;li&gt;Allow &lt;code&gt;unlabeled_t&lt;/code&gt; for all domains.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;To allow the latter, we can load a SELinux rule like the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;unlabeled_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will allow all domains to send and receive packets of the &lt;code&gt;unlabeled_t&lt;/code&gt; type.
+Although this is something that might be security-sensitive, it might be a good idea
+to allow at start, together with proper auditing (you can use &lt;code&gt;(auditallow ...)&lt;/code&gt; to
+audit all granted packet communication) so that the right set of packet types can be
+enabled. This way, administrators can iteratively improve the SECMARK rules and finally
+remove the &lt;code&gt;unlabeled_t&lt;/code&gt; privilege from the &lt;code&gt;domain&lt;/code&gt; attribute.&lt;/p&gt;
+&lt;p&gt;To list the current SECMARK rules, list the firewall rules for the &lt;code&gt;mangle&lt;/code&gt; table:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# iptables -t mangle -nvL
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Only granting one application network access&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;These two together allow for creating a firewall that only allows a single domain
+access to a particular target.&lt;/p&gt;
+&lt;p&gt;For instance, suppose that we only want the &lt;code&gt;mozilla_t&lt;/code&gt; domain to connect to the
+company proxy (10.15.10.5). We can't enable the &lt;code&gt;http_client_packet_t&lt;/code&gt; for this
+connection, as all other web browsers and other HTTP-aware applications will have
+policy rules enabled to send and receive that packet type. Instead, we are going
+to create a new packet type to use.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;;; Definition of myhttp_client_packet_t&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt; &lt;span class="nv"&gt;object_r&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;client_packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="c1"&gt;;; Grant the use to mozilla_t&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Putting the above in a &lt;code&gt;myhttppacket.cil&lt;/code&gt; file and loading it allows the type
+to be used:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule -i myhttppacket.cil
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, the &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; type can be used in &lt;code&gt;iptables&lt;/code&gt; rules. Also, 
+only the &lt;code&gt;mozilla_t&lt;/code&gt; domain is allowed to send and receive these packets,
+effectively creating an application-based firewall, as all we now need to do
+is to mark the outgoing packets towards the proxy as &lt;code&gt;myhttp_client_packet_t&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# iptables -t mangle -A OUTPUT -p tcp --dport 80 -d 10.15.10.5 -j SECMARK --selctx system_u:object_r:myhttp_client_packet_t:s0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This shows that it is &lt;em&gt;possible&lt;/em&gt; to create such firewall rules with SELinux. It
+is however not an out-of-the-box solution, requiring thought and development of
+both firewall rules and SELinux code constructions. Still, with some advanced
+scripting experience this will lead to a powerful addition to a hardened
+system.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="network"></category><category term="iptables"></category></entry></feed>

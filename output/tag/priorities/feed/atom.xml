@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - priorities</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/priorities/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-10-31T18:24:00+01:00</updated><entry><title>Using multiple priorities with modules</title><link href="http://blog.siphos.be/2014/10/using-multiple-priorities-with-modules/" rel="alternate"></link><published>2014-10-31T18:24:00+01:00</published><updated>2014-10-31T18:24:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-31:/2014/10/using-multiple-priorities-with-modules/</id><summary type="html">&lt;p&gt;One of the new features of the 2.4 SELinux userspace is support for
+module priorities. The idea is that distributions and administrators can
+override a (pre)loaded SELinux policy module with another module without
+removing the previous module. This lower-version module will remain in
+the store, but will not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the new features of the 2.4 SELinux userspace is support for
+module priorities. The idea is that distributions and administrators can
+override a (pre)loaded SELinux policy module with another module without
+removing the previous module. This lower-version module will remain in
+the store, but will not be active until the higher-priority module is
+disabled or removed again.&lt;/p&gt;
+&lt;p&gt;The "old" modules (pre-2.4) are loaded with priority 100. When policy
+modules with the 2.4 SELinux userspace series are loaded, they get
+loaded with priority 400. As a result, the following message occurs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule -i screen.pp
+libsemanage.semanage_direct_install_info: Overriding screen module at lower priority 100 with module at priority 400
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So unlike the previous situation, where the older module is substituted
+with the new one, we now have two "screen" modules loaded; the last one
+gets priority 400 and is active. To see all installed modules and
+priorities, use the &lt;code&gt;--list-modules&lt;/code&gt; option:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule --list-modules=all | grep screen
+100 screen     pp
+400 screen     pp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Older versions of modules can be removed by specifying the priority:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule -X 100 -r screen
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="priorities"></category><category term="priority"></category><category term="selinux"></category><category term="semodule"></category></entry></feed>

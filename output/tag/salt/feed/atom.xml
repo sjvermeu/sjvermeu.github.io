@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - salt</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/salt/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2016-03-27T13:32:00+02:00</updated><entry><title>Template was specified incorrectly</title><link href="http://blog.siphos.be/2016/03/template-was-specified-incorrectly/" rel="alternate"></link><published>2016-03-27T13:32:00+02:00</published><updated>2016-03-27T13:32:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-03-27:/2016/03/template-was-specified-incorrectly/</id><summary type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Enabling some debugging on the command gave me a slight pointer why this occurred:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv &amp;#39;testing&amp;#39;, u&amp;#39;salt://top.sls&amp;#39;
+[DEBUG   ] No contents loaded for env: testing
+[DEBUG …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Enabling some debugging on the command gave me a slight pointer why this occurred:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv &amp;#39;testing&amp;#39;, u&amp;#39;salt://top.sls&amp;#39;
+[DEBUG   ] No contents loaded for env: testing
+[DEBUG   ] compile template: False
+[ERROR   ] Template was specified incorrectly: False
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I was using a single top file as recommended by Salt, but apparently it was still
+looking for top files in the other environments.&lt;/p&gt;
+&lt;p&gt;Yet, if I split the top files across the environments, I got the following warning:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[WARNING ] Top file merge strategy set to &amp;#39;merge&amp;#39; and multiple top files found. Top file merging order is undefined; for better results use &amp;#39;same&amp;#39; option
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So what's all this about?&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;When using a single top file is preferred&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you want to stick with a single top file, then the first error is (or at least, in my case)
+caused by my environments not having a fall-back definition.&lt;/p&gt;
+&lt;p&gt;My &lt;code&gt;/etc/salt/master&lt;/code&gt; configuration file had the following &lt;code&gt;file_roots&lt;/code&gt; setting:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;file_roots:
+  base:
+    - /srv/salt/base
+  testing:
+    - /srv/salt/testing
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The problem is that Salt expects ''a'' top file through the environment. What I had to do was to
+set the fallback directory to the base directory again, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;file_roots:
+  base:
+    - /srv/salt/base
+  testing:
+    - /srv/salt/testing
+    - /srv/salt/base
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this set, the error disappeared and both salt and myself were happy again.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;When multiple top files are preferred&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you really want to use multiple top files (which is also a use case in my configuration),
+then first we need to make sure that the top files of all environments correctly isolate the
+minion matches. If two environments would match the same minion, then this approach becomes
+more troublesome.&lt;/p&gt;
+&lt;p&gt;On the one hand, we can just let saltstack merge the top files (default behavior) but the order
+of the merging is undefined (and no, you can't set it using &lt;code&gt;env_order&lt;/code&gt;) which might result in 
+salt states being executed in an unexpected order. If the definitions are done to such an extend
+that this is not a problem, then you can just ignore the warning. See also
+&lt;a href="https://github.com/saltstack/salt/issues/29104"&gt;bug 29104&lt;/a&gt; about the warning itself.&lt;/p&gt;
+&lt;p&gt;But better would be to have the top files of the environment(s) isolated so that each environment
+top file completely manages the entire environment. When that is the case, then we tell salt that
+only the top file of the affected environment should be used. This is done using the following
+setting in &lt;code&gt;/etc/salt/master&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;top_file_merging_strategy: same
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If this is used, then the &lt;code&gt;env_order&lt;/code&gt; setting is used to define in which order the environments
+are processed. &lt;/p&gt;
+&lt;p&gt;Oh and if you're using &lt;code&gt;salt-ssh&lt;/code&gt;, then be sure to set the environment of the minion in the roster
+file, as there is no running minion on the target system that informs salt about the environment 
+to use otherwise:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# In /etc/salt/roster
+testserver:
+  host: testserver.example.com
+  minion_opts:
+    environment: testing
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Free Software"></category><category term="salt"></category></entry><entry><title>Using salt-ssh with agent forwarding</title><link href="http://blog.siphos.be/2016/03/using-salt-ssh-with-agent-forwarding/" rel="alternate"></link><published>2016-03-26T19:57:00+01:00</published><updated>2016-03-26T19:57:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-03-26:/2016/03/using-salt-ssh-with-agent-forwarding/</id><summary type="html">&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
+I want to see if I can switch from using regular salt minions for a saltstack managed
+system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
+instead of ZeroMQ.&lt;/p&gt;
+&lt;p&gt;I'm not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
+I want to see if I can switch from using regular salt minions for a saltstack managed
+system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
+instead of ZeroMQ.&lt;/p&gt;
+&lt;p&gt;I'm not confident yet that this is a solid approach to take (as performance is also
+important, which is greatly reduced with &lt;code&gt;salt-ssh&lt;/code&gt;), and the security exposure of the
+salt minions over ZeroMQ is also not that insecure (especially not when a local firewall
+ensures that only connections from the salt master are allowed). But playing doesn't hurt.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Using SSH agent forwarding&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Anyway, I quickly got stuck with accessing minions over the SSH interface as it seemed that
+salt requires its own SSH keys (I don't enable password-only authentication, most of the systems
+use the &lt;a href="https://blog.flameeyes.eu/2013/03/openssh-6-2-adds-support-for-two-factor-authentication"&gt;AuthenticationMethods&lt;/a&gt;
+approach to chain both key and passwords). But first things first, the current target uses regular
+ssh key authentication (no chained approach, that's for later). But I don't want to assign
+such a powerful key to my salt master (especially not if it would later also document the
+passwords). I would like to use SSH agent forwarding.&lt;/p&gt;
+&lt;p&gt;Luckily, salt does support that, it just &lt;a href="https://github.com/saltstack/salt/pull/31328/commits/024439186a0c51c0ac1242b38d6584d2abd1a534"&gt;forgot to document&lt;/a&gt;
+it. Basically, what you need to do is update the roster file with the &lt;code&gt;priv:&lt;/code&gt; parameter
+set to &lt;code&gt;agent-forwarding&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;myminion:
+  host: myminion.example.com
+  priv: agent-forwarding
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It will use the &lt;code&gt;known_hosts&lt;/code&gt; file of the currently logged on user (the one executing
+the &lt;code&gt;salt-ssh&lt;/code&gt; command) so make sure that the system's key is already known.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ salt-ssh myminion test.ping
+myminion:
+    True
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Free Software"></category><category term="salt"></category></entry></feed>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - bind-mount</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/bind-mount/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-06-22T20:16:00+02:00</updated><entry><title>Chroots for SELinux enabled applications</title><link href="http://blog.siphos.be/2014/06/chroots-for-selinux-enabled-applications/" rel="alternate"></link><published>2014-06-22T20:16:00+02:00</published><updated>2014-06-22T20:16:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-22:/2014/06/chroots-for-selinux-enabled-applications/</id><summary type="html">&lt;p&gt;Today I had to prepare a chroot jail (thank you grsecurity for the neat
+additional chroot protection features) for a SELinux-enabled
+application. As a result, "just" making a chroot was insufficient: the
+application needed access to &lt;code&gt;/sys/fs/selinux&lt;/code&gt;. Of course, granting
+access to &lt;code&gt;/sys&lt;/code&gt; is not something I like …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I had to prepare a chroot jail (thank you grsecurity for the neat
+additional chroot protection features) for a SELinux-enabled
+application. As a result, "just" making a chroot was insufficient: the
+application needed access to &lt;code&gt;/sys/fs/selinux&lt;/code&gt;. Of course, granting
+access to &lt;code&gt;/sys&lt;/code&gt; is not something I like to see for a chroot jail.&lt;/p&gt;
+&lt;p&gt;Luckily, all other accesses are not needed, so I was able to create a
+static &lt;code&gt;/sys/fs/selinux&lt;/code&gt; directory structure in the chroot, and then
+just mount the SELinux file system on that:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In hindsight, I probably could just have created a &lt;code&gt;/selinux&lt;/code&gt; location
+as that location, although deprecated, is still checked by the SELinux
+libraries.&lt;/p&gt;
+&lt;p&gt;Anyway, there was a second requirement: access to &lt;code&gt;/etc/selinux&lt;/code&gt;.
+Luckily it was purely for read operations, so I was first contemplating
+of copying the data and doing a &lt;strong&gt;chmod -R a-w
+/var/chroot/etc/selinux&lt;/strong&gt;, but then considered a bind-mount:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Alas, bad luck - the read-only flag is ignored during the mount, and the
+bind-mount is still read-write. A &lt;a href="http://lwn.net/Articles/281157/"&gt;simple article on
+lwn.net&lt;/a&gt; informed me about the
+solution: I need to do a remount afterwards to enable the read-only
+state:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o remount,ro /var/chroot/etc/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Great! And because my brain isn't what it used to be, I just make a
+quick blog for future reference ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="bind-mount"></category><category term="bindmount"></category><category term="mount"></category><category term="read-only"></category><category term="ro"></category><category term="selinux"></category></entry></feed>

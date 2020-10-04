@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - gnupg</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/gnupg/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2016-10-12T18:56:00+02:00</updated><entry><title>GnuPG: private key suddenly missing?</title><link href="http://blog.siphos.be/2016/10/gnupg-private-key-suddenly-missing/" rel="alternate"></link><published>2016-10-12T18:56:00+02:00</published><updated>2016-10-12T18:56:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2016-10-12:/2016/10/gnupg-private-key-suddenly-missing/</id><summary type="html">&lt;p&gt;After updating my workstation, I noticed that keychain reported that it could
+not load one of the GnuPG keys I passed it on.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; * keychain 2.8.1 ~ http://www.funtoo.org
+ * Found existing ssh-agent: 2167
+ * Found existing gpg-agent: 2194
+ * Warning: can&amp;#39;t find 0xB7BD4B0DE76AC6A4; skipping
+ * Known ssh key: /home/swift …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;After updating my workstation, I noticed that keychain reported that it could
+not load one of the GnuPG keys I passed it on.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; * keychain 2.8.1 ~ http://www.funtoo.org
+ * Found existing ssh-agent: 2167
+ * Found existing gpg-agent: 2194
+ * Warning: can&amp;#39;t find 0xB7BD4B0DE76AC6A4; skipping
+ * Known ssh key: /home/swift/.ssh/id_dsa
+ * Known ssh key: /home/swift/.ssh/id_ed25519
+ * Known gpg key: 0x22899E947878B0CE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I did not modify my key store at all, so what happened?&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;GnuPG upgrade to 2.1&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The update I did also upgraded GnuPG to the 2.1 series. This version has &lt;a href="https://www.gnupg.org/faq/whats-new-in-2.1.html"&gt;quite
+a few updates&lt;/a&gt;, one of which is
+a change towards a new private key storage approach. I thought that it might have
+done a wrong conversion, or that the key which was used was of a particular method
+or strength that suddenly wasn't supported anymore (PGP-2 is mentioned in the
+article).&lt;/p&gt;
+&lt;p&gt;But the key is a relatively standard RSA4096 one. Yet still, when I listed my
+private keys, I did not see this key. I even tried to re-import the &lt;code&gt;secring.gpg&lt;/code&gt;
+file, but it only found private keys that it already saw previously.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;I'm blind - the key never disappeared&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Luckily, when I tried to sign something with the key, &lt;code&gt;gpg-agent&lt;/code&gt; still asked me
+for the passphraze that I had used for a while on that key. So it isn't gone. What
+happened?&lt;/p&gt;
+&lt;p&gt;Well, the key id is not my private key id, but the key id of one of the subkeys.
+Previously, &lt;code&gt;gpg-agent&lt;/code&gt; sought and found the private key associated with the subkey,
+but now it no longer does. I don't know if this is a bug in the past that I accidentally
+used, or if this is a bug in the new version. I might investigate that a bit more,
+but right now I'm happy that I found it.&lt;/p&gt;
+&lt;p&gt;All I had to do was use the right key id in keychain, and things worked again.&lt;/p&gt;
+&lt;p&gt;Good, now I can continue debugging networking issues with an azure-hosted system...&lt;/p&gt;</content><category term="Free Software"></category><category term="gnupg"></category></entry></feed>

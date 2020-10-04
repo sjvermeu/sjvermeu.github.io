@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - phase</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/phase/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-04-20T11:59:00+02:00</updated><entry><title>Stepping through the build process with ebuild</title><link href="http://blog.siphos.be/2014/04/stepping-through-the-build-process-with-ebuild/" rel="alternate"></link><published>2014-04-20T11:59:00+02:00</published><updated>2014-04-20T11:59:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-20:/2014/04/stepping-through-the-build-process-with-ebuild/</id><summary type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
+slightly modified. As I don't use the tool myself (it was a
+user-reported issue) I decided to quickly drum up a live ebuild for the
+application and install it (as the patch was in the upstream …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
+slightly modified. As I don't use the tool myself (it was a
+user-reported issue) I decided to quickly drum up a live ebuild for the
+application and install it (as the patch was in the upstream repository
+but not in a release yet). The patch is for
+&lt;a href="http://fcron.free.fr/"&gt;fcron&lt;/a&gt;'s SELinux support, so the file I created
+is
+&lt;a href="https://github.com/sjvermeu/gentoo.overlay/tree/master/sys-process/fcron"&gt;fcron-9999.ebuild&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Sadly, the build failed at the documentation generation (something about
+"No targets to create en/HTML/index.html"). That's unfortunate, because
+that means I'm not going to ask to push the live ebuild to the Portage
+tree itself (yet). But as my primary focus is to validate the patch (and
+not create a live ebuild) I want to ignore this error and go on. I don't
+need the fcron documentation right now, so how about I just continue?&lt;/p&gt;
+&lt;p&gt;To do so, I start using the &lt;strong&gt;ebuild&lt;/strong&gt; command. As the failure occurred
+in the build phase (&lt;em&gt;compile&lt;/em&gt;) and at the end (documentation was the
+last step), I tell Portage that it should assume the build has
+completed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then I tell Portage to install the (built) files into the &lt;code&gt;images/&lt;/code&gt;
+directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The installation phase fails again (with the same error as during the
+build, which is logical as the &lt;code&gt;Makefile&lt;/code&gt; can't install files that
+haven't been properly build yet.) As documentation is the last step, I
+tell Portage to assume the installation phase has completed as well,
+continuing with the merging of the files to the life file system:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.installed
+~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild qmerge
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Et voila, &lt;code&gt;fcron-9999&lt;/code&gt; is now installed on the system, ready to validate
+the patch I had to check.&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="phase"></category><category term="portage"></category></entry></feed>

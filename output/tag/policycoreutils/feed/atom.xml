@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - policycoreutils</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/policycoreutils/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-05-09T21:03:00+02:00</updated><entry><title>Dropping sesandbox support</title><link href="http://blog.siphos.be/2014/05/dropping-sesandbox-support/" rel="alternate"></link><published>2014-05-09T21:03:00+02:00</published><updated>2014-05-09T21:03:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-05-09:/2014/05/dropping-sesandbox-support/</id><summary type="html">&lt;p&gt;A &lt;a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3215"&gt;vulnerability in
+seunshare&lt;/a&gt;,
+part of &lt;code&gt;policycoreutils&lt;/code&gt;, came to light recently (through &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=509896"&gt;bug
+509896&lt;/a&gt;). The issue is
+within &lt;code&gt;libcap-ng&lt;/code&gt; actually, but the specific situation in which the
+vulnerability can be exploited is only available in &lt;code&gt;seunshare&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now, &lt;code&gt;seunshare&lt;/code&gt; is not built by default on Gentoo. You need to define
+&lt;code&gt;USE …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;A &lt;a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3215"&gt;vulnerability in
+seunshare&lt;/a&gt;,
+part of &lt;code&gt;policycoreutils&lt;/code&gt;, came to light recently (through &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=509896"&gt;bug
+509896&lt;/a&gt;). The issue is
+within &lt;code&gt;libcap-ng&lt;/code&gt; actually, but the specific situation in which the
+vulnerability can be exploited is only available in &lt;code&gt;seunshare&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now, &lt;code&gt;seunshare&lt;/code&gt; is not built by default on Gentoo. You need to define
+&lt;code&gt;USE="sesandbox"&lt;/code&gt;, which I implemented as an optional build because I
+see no need for the &lt;code&gt;seunshare&lt;/code&gt; command and the &lt;em&gt;SELinux sandbox
+(sesandbox)&lt;/em&gt; support. Upstream (Fedora/RedHat) calls it &lt;em&gt;sandbox&lt;/em&gt;, which
+Gentoo translates to &lt;em&gt;sesandbox&lt;/em&gt; as it collides with the Gentoo sandbox
+support otherwise. But I digress.&lt;/p&gt;
+&lt;p&gt;The build of the SELinux sandbox support is optional, mostly because we
+do not have a direct reason to support it. There are no Gentoo users
+that I'm aware of that use it. It is used to start an application in a
+chroot-like environment, based on Linux namespaces and a specific
+SELinux policy called &lt;code&gt;sandbox_t&lt;/code&gt;. The idea isn't that bad, but I rather
+focus on proper application confinement and full system enforcement
+support (rather than specific services). The SELinux sandbox makes a bit
+more sense when the system supports unconfined domains (and users are in
+the &lt;code&gt;unconfined_t&lt;/code&gt; domain), but Gentoo focuses on strict policy support.&lt;/p&gt;
+&lt;p&gt;Anyway, this isn't the first vulnerability in &lt;code&gt;seunshare&lt;/code&gt;. In 2011,
+another privilege escalation vulnerability was found in the application
+(see &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=374897"&gt;bug 374897&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;But having a vulnerability in the application (or its interaction with
+&lt;code&gt;libcap-ng&lt;/code&gt;) doesn't mean an exploitable vulnerability. Most users will
+not even have &lt;code&gt;seunshare&lt;/code&gt;, and those that do have it will not be able to
+call it if you are running with SELinux in &lt;em&gt;strict&lt;/em&gt; or have
+&lt;code&gt;USE="-unconfined"&lt;/code&gt; set for the other policies. If &lt;code&gt;USE="unconfined"&lt;/code&gt; is
+set and you run &lt;em&gt;mcs&lt;/em&gt;, &lt;em&gt;targeted&lt;/em&gt; or &lt;em&gt;mls&lt;/em&gt; (which isn't default either,
+the default is &lt;em&gt;strict&lt;/em&gt;) then if your users are still mapped to the
+regular user domains (&lt;code&gt;user_t&lt;/code&gt;, &lt;code&gt;staff_t&lt;/code&gt; or even &lt;code&gt;sysadm_t&lt;/code&gt;) then
+&lt;code&gt;seunshare&lt;/code&gt; doesn't work as the SELinux policy prevents its behavior
+before the vulnerability is triggered.&lt;/p&gt;
+&lt;p&gt;Assuming you &lt;em&gt;do&lt;/em&gt; have a &lt;em&gt;targeted&lt;/em&gt; policy with users mapped to
+&lt;code&gt;unconfined_t&lt;/code&gt; and you have built &lt;code&gt;policycoreutils&lt;/code&gt; with
+&lt;code&gt;USE="sesandbox"&lt;/code&gt; or you run in SELinux in permissive mode, then please
+tell me if you can trigger the exploit. On my systems, &lt;code&gt;seunshare&lt;/code&gt; fails
+with the message that it can't drop its privileges and thus exits
+(instead of executing the exploit code as it suggested by the reports).&lt;/p&gt;
+&lt;p&gt;Since I mentioned that most user don't use SELinux sandbox, and because
+I can't even get it to work (regardless of the vulnerability), I decided
+to drop support for it from the builds. That also allows me to more
+quickly introduce the new userspace utilities as I don't need to
+refactor the code to switch from &lt;code&gt;sandbox&lt;/code&gt; to &lt;code&gt;sesandbox&lt;/code&gt; anymore.&lt;/p&gt;
+&lt;p&gt;So, &lt;code&gt;policycoreutils-2.2.5-r4&lt;/code&gt; and &lt;code&gt;policycoreutils-2.3_rc1-r1&lt;/code&gt; are now
+available which do not build &lt;code&gt;seunshare&lt;/code&gt; anymore. And now I can focus on
+providing the full &lt;em&gt;2.3&lt;/em&gt; userspace that has been announced today.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="policycoreutils"></category><category term="selinux"></category><category term="seunshare"></category><category term="vulnerability"></category></entry></feed>

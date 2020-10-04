@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - refpolicy</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/refpolicy/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-08-09T14:48:00+02:00</updated><entry><title>Can SELinux substitute DAC?</title><link href="http://blog.siphos.be/2015/08/can-selinux-substitute-dac/" rel="alternate"></link><published>2015-08-09T14:48:00+02:00</published><updated>2015-08-09T14:48:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-09:/2015/08/can-selinux-substitute-dac/</id><summary type="html">&lt;p&gt;A nice &lt;a href="https://twitter.com/sjvermeu/status/630107879123623936"&gt;twitter discussion&lt;/a&gt;
+with &lt;a href="https://twitter.com/erlheldata"&gt;Erling Hellenäs&lt;/a&gt; caught my full attention later
+when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
+in the current implementation, but why not and what would be needed?&lt;/p&gt;
+&lt;p&gt;SELinux is implemented through the &lt;a href="https://en.wikipedia.org/wiki/Linux_Security_Modules"&gt;Linux Security Modules framework&lt;/a&gt;
+which allows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A nice &lt;a href="https://twitter.com/sjvermeu/status/630107879123623936"&gt;twitter discussion&lt;/a&gt;
+with &lt;a href="https://twitter.com/erlheldata"&gt;Erling Hellenäs&lt;/a&gt; caught my full attention later
+when I was heading home: Can SELinux substitute DAC? I know it can't and doesn't
+in the current implementation, but why not and what would be needed?&lt;/p&gt;
+&lt;p&gt;SELinux is implemented through the &lt;a href="https://en.wikipedia.org/wiki/Linux_Security_Modules"&gt;Linux Security Modules framework&lt;/a&gt;
+which allows for different security systems to be implemented and integrated
+in the Linux kernel. Through LSM, various security-sensitive operations can be
+secured further through &lt;em&gt;additional&lt;/em&gt; access checks. This criteria was made to
+have LSM be as minimally invasive as possible.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;The LSM design&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The basic LSM design paper, called &lt;a href="http://www.kroah.com/linux/talks/usenix_security_2002_lsm_paper/lsm.pdf"&gt;Linux Security Modules: General Security
+Support for the Linux Kernel&lt;/a&gt;
+as presented in 2002, is still one of the better references for learning and
+understanding LSM. It does show that there was a whish-list from the community
+where LSM hooks could override DAC checks, and that it has been partially
+implemented through permissive hooks (not to be mistaken with SELinux' 
+permissive mode).&lt;/p&gt;
+&lt;p&gt;However, this definitely is &lt;em&gt;partially&lt;/em&gt; implemented because there are quite
+a few restrictions. One of them is that, if a request is made towards a
+resource and the UIDs match (see page 3, figure 2 of the paper) then
+the LSM hook is not consulted. When they don't match, a permissive LSM
+hook can be implemented. Support for permissive hooks is implemented
+for capabilities, a powerful DAC control that Linux supports and which is
+implemented &lt;a href="http://www.hep.by/gnu/kernel/lsm/cap.html"&gt;through LSM&lt;/a&gt; as
+well. I have &lt;a href="http://blog.siphos.be/tag/capabilities/index.html"&gt;blogged&lt;/a&gt;
+about this nice feature a while ago.&lt;/p&gt;
+&lt;p&gt;These restrictions are also why some other security-conscious developers,
+such as &lt;a href="http://grsecurity.net/lsm.php"&gt;grsecurity's team&lt;/a&gt; and &lt;a href="https://www.rsbac.org/documentation/why_rsbac_does_not_use_lsm"&gt;RSBAC&lt;/a&gt;
+do not use the LSM system. Well, it's not only through these restrictions
+of course - other reasons play a role in them as well. But knowing what
+LSM can (and cannot) do also shows what SELinux can and cannot do.&lt;/p&gt;
+&lt;p&gt;The LSM design itself is already a reason why SELinux cannot substitute
+DAC controls. But perhaps we could disable DAC completely and thus only
+rely on SELinux?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Disabling DAC in Linux would be an excessive workload&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The discretionary access controls in the Linux kernel are not easy to remove.
+They are often part of the code itself (just grep through the source code
+after &lt;code&gt;-EPERM&lt;/code&gt;). Some subsystems which use a common standard approach (such
+as VFS operations) can rely on good integrated security controls, but these
+too often allow the operation if DAC allows it, and will only consult the LSM
+hooks otherwise.&lt;/p&gt;
+&lt;p&gt;VFS operations are the most known ones, but DAC controls go beyond file access.
+It also entails reading program memory, sending signals to applications,
+accessing hardware and more. But let's focus on the easier controls (as in,
+easier to use examples for), such as sharing files between users, restricting
+access to personal documents and authorizing operations in applications based
+on the user id (for instance, the owner can modify while other users can only
+read the file).&lt;/p&gt;
+&lt;p&gt;We could "work around" the Linux DAC controls by running everything as a single user
+(the root user) and having all files and resources be fully accessible by this
+user. But the problem with that is that SELinux would not be able to take
+over controls either, because you will need some user-based access controls,
+and within SELinux this implies that a mapping is done from a user to a 
+SELinux user. Also, access controls based on the user id would no longer work,
+and unless the application is made SELinux-aware it would lack any authorization
+system (or would need to implement it itself).&lt;/p&gt;
+&lt;p&gt;With DAC Linux also provides quite some "freedom" which is well established
+in the Linux (and Unix) environment: a simple security model where the user
+and group membership versus the owner-privileges, group-privileges and
+"rest"-privileges are validated. Note that SELinux does not really know
+what a "group" is. It knows SELinux users, roles, types and sensitivities.&lt;/p&gt;
+&lt;p&gt;So, suppose we would keep multi-user support in Linux but completely remove
+the DAC controls and rely solely on LSM (and SELinux). Is this something
+reusable?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Using SELinux for DAC-alike rules&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Consider the use case of two users. One user wants another user to read a few
+of his files. With DAC controls, he can "open up" the necessary resources
+(files and directories) through &lt;a href="https://wiki.gentoo.org/wiki/Filesystem/Access_Control_List_Guide"&gt;extended access control lists&lt;/a&gt;
+so that the other user can access it. No need to involve administrators.&lt;/p&gt;
+&lt;p&gt;With a MAC(-only) system, updates on the MAC policy usually require the security
+administrator to write additional policy rules to allow something. With SELinux
+(and without DAC) it would require the users to be somewhat isolated from each
+other (otherwise the users can just access everything from each other), which
+SELinux can do through &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Constraints#UBAC_-_User_Based_Access_Control"&gt;User Based Access Control&lt;/a&gt;,
+but the target resource itself should be labeled with a type that is not managed
+through the UBAC control. Which means that the users will need the privilege to
+change labels to this type (which is possible!), &lt;em&gt;assuming&lt;/em&gt; such a type is already
+made available for them. Users can't create new types themselves.&lt;/p&gt;
+&lt;p&gt;UBAC is by default disabled in many distributions, because it has some nasty
+side-effects that need to be taken into consideration. Just recently one of these
+&lt;a href="http://oss.tresys.com/pipermail/refpolicy/2015-August/007704.html"&gt;came up on the refpolicy mailinglist&lt;/a&gt;.
+But even with UBAC enabled (I have it enabled on most of my systems, but considering
+that I only have a couple of users to manage and am administrator on these systems
+to quickly "update" rules when necessary) it does not provide equal functionality as
+DAC controls.&lt;/p&gt;
+&lt;p&gt;As mentioned before, SELinux does not know group membership. In order to create
+something group-like, we will probably need to consider roles. But in SELinux,
+roles are used to define what types are transitionable towards - it is not a
+membership approach. A type which is usable by two roles (for instance, the
+&lt;code&gt;mozilla_t&lt;/code&gt; type which is allowed for &lt;code&gt;staff_r&lt;/code&gt; and &lt;code&gt;user_r&lt;/code&gt;) does not care about
+the role. This is unlike group membership.&lt;/p&gt;
+&lt;p&gt;Also, roles only focus on &lt;em&gt;transitionable&lt;/em&gt; types (known as domains). It does not
+care about &lt;em&gt;accessible&lt;/em&gt; resources (regular file types for instance). In order to
+allow one person to read a certain file type but not another, SELinux will need
+to control that one person can read this file through a particular domain while
+the other user can't. And given that domains are part of the SELinux policy, any
+situation that the policy has not thought about before will not be easily adaptable.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;So, we can't do it?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Well, I'm pretty sure that a very extensive policy and set of rules can be made
+for SELinux which would make a number of DAC permissions obsolete, and that we could
+theoretically remove DAC from the Linux kernel.&lt;/p&gt;
+&lt;p&gt;End users would require a huge training to work with this system, and it would not
+be reusable across other systems in different environments, because the policy
+will be too specific to the system (unlike the current reference policy based ones,
+which are quite reusable across many distributions).&lt;/p&gt;
+&lt;p&gt;Furthermore, the effort to create these policies would be extremely high, whereas
+the DAC permissions are very simple to implement, and have been proven to be
+well suitable for many secured systems. &lt;/p&gt;
+&lt;p&gt;So no, unless you do massive engineering, I do not believe it is possible to
+substitute DAC with SELinux-only controls.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="refpolicy"></category><category term="linux"></category><category term="dac"></category><category term="lsm"></category></entry><entry><title>Some changes under the hood</title><link href="http://blog.siphos.be/2014/08/some-changes-under-the-hood/" rel="alternate"></link><published>2014-08-09T21:45:00+02:00</published><updated>2014-08-09T21:45:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-08-09:/2014/08/some-changes-under-the-hood/</id><summary type="html">&lt;p&gt;In between conferences, technical writing jobs and traveling, we did a
+few changes under the hood for SELinux in Gentoo.&lt;/p&gt;
+&lt;p&gt;First of all, new policies are bumped and also stabilized (2.20130411-r3
+is now stable, 2.20130411-r5 is \~arch). These have a few updates
+(mergers from upstream), and r5 also …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In between conferences, technical writing jobs and traveling, we did a
+few changes under the hood for SELinux in Gentoo.&lt;/p&gt;
+&lt;p&gt;First of all, new policies are bumped and also stabilized (2.20130411-r3
+is now stable, 2.20130411-r5 is \~arch). These have a few updates
+(mergers from upstream), and r5 also has preliminary support for
+&lt;a href="http://www.freedesktop.org/software/systemd/man/tmpfiles.d.html"&gt;tmpfiles&lt;/a&gt;
+(at least the OpenRC implementation of it), which is made part of the
+&lt;a href="http://packages.gentoo.org/package/sec-policy/selinux-base-policy"&gt;selinux-base-policy&lt;/a&gt;
+package.&lt;/p&gt;
+&lt;p&gt;The ebuilds to support new policy releases now are relatively simple
+copies of the live ebuilds (which always contain the latest policies) so
+that bumping (either by me or other developers) is easy enough. There's
+also a release script in our policy repository which tags the right git
+commit (the point at which the release is made), creates the necessary
+patches, uploads them, etc.&lt;/p&gt;
+&lt;p&gt;One of the changes made is to "drop" the &lt;code&gt;BASEPOL&lt;/code&gt; variable. In the
+past, &lt;code&gt;BASEPOL&lt;/code&gt; was a variable inside the ebuilds that pointed to the
+right patchset (and base policy) as we initially supported policy
+modules of different base releases. However, that was a mistake and we
+quickly moved to bumping all policies with every releaes, but kept the
+&lt;code&gt;BASEPOL&lt;/code&gt; variable in it. Now, &lt;code&gt;BASEPOL&lt;/code&gt; is "just" the &lt;code&gt;${PVR}&lt;/code&gt; value of
+the ebuild so no longer needs to be provided. In the future, I'll
+probably remove &lt;code&gt;BASEPOL&lt;/code&gt; from the internal eclass and the
+&lt;code&gt;selinux-base*&lt;/code&gt; packages as well.&lt;/p&gt;
+&lt;p&gt;A more important change to the eclass is support for the
+&lt;code&gt;SELINUX_GIT_REPO&lt;/code&gt; and &lt;code&gt;SELINUX_GIT_BRANCH&lt;/code&gt; variables (for live ebuilds,
+i.e. those with the 9999 version). If set, then they pull from the
+mentioned repository (and branch) instead of the default
+&lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;hardened-refpolicy.git&lt;/a&gt;
+repository. This allows for developers to do some testing on a different
+branch easily, or for other users to use their own policy repository
+while still enjoying the SELinux integration support in Gentoo through
+the &lt;code&gt;sec-policy/*&lt;/code&gt; packages.&lt;/p&gt;
+&lt;p&gt;Finally, I wrote up a first attempt at our &lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/CodingStyle"&gt;coding
+style&lt;/a&gt;,
+heavily based on the coding style from the reference policy of course
+(as our policy is still following this upstream project). This should
+allow the team to work better together and to decide on namings
+autonomously (instead of hours of discussing and settling for something
+as silly as an interface or boolean name ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="eclass"></category><category term="Gentoo"></category><category term="git"></category><category term="hardened"></category><category term="refpolicy"></category><category term="selinux"></category></entry></feed>

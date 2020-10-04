@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - java</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/java/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-06-04T03:50:00+02:00</updated><entry><title>My application base: freemind</title><link href="http://blog.siphos.be/2013/06/my-application-base-freemind/" rel="alternate"></link><published>2013-06-04T03:50:00+02:00</published><updated>2013-06-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-04:/2013/06/my-application-base-freemind/</id><summary type="html">&lt;p&gt;Anyone who is even remotely busy with innovation will know what mindmaps
+are. They are a means to visualize information, ideas or tasks in
+whatever structure you like. By using graphical annotations the
+information is easier to look through, even when the mindmap becomes
+very large. In the commercial world …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Anyone who is even remotely busy with innovation will know what mindmaps
+are. They are a means to visualize information, ideas or tasks in
+whatever structure you like. By using graphical annotations the
+information is easier to look through, even when the mindmap becomes
+very large. In the commercial world, mindmapping software such as
+&lt;a href="http://www.xmind.net/"&gt;XMind&lt;/a&gt; and
+&lt;a href="http://www.mindjet.com/products/mindmanager/"&gt;Mindmanager&lt;/a&gt; are often
+used. But these companies should really start looking into Freemind.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://freemind.sourceforge.net/wiki/index.php/Main_Page"&gt;Freemind&lt;/a&gt;
+software is a java-based mind map software, running perfectly on
+Windows, Linux or other platforms. Installation is a breeze (if you are
+allowed to on your work, you can just launch it from a USB drive if you
+want, so no installation hassles whatsoever) and its interface is very
+intuitive. For all the whistles and bells that the commercial ones
+provide, I just want to create my mindmaps and export them into a format
+that others can easily use and view.&lt;/p&gt;
+&lt;p&gt;At my real-time job, we (have to) use XMind. If someone shares a mindmap
+("their mind" map as I often see it - I seem to have a different mind
+than most others in how I structure things, except for one colleague who
+imo does not structure things at all) they just share the XMind file and
+hope that the recipients can read it. Although XMind can export mindmaps
+just fine, I do like the freemind approach where a simple java applet
+can show the entire mindmap as interactively as you would navigate
+through the application itself. This makes it perfect for discussing
+ideas because you can close and open branches easily.&lt;/p&gt;
+&lt;p&gt;The
+&lt;a href="http://freemind.sourceforge.net/wiki/index.php/Import_and_export"&gt;export/import&lt;/a&gt;
+capabilities of freemind are also interesting. Before being forced to
+use XMind, we were using Mindmanager and I could just easily import the
+mindmaps into freemind. The file format that freemind uses is an
+XML-based one, so translating those onto other formats is not that
+difficult if you know some XSLT.&lt;/p&gt;
+&lt;p&gt;I personally use freemind when I embark on a new project, to structure
+the approach, centralize all information, keep track of problems (and
+their solutions), etc. The only thing I am missing is a nice interface
+for mobile devices though.&lt;/p&gt;</content><category term="Free Software"></category><category term="freemind"></category><category term="java"></category><category term="mab"></category><category term="mindmanager"></category><category term="mindmap"></category><category term="structure"></category><category term="xmind"></category></entry><entry><title>Hacking java bytecode with dhex</title><link href="http://blog.siphos.be/2013/06/hacking-java-bytecode-with-dhex/" rel="alternate"></link><published>2013-06-01T03:50:00+02:00</published><updated>2013-06-01T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-01:/2013/06/hacking-java-bytecode-with-dhex/</id><summary type="html">&lt;p&gt;I found myself in a weird situation: a long long time ago, I wrote a
+java application that I didn't touch nor ran for a few years. Today, I
+found it on a backup and wanted to run it again (its a graphical
+application for generating HTML pages). However, it …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I found myself in a weird situation: a long long time ago, I wrote a
+java application that I didn't touch nor ran for a few years. Today, I
+found it on a backup and wanted to run it again (its a graphical
+application for generating HTML pages). However, it failed in a
+particular feature. Not with an exception or stack trace, just
+functionally. Now, I have the source code at hand, so I look into the
+code and find the logical error. Below is a snippet of it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;if (myHandler != null) {
+  int i = startValue + maxRange;
+  for (int j = endValue; j &amp;gt; i; j--) {
+    ... (do some logic)
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It doesn't matter what the code is supposed to do, but from what I can
+remember, I shouldn't be adding &lt;code&gt;maxRange&lt;/code&gt; to the &lt;code&gt;i&lt;/code&gt; variable (yet - as
+I do that later in the code). But instead of setting up the java
+development environment, emerging the IDE etc. I decided to just edit
+the class file directly using &lt;strong&gt;dhex&lt;/strong&gt; (a wonderful utility I recently
+discovered) because doing things the hard way is sometimes fun as well.
+So I ran &lt;strong&gt;javap -c MyClass&lt;/strong&gt; to get some java bytecode information from
+the method, which gives me:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;   8:   ifnull  116
+   11:  iload_2
+   12:  iload_3
+   13:  iadd
+   14:  istore  5
+   16:  iload_2
+   17:  istore  6
+   19:  iload   6
+   21:  iload   5
+   23:  if_icmpge       106
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I know lines 11 and 12 is about pushing the 2nd and 3rd arguments of the
+function (which are &lt;code&gt;startValue&lt;/code&gt; and &lt;code&gt;maxRange&lt;/code&gt;) to the stack to add
+them (line 13). To remove the third argument, I can change this opcode
+from &lt;code&gt;1d&lt;/code&gt; (iload_3) to &lt;code&gt;03&lt;/code&gt; (iconst_0). This way, zero is added and
+the code itself just continues as needed. And for some reason, that
+seems to be the only mistake I made then because the application now
+works flawlessly.&lt;/p&gt;
+&lt;p&gt;Hacking is fun.&lt;/p&gt;</content><category term="Misc"></category><category term="bytecode"></category><category term="dhex"></category><category term="java"></category></entry></feed>

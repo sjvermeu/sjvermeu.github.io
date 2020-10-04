@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - ioctl</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/ioctl/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2017-11-20T17:00:00+01:00</updated><entry><title>SELinux and extended permissions</title><link href="http://blog.siphos.be/2017/11/selinux-and-extended-permissions/" rel="alternate"></link><published>2017-11-20T17:00:00+01:00</published><updated>2017-11-20T17:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-11-20:/2017/11/selinux-and-extended-permissions/</id><summary type="html">&lt;p&gt;One of the features present in the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Releases"&gt;August release&lt;/a&gt; of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the features present in the &lt;a href="https://github.com/SELinuxProject/selinux/wiki/Releases"&gt;August release&lt;/a&gt; of the SELinux user space is its support for ioctl xperm rules in modular policies. In the past, this was only possible in monolithic ones (and CIL). Through this, allow rules can be extended to not only cover source (domain) and target (resource) identifiers, but also a specific number on which it applies. And ioctl's are the first (and currently only) permission on which this is implemented.&lt;/p&gt;
+&lt;p&gt;Note that ioctl-level permission controls isn't a new feature by itself, but the fact that it can be used in modular policies is.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;What is ioctl?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Many interactions on a Linux system are done through system calls. From a security perspective, most system calls can be properly categorized based on who is executing the call and what the target of the call is. For instance, the unlink() system call has the following prototype:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;int unlink(const char *pathname);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Considering that a process (source) is executing unlink (system call) against a target (path) is sufficient for most security implementations. Either the source has the permission to unlink that file or directory, or it hasn't. SELinux maps this to the unlink permission within the file or directory classes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow &amp;lt;domain&amp;gt; &amp;lt;resource&amp;gt; : { file dir }  unlink;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, &lt;code&gt;ioctl()&lt;/code&gt; is somewhat different. It is a system call that allows device-specific operations which cannot be expressed by regular system calls. Devices can have multiple functions/capabilities, and with &lt;code&gt;ioctl()&lt;/code&gt; these capabilities can be interrogated or updated. It has the following interface:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;int ioctl(int fd, unsigned long request, ...);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The file descriptor is the target device on which an operation is launched. The second argument is the request, which is an integer whose value identifiers what kind of operation the &lt;code&gt;ioctl()&lt;/code&gt; call is trying to execute. So unlike regular system calls, where the operation itself is the system call, &lt;code&gt;ioctl()&lt;/code&gt; actually has a parameter that identifies this.&lt;/p&gt;
+&lt;p&gt;A list of possible parameter values on a socket for instance is available in the Linux kernel source code, under &lt;a href="https://elixir.free-electrons.com/linux/latest/source/include/uapi/linux/sockios.h"&gt;include/uapi/linnux/sockios.h&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SELinux allowxperm&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For SELinux, having the purpose of the call as part of a parameter means that a regular mapping isn't sufficient. Allowing &lt;code&gt;ioctl()&lt;/code&gt; commands for a domain against a resource is expressed as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow &amp;lt;domain&amp;gt; &amp;lt;resource&amp;gt; : &amp;lt;class&amp;gt; ioctl;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This of course does not allow policy developers to differentiate between harmless or informative calls (like SIOCGIFHWADDR to obtain the hardware address associated with a network device) and impactful calls (like SIOCADDRT to add a routing table entry).&lt;/p&gt;
+&lt;p&gt;To allow for a fine-grained policy approach, the SELinux developers introduced an extended allow permission, which is capable of differentiating based on an integer value.&lt;/p&gt;
+&lt;p&gt;For instance, to allow a domain to get a hardware address (SIOCGIFHWADDR, which is 0x8927) from a TCP socket:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allowxperm &amp;lt;domain&amp;gt; &amp;lt;resource&amp;gt; : tcp_socket ioctl 0x8927;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This additional parameter can also be ranged:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allowxperm &amp;lt;domain&amp;gt; &amp;lt;resource&amp;gt; : &amp;lt;class&amp;gt; ioctl 0x8910-0x8927;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And of course, it can also be used to complement (i.e. allow all ioctl parameters except a certain value):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allowxperm &amp;lt;domain&amp;gt; &amp;lt;resource&amp;gt; : &amp;lt;class&amp;gt; ioctl ~0x8927;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Small or negligible performance hit&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;According to a &lt;a href="http://kernsec.org/files/lss2015/vanderstoep.pdf"&gt;presentation given by Jeff Vander Stoep&lt;/a&gt; on the Linux Security Summit in 2015, the performance impact of this addition in SELinux is well under control, which helped in the introduction of this capability in the Android SELinux implementation.&lt;/p&gt;
+&lt;p&gt;As a result, interested readers can find examples of allowxperm invocations in the SELinux policy in Android, such as in the &lt;a href="https://android.googlesource.com/platform/system/sepolicy/+/master/private/app.te"&gt;app.te&lt;/a&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# only allow unprivileged socket ioctl commands
+allowxperm { appdomain -bluetooth } self:{ rawip_socket tcp_socket udp_socket } ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And with that, we again show how fine-grained the SELinux access controls can be.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="ioctl"></category></entry></feed>

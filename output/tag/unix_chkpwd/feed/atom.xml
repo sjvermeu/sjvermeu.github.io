@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - unix_chkpwd</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/unix_chkpwd/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-12-30T22:48:00+01:00</updated><entry><title>Why does it access /etc/shadow?</title><link href="http://blog.siphos.be/2014/12/why-does-it-access-etcshadow/" rel="alternate"></link><published>2014-12-30T22:48:00+01:00</published><updated>2014-12-30T22:48:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-30:/2014/12/why-does-it-access-etcshadow/</id><summary type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
+that it (well, the authdaemon that is part of Courier) wanted to access
+&lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
+know that this is through the PAM support (more specifically,
+&lt;code&gt;pam_unix …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
+that it (well, the authdaemon that is part of Courier) wanted to access
+&lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
+know that this is through the PAM support (more specifically,
+&lt;code&gt;pam_unix.so&lt;/code&gt;). But why? After all, &lt;code&gt;pam_unix.so&lt;/code&gt; should try to execute
+&lt;code&gt;unix_chkpwd&lt;/code&gt; to verify a password and not read in the shadow file
+directly (which would require all PAM-aware applications to be granted
+access to the shadow file).&lt;/p&gt;
+&lt;p&gt;So I dived into the PAM-Linux sources (yay free software).&lt;/p&gt;
+&lt;p&gt;In &lt;code&gt;pam_unix_passwd.c&lt;/code&gt;, the &lt;em&gt;_unix_run_verify_binary()&lt;/em&gt; method is
+called but only if the &lt;em&gt;get_account_info()&lt;/em&gt; method returns
+&lt;code&gt;PAM_UNIX_RUN_HELPER&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;``` {lang="c"}
+static int _unix_verify_shadow(pam_handle_t &lt;em&gt;pamh, const char &lt;/em&gt;user, unsigned int ctrl)
+{
+...
+        retval = get_account_info(pamh, user, &amp;amp;pwent, &amp;amp;spent);
+...
+        if (retval == PAM_UNIX_RUN_HELPER) {
+                retval = _unix_run_verify_binary(pamh, ctrl, user, &amp;amp;daysleft);
+                if (retval == PAM_AUTH_ERR || retval == PAM_USER_UNKNOWN)
+                        return retval;
+        }&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;In `passverify.c` this method will check the password entry file and, if
+the entry is a shadow file, will return `PAM_UNIX_RUN_HELPER` if the
+current user id is not root, or if SELinux is enabled:
+
+``` {lang=&amp;quot;c&amp;quot;}
+PAMH_ARG_DECL(int get_account_info,
+        const char *name, struct passwd **pwd, struct spwd **spwdent)
+{
+        /* UNIX passwords area */
+        *pwd = pam_modutil_getpwnam(pamh, name);        /* Get password file entry... */
+        *spwdent = NULL;
+
+        if (*pwd != NULL) {
+...
+                } else if (is_pwd_shadowed(*pwd)) {
+                        /*
+                         * ...and shadow password file entry for this user,
+                         * if shadowing is enabled
+                         */
+#ifndef HELPER_COMPILE
+                        if (geteuid() || SELINUX_ENABLED)
+                                return PAM_UNIX_RUN_HELPER;
+#endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;SELINUX_ENABLED&lt;/code&gt; is a C macro defined in the same file:&lt;/p&gt;
+&lt;p&gt;``` {lang="c"}&lt;/p&gt;
+&lt;h1&gt;ifdef WITH_SELINUX&lt;/h1&gt;
+&lt;h1&gt;include&lt;/h1&gt;
+&lt;h1&gt;define SELINUX_ENABLED is_selinux_enabled()&amp;gt;0&lt;/h1&gt;
+&lt;h1&gt;else&lt;/h1&gt;
+&lt;h1&gt;define SELINUX_ENABLED 0&lt;/h1&gt;
+&lt;h1&gt;endif&lt;/h1&gt;
+&lt;p&gt;```&lt;/p&gt;
+&lt;p&gt;And this is where my "aha" moment came forth: the Courier authdaemon
+runs as root, so its user id is 0. The &lt;em&gt;geteuid()&lt;/em&gt; method will return 0,
+so the &lt;code&gt;SELINUX_ENABLED&lt;/code&gt; macro must return non-zero for the proper path
+to be followed. A quick check in the audit logs, after disabling
+&lt;em&gt;dontaudit&lt;/em&gt; lines, showed that the Courier IMAPd daemon wants to get the
+attribute(s) of the &lt;code&gt;security_t&lt;/code&gt; file system (on which the SELinux
+information is exposed). As this was denied, the call to
+&lt;em&gt;is_selinux_enabled()&lt;/em&gt; returns -1 (error) which, through the macro,
+becomes 0.&lt;/p&gt;
+&lt;p&gt;So granting &lt;em&gt;selinux_getattr_fs(courier_authdaemon_t)&lt;/em&gt; was enough to
+get it to use the &lt;code&gt;unix_chkpwd&lt;/code&gt; binary again.&lt;/p&gt;
+&lt;p&gt;To fix this properly, we need to grant this to all PAM using
+applications. There is an interface called &lt;em&gt;auth_use_pam()&lt;/em&gt; in the
+policies, but that isn't used by the Courier policy. Until now, that is
+;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="chkpwd"></category><category term="pam"></category><category term="selinux"></category><category term="shadow"></category><category term="unix_chkpwd"></category></entry></feed>

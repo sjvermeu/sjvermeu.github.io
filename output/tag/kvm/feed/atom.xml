@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - kvm</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/kvm/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-09T03:50:00+02:00</updated><entry><title>Enabling Kernel Samepage Merging (KSM)</title><link href="http://blog.siphos.be/2013/05/enabling-kernel-samepage-merging-ksm/" rel="alternate"></link><published>2013-05-09T03:50:00+02:00</published><updated>2013-05-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-09:/2013/05/enabling-kernel-samepage-merging-ksm/</id><summary type="html">&lt;p&gt;When using virtualization extensively, you will pretty soon hit the
+limits of your system (at least, the resources on it). When the
+virtualization is used primarily for testing (such as in my case), the
+limit is memory. So it makes sense to seek memory optimization
+strategies on such systems. The …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When using virtualization extensively, you will pretty soon hit the
+limits of your system (at least, the resources on it). When the
+virtualization is used primarily for testing (such as in my case), the
+limit is memory. So it makes sense to seek memory optimization
+strategies on such systems. The first thing to enable is KSM or &lt;em&gt;Kernel
+Samepage Merging&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;This Linux feature looks for memory pages that the applications have
+marked as being a possible candidate for optimization (sharing) which
+are then reused across multiple processes. The idea is that, especially
+for virtualized environments (but KSM is not limited to that), some
+processes will have the same contents in memory. Without any sharing
+abilities, these memory pages will be unique (meaning at different
+locations in your system's memory). With KSM, such memory pages are
+consolidated to a single page which is then referred to by the various
+processes. When one process wants to modify the page, it is "unshared"
+so that there is no corruption or unwanted modification of data for the
+other processes.&lt;/p&gt;
+&lt;p&gt;Such features are not new - VMWare has it named TPS (&lt;em&gt;Transparent Page
+Sharing&lt;/em&gt;) and Xen calls it "Memory CoW" (Copy-on-Write). One advantage
+of KSM is that it is simple to setup and advantageous for other
+processes as well. For instance, if you host multiple instances of the
+same service (web service, database, tomcat, whatever) there is a high
+chance that several of its memory pages are prime candidates for
+sharing.&lt;/p&gt;
+&lt;p&gt;Now before I do mention that this sharing is only enabled when the
+application has marked it as such. This is done through the &lt;em&gt;madvise()&lt;/em&gt;
+method, where applications mark the memory with &lt;em&gt;MADV_MERGEABLE&lt;/em&gt;,
+meaning that the applications explicitly need to support KSM in order
+for it to be successful. There is work on the way to support transparent
+KSM (such as
+&lt;a href="http://www.phoronix.com/scan.php?page=news_item&amp;amp;px=MTEzMTI"&gt;UKSM&lt;/a&gt; and
+&lt;a href="https://code.google.com/p/pksm/"&gt;PKSM&lt;/a&gt;) where no &lt;em&gt;madvise&lt;/em&gt; calls would
+be needed anymore. But beyond quickly reading the home pages (or
+translated home pages in case of UKSM ;-) I have no experience with
+those projects.&lt;/p&gt;
+&lt;p&gt;So let's get back to KSM. I am currently running three virtual machines
+(all configured to take at most 1.5 Gb of memory). Together, they take
+just a little over 1 Gb of memory (sum of their resident set sizes).
+When I consult KSM, I get the following information:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep -H &amp;#39;&amp;#39; /sys/kernel/mm/ksm/pages_*
+/sys/kernel/mm/ksm/pages_shared:48911
+/sys/kernel/mm/ksm/pages_sharing:90090
+/sys/kernel/mm/ksm/pages_to_scan:100
+/sys/kernel/mm/ksm/pages_unshared:123002
+/sys/kernel/mm/ksm/pages_volatile:1035
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;pages_shared&lt;/code&gt; tells me that 48911 pages are shared (which means
+about 191 Mb) through 90090 references (&lt;code&gt;pages_sharing&lt;/code&gt; - meaning the
+various processes have in total 90090 references to pages that are being
+shared). That means a gain of 41179 pages (160 Mb). Note that the
+resident set sizes do not take into account shared pages, so the sum of
+the RSS has to be subtracted with this to find the "real" memory
+consumption. The &lt;code&gt;pages_unshared&lt;/code&gt; value tells me that 123002 pages are
+marked with the &lt;code&gt;MADV_MERGEABLE&lt;/code&gt; advise flag but are not used by other
+processes.&lt;/p&gt;
+&lt;p&gt;If you want to use KSM yourself, configure your kernel with &lt;code&gt;CONFIG_KSM&lt;/code&gt;
+and start KSM by echo'ing the value "1" into &lt;code&gt;/sys/kernel/mm/ksm/run&lt;/code&gt;.
+That's all there is to it.&lt;/p&gt;</content><category term="Free Software"></category><category term="cow"></category><category term="ksm"></category><category term="kvm"></category><category term="linux"></category><category term="virtualization"></category></entry><entry><title>Qemu-KVM monitor tips and tricks</title><link href="http://blog.siphos.be/2013/04/qemu-kvm-monitor-tips-and-tricks/" rel="alternate"></link><published>2013-04-30T03:50:00+02:00</published><updated>2013-04-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-30:/2013/04/qemu-kvm-monitor-tips-and-tricks/</id><summary type="html">&lt;p&gt;When running KVM guests, the &lt;a href="https://en.wikibooks.org/wiki/QEMU/Monitor"&gt;Qemu/KVM
+monitor&lt;/a&gt; is a nice interface
+to interact with the VM and do specific maintenance tasks on. If you run
+the KVM guests with VNC, then you can get to this monitor through
+&lt;code&gt;Ctrl-Alt-2&lt;/code&gt; (and &lt;code&gt;Ctrl-Alt-1&lt;/code&gt; to get back to the VM display). I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When running KVM guests, the &lt;a href="https://en.wikibooks.org/wiki/QEMU/Monitor"&gt;Qemu/KVM
+monitor&lt;/a&gt; is a nice interface
+to interact with the VM and do specific maintenance tasks on. If you run
+the KVM guests with VNC, then you can get to this monitor through
+&lt;code&gt;Ctrl-Alt-2&lt;/code&gt; (and &lt;code&gt;Ctrl-Alt-1&lt;/code&gt; to get back to the VM display). I
+personally run with the monitor on the standard input/output where the
+VM is launched as its output is often large and scrolling in the VNC
+doesn't seem to work well.&lt;/p&gt;
+&lt;p&gt;I decided to give you a few tricks that I use often on the monitor to
+handle the VMs.&lt;/p&gt;
+&lt;p&gt;When I do not start the VNC server associated with the VM by default, I
+can enable it on the monitor using &lt;strong&gt;change vnc&lt;/strong&gt; while getting details
+is done using &lt;strong&gt;info vnc&lt;/strong&gt;. To disable VNC again, use &lt;strong&gt;change vnc
+none&lt;/strong&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) info vnc
+Server: disabled
+(qemu) change vnc 127.0.0.1:20
+(qemu) change vnc password
+Password: ******
+(qemu) info vnc
+Server:
+     address: 127.0.0.1:5920
+        auth: vnc
+Client: none
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Similarly, if you need to enable remote debugging, you can use the
+&lt;strong&gt;gdbserver&lt;/strong&gt; option.&lt;/p&gt;
+&lt;p&gt;Getting information using &lt;strong&gt;info&lt;/strong&gt; is dead-easy, and supports a wide
+area of categories: balloon info, block devices, character devices,
+cpus, memory mappings, network information, etcetera etcetera... Just
+enter &lt;strong&gt;info&lt;/strong&gt; to get an overview of all supported commands.&lt;/p&gt;
+&lt;p&gt;To easily manage block devices, you can see the current state of devices
+using &lt;strong&gt;info block&lt;/strong&gt; and then use &lt;strong&gt;change &amp;lt;blockdevice&amp;gt;
+&amp;lt;path&amp;gt;&lt;/strong&gt; to update it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) info block
+virtio0: removable=0 io-status=ok file=/srv/virt/gentoo/hardened2selinux/selinux-base.img ro=0 drv=qcow2 encrypted=0 bps=0 bps_rd=0 bps_wr=0 iops=0 iops_rd=0 iops_wr=0
+ide1-cd0: removable=1 locked=0 tray-open=0 io-status=ok [not inserted]
+floppy0: removable=1 locked=0 tray-open=0 [not inserted]
+sd0: removable=1 locked=0 tray-open=0 [not inserted]
+(qemu) change ide1-cd0 /srv/virt/media/systemrescuecd-x86-2.2.0.iso
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To powerdown the system, use &lt;strong&gt;system_powerdown&lt;/strong&gt;. If that fails, you
+can use &lt;strong&gt;quit&lt;/strong&gt; to immediately shut down (terminate) the VM. To reset
+it, use &lt;strong&gt;system_reset&lt;/strong&gt;. You can also hot-add PCI devices and
+manipulate CPU states, or even perform &lt;a href="http://www.linux-kvm.org/page/Migration"&gt;live
+migrations&lt;/a&gt; between systems.&lt;/p&gt;
+&lt;p&gt;When you use qcow2 image formats, you can take a full VM snapshot using
+&lt;strong&gt;savevm&lt;/strong&gt; and, when you later want to return to this point again, use
+&lt;strong&gt;loadvm&lt;/strong&gt;. This is interesting when you want to do potentially harmful
+changes on the system and want to easily revert back if things got
+broken.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) savevm 20130419
+(qemu) info snapshots
+     ID        TAG                 VM SIZE                DATE       VM CLOCK
+     1         20130419               224M 2013-04-19 12:05:16   00:00:17.294
+(qemu) loadvm 20130419
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Free Software"></category><category term="kvm"></category><category term="monitor"></category><category term="qemu"></category></entry><entry><title>Comparing performance with sysbench: cpu and fileio</title><link href="http://blog.siphos.be/2013/04/comparing-performance-with-sysbench/" rel="alternate"></link><published>2013-04-18T21:31:00+02:00</published><updated>2013-04-18T21:31:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/comparing-performance-with-sysbench/</id><summary type="html">&lt;p&gt;Being busy with virtualization and additional security measures, I
+frequently come in contact with people asking me what the performance
+impact is. Now, you won't find the performance impact of SELinux here as
+I have no guests nor hosts that run without SELinux. But I did want to
+find out …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Being busy with virtualization and additional security measures, I
+frequently come in contact with people asking me what the performance
+impact is. Now, you won't find the performance impact of SELinux here as
+I have no guests nor hosts that run without SELinux. But I did want to
+find out what one can do to compare system (and later application)
+performance, so I decided to take a look at the various benchmark
+utilities available. In this first post, I'll take a look at
+&lt;a href="http://sysbench.sf.net"&gt;sysbench&lt;/a&gt; (using 0.4.12, released on March 2009
+- unlike what you would think from the looks of the site alone) to
+compare the performance of my KVM guest versus host.&lt;/p&gt;
+&lt;p&gt;The obligatory system information: the host is a HP Pavilion dv7 3160eb
+with an Intel Core i5-430M processor (dual-core with 2 threads per
+core). Frequency scaling is disabled - the CPU is fixed at 2.13 Ghz. The
+system has 4Gb of memory (DDR3), the internal hard disks are configured
+as a software RAID1 and with LVM on top (except for the file system that
+hosts the virtual guest images, which is a plain software RAID1). The
+guests run with the boot options given below, meaning 1.5Gb of memory, 2
+virtual CPUs of the KVM64 type. The CFLAGS for both are given below as
+well, together with the expanded set given by &lt;strong&gt;gcc \${CFLAGS} -E -v -
+&lt;/dev&gt;&amp;amp;1 | grep cc1&lt;/strong&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/usr/bin/qemu-kvm -monitor stdio -nographic -gdb tcp::1301   
+ -vnc 127.0.0.1:14   
+ -net nic,model=virtio,macaddr=00:11:22:33:44:b3,vlan=0   
+ -net vde,vlan=0   
+ -drive file=/srv/virt/gentoo/test/pg1.img,if=virtio,cache=none   
+ -k nl-be -m 1536 -cpu kvm64 -smp 2
+
+# For host
+CFLAGS=&amp;quot;-march=core2 -O2 -pipe&amp;quot;
+#CFLAGS=&amp;quot;-D_FORTIFY_SOURCE=2 -fno-strict-overflow -march=core2   
+        -fPIE -O2 -fstack-protector-all&amp;quot;
+# For guest
+CFLAGS=&amp;quot;-march=x86-64 -O2 -pipe&amp;quot;
+#CFLAGS=&amp;quot;-fno-strict-overflow -march=x86-64 -fPIE -O2   
+        -fstack-protector-all&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I am aware that the CFLAGS between the two are not the same (duh), and I
+know as well that the expansion given above isn't entirely accurate. But
+still, it gives some idea on the differences.&lt;/p&gt;
+&lt;p&gt;Now before I go on to the results, please keep in mind that I am &lt;em&gt;not a
+performance expert&lt;/em&gt;, not even a &lt;em&gt;performance experienced&lt;/em&gt; or even
+&lt;em&gt;performance wanna-be experienced&lt;/em&gt; person: the more I learn about the
+inner workings of an operating system such as Linux, the more complex it
+becomes. And when you throw in additional layers such as virtualization,
+I'm almost completely lost. In my day-job, some people think they can
+"prove" the inefficiency of a hypervisor by counting from 1 to 100'000
+and adding the numbers, and then take a look at how long this takes. I
+think this is short-sighted, as this puts load on a system that does not
+simulate reality. If you really want to do performance measures for
+particular workloads, you need to run those workloads and not some small
+script you hacked up. That is why I tend to focus on applications that
+use workload simulations for infrastructural performance measurements
+(like &lt;a href="http://hammerora.sf.net"&gt;HammerDB&lt;/a&gt; for performance testing
+databases). But for this blog post series, I'm first going to start with
+basic operations and later posts will go into more detail for particular
+workloads (such as database performance measurements).&lt;/p&gt;
+&lt;p&gt;Oh, and BTW, when I display figures with a comma (","), that comma means
+decimal (so "1,00" = "1").&lt;/p&gt;
+&lt;p&gt;The figures below are numbers that can be interpreted in many ways, and
+can prove everything. I'll sometimes give my interpretation to it, but
+don't expect to learn much from it - there are probably much better
+guides out there for this. The posts are more of a way to describe how
+&lt;strong&gt;sysbench&lt;/strong&gt; works and what you should take into account when doing
+performance benchmarks.&lt;/p&gt;
+&lt;p&gt;So the testing is done using &lt;strong&gt;sysbench&lt;/strong&gt;, which is capable of running
+CPU, I/O, memory, threading, mutex and MySQL tests. The first run of it
+that I did was a single-thread run for CPU performance testing.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=cpu --cpu-max-prime=20000 run
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This test verifies prime numbers by dividing the number with
+sequentially increasing numbers and verifying that the remainder (modulo
+calculation) is zero. If it is, then the number is not prime and the
+calculation goes on to the next number; otherwise, if none have a
+remainder of 0, then the number is prime. The maximum number that it
+divides by is calculated by taking the integer part of the square root
+of the number (so for 17, this is 4). This algorithm is very simple, so
+you should also take into account that during the compilation of the
+benchmark, the compiler might already have optimized some of it.&lt;/p&gt;
+&lt;p&gt;Let's look at the numbers.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Run     Stat     Host      Guest
+1.1    total   35,4331   37,0528
+     e.total   35,4312   36,8917
+1.2    total   35,1482   36,1951
+     e.total   35,1462   36,0405
+1.3    total   35,3334   36,4266
+     e.total   35,3314   36,2640
+================================
+avg    total   35,3049   36,5582
+     e.total   35,3029   36,3987
+med    total   35,3334   36,4266
+     e.total   35,3314   36,2640
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On average (I did three runs on each system), the guest took 3,55% more
+time to finish the test than the host (&lt;code&gt;total&lt;/code&gt;). If we look at the pure
+calculation (so not the remaining overhead of the inner workings -
+&lt;code&gt;e.total&lt;/code&gt;) then the guest took 3,10% more time. The median however (the
+run that wasn't the fastest nor the slowest of the three) has the guest
+taking 3,09% more time (total) and 2,64% more time (e.total).&lt;/p&gt;
+&lt;p&gt;Let's look at the two-thread results.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Run     Stat     Host      Guest
+1.1    total   17,5185   18,0905
+     e.total   35,0296   36,0217
+1.2    total   17,8084   18,1070
+     e.total   35,6131   36,0518
+1.3    total   18,0683   18,0921
+     e.total   36,1322   36,0194
+================================
+avg    total   17,5185   18,0965
+     e.total   35,0296   36,0310
+med    total   17,8084   18,0921
+     e.total   35,6131   36,0194
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With these figures, we notice that the guest average total run time
+takes 1,67% more time to complete, and the event time only 1,23%. I was
+personally expecting that the guest would have a higher percentage than
+previously (gut feeling - never trust it when dealing with complex
+matter) but was happy to see that the difference wasn't higher. I'm not
+going to start analyze this in more detail and just go to the next test:
+fileio.&lt;/p&gt;
+&lt;p&gt;In case of fileio testing, I assume that the hypervisor will take up
+&lt;a href="http://www.linux-kvm.org/page/Virtio/Block/Latency"&gt;more overhead&lt;/a&gt;, but
+keep in mind that you also need to consider the environmental factors:
+LVM or not, RAID1 or not, mount options, etc. Since I am comparing
+guests versus hosts here, I should look for a somewhat comparable setup.
+Hence, I will look for the performance of the host (software raid, LVM,
+ext4 file system with data=ordered) and the guest (images on software
+raid, ext4 file system with data=ordered and barrier=0, and LVM in
+guest).&lt;/p&gt;
+&lt;p&gt;Furthermore, running a sysbench test suggests a file that is much larger
+than the available RAM. I'm going to run the tests on a 6Gb file size,
+but enable O_DIRECT for writes so that some caches (page cache) are not
+used. This can be done using &lt;em&gt;--file-extra-flags=direct&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;As with all I/O-related benchmarks, you need to define which kind of
+load you want to test with. Are the I/Os sequential (like reading or
+writing a large file completely) or random? For databases, you are most
+likely interested in random reads (data, for selects) and sequential
+writes (into transaction logs). A file server usually has random
+read/write. In the below test, I'll use a combined &lt;strong&gt;r&lt;/strong&gt;a&lt;strong&gt;nd&lt;/strong&gt;om
+&lt;strong&gt;r&lt;/strong&gt;ead/&lt;strong&gt;w&lt;/strong&gt;rite.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=fileio --file-total-size=6G prepare
+$ sysbench --test=fileio --file-total-size=6G --file-test-mode=rndrw --max-time=300 --max-requests=0 --file-extra-flags=direct run
+$ sysbench --test=fileio --file-total-size=6G cleanup
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the output, the throughput seems to be most important:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Operations performed:  4348 Read, 2898 Write, 9216 Other = 16462 Total
+Read 67.938Mb  Written 45.281Mb  Total transferred 113.22Mb  (1.8869Mb/sec)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the above case, the throughput is 1,8869 Mbps. So let's look at the
+(averaged) results:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Host:  1,8424 Mbps
+Guest: 1,5591 Mbps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The above figures (which are an average of 3 runs) tell us that the
+guest has a throughput of about 84,75% (so we take about 15% performance
+hit on random read/write I/O). Now I used sysbench here for some I/O
+validation of guest between host, but other usages apply as well. For
+instance, let's look at the impact of &lt;code&gt;data=ordered&lt;/code&gt; versus
+&lt;code&gt;data=journal&lt;/code&gt; (taken on the host):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;6G, data=ordered, barrier=1: 1,8435 Mbps
+6G, data=ordered, barrier=0: 2,1328 Mbps
+6G, data=journal, barrier=1: 599,85 Kbps
+6G, data=journal, barrier=0: 767,93 Kbps
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;From the figures, we can see that the &lt;code&gt;data=journal&lt;/code&gt; option slows down
+the throughput to a final figure about 30% of the original throughput
+(70% decrease!). Also, disabling barriers has a positive impact on
+performance, giving about 15% throughput gain. This is also why some
+people report performance improvements when switching to LVM, as - as
+far as I can tell (but finding a good source on this is difficult) - LVM
+&lt;em&gt;by default&lt;/em&gt; disables barriers (but does honor the &lt;code&gt;barrier=1&lt;/code&gt; mount
+option if you provide it).&lt;/p&gt;
+&lt;p&gt;That's about it for now - the next post will be about the memory and
+threads tests within sysbench.&lt;/p&gt;</content><category term="Free Software"></category><category term="cpu"></category><category term="hypervisor"></category><category term="io"></category><category term="kvm"></category><category term="performance"></category><category term="sysbench"></category></entry><entry><title>Uploading selinuxnode test VM</title><link href="http://blog.siphos.be/2013/02/uploading-selinuxnode-test-vm/" rel="alternate"></link><published>2013-02-25T03:05:00+01:00</published><updated>2013-02-25T03:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-25:/2013/02/uploading-selinuxnode-test-vm/</id><summary type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
+few hours), I'm uploading a new SELinux-enabled KVM guest image. This is
+not an update on the previous image though (it's a reinstalled system -
+after all, I use VMs for testing, so it makes sense to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
+few hours), I'm uploading a new SELinux-enabled KVM guest image. This is
+not an update on the previous image though (it's a reinstalled system -
+after all, I use VMs for testing, so it makes sense to reinstall from
+time to time to check if the installation instructions are still
+accurate). However, the focus remains the same:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A minimal Gentoo Linux installation for amd64 (x86_64) as guest
+    within a KVM hypervisor. The image is about 190 Mb in size
+    compressed, and 1.6 Gb in size uncompressed. The file format is
+    Qemu's QCOW2 so expect the image to grow as you work with it. The
+    file systems are, in total, sized to about 50 Gb.&lt;/li&gt;
+&lt;li&gt;The installation has SELinux enabled (strict policy, enforcing
+    mode), various grSecurity settings enabled (including PaX and TPE),
+    but now also includes IMA (Integrity Measurement Architecture) and
+    EVM (Extended Verification Module) although EVM is by default
+    started in fix mode.&lt;/li&gt;
+&lt;li&gt;The image will not start any network-facing daemons by default
+    (unlike the previous image) for security reasons (if I let this
+    image stay around this long as I did with the previous, it's prone
+    to have some vulnerabilities in the future, although I'm hoping I
+    can update the image more frequently). This includes SSH, so you'll
+    need access to the image console first after which you can configure
+    the network and start SSH (&lt;strong&gt;run_init rc-service sshd start&lt;/strong&gt; does
+    the trick).&lt;/li&gt;
+&lt;li&gt;A couple of default accounts are created, and the image will display
+    those accounts and their passwords on the screen (it is a test/play
+    VM, not a production VM).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are still a few minor issues with it, that I hope to fix by the
+next upload:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=457812"&gt;Bug 457812&lt;/a&gt; is
+    still applicable to the image, so you'll notice lots of SELinux
+    denials on the mknod capability. They seem to be cosmetic though.&lt;/li&gt;
+&lt;li&gt;At shutdown, udev somewhere fails with a SELinux initial
+    context problem. I thought I had it covered, but I noticed after
+    compressing the image that it is still there. I'll fix it - I
+    promise ;)&lt;/li&gt;
+&lt;li&gt;EVM is enabled in fix mode, because otherwise EVM is &lt;a href="http://sourceforge.net/mailarchive/forum.php?thread_name=1361476641.29360.114.camel%40falcor1&amp;amp;forum_name=linux-ima-user"&gt;prohibiting
+    mode
+    changes&lt;/a&gt;
+    on files in /run. I still have to investigate this further though -
+    I had to use the EVM=fix workaround due to time pressure.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When uploaded, I'll ask the Gentoo infrastructure team to synchronise
+the image with our mirrors so you can enjoy it. It'll be on the
+distfiles, under experimental/amd64/qemu-selinux (it has the 20130224
+date in the name, so you can see for yourself if the sync has already
+occurred or not).&lt;/p&gt;</content><category term="Gentoo"></category><category term="evm"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="ima"></category><category term="kvm"></category><category term="selinux"></category><category term="virtual"></category></entry></feed>

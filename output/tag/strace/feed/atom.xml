@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - strace</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/strace/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-28T03:50:00+02:00</updated><entry><title>Securely handling libffi</title><link href="http://blog.siphos.be/2013/04/securely-handling-libffi/" rel="alternate"></link><published>2013-04-28T03:50:00+02:00</published><updated>2013-04-28T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-28:/2013/04/securely-handling-libffi/</id><summary type="html">&lt;p&gt;I've recently came across &lt;a href="http://sourceware.org/libffi/"&gt;libffi&lt;/a&gt; again.
+No, not because it was mentioned during the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo
+Hardened&lt;/a&gt; online meeting, but
+because my &lt;code&gt;/var/tmp&lt;/code&gt; wasn't mounted correctly, and &lt;strong&gt;emerge&lt;/strong&gt; (actually
+python) uses libffi. Most users won't notice this, because libffi works
+behind the scenes. But when it fails, it fails bad …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I've recently came across &lt;a href="http://sourceware.org/libffi/"&gt;libffi&lt;/a&gt; again.
+No, not because it was mentioned during the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo
+Hardened&lt;/a&gt; online meeting, but
+because my &lt;code&gt;/var/tmp&lt;/code&gt; wasn't mounted correctly, and &lt;strong&gt;emerge&lt;/strong&gt; (actually
+python) uses libffi. Most users won't notice this, because libffi works
+behind the scenes. But when it fails, it fails bad. And SELinux actually
+helped me quickly identify what the problem is.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ emerge --info
+segmentation fault
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The abbreviation "libffi" comes from &lt;em&gt;Foreign Function Interface&lt;/em&gt;, and
+is a library that allows developers to dynamically call code from
+another application or library. But the method how it approaches this
+concerns me a bit. Let's look at some &lt;strong&gt;strace&lt;/strong&gt; output:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;8560  open(&amp;quot;/var/tmp/ffiZ8gKPd&amp;quot;, O_RDWR|O_CREAT|O_EXCL, 0600) = 11
+8560  unlink(&amp;quot;/var/tmp/ffiZ8gKPd&amp;quot;)      = 0
+8560  ftruncate(11, 4096)               = 0
+8560  mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_SHARED, 11, 0) = -1 EACCES (Permission denied)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Generally, what libffi does, is to create a file somewhere where it can
+write files (it checks the various mounts on a system to get a list of
+possible target file systems), adds the necessary data (that it wants to
+execute) to it, unlinks the file from the file system (but keep the file
+descriptor open, so that the file cannot (easily) be modified on the
+system anymore) and then maps it to memory for executable access. &lt;em&gt;If&lt;/em&gt;
+executing is allowed by the system (for instance because the mount point
+does not have &lt;code&gt;noexec&lt;/code&gt;), then SELinux will trap it because the domain
+(in our case now, &lt;code&gt;portage_t&lt;/code&gt;) is trying to execute an (unlinked) file
+for which it holds no execute rights on:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1366656205.201:2221): avc:  denied  { execute } for  
+pid=8560 comm=&amp;quot;emerge&amp;quot; path=2F7661722F66666962713154465A202864656C6574656429 
+dev=&amp;quot;dm-3&amp;quot; ino=6912 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t
+tclass=file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When you notice something like this (an execute on an unnamed file),
+then this is because the file descriptor points to a file already
+unlinked from the system. Finding out what it was about might be hard
+(but with &lt;strong&gt;strace&lt;/strong&gt; it is easy as ... well, whatever is easy for you).&lt;/p&gt;
+&lt;p&gt;Now what happened was that, because &lt;code&gt;/var/tmp&lt;/code&gt; wasn't mounted, files
+created inside it got the standard type (&lt;code&gt;var_t&lt;/code&gt;) which the Portage
+domain isn't allowed to execute. It is allowed to execute a lot of
+types, but not that one ;-) When &lt;code&gt;/var/tmp&lt;/code&gt; is properly mounted, the
+file gets the &lt;code&gt;portage_tmp_t&lt;/code&gt; type where it does hold execute rights
+for.&lt;/p&gt;
+&lt;p&gt;Now generally, I don't like having world-writeable locations without
+&lt;code&gt;noexec&lt;/code&gt;. For &lt;code&gt;/tmp&lt;/code&gt;, &lt;code&gt;noexec&lt;/code&gt; is enabled, but for &lt;code&gt;/var/tmp&lt;/code&gt; I have
+(well, had ;-) to allow execution from the file system, mainly because
+some (many?) Gentoo package builds require it. So how about this dual
+requirement, of allowing Portage to write (and execute) its own files,
+and allow libffi to do its magic? Certainly, from a security point of
+view, I might want to restrict this further...&lt;/p&gt;
+&lt;p&gt;Well, we need to make sure that the location where Portage works with
+(the location pointed to by &lt;code&gt;$PORTAGE_TMPDIR&lt;/code&gt;) is specifically made
+available for Portage: have the directory only writable by the Portage
+user. I keep it labeled as &lt;code&gt;tmp_t&lt;/code&gt; so that the existing policies apply,
+but it might work with &lt;code&gt;portage_tmp_t&lt;/code&gt; immediately set as well. Perhaps
+I'll try that one later. With that set, we can have this mount-point set
+with exec rights (so that libffi can place its file there) in a somewhat
+more secure manner than allowing exec on world-writeable locations.&lt;/p&gt;
+&lt;p&gt;So now my &lt;code&gt;/tmp&lt;/code&gt; and &lt;code&gt;/var/tmp&lt;/code&gt; (and &lt;code&gt;/run&lt;/code&gt; and &lt;code&gt;/dev/shm&lt;/code&gt; and
+&lt;code&gt;/lib64/rc/init.d&lt;/code&gt;) are tmpfs-mounts with the &lt;code&gt;noexec&lt;/code&gt; (as well as
+&lt;code&gt;nodev&lt;/code&gt; and &lt;code&gt;nosuid&lt;/code&gt;) bits set, with the location pointed towards by
+&lt;code&gt;$PORTAGE_TMPDIR&lt;/code&gt; being only really usable by the Portage user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ls -ldZ /var/portage
+drwxr-x---. 4 portage root system_u:object_r:tmp_t 4096 Apr 22 21:45 /var/portage/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And libffi? Well, allowing applications to create their own executables
+and executing it is something that should be carefully governed. I'm not
+aware of any existing or past vulnerabilities, but I can imagine that
+opening the &lt;code&gt;ffi*&lt;/code&gt; file(s) the moment they come up (to make sure you
+have a file descriptor) allows you to overwrite the content after libffi
+has created it but before the application actually executes it. By
+limiting the locations where applications can write files to (important
+step one) and the types they can execute (important step two) we can
+already manage this a bit more. Using regular DAC, this is quite
+difficult to achieve, but with SELinux, we can actually control this a
+bit more.&lt;/p&gt;
+&lt;p&gt;Let's first see how many domains are allowed to create, write and
+execute files:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sesearch -c file -p write,create,execute -A | grep write | grep create   
+ | grep execute | awk &amp;#39;{print $1}&amp;#39; | sort | uniq | wc -l
+32
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Okay, 32 target domains. Not that bad, and certainly doable to verify
+manually (hell, even in a scripted manner). You can now check which of
+those domains have rights to execute generic binaries (&lt;code&gt;bin_t&lt;/code&gt;),
+possibly needed for command execution vulnerabilities or privilege
+escalation. Or that have specific capabilities. And if you want to know
+which of those domains use libffi, you can use &lt;strong&gt;revdep-rebuild&lt;/strong&gt; to
+find out which files are linked to the libffi libraries.&lt;/p&gt;
+&lt;p&gt;It goes to show that trying to keep your box secure is a never-ending
+story (please, companies, allow your system administrators to do their
+job by giving them the ability to continuously increase security rather
+than have them ask for budget to investigate potential security
+mitigation directives based on the paradigm of business case and return
+on investment using pareto-analytics blaaaahhhh....), and that SELinux
+can certainly be an important method to help achieve it.&lt;/p&gt;</content><category term="Security"></category><category term="libffi"></category><category term="selinux"></category><category term="strace"></category></entry><entry><title>Using strace to troubleshoot SELinux problems</title><link href="http://blog.siphos.be/2013/04/using-strace-to-troubleshoot-selinux-problems/" rel="alternate"></link><published>2013-04-24T03:50:00+02:00</published><updated>2013-04-24T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-24:/2013/04/using-strace-to-troubleshoot-selinux-problems/</id><summary type="html">&lt;p&gt;When SELinux is playing tricks on you, you can just "allow" whatever it
+wants to do, but that is not always an option: sometimes, there is no
+denial in sight because the problem lays within SELinux-aware
+applications (applications that might change their behavior based on
+what the policy sais or …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When SELinux is playing tricks on you, you can just "allow" whatever it
+wants to do, but that is not always an option: sometimes, there is no
+denial in sight because the problem lays within SELinux-aware
+applications (applications that might change their behavior based on
+what the policy sais or even based on if SELinux is enabled or not). At
+other times, you get a strange behavior that isn't directly visible what
+the cause is. But mainly, if you want to make sure that allowing
+something is correct (and not just a corrective action), you need to be
+absolutely certain that what you want to allow is security-wise
+acceptable.&lt;/p&gt;
+&lt;p&gt;To debug such issues, I often take the &lt;strong&gt;strace&lt;/strong&gt; command to debug the
+application at hand. To use &lt;strong&gt;strace&lt;/strong&gt;, I toggle the &lt;em&gt;allow_ptrace&lt;/em&gt;
+boolean (&lt;strong&gt;strace&lt;/strong&gt; uses &lt;code&gt;ptrace()&lt;/code&gt; which, by default, isn't allowed
+policy-wise) and then run the offending application through &lt;strong&gt;strace&lt;/strong&gt;
+(or attach to the running process if it is a daemon). For instance, to
+debug a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463222"&gt;tmux issue&lt;/a&gt; we
+had with the policy not that long ago:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setsebool allow_ptrace on
+# strace -o strace.log -f -s 256 tmux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The resulting log file (strace.log) might seem daunting at first to look
+at. What you see are the system calls that the process is performing,
+together with their options but also the return code of each call. This
+is especially important as SELinux, if it denies something, often
+returns something like EACCESS (Permission Denied).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;7313  futex(0x349e016f080, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+7313  futex(0x5aad58fd84, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+7313  stat(&amp;quot;/&amp;quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+7313  stat(&amp;quot;/home&amp;quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+7313  stat(&amp;quot;/home/swift&amp;quot;, {st_mode=S_IFDIR|0755, st_size=12288, ...}) = 0
+7313  stat(&amp;quot;/home/swift/.pki&amp;quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}) = 0
+7313  stat(&amp;quot;/home/swift/.pki/nssdb&amp;quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}) = 0
+7313  statfs(&amp;quot;/home/swift/.pki/nssdb&amp;quot;, 0x3c3cab6fa50) = -1 EACCES (Permission denied)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Most (if not all) of the methods shown in a strace log are documented
+through manpages, so you can quickly find out that &lt;code&gt;futex()&lt;/code&gt; is about
+fast user-space locking, &lt;code&gt;stat()&lt;/code&gt; (&lt;strong&gt;man 2 stat&lt;/strong&gt; to see the information
+about the method instead of the application) is about getting file
+status and &lt;code&gt;statfs()&lt;/code&gt; is for getting file system statistics.&lt;/p&gt;
+&lt;p&gt;The most common permission issues you'll find are file related:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;7313  open(&amp;quot;/proc/filesystems&amp;quot;, O_RDONLY) = -1 EACCES (Permission denied)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the above case, you notice that the application is trying to open the
+&lt;code&gt;/proc/filesystems&lt;/code&gt; file read-only. In the SELinux logs, this might be
+displayed as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit.log:type=AVC msg=audit(1365794728.180:3192): avc:  denied  { read } for  
+pid=860 comm=&amp;quot;nacl_helper_boo&amp;quot; name=&amp;quot;filesystems&amp;quot; dev=&amp;quot;proc&amp;quot; ino=4026532034 
+scontext=staff_u:staff_r:chromium_naclhelper_t tcontext=system_u:object_r:proc_t tclass=file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now the case of &lt;strong&gt;tmux&lt;/strong&gt; before was not an obvious one. In the end, I
+compared the strace output's of two runs (one in enforcing and one in
+permissive) to find what the difference would be. This is the result:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Enforcing:
+
+10905 fcntl(9, F_GETFL) = 0x8000 (flags O_RDONLY|O_LARGEFILE) 
+10905 fcntl(9, F_SETFL, O_RDONLY|O_NONBLOCK|O_LARGEFILE) = 0
+
+Permissive:
+
+10905 fcntl(9, F_GETFL) = 0x8002 (flags O_RDWR|O_LARGEFILE) 
+10905 fcntl(9, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You notice the difference? In enforcing-mode, one of the flags on the
+file descriptor has &lt;code&gt;O_RDONLY&lt;/code&gt; whereas the one in permissive mode as
+&lt;code&gt;O_RDWR&lt;/code&gt;. This means that the file descriptor in enforcing mode is
+read-only whereas in permissive-mode is read-write. What we then do in
+the strace logs is to see where this file descriptor (with id=9) comes
+from:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;10905 dup(0)     = 9
+10905 dup(1)     = 10
+10905 dup(2)     = 11
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As the man-pages sais, &lt;code&gt;dup()&lt;/code&gt; duplicates a file descriptor. And
+because, by convention, the first three file descriptors of an
+application correspond with standard input (0), standard output (1) and
+error output (2), we now know that the file descriptor with id=9 comes
+from the standard input file descriptor. Although this one should be
+read-only (it is the input that the application gets = reads), it seems
+that tmux might want to use this for writes as well. And that is what
+happens - tmux sends the file descriptor to the tmux server to check if
+it is a tty and then uses it to write to the screen.&lt;/p&gt;
+&lt;p&gt;Now what does that have to do with SELinux? It has to mean something,
+otherwise running in permissive mode would give the same result. After
+some investigation, we found out that using &lt;strong&gt;newrole&lt;/strong&gt; to switch roles
+changes the flags of the standard input (as then provided by
+&lt;strong&gt;newrole&lt;/strong&gt;) from &lt;code&gt;O_RDWR&lt;/code&gt; to &lt;code&gt;O_RDONLY&lt;/code&gt; (code snippet from &lt;code&gt;newrole.c&lt;/code&gt;
+- look at the first call to &lt;code&gt;open()&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/* Close the tty and reopen descriptors 0 through 2 */
+if (ttyn) {
+        if (close(fd) || close(0) || close(1) || close(2)) {
+                fprintf(stderr, _(&amp;quot;Could not close descriptors.\n&amp;quot;));
+                goto err_close_pam;
+        }
+        fd = open(ttyn, O_RDONLY | O_NONBLOCK);
+        if (fd != 0)
+                goto err_close_pam;
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp;amp; ~O_NONBLOCK);
+        fd = open(ttyn, O_RDWR | O_NONBLOCK);
+        if (fd != 1)
+                goto err_close_pam;
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp;amp; ~O_NONBLOCK);
+        fd = open(ttyn, O_RDWR | O_NONBLOCK);
+        if (fd != 2)
+                goto err_close_pam;
+        fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp;amp; ~O_NONBLOCK);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Such obscure problems are much easier to detect and troubleshoot thanks
+to tools like &lt;strong&gt;strace&lt;/strong&gt;.&lt;/p&gt;</content><category term="SELinux"></category><category term="debug"></category><category term="selinux"></category><category term="strace"></category></entry></feed>

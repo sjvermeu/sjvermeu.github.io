@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - binpkg</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/binpkg/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-25T03:50:00+02:00</updated><entry><title>Gentoo protip: using buildpkgonly</title><link href="http://blog.siphos.be/2013/04/gentoo-protip-using-buildpkgonly/" rel="alternate"></link><published>2013-04-25T03:50:00+02:00</published><updated>2013-04-25T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-25:/2013/04/gentoo-protip-using-buildpkgonly/</id><summary type="html">&lt;p&gt;If you don't want to have the majority of builds run in the background
+while you are busy on the system, but you don't want to automatically
+install software in the background when you are not behind your desk,
+then perhaps you can settle for using &lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary
+packages&lt;/a&gt;. I'm not …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you don't want to have the majority of builds run in the background
+while you are busy on the system, but you don't want to automatically
+install software in the background when you are not behind your desk,
+then perhaps you can settle for using &lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary
+packages&lt;/a&gt;. I'm not
+saying you need to setup a build server and such or do your updates
+first in a chroot.&lt;/p&gt;
+&lt;p&gt;No, what this tip is for is to use the &lt;em&gt;--buildpkgonly&lt;/em&gt; parameter of
+&lt;strong&gt;emerge&lt;/strong&gt; at night, building some of your software (often the larger
+ones) as binary packages only (storing those in the &lt;code&gt;${PKGDIR}&lt;/code&gt; which
+defaults to &lt;code&gt;/usr/portage/packages&lt;/code&gt;). When you are then on your system,
+you can run the update with binary package included:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# emerge -puDk world
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To use &lt;em&gt;--buildpkgonly&lt;/em&gt;, all package(s) that Portage wants to build must
+have all their dependencies met. If not, then the build will not go
+through and you're left with no binary packages at all. So what we do is
+to create a script that looks at the set of packages that would be
+build, and then one for one building the binary package.&lt;/p&gt;
+&lt;p&gt;When ran, the script will attempt to build binary packages for those
+that have no dependency requirements anymore. Those builds will then
+create a binary package but will not be merged on the system. When you
+later update your system, including binary packages, those packages that
+have been build during the night will be merged quickly, reducing the
+build load on your system while you are working on it.&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class="nv"&gt;LIST&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;mktemp&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+emerge -puDN --color&lt;span class="o"&gt;=&lt;/span&gt;n --columns --quiet&lt;span class="o"&gt;=&lt;/span&gt;y world &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $2}&amp;#39;&lt;/span&gt; &amp;gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;LIST&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; PACKAGE in &lt;span class="k"&gt;$(&lt;/span&gt;cat &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;LIST&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="nb"&gt;printf&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Building binary package for &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;PACKAGE&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;... &amp;quot;&lt;/span&gt;
+  emerge -uN --quiet-build --quiet&lt;span class="o"&gt;=&lt;/span&gt;y --buildpkgonly &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;PACKAGE&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="nv"&gt;$?&lt;/span&gt; -eq &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;then&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ok&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;else&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;failed&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;I ran this a couple of days ago when &lt;em&gt;-uDN world&lt;/em&gt; showed 46 package
+updates (including a few hefty ones like chromium). After running this
+script, 35 of them had a binary package ready so the &lt;em&gt;-uDN world&lt;/em&gt; now
+only needed to build 11 packages, merging the remainder from binary
+packages.&lt;/p&gt;</content><category term="Gentoo"></category><category term="binpkg"></category><category term="emerge"></category><category term="Gentoo"></category><category term="protip"></category></entry></feed>

@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - Architecture</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/category/architecture/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2017-07-18T20:40:00+02:00</updated><entry><title>Project prioritization</title><link href="http://blog.siphos.be/2017/07/project-prioritization/" rel="alternate"></link><published>2017-07-18T20:40:00+02:00</published><updated>2017-07-18T20:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-07-18:/2017/07/project-prioritization/</id><summary type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
+approach details...&lt;/sub&gt;&lt;/p&gt;
+&lt;p&gt;Organizations and companies generally have an IT workload (dare I say,
+backlog?) which needs to be properly assessed, prioritized and taken up.
+Sometimes, the IT team(s) get an amount of budget and HR …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
+approach details...&lt;/sub&gt;&lt;/p&gt;
+&lt;p&gt;Organizations and companies generally have an IT workload (dare I say,
+backlog?) which needs to be properly assessed, prioritized and taken up.
+Sometimes, the IT team(s) get an amount of budget and HR resources to "do their
+thing", while others need to continuously ask for approval to launch a new
+project or instantiate a change.&lt;/p&gt;
+&lt;p&gt;Sizeable organizations even require engineering and development effort on IT
+projects which are not readily available: specialized teams exist, but they are
+governance-wise assigned to projects. And as everyone thinks their project is
+the top-most priority one, many will be disappointed when they hear there are
+no resources available for their pet project.&lt;/p&gt;
+&lt;p&gt;So... how should organizations prioritize such projects?&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Structure your workload, the SAFe approach&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A first exercise you want to implement is to structure the workload, ideas or
+projects. Some changes are small, others are large. Some are disruptive, others
+are evolutionary. Trying to prioritize all different types of ideas and changes
+in the same way is not feasible.&lt;/p&gt;
+&lt;p&gt;Structuring workload is a common approach. Changes are grouped in projects,
+projects grouped in programs, programs grouped in strategic tracks. Lately,
+with the rise in Agile projects, a similar layering approach is suggested in
+the form of SAFe.&lt;/p&gt;
+&lt;p&gt;In the &lt;a href="http://www.scaledagileframework.com/"&gt;Scaled Agile Framework&lt;/a&gt; a structure is suggested that uses, as a
+top-level approach, value streams. These are strategically aligned steps that
+an organization wants to use to build solutions that provide a continuous flow
+of value to a customer (which can be internal or external). For instance, for a
+financial service organization, a value stream could focus on 'Risk Management
+and Analytics'.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="SAFe full framework" src="http://blog.siphos.be/images/201707/safe-full.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;sub&gt;SAFe full framework overview, picture courtesy of www.scaledagileframework.com&lt;/sub&gt;&lt;/p&gt;
+&lt;p&gt;The value streams are supported through solution trains, which implement
+particular solutions. This could be a final product for a customer (fitting in
+a particular value stream) or a set of systems which enable capabilities for a
+value stream. It is at this level, imo, that the benefits exercises from IT
+portfolio management and benefits realization management research plays its
+role (more about that later). For instance, a solution train could focus on an
+'Advanced Analytics Platform'.&lt;/p&gt;
+&lt;p&gt;Within a solution train, agile release trains provide continuous delivery for
+the various components or services needed within one or more solutions. Here,
+the necessary solutions are continuously delivered in support of the solution
+trains. At this level, focus is given on the culture within the organization
+(think DevOps), and the relatively short-lived delivery delivery periods. This
+is the level where I see 'projects' come into play.&lt;/p&gt;
+&lt;p&gt;Finally, you have the individual teams working on deliverables supporting a
+particular project.&lt;/p&gt;
+&lt;p&gt;SAFe is just one of the many methods for organization and development/delivery
+management. It is a good blueprint to look into, although I fear that larger
+organizations will find it challenging to dedicate resources in a manageable
+way. For instance, how to deal with specific expertise across solutions which
+you can't dedicate to a single solution at a time? What if your organization
+only has two telco experts to support dozens of projects? Keep that in mind,
+I'll come back to that later...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Get non-content information about the value streams and solutions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Next to the structuring of the workload, you need to obtain information about
+the solutions that you want to implement (keeping with the SAFe terminology).
+And bear in mind that seemingly dull things such as ensuring your firewalls are
+up to date are also deliverables within a larger ecosystem. Now, with
+information about the solutions, I don't mean the content-wise information, but
+instead focus on other areas.&lt;/p&gt;
+&lt;p&gt;Way back, in 1952, Harry Markowitz introduced &lt;a href="https://en.wikipedia.org/wiki/Modern_portfolio_theory"&gt;Modern portfolio theory&lt;/a&gt; as a
+mathematical framework for assembling a portfolio of assets such that the
+expected return is maximized for a given level of risk (quoted from Wikipedia).
+This was later used in an IT portfolio approach by McFarlan in his &lt;a href="https://hbr.org/1981/09/portfolio-approach-to-information-systems"&gt;Portfolio
+Approach to Information Systems&lt;/a&gt; article, published in September 1981.&lt;/p&gt;
+&lt;p&gt;There it was already introduced that risk and return shouldn't be looked at
+from an individual project viewpoint, but how it contributes to the overall
+risk and return. A balance, if you wish. His article attempts to categorize
+projects based on risk profiles on various areas. Personally, I see the
+suggested categorization more as a way of supporting workload assessments (how
+many mandays of work will this be), but I digress.&lt;/p&gt;
+&lt;p&gt;Since then, other publications came up which tried to document frameworks and
+methodologies that facilitate project portfolio prioritization and management.
+The focus often boils down to value or benefits realization. In &lt;a href="https://books.google.be/books/about/The_Information_Paradox.html?id=mk60QgAACAAJ&amp;amp;redir_esc=y&amp;amp;hl=en"&gt;The
+Information Paradox&lt;/a&gt; John Thorp comes up with a benefits realization
+approach, which enables organizations to better define and track benefits
+realization - although it again boils down on larger transformation exercises
+rather than the lower-level backlogs. The realm of &lt;a href="https://en.wikipedia.org/wiki/IT_portfolio_management"&gt;IT portfolio management&lt;/a&gt;
+and &lt;a href="https://en.wikipedia.org/wiki/Benefits_realisation_management"&gt;Benefits realization management&lt;/a&gt; gives interesting pointers as to
+the lecture part of prioritizing projects.&lt;/p&gt;
+&lt;p&gt;Still, although one can hardly state the resources are incorrect, a common
+question is how to make this tangible. Personally, I tend to view the above on
+the value stream level and solution train level.  Here, we have a strong
+alignment with benefits and value for customers, and we can leverage the ideas
+of past research.&lt;/p&gt;
+&lt;p&gt;The information needed at this level often boils down to strategic insights and
+business benefits, coarse-grained resource assessments, with an important focus
+on quality of the resources. For instance, a solution delivery might take up
+500 days of work (rough estimation) but will also require significant back-end
+development resources.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Handling value streams and solutions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As we implement this on the highest level in the structure, it should be
+conceivable that the overview of the value streams (a dozen or so) and
+solutions (a handful per value stream) is manageable, and something that at an
+executive level is feasible to work with. These are the larger efforts for
+structuring and making strategic alignment. Formal methods for prioritization
+are generally not implemented or described.&lt;/p&gt;
+&lt;p&gt;In my company, there are exercises that are aligning with SAFe, but it isn't
+company-wide. Still, there is a structure in place that (within IT) one could
+map to value streams (with some twisting ;-) and, within value streams, there
+are structures in place that one could map to the solution train exercises.&lt;/p&gt;
+&lt;p&gt;We could assume that the enterprise knows about its resources (people, budget
+...) and makes a high-level suggestion on how to distribute the resources in
+the mid-term (such as the next 6 months to a year). This distribution is
+challenged and worked out with the value stream owners. See also "lean
+budgeting" in the SAFe approach for one way of dealing with this.&lt;/p&gt;
+&lt;p&gt;There is no prioritization of value streams. The enterprise has already made
+its decision on what it finds to be the important values and benefits and
+decided those in value streams.&lt;/p&gt;
+&lt;p&gt;Within a value stream, the owner works together with the customers (internal or
+external) to position and bring out solutions. My experience here is that
+prioritization is generally based on timings and expectations from the
+customer. In case of resource contention, the most challenging decision to make
+here is to put a solution down (meaning, not to pursue the delivery of a
+solution), and such decisions are hardly taken.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Prioritizing the projects and changes&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the lower echelons of the project portfolio structure, we have the projects
+and changes. Let's say that the levels here are projects (agile release trains)
+and changes (team-level). Here, I tend to look at prioritization on project
+level, and this is the level that has a more formal approach for
+prioritization.&lt;/p&gt;
+&lt;p&gt;Why? Because unlike the higher levels, where the prioritization is generally
+quality-oriented on a manageable amount of streams and solutions, we have a
+large quantity of projects and ideas. Hence, prioritization is more
+quantity-oriented in which formal methods are more efficient to handle.&lt;/p&gt;
+&lt;p&gt;The method that is used in my company uses scoring criteria on a per-project
+level. This is not innovative per se, as past research has also revealed that
+project categorization and mapping is a powerful approach for handling project
+portfolio's. Just look for "categorizing priority projects it portfolio" in
+Google and you'll find ample resources. Kendal's &lt;a href="https://www.amazon.com/Advanced-Project-Portfolio-Management-PMO/dp/1932159029"&gt;Advanced Project Portfolio
+Management and the PMO&lt;/a&gt; (book) has several example project scoring
+criteria's. But allow me to explain our approach.&lt;/p&gt;
+&lt;p&gt;It basically is like so:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Each project selects three value drivers (list decided up front)&lt;/li&gt;
+&lt;li&gt;For the value drivers, the projects check if they contribute to it slightly (low), moderately (medium) or fully (high)&lt;/li&gt;
+&lt;li&gt;The value drivers have weights, as do the values. Sum the resulting products to get a priority score&lt;/li&gt;
+&lt;li&gt;Have the priority score validated by a scoring team&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Let's get to the details of it.&lt;/p&gt;
+&lt;p&gt;For the IT projects within the infrastructure area (which is what I'm active
+in), we have around 5 scoring criteria (value drivers) that are value-stream
+agnostic, and then 3 to 5 scoring criteria that are value-stream specific. Each
+scoring criteria has three potential values: low (2), medium (4) and high (9).
+The numbers are the weights that are given to the value.&lt;/p&gt;
+&lt;p&gt;A scoring criteria also has a weight. For instance, we have a scoring criteria
+on efficiency (read: business case) which has a weight of 15, so a score of
+medium within that criteria gives a total value of 60 (4 times 15). The
+potential values here are based on the "return on investment" value, with low
+being a return less than 2 years, medium within a year, and high within a few
+months (don't hold me on the actual values, but you get the idea).&lt;/p&gt;
+&lt;p&gt;The sum of all values gives a priority score. Now, hold your horses, because
+we're not done yet. There is a scoring rule that says a project can only be
+scored by at most 3 scoring criteria. Hence, project owners need to see what
+scoring areas their project is mostly visible in, and use those scoring
+criteria. This rule supports the notion that people don't bring around ideas
+that will fix world hunger and make a cure for cancer, but specific, well
+scoped ideas (the former are generally huge projects, while the latter requires
+much less resources).&lt;/p&gt;
+&lt;p&gt;OK, so you have a score - is that your priority? No. As a project always falls
+within a particular value stream, we have a "scoring team" for each value
+stream which does a number of things. First, it checks if your project really
+belongs in the right value stream (but that's generally implied) and has a
+deliverable that fits the solution or target within that stream. Projects that
+don't give any value or aren't asked by customers are eliminated.&lt;/p&gt;
+&lt;p&gt;Next, the team validates if the scoring that was used is correct: did you
+select the right values (low, medium or high) matching the methodology for said
+criteria? If not, then the score is adjusted.&lt;/p&gt;
+&lt;p&gt;Finally, the team validates if the resulting score is perceived to be OK or
+not. Sometimes, ideas just don't map correctly on scoring criteria, and even
+though a project has a huge strategic importance or deliverable it might score
+low. In those cases, the scoring team can adjust the score manually. However,
+this is more of a fail-safe (due to the methodology) rather than the norm.
+About one in 20 projects gets its score adjusted. If too many adjustments come
+up, the scoring team will suggest a change in methodology to rectify the
+situation.&lt;/p&gt;
+&lt;p&gt;With the score obtained and validated by the scoring team, the project is given
+a "go" to move to the project governance. It is the portfolio manager that then
+uses the scores to see when a project can start.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Providing levers to management&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Now, these scoring criteria are not established from a random number generator.
+An initial suggestion was made on the scoring criteria, and their associated
+weights, to the higher levels within the organization (read: the people in
+charge of the prioritization and challenging of value streams and solutions).&lt;/p&gt;
+&lt;p&gt;The same people are those that approve the weights on the scoring criteria. If
+management (as this is often the level at which this is decided) feels that
+business case is, overall, more important than risk reduction, then they will
+be able to put a higher value in the business case scoring than in the risk
+reduction.&lt;/p&gt;
+&lt;p&gt;The only constraint is that the total value of all scoring criteria must be
+fixed. So an increase on one scoring criteria implies a reduction on at least
+one other scoring criteria. Also, changing the weights (or even the scoring
+criteria themselves) cannot be done frequently. There is some inertia in
+project prioritization: not the implementation (because that is a matter of
+following through) but the support it will get in the organization itself.&lt;/p&gt;
+&lt;p&gt;Management can then use external benchmarks and other sources to gauge the
+level that an organization is at, and then - if needed - adjust the scoring
+weights to fit their needs.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Resource allocation in teams&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Portfolio managers use the scores assigned to the projects to drive their
+decisions as to when (and which) projects to launch. The trivial approach is to
+always pick the projects with the highest scores. But that's not all.&lt;/p&gt;
+&lt;p&gt;Projects can have dependencies on other projects. If these dependencies are
+"hard" and non-negotiable, then the upstream project (the one being dependent
+on) inherits the priority of the downstream project (the one depending on the
+first) if the downstream project has a higher priority. Soft dependencies
+however need to validate if they can (or have to) wait, or can implement
+workarounds if needed.&lt;/p&gt;
+&lt;p&gt;Projects also have specific resource requirements. A project might have a high
+priority, but if it requires expertise (say DBA knowledge) which is unavailable
+(because those resources are already assigned to other ongoing projects) then
+the project will need to wait (once resources are fully allocated and the
+projects are started, then they need to finish - another reason why projects
+have a narrow scope and an established timeframe).&lt;/p&gt;
+&lt;p&gt;For engineers, operators, developers and other roles, this approach allows them
+to see which workload is more important versus others. When their scope is
+always within a single value stream, then the mentioned method is sufficient.
+But what if a resource has two projects, each of a different value stream? As
+each value stream has its own scoring criteria it can use (and weight), one
+value stream could systematically have higher scores than others...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Mixing and matching multiple value streams&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To allow projects to be somewhat comparable in priority values, an additional
+rule has been made in the scoring methodology: value streams must have a
+comparable amount of scoring criteria (value drivers), and the total value of
+all criteria must be fixed (as was already mentioned before). So if there are
+four scoring criteria and the total value is fixed at 20, then one value stream
+can have its criteria at (5,3,8,4) while another has it at (5,5,5,5).&lt;/p&gt;
+&lt;p&gt;This is still not fully adequate, as one value stream could use a single
+criteria with the maximum amount (20,0,0,0). However, we elected not to put in
+an additional constraint, and have management work things out if the situation
+ever comes out. Luckily, even managers are just human and they tend to follow
+the notion of well-balanced value drivers.&lt;/p&gt;
+&lt;p&gt;The result is that two projects will have priority values that are currently
+sufficiently comparable to allow cross-value-stream experts to be exchangeable
+without monopolizing these important resources to a single value stream
+portfolio.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Current state&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The scoring methodology has been around for a few years already. Initially, it
+had fixed scoring criteria used by three value streams (out of seven, the other
+ones did not use the same methodology), but this year we switched to support
+both value stream agnostic criteria (like in the past) as well as value stream
+specific ones.&lt;/p&gt;
+&lt;p&gt;The methodology is furthest progressed in one value stream (with focus of around
+1000 projects) and is being taken up by two others (they are still looking at
+what their stream-specific criteria are before switching).&lt;/p&gt;</content><category term="Architecture"></category><category term="pmo"></category><category term="strategy"></category><category term="SAFe"></category><category term="prioritization"></category><category term="project"></category></entry><entry><title>Structuring infrastructural deployments</title><link href="http://blog.siphos.be/2017/06/structuring-infrastructural-deployments/" rel="alternate"></link><published>2017-06-07T20:40:00+02:00</published><updated>2017-06-07T20:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-06-07:/2017/06/structuring-infrastructural-deployments/</id><summary type="html">&lt;p&gt;Many organizations struggle with the all-time increase in IP address
+allocation and the accompanying need for segmentation. In the past, governing
+the segments within the organization means keeping close control over the
+service deployments, firewall rules, etc.&lt;/p&gt;
+&lt;p&gt;Lately, the idea of micro-segmentation, supported through software-defined
+networking solutions, seems to defy …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Many organizations struggle with the all-time increase in IP address
+allocation and the accompanying need for segmentation. In the past, governing
+the segments within the organization means keeping close control over the
+service deployments, firewall rules, etc.&lt;/p&gt;
+&lt;p&gt;Lately, the idea of micro-segmentation, supported through software-defined
+networking solutions, seems to defy the need for a segmentation governance.
+However, I think that that is a very short-sighted sales proposition. Even
+with micro-segmentation, or even pure point-to-point / peer2peer communication
+flow control, you'll still be needing a high level overview of the services
+within your scope.&lt;/p&gt;
+&lt;p&gt;In this blog post, I'll give some insights in how we are approaching this in
+the company I work for. In short, it starts with requirements gathering,
+creating labels to assign to deployments, creating groups based on one or two
+labels in a layered approach, and finally fixating the resulting schema and
+start mapping guidance documents (policies) toward the presented architecture.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;As always, start with the requirements&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;From an infrastructure architect point of view, creating structure is one way
+of dealing with the onslaught in complexity that is prevalent within the wider
+organizational architecture. By creating a framework in which infrastructural
+services can be positioned, architects and other stakeholders (such as
+information security officers, process managers, service delivery owners, project
+and team leaders ...) can support the wide organization in its endeavor of
+becoming or remaining competitive.&lt;/p&gt;
+&lt;p&gt;Structure can be provided through various viewpoints. As such, while creating
+such framework, the initial intention is not to start drawing borders or
+creating a complex graph. Instead, look at attributes that one would assign
+to an infrastructural service, and treat those as labels. Create a nice
+portfolio of attributes which will help guide the development of such framework.&lt;/p&gt;
+&lt;p&gt;The following list gives some ideas in labels or attributes that one can use.
+But be creative, and use experienced people in devising the "true" list of
+attributes that fits the needs of your organization. Be sure to describe them
+properly and unambiguously - the list here is just an example, as are the
+descriptions.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;tenant&lt;/strong&gt; identifies the organizational aggregation of business units which are
+  sufficiently similar in areas such as policies (same policies in use),
+  governance (decision bodies or approval structure), charging, etc. It
+  could be a hierarchical aspect (such as organization) as well.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;location&lt;/strong&gt; provides insight in the physical (if applicable) location of the
+  service. This could be an actual building name, but can also be structured
+  depending on the size of the environment. If it is structured, make sure to
+  devise a structure up front. Consider things such as regions, countries,
+  cities, data centers, etc. A special case location value could be the
+  jurisdiction, if that is something that concerns the organization.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;service type&lt;/strong&gt; tells you what kind of service an asset is. It can be a
+  workstation, a server/host, server/guest, network device, virtual or
+  physical appliance, sensor, tablet, etc.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;trust level&lt;/strong&gt; provides information on how controlled and trusted the service
+  is. Consider the differences between unmanaged (no patching, no users doing
+  any maintenance), open (one or more admins, but no active controlled
+  maintenance), controlled (basic maintenance and monitoring, but with still
+  administrative access by others), managed (actively maintained, no privileged
+  access without strict control), hardened (actively maintained, additional
+  security measures taken) and kiosk (actively maintained, additional security
+  measures taken and limited, well-known interfacing).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;compliance set&lt;/strong&gt; identifies specific compliance-related attributes, such as the
+  PCI-DSS compliancy level that a system has to adhere to.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;consumer group&lt;/strong&gt; informs about the main consumer group, active on the service.
+  This could be an identification of the relationship that consumer group has
+  with the organization (anonymous, customer, provider, partner, employee, ...)
+  or the actual name of the consumer group.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;architectural purpose&lt;/strong&gt; gives insight in the purpose of the service in
+  infrastructural terms. Is it a client system, a gateway, a mid-tier system,
+  a processing system, a data management system, a batch server, a reporting
+  system, etc.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;domain&lt;/strong&gt; could be interpreted as to the company purpose of the system. Is it for
+  commercial purposes (such as customer-facing software), corporate functions
+  (company management), development, infrastructure/operations ...&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;production status&lt;/strong&gt; provides information about the production state of a
+  service. Is it a production service, or a pre-production (final testing before
+  going to production), staging (aggregation of multiple changes) or development
+  environment?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Given the final set of labels, the next step is to aggregate results to create
+a high-level view of the environment.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Creating a layered structure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Chances are high that you'll end up with several attributes, and many of these
+will have multiple possible values. What we don't want is to end in an
+N-dimensional infrastructure architecture overview. Sure, it sounds sexy to do
+so, but you want to show the infrastructure architecture to several stakeholders
+in your organization. And projecting an N-dimensional structure on a
+2-dimensional slide is not only challenging - you'll possibly create a projection
+which leaves out important details or make it hard to interpret.&lt;/p&gt;
+&lt;p&gt;Instead, we looked at a &lt;em&gt;layered approach&lt;/em&gt;, with each layer handling one or two
+requirements. The top layer represents the requirement which the organization
+seems to see as the most defining attribute. It is the attribute where, if its
+value changes, most of its architecture changes (and thus the impact of a service
+relocation is the largest).&lt;/p&gt;
+&lt;p&gt;Suppose for instance that the domain attribute is seen as the most defining one:
+the organization has strict rules about placing corporate services and commercial
+services in separate environments, or the security officers want to see the
+commercial services, which are well exposed to many end users, be in a separate
+environment from corporate services. Or perhaps the company offers commercial
+services for multiple tenants, and as such wants several separate "commercial
+services" environments while having a single corporate service domain.&lt;/p&gt;
+&lt;p&gt;In this case, part of the infrastructure architecture overview on the top level
+could look like so (hypothetical example):&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Top level view" src="http://blog.siphos.be/images/201706/07-1-toplevelview.png"&gt;&lt;/p&gt;
+&lt;p&gt;This also shows that, next to the corporate and commercial interests of the
+organization, a strong development support focus is prevalent as well. This
+of course depends on the type of organization or company and how significant
+in-house development is, but in this example it is seen as a major decisive
+factor for service positioning.&lt;/p&gt;
+&lt;p&gt;These top-level blocks (depicted as locations, for those of you using Archimate)
+are what we call "&lt;strong&gt;zones&lt;/strong&gt;". These are not networks, but clearly bounded areas in
+which multiple services are positioned, and for which particular handling rules
+exist. These rules are generally written down in policies and standards - more
+about that later.&lt;/p&gt;
+&lt;p&gt;Inside each of these zones, a substructure is made available as well, based on
+another attribute. For instance, let's assume that this is the architectural
+purpose. This could be because the company has a requirement on segregating
+workstations and other client-oriented zones from the application hosting related
+ones. Security-wise, the company might have a principle where mid-tier services
+(API and presentation layer exposures) are separate from processing services,
+and where data is located in a separate zone to ensure specific data access or
+more optimal infrastructure services.&lt;/p&gt;
+&lt;p&gt;This zoning result could then be depicted as follows:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Detailed top-level view" src="http://blog.siphos.be/images/201706/07-1-detailedtoplevel.png"&gt;&lt;/p&gt;
+&lt;p&gt;From this viewpoint, we can also deduce that this company provides separate
+workstation services: corporate workstation services (most likely managed
+workstations with focus on application disclosure, end user computing, etc.)
+and development workstations (most likely controlled workstations but with more
+open privileged access for the developer).&lt;/p&gt;
+&lt;p&gt;By making this separation explicit, the organization makes it clear that the
+development workstations will have a different position, and even a different
+access profile toward other services within the company.&lt;/p&gt;
+&lt;p&gt;We're not done yet. For instance, on the mid-tier level, we could look at the
+consumer group of the services:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Mid-tier explained" src="http://blog.siphos.be/images/201706/07-1-midtier.png"&gt;&lt;/p&gt;
+&lt;p&gt;This separation can be established due to security reasons (isolating services
+that are exposed to anonymous users from customer services or even partner
+services), but one can also envision this to be from a management point of
+view (availability requirements can differ, capacity management is more
+uncertain for anonymous-facing services than authenticated, etc.)&lt;/p&gt;
+&lt;p&gt;Going one layer down, we use a production status attribute as the defining
+requirement:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Anonymous user detail" src="http://blog.siphos.be/images/201706/07-1-anonymousdetail.png"&gt;&lt;/p&gt;
+&lt;p&gt;At this point, our company decided that the defined layers are sufficiently
+established and make for a good overview. We used different defining properties
+than the ones displayed above (again, find a good balance that fits the company
+or organization that you're focusing on), but found that the ones we used were
+mostly involved in existing policies and principles, while the other ones are
+not that decisive for infrastructure architectural purposes. &lt;/p&gt;
+&lt;p&gt;For instance, the tenant might not be selected as a deciding attribute, because
+there will be larger tenants and smaller tenants (which could make the resulting
+zone set very convoluted) or because some commercial services are offered toward
+multiple tenants and the organizations' strategy would be to move toward
+multi-tenant services rather than multiple deployments.&lt;/p&gt;
+&lt;p&gt;Now, in the zoning structure there is still another layer, which from an
+infrastructure architecture point is less about rules and guidelines and more
+about manageability from an organizational point of view. For instance, in the
+above example, a SAP deployment for HR purposes (which is obviously a corporate
+service) might have its Enterprise Portal service in the &lt;code&gt;Corporate Services&lt;/code&gt; &amp;gt; 
+&lt;code&gt;Mid-tier&lt;/code&gt; &amp;gt; &lt;code&gt;Group Employees&lt;/code&gt; &amp;gt; &lt;code&gt;Production&lt;/code&gt; zone. However, another service such as
+an on-premise SharePoint deployment for group collaboration might be in &lt;code&gt;Corporate
+Services&lt;/code&gt; &amp;gt; &lt;code&gt;Mid-tier&lt;/code&gt; &amp;gt; &lt;code&gt;Group Employees&lt;/code&gt; &amp;gt; &lt;code&gt;Production&lt;/code&gt; zone as well. Yet both
+services are supported through different teams.&lt;/p&gt;
+&lt;p&gt;This "final" layer thus enables grouping of services based on the supporting
+team (again, this is an example), which is organizationally aligned with the
+business units of the company, and potentially further isolation of services
+based on other attributes which are not defining for all services. For instance,
+the company might have a policy that services with a certain business impact
+assessment score must be in isolated segments with no other deployments within
+the same segment.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What about management services&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Now, the above picture is missing some of the (in my opinion) most important
+services: infrastructure support and management services. These services do not
+shine in functional offerings (which many non-IT people generally look at) but
+are needed for non-functional requirements: manageability, cost control,
+security (if security can be defined as a non-functional - let's not discuss
+that right now).&lt;/p&gt;
+&lt;p&gt;Let's first consider &lt;em&gt;interfaces&lt;/em&gt; - gateways and other services which are
+positioned between zones or the "outside world". In the past, we would speak of
+a demilitarized zone (DMZ). In more recent publications, one can find this as
+an interface zone, or a set of Zone Interface Points (ZIPs) for accessing and
+interacting with the services within a zone.&lt;/p&gt;
+&lt;p&gt;In many cases, several of these interface points and gateways are used in the
+organization to support a number of non-functional requirements. They can be
+used for intelligent load balancing, providing virtual patching capabilities,
+validating content against malware before passing it on to the actual services,
+etc.&lt;/p&gt;
+&lt;p&gt;Depending on the top level zone, different gateways might be needed (i.e.
+different requirements). Interfaces for commercial services will have a strong
+focus on security and manageability. Those for the corporate services might be
+more integration-oriented, and have different data leakage requirements than
+those for commercial services.&lt;/p&gt;
+&lt;p&gt;Also, inside such an interface zone, one can imagine a substructure to take
+place as well: egress interfaces (for communication that is exiting the zone),
+ingress interfaces (for communication that is entering the zone) and internal
+interfaces (used for routing between the subzones within the zone).&lt;/p&gt;
+&lt;p&gt;Yet, there will also be requirements which are company-wide. Hence, one could
+envision a structure where there is a company-wide interface zone (with
+mandatory requirements regardless of the zone that they support) as well as a
+zone-specific interface zone (with the mandatory requirements specific to that
+zone).&lt;/p&gt;
+&lt;p&gt;Before I show a picture of this, let's consider &lt;em&gt;management services&lt;/em&gt;. Unlike
+interfaces, these services are more oriented toward the operational management
+of the infrastructure. Software deployment, configuration management, identity
+&amp;amp; access management services, etc. Are services one can put under management
+services.&lt;/p&gt;
+&lt;p&gt;And like with interfaces, one can envision the need for both company-wide
+management services, as well as zone-specific management services.&lt;/p&gt;
+&lt;p&gt;This information brings us to a final picture, one that assists the
+organization in providing a more manageable view on its deployment landscape.
+It does not show the 3rd layer (i.e. production versus non-production
+deployments) and only displays the second layer through specialization
+information, which I've quickly made a few examples for (you don't want to make
+such decisions in a few hours, like I did for this post).&lt;/p&gt;
+&lt;p&gt;&lt;img alt="General overview" src="http://blog.siphos.be/images/201706/07-1-firstgeneral.png"&gt;&lt;/p&gt;
+&lt;p&gt;If the organization took an alternative approach for structuring (different
+requirements and grouping) the resulting diagram could look quite different:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Alternative general overview" src="http://blog.siphos.be/images/201706/07-1-secondgeneral.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Flows, flows and more flows&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;With the high-level picture ready, it is not a bad idea to look at how flows
+are handled in such an architecture. As the interface layer is available on
+both company-wide level as well as the next, flows will cross multiple zones.&lt;/p&gt;
+&lt;p&gt;Consider the case of a corporate workstation connecting to a reporting server
+(like a Cognos or PowerBI or whatever fancy tool is used), and this reporting
+server is pulling data from a database system. Now, this database system is
+positioned in the &lt;code&gt;Commercial&lt;/code&gt; zone, while the reporting server is in the
+&lt;code&gt;Corporate&lt;/code&gt; zone. The flows could then look like so:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Flow example" src="http://blog.siphos.be/images/201706/07-1-flow.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;sub&gt;Note for the Archimate people: I'm sorry that I'm abusing the flow relation
+here. I didn't want to create abstract services in the locations and then use
+the "serves" or "used by" relation and then explaining readers that the arrows
+are then inverse from what they imagine.&lt;/sub&gt;&lt;/p&gt;
+&lt;p&gt;In this picture, the corporate workstation does not connect to the reporting
+server directly. It goes through the internal interface layer for the corporate
+zone. This internal interface layer can offer services such as reverse proxies
+or intelligent load balancers. The idea here is that, if the organization
+wants, it can introduce additional controls or supporting services in this
+internal interface layer without impacting the system deployments themselves
+much.&lt;/p&gt;
+&lt;p&gt;But the true flow challenge is in the next one, where a processing system
+connects to a data layer. Here, the processing server will first connect to the
+egress interface for corporate, then through the company-wide internal
+interface, toward the ingress interface of the commercial and then to the data
+layer.&lt;/p&gt;
+&lt;p&gt;Now, why three different interfaces, and what would be inside it?&lt;/p&gt;
+&lt;p&gt;On the corporate level, the egress interface could be focusing on privacy
+controls or data leakage controls. On the company-wide internal interface more
+functional routing capabilities could be provided, while on the commercial
+level the ingress could be a database activity monitoring (DAM) system such as
+a database firewall to provide enhanced auditing and access controls.&lt;/p&gt;
+&lt;p&gt;Does that mean that all flows need to have at least three gateways? No, this is
+a functional picture. If the organization agrees, then one or more of these
+interface levels can have a simple pass-through setup. It is well possible that
+database connections only connect directly to a DAM service and that such flows
+are allowed to immediately go through other interfaces.&lt;/p&gt;
+&lt;p&gt;The importance thus is not to make flows more difficult to provide, but to
+provide several areas where the organization can introduce controls.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Making policies and standards more visible&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;One of the effects of having a better structure of the company-wide deployments
+(i.e. a good zoning solution) is that one can start making policies more clear,
+and potentially even simple to implement with supporting tools (such as
+software defined network solutions).&lt;/p&gt;
+&lt;p&gt;For instance, a company might want to protect its production data and establish
+that it cannot be used for non-production use, but that there are no
+restrictions for the other data environments. Another rule could be that
+web-based access toward the mid-tier is only allowed through an interface.&lt;/p&gt;
+&lt;p&gt;These are simple statements which, if a company has a good IP plan, are easy to
+implement - one doesn't need zoning, although it helps. But it goes further
+than access controls.&lt;/p&gt;
+&lt;p&gt;For instance, the company might require corporate workstations to be under
+heavy data leakage prevention and protection measures, while developer
+workstations are more open (but don't have any production data access). This
+not only reveals an access control, but also implies particular minimal
+requirements (for the &lt;code&gt;Corporate&lt;/code&gt; &amp;gt; &lt;code&gt;Workstation&lt;/code&gt; zone) and services (for the
+&lt;code&gt;Corporate&lt;/code&gt; interfaces).&lt;/p&gt;
+&lt;p&gt;This zoning structure does not necessarily make any statements about the
+location (assuming it isn't picked as one of the requirements in the
+beginning). One can easily extend this to include cloud-based services or
+services offered by third parties.&lt;/p&gt;
+&lt;p&gt;Finally, it also supports making policies and standards more realistic. I often
+see policies that make bold statements such as "all software deployments must
+be done through the company software distribution tool", but the policies don't
+consider development environments (production status) or unmanaged, open or
+controlled deployments (trust level). When challenged, the policy owner might
+shrug away the comment with "it's obvious that this policy does not apply to
+our sandbox environment" or so.&lt;/p&gt;
+&lt;p&gt;With a proper zoning structure, policies can establish the rules for the right
+set of zones, and actually pin-point which zones are affected by a statement.
+This is also important if a company has many, many policies. With a good zoning
+structure, the policies can be assigned with meta-data so that affected roles
+(such as project leaders, architects, solution engineers, etc.) can easily get
+an overview of the policies that influence a given zone.&lt;/p&gt;
+&lt;p&gt;For instance, if I want to position a new management service, I am less
+concerned about workstation-specific policies. And if the management service is
+specific for the development environment (such as a new version control system)
+many corporate or commercially oriented policies don't apply either.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The above approach for structuring an organization is documented here in a
+high-level manner. It takes many assumptions or hypothetical decisions which
+are to be tailored toward the company itself. In my company, a different zoning
+structure is selected, taking into account that it is a financial service
+provider with entities in multiple countries, handling several thousand of
+systems and with an ongoing effort to include cloud providers within its
+infrastructure architecture.&lt;/p&gt;
+&lt;p&gt;Yet the approach itself is followed in an equal fashion. We looked at
+requirements, created a layered structure, and finished the zoning schema. Once
+the schema was established, the requirements for all the zones were written out
+further, and a mapping of existing deployments (as-is) toward the new zoning
+picture is on-going. For those thinking that it is just slideware right now -
+it isn't. Some of the structures that come out of the zoning exercise are
+already prevalent in the organization, and new environments (due to mergers and
+acquisitions) are directed to this new situation.&lt;/p&gt;
+&lt;p&gt;Still, we know we have a large exercise ahead before it is finished, but I
+believe that it will benefit us greatly, not only from a security point of
+view, but also clarity and manageability of the environment.&lt;/p&gt;</content><category term="Architecture"></category><category term="segmentation"></category><category term="zoning"></category><category term="deployments"></category><category term="landscape"></category></entry><entry><title>Switching focus at work</title><link href="http://blog.siphos.be/2015/09/switching-focus-at-work/" rel="alternate"></link><published>2015-09-20T13:29:00+02:00</published><updated>2015-09-20T13:29:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-20:/2015/09/switching-focus-at-work/</id><summary type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
+a couple of technological domains, namely databases and scheduling/workload 
+automation. It brought me in contact with many vendors, many technologies
+and most importantly, many teams within the organization. The focus domain
+was challenging, as I had to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
+a couple of technological domains, namely databases and scheduling/workload 
+automation. It brought me in contact with many vendors, many technologies
+and most importantly, many teams within the organization. The focus domain
+was challenging, as I had to deal with the strategy on how the organization,
+which is a financial institution, will deal with databases and scheduling in
+the long term.&lt;/p&gt;
+
+
+&lt;p&gt;This means looking at the investments related to those domains, implementation
+details, standards of use, features that we will or will not use, positioning
+of products and so forth. To do this from an architecture point of view means
+that I not only had to focus on the details of the technology and understand 
+all their use, but also become a sort-of subject matter expert on those topics.
+Luckily, I had (well, still have) great teams of DBAs (for the databases) and
+batch teams (for the scheduling/workload automation) to keep things in the right
+direction. &lt;/p&gt;
+&lt;p&gt;I helped them with a (hopefully sufficiently) clear roadmap, investment track,
+procurement, contract/terms and conditions for use, architectural decisions and
+positioning and what not. And they helped me with understanding the various
+components, learn about the best use of these, and of course implement the 
+improvements that we collaboratively put on the roadmap.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Times, they are changing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Last week, I flipped over a page at work. Although I remain an IT architect
+within the same architecture team, my focus shifts entirely. Instead of a fixed
+domain, my focus is now more volatile. I leave behind the stability of 
+organizationally anchored technology domains and go forward in a more tense
+environment.&lt;/p&gt;
+&lt;p&gt;Instead of looking at just two technology domains, I need to look at all of them,
+and find the right balance between high flexibility demands (which might not want
+to use current "standard" offerings) which come up from a very agile context, and
+the almost non-negotionable requirements that are typical for financial institutions.&lt;/p&gt;
+&lt;p&gt;The focus is also not primarily technology oriented anymore. I'll be part of an 
+enterprise architecture team with direct business involvement and although my
+main focus will be on the technology side, it'll also involve information
+management, business processes and applications.&lt;/p&gt;
+&lt;p&gt;The end goal is to set up a future-proof architecture in an agile, fast-moving
+environment (contradictio in terminis ?) which has a main focus in data analytics
+and information gathering/management. Yes, "big data", but more applied than what
+some of the vendors try to sell us ;-)&lt;/p&gt;
+&lt;p&gt;I'm currently finishing off the high-level design and use of a Hadoop platform,
+and the next focus will be on a possible micro-service architecture using Docker.
+I've been working on this Hadoop design for a while now (but then it was together
+with my previous function at work) and given the evolving nature of Hadoop (and
+the various services that surround it) I'm confident that it will not be the last
+time I'm looking at it. &lt;/p&gt;
+&lt;p&gt;Now let me hope I can keep things manageable ;-)&lt;/p&gt;</content><category term="Architecture"></category><category term="work"></category><category term="hadoop"></category><category term="docker"></category></entry><entry><title>Making the case for multi-instance support</title><link href="http://blog.siphos.be/2015/08/making-the-case-for-multi-instance-support/" rel="alternate"></link><published>2015-08-22T12:45:00+02:00</published><updated>2015-08-22T12:45:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-22:/2015/08/making-the-case-for-multi-instance-support/</id><summary type="html">&lt;p&gt;With the high attention that technologies such as &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
+&lt;a href="https://coreos.com/blog/rocket/"&gt;Rocket&lt;/a&gt; and the like get (I recommend to look at 
+&lt;a href="https://github.com/p8952/bocker"&gt;Bocker&lt;/a&gt; by Peter Wilmott as well ;-), I
+still find it important that technologies are well capable of supporting a
+multi-instance environment.&lt;/p&gt;
+&lt;p&gt;Being able to run multiple instances makes for great consolidation …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the high attention that technologies such as &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
+&lt;a href="https://coreos.com/blog/rocket/"&gt;Rocket&lt;/a&gt; and the like get (I recommend to look at 
+&lt;a href="https://github.com/p8952/bocker"&gt;Bocker&lt;/a&gt; by Peter Wilmott as well ;-), I
+still find it important that technologies are well capable of supporting a
+multi-instance environment.&lt;/p&gt;
+&lt;p&gt;Being able to run multiple instances makes for great consolidation. The system
+can be optimized for the technology, access to the system limited to the admins
+of said technology while still providing isolation between instances. For some
+technologies, running on commodity hardware just doesn't cut it (not all 
+software is written for such hardware platforms) and consolidation allows for
+reducing (hardware/licensing) costs.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Examples of multi-instance technologies&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A first example that I'm pretty familiar with is multi-instance database
+deployments: Oracle DBs, SQL Servers, PostgreSQLs, etc. The consolidation
+of databases while still keeping multiple instances around (instead of
+consolidating into a single instance itself) is mainly for operational 
+reasons (changes should not influence other database/schema's) or
+technical reasons (different requirements in parameters, locales, etc.)&lt;/p&gt;
+&lt;p&gt;Other examples are web servers (for web hosting companies), which next to
+virtual host support (which is still part of a single instance) could
+benefit from multi-instance deployments for security reasons (vulnerabilities
+might be better contained then) as well as performance tuning. Same goes
+for web application servers (such as TomCat deployments).&lt;/p&gt;
+&lt;p&gt;But even other technologies like mail servers can benefit from multiple
+instance deployments. Postfix has a &lt;a href="http://www.postfix.org/MULTI_INSTANCE_README.html"&gt;nice guide&lt;/a&gt;
+on multi-instance deployments and also covers some of the use cases for it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Advantages of multi-instance setups&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The primary objective that most organizations have when dealing with multiple
+instances is the consolidation to reduce cost. Especially expensive, 
+propriatary software which is CPU licensed gains a lot from consolidation 
+(and don't think a CPU is a CPU, each company
+&lt;a href="http://www-01.ibm.com/software/passportadvantage/pvu_licensing_for_customers.html"&gt;has&lt;/a&gt;
+&lt;a href="http://www.oracle.com/us/corporate/contracts/processor-core-factor-table-070634.pdf"&gt;its&lt;/a&gt; (PDF)
+&lt;a href="go.microsoft.com/fwlink/?LinkID=229882"&gt;own&lt;/a&gt; (PDF) core weight table to
+get the most money out of their customers).&lt;/p&gt;
+&lt;p&gt;But beyond cost savings, using multi-instance deployments also provides for
+resource sharing. A high-end server can be used to host the multiple instances,
+with for instance SSD disks (or even flash cards), more memory, high-end CPUs,
+high-speed network connnectivity and more. This improves performance considerably,
+because most multi-instance technologies don't need all resources continuously.&lt;/p&gt;
+&lt;p&gt;Another advantage, if properly designed, is that multi-instance capable software
+can often leverage the multi-instance deployments for fast changes. A database
+might be easily patched (remove vulnerabilities) by creating a second codebase
+deployment, patching that codebase, and then migrating the database from one
+instance to another. Although it often still requires downtime, it can be made
+considerably less, and roll-back of such changes is very easy.&lt;/p&gt;
+&lt;p&gt;A last advantage that I see is security. Instances can be running as different
+runtime accounts, through different SELinux contexts, bound on different
+interfaces or chrooted into different locations. This is not an advantage
+compared to dedicated systems of course, but more an advantage compared
+to full consolidation (everything in a single instance).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Don't always focus on multi-instance setups though&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Multiple instances isn't a silver bullet. Some technologies are generally much
+better when there is a single instance on a single operating system. Personally,
+I find that such technologies should know better. If they are really designed to
+be suboptimal in case of multi-instance deployments, then there is a design error.&lt;/p&gt;
+&lt;p&gt;But when the advantages of multiple instances do not exist (no license cost,
+hardware cost is low, etc.) then organizations might focus on single-instance
+deployments, because&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;multi-instance deployments might require more users to access the system
+  (especially when it is multi-tenant)&lt;/li&gt;
+&lt;li&gt;operational activities might impact other instances (for instance updating 
+  kernel parameters for one instance requires a reboot which affects other
+  instances)&lt;/li&gt;
+&lt;li&gt;the software might not be properly "multi-instance aware" and as such
+  starts fighting for resources with its own sigbling instances&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Given that properly designed architectures are well capable of using
+virtualization (and in the future containerization) moving towards
+single-instance deployments becomes more and more interesting.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What should multi-instance software consider?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Software should, imo, always consider multi-instance deployments. Even
+when the administrator decides to stick with a single instance, all that
+that takes is that the software ends up with a "single instance" setup
+(it is &lt;em&gt;much&lt;/em&gt; easier to support multiple instances and deploy a single one,
+than to support single instances and deploy multiple ones).&lt;/p&gt;
+&lt;p&gt;The first thing software should take into account is that it might (and
+will) run with different runtime accounts - service accounts if you whish.
+That means that the software should be well aware that file locations are
+separate, and that these locations will have different access control settings
+on them (if not just a different owner).&lt;/p&gt;
+&lt;p&gt;So instead of using &lt;code&gt;/etc/foo&lt;/code&gt; as the mandatory location, consider supporting
+&lt;code&gt;/etc/foo/instance1&lt;/code&gt;, &lt;code&gt;/etc/foo/instance2&lt;/code&gt; if full directories are needed, or
+just have &lt;code&gt;/etc/foo1.conf&lt;/code&gt; and &lt;code&gt;/etc/foo2.conf&lt;/code&gt;. I prefer the directory approach,
+because it makes management much easier. It then also makes sense that the log
+location is &lt;code&gt;/var/log/foo/instance1&lt;/code&gt;, the data files are at &lt;code&gt;/var/lib/foo/instance1&lt;/code&gt;,
+etc.&lt;/p&gt;
+&lt;p&gt;The second is that, if a service is network-facing (which most of them
+are), it must be able to either use multihomed systems easily (bind to
+different interfaces) or use different ports. The latter is a challenge
+I often come across with software - the way to configure the software to
+deal with multiple deployments and multiple ports is often a lengthy
+trial-and-error setup.&lt;/p&gt;
+&lt;p&gt;What's so difficult with using a &lt;em&gt;base port&lt;/em&gt; setting, and document how the
+other ports are derived from this base port. &lt;a href="http://neo4j.com/docs/stable/ha-setup-tutorial.html"&gt;Neo4J&lt;/a&gt;
+needs 3 ports for its enterprise services (transactions, cluster management
+and online backup), but they all need to be explicitly configured if you
+want a multi-instance deployment. What if one could just set &lt;code&gt;baseport = 5001&lt;/code&gt;
+with the software automatically selecting 5002 and 5003 as other ports (or 6001
+and 7001). If the software in the future needs another port, there is no need
+to update the configuration (assuming the administrator leaves sufficient room).&lt;/p&gt;
+&lt;p&gt;Also consider the service scripts (&lt;code&gt;/etc/init.d&lt;/code&gt;) or similar (depending on the
+init system used). Don't provide a single one which only deals with one instance.
+Instead, consider supporting symlinked service scripts which automatically obtain
+the right configuration from its name.&lt;/p&gt;
+&lt;p&gt;For instance, a service script called &lt;code&gt;pgsql-inst1&lt;/code&gt; which is a symlink to
+&lt;code&gt;/etc/init.d/postgresql&lt;/code&gt; could then look for its configuration in &lt;code&gt;/var/lib/postgresql/pgsql-inst1&lt;/code&gt;
+(or &lt;code&gt;/etc/postgresql/pgsql-inst1&lt;/code&gt;). &lt;/p&gt;
+&lt;p&gt;Just like supporting &lt;a href="http://blog.siphos.be/2013/05/the-linux-d-approach/"&gt;.d directories&lt;/a&gt;,
+I consider multi-instance support an important non-functional requirement for software.&lt;/p&gt;</content><category term="Architecture"></category></entry></feed>

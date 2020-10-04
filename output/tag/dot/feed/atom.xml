@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - dot</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/dot/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-05-31T03:47:00+02:00</updated><entry><title>Visualizing constraints</title><link href="http://blog.siphos.be/2014/05/visualizing-constraints/" rel="alternate"></link><published>2014-05-31T03:47:00+02:00</published><updated>2014-05-31T03:47:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-05-31:/2014/05/visualizing-constraints/</id><summary type="html">&lt;p&gt;SELinux constraints are an interesting way to implement specific, well,
+constraints on what SELinux allows. Most SELinux rules that users come
+in contact with are purely type oriented: allow something to do
+something against something. In fact, most of the SELinux rules applied
+on a system are such &lt;code&gt;allow&lt;/code&gt; rules …&lt;/p&gt;</summary><content type="html">&lt;p&gt;SELinux constraints are an interesting way to implement specific, well,
+constraints on what SELinux allows. Most SELinux rules that users come
+in contact with are purely type oriented: allow something to do
+something against something. In fact, most of the SELinux rules applied
+on a system are such &lt;code&gt;allow&lt;/code&gt; rules.&lt;/p&gt;
+&lt;p&gt;The restriction of such &lt;code&gt;allow&lt;/code&gt; rules is that they only take into
+consideration the &lt;em&gt;type&lt;/em&gt; of the contexts that participate. This is the
+&lt;a href="https://wiki.gentoo.org/wiki/SELinux/Type_enforcement"&gt;type
+enforcement&lt;/a&gt; part
+of the SELinux mandatory access control system.&lt;/p&gt;
+&lt;p&gt;Constraints on the other hand work on the user, role and type part of a
+context. Consider this piece of constraint code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;constrain file all_file_perms (
+  u1 == u2
+  or u1 == system_u
+  or u2 == system_u
+  or t1 != ubac_constrained_type
+  or t2 != ubac_constrained_type
+);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This particular constraint definition tells the SELinux subsystem that,
+when an operation against a &lt;em&gt;file&lt;/em&gt; class is performed (any operation, as
+&lt;em&gt;all_file_perms&lt;/em&gt; is used, but individual, specific permissions can be
+listed as well), this is denied if none of the following conditions are
+met:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The SELinux user of the subject and object are the same&lt;/li&gt;
+&lt;li&gt;The SELinux user of the subject or object is &lt;code&gt;system_u&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;The SELinux type of the subject does not have the
+    &lt;code&gt;ubac_constrained_type&lt;/code&gt; attribute set&lt;/li&gt;
+&lt;li&gt;The SELinux type of the object does not have the
+    &lt;code&gt;ubac_constrained_type&lt;/code&gt; attribute set&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If none of the conditions are met, then the action is denied, regardless
+of the &lt;code&gt;allow&lt;/code&gt; rules set otherwise. If at least one condition is met,
+then the &lt;code&gt;allow&lt;/code&gt; rules (and other SELinux rules) decide if an action can
+be taken or not.&lt;/p&gt;
+&lt;p&gt;Constraints are currently difficult to query though. There is &lt;strong&gt;seinfo
+--constrain&lt;/strong&gt; which gives all constraints, using the Reverse Polish
+Notation - not something easily readable by users:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ seinfo --constrain
+constrain { sem } { create destroy getattr setattr read write associate unix_read unix_write  } 
+(  u1 u2 ==  u1 system_u ==  ||  u2 system_u ==  ||  t1 { screen_var_run_t gnome_xdg_config_home_t admin_crontab_t 
+links_input_xevent_t gpg_pinentry_tmp_t virt_content_t print_spool_t crontab_tmp_t httpd_user_htaccess_t ssh_keysign_t 
+remote_input_xevent_t gnome_home_t mozilla_tmpfs_t staff_gkeyringd_t consolekit_input_xevent_t user_mail_tmp_t 
+chromium_xdg_config_t mozilla_input_xevent_t chromium_tmp_t httpd_user_script_exec_t gnome_keyring_tmp_t links_tmpfs_t 
+skype_tmp_t user_gkeyringd_t svirt_home_t sysadm_su_t virt_home_t skype_home_t wireshark_tmp_t xscreensaver_xproperty_t 
+consolekit_xproperty_t user_home_dir_t gpg_pinentry_xproperty_t mplayer_home_t mozilla_plugin_input_xevent_t mozilla_plugin_tmp_t 
+mozilla_xproperty_t xdm_input_xevent_t chromium_input_xevent_t java_tmpfs_t googletalk_plugin_xproperty_t sysadm_t gorg_t gpg_t 
+java_t links_t staff_dbusd_t httpd_user_ra_content_t httpd_user_rw_content_t googletalk_plugin_tmp_t gpg_agent_tmp_t 
+ssh_agent_tmp_t sysadm_ssh_agent_t user_fonts_cache_t user_tmp_t googletalk_plugin_input_xevent_t user_dbusd_t xserver_tmpfs_t 
+iceauth_home_t qemu_input_xevent_t xauth_home_t mutt_home_t sysadm_dbusd_t remote_xproperty_t gnome_xdg_config_t screen_home_t 
+chromium_xproperty_t chromium_tmpfs_t wireshark_tmpfs_t xdg_videos_home_t pulseaudio_input_xevent_t krb5_home_t 
+pulseaudio_xproperty_t xscreensaver_input_xevent_t gpg_pinentry_input_xevent_t httpd_user_script_t gnome_xdg_cache_home_t 
+mozilla_plugin_tmpfs_t user_home_t user_sudo_t ssh_input_xevent_t ssh_tmpfs_t xdg_music_home_t gconf_tmp_t flash_home_t 
+java_home_t skype_tmpfs_t xdg_pictures_home_t xdg_data_home_t gnome_keyring_home_t wireshark_home_t chromium_renderer_xproperty_t 
+gpg_pinentry_t mozilla_t session_dbusd_tmp_t staff_sudo_t xdg_config_home_t user_su_t pan_input_xevent_t user_devpts_t 
+mysqld_home_t pan_tmpfs_t root_input_xevent_t links_home_t sysadm_screen_t pulseaudio_tmpfs_t sysadm_gkeyringd_t mail_home_rw_t 
+gconf_home_t mozilla_plugin_xproperty_t mutt_tmp_t httpd_user_content_t mozilla_xdg_cache_t mozilla_home_t alsa_home_t 
+pulseaudio_t mencoder_t admin_crontab_tmp_t xdg_documents_home_t user_tty_device_t java_tmp_t gnome_xdg_data_home_t wireshark_t 
+mozilla_plugin_home_t googletalk_plugin_tmpfs_t user_cron_spool_t mplayer_input_xevent_t skype_input_xevent_t xxe_home_t 
+mozilla_tmp_t gconfd_t lpr_t mutt_t pan_t ssh_t staff_t user_t xauth_t skype_xproperty_t mozilla_plugin_config_t 
+links_xproperty_t mplayer_xproperty_t xdg_runtime_home_t cert_home_t mplayer_tmpfs_t user_fonts_t user_tmpfs_t mutt_conf_t 
+gpg_secret_t gpg_helper_t staff_ssh_agent_t pulseaudio_tmp_t xscreensaver_t googletalk_plugin_xdg_config_t staff_screen_t 
+user_fonts_config_t ssh_home_t staff_su_t screen_tmp_t mozilla_plugin_t user_input_xevent_t xserver_tmp_t wireshark_xproperty_t 
+user_mail_t pulseaudio_home_t xdg_cache_home_t user_ssh_agent_t xdg_downloads_home_t chromium_renderer_input_xevent_t cronjob_t 
+crontab_t pan_home_t session_dbusd_home_t gpg_agent_t xauth_tmp_t xscreensaver_tmpfs_t iceauth_t mplayer_t chromium_xdg_cache_t 
+lpr_tmp_t gpg_pinentry_tmpfs_t pan_xproperty_t ssh_xproperty_t xdm_xproperty_t java_xproperty_t sysadm_sudo_t qemu_xproperty_t 
+root_xproperty_t user_xproperty_t mail_home_t xserver_t java_input_xevent_t user_screen_t wireshark_input_xevent_t } !=  ||  t2 { 
+screen_var_run_t gnome_xdg_config_home_t admin_crontab_t links_input_xevent_t gpg_pinentry_tmp_t virt_content_t print_spool_t 
+crontab_tmp_t httpd_user_htaccess_t ssh_keysign_t remote_input_xevent_t gnome_home_t mozilla_tmpfs_t staff_gkeyringd_t 
+consolekit_input_xevent_t user_mail_tmp_t chromium_xdg_config_t mozilla_input_xevent_t chromium_tmp_t httpd_user_script_exec_t 
+gnome_keyring_tmp_t links_tmpfs_t skype_tmp_t user_gkeyringd_t svirt_home_t sysadm_su_t virt_home_t skype_home_t wireshark_tmp_t 
+xscreensaver_xproperty_t consolekit_xproperty_t user_home_dir_t gpg_pinentry_xproperty_t mplayer_home_t 
+mozilla_plugin_input_xevent_t mozilla_plugin_tmp_t mozilla_xproperty_t xdm_input_xevent_t chromium_input_xevent_t java_tmpfs_t 
+googletalk_plugin_xproperty_t sysadm_t gorg_t gpg_t java_t links_t staff_dbusd_t httpd_user_ra_content_t httpd_user_rw_content_t 
+googletalk_plugin_tmp_t gpg_agent_tmp_t ssh_agent_tmp_t sysadm_ssh_agent_t user_fonts_cache_t user_tmp_t 
+googletalk_plugin_input_xevent_t user_dbusd_t xserver_tmpfs_t iceauth_home_t qemu_input_xevent_t xauth_home_t mutt_home_t 
+sysadm_dbusd_t remote_xproperty_t gnome_xdg_config_t screen_home_t chromium_xproperty_t chromium_tmpfs_t wireshark_tmpfs_t 
+xdg_videos_home_t pulseaudio_input_xevent_t krb5_home_t pulseaudio_xproperty_t xscreensaver_input_xevent_t 
+gpg_pinentry_input_xevent_t httpd_user_script_t gnome_xdg_cache_home_t mozilla_plugin_tmpfs_t user_home_t user_sudo_t 
+ssh_input_xevent_t ssh_tmpfs_t xdg_music_home_t gconf_tmp_t flash_home_t java_home_t skype_tmpfs_t xdg_pictures_home_t 
+xdg_data_home_t gnome_keyring_home_t wireshark_home_t chromium_renderer_xproperty_t gpg_pinentry_t mozilla_t session_dbusd_tmp_t 
+staff_sudo_t xdg_config_home_t user_su_t pan_input_xevent_t user_devpts_t mysqld_home_t pan_tmpfs_t root_input_xevent_t 
+links_home_t sysadm_screen_t pulseaudio_tmpfs_t sysadm_gkeyringd_t mail_home_rw_t gconf_home_t mozilla_plugin_xproperty_t 
+mutt_tmp_t httpd_user_content_t mozilla_xdg_cache_t mozilla_home_t alsa_home_t pulseaudio_t mencoder_t admin_crontab_tmp_t 
+xdg_documents_home_t user_tty_device_t java_tmp_t gnome_xdg_data_home_t wireshark_t mozilla_plugin_home_t 
+googletalk_plugin_tmpfs_t user_cron_spool_t mplayer_input_xevent_t skype_input_xevent_t xxe_home_t mozilla_tmp_t gconfd_t lpr_t 
+mutt_t pan_t ssh_t staff_t user_t xauth_t skype_xproperty_t mozilla_plugin_config_t links_xproperty_t mplayer_xproperty_t 
+xdg_runtime_home_t cert_home_t mplayer_tmpfs_t user_fonts_t user_tmpfs_t mutt_conf_t gpg_secret_t gpg_helper_t staff_ssh_agent_t 
+pulseaudio_tmp_t xscreensaver_t googletalk_plugin_xdg_config_t staff_screen_t user_fonts_config_t ssh_home_t staff_su_t 
+screen_tmp_t mozilla_plugin_t user_input_xevent_t xserver_tmp_t wireshark_xproperty_t user_mail_t pulseaudio_home_t 
+xdg_cache_home_t user_ssh_agent_t xdg_downloads_home_t chromium_renderer_input_xevent_t cronjob_t crontab_t pan_home_t 
+session_dbusd_home_t gpg_agent_t xauth_tmp_t xscreensaver_tmpfs_t iceauth_t mplayer_t chromium_xdg_cache_t lpr_tmp_t 
+gpg_pinentry_tmpfs_t pan_xproperty_t ssh_xproperty_t xdm_xproperty_t java_xproperty_t sysadm_sudo_t qemu_xproperty_t 
+root_xproperty_t user_xproperty_t mail_home_t xserver_t java_input_xevent_t user_screen_t wireshark_input_xevent_t } !=  ||  t1 
+ ==  || );
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There RPN notation however isn't the only reason why constraints are
+difficult to read. The other reason is that &lt;strong&gt;seinfo&lt;/strong&gt; does not know
+(anymore) about the attributes used to generate the constraints. As a
+result, we get a huge list of all possible types that match a common
+attribute - but we don't know which anymore.&lt;/p&gt;
+&lt;p&gt;Not everyone can read the source files in which the constraints are
+defined, so I hacked together a script that generates
+&lt;a href="http://graphviz.org/"&gt;GraphViz&lt;/a&gt; dot file based on the &lt;strong&gt;seinfo
+--constrain&lt;/strong&gt; output for a given &lt;em&gt;class&lt;/em&gt; and &lt;em&gt;permission&lt;/em&gt; and,
+optionally, limiting the huge list of types to a set that the user (err,
+that is me ;-) is interested in.&lt;/p&gt;
+&lt;p&gt;For instance, to generate a graph of the constraints related to file
+reads, limited to the &lt;code&gt;user_t&lt;/code&gt; and &lt;code&gt;staff_t&lt;/code&gt; types if huge lists would
+otherwise be shown:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ seshowconstraint file read &amp;quot;user_t staff_t&amp;quot; &amp;gt; constraint-file.dot
+~$ dot -Tsvg -O constraint-file.dot
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This generates the following graph:&lt;/p&gt;
+&lt;p&gt;!SELinux constraint flow&lt;a href="http://dev.gentoo.org/~swift/blog/201405/constraint-flow.svg"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you're interested in the (ugly) script that does this, you can find
+it on my
+&lt;a href="https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowconstraint"&gt;github&lt;/a&gt;
+location.&lt;/p&gt;
+&lt;p&gt;There are some patches laying around to support naming constraints and
+taking the name up in the policy, so that denials based on constraints
+can at least give feedback to the user which constraint is holding an
+access back (rather than just a denial that the user doesn't know why).
+Hopefully such patches can be made available in the kernel and user
+space utilities soon.&lt;/p&gt;</content><category term="SELinux"></category><category term="constrain"></category><category term="constraints"></category><category term="dot"></category><category term="graphviz"></category><category term="seinfo"></category><category term="selinux"></category></entry><entry><title>My application base: graphviz</title><link href="http://blog.siphos.be/2013/06/my-application-base-graphviz/" rel="alternate"></link><published>2013-06-09T03:50:00+02:00</published><updated>2013-06-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-09:/2013/06/my-application-base-graphviz/</id><summary type="html">&lt;p&gt;Visualization of data is often needed in order to understand what the
+data means. When data needs to be visualized automatically, I often use
+the &lt;a href="http://www.graphviz.org/"&gt;graphviz&lt;/a&gt; tools. Not that they are
+extremely pretty, but it works very well and is made to be automated.&lt;/p&gt;
+&lt;p&gt;Let me give a few examples …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Visualization of data is often needed in order to understand what the
+data means. When data needs to be visualized automatically, I often use
+the &lt;a href="http://www.graphviz.org/"&gt;graphviz&lt;/a&gt; tools. Not that they are
+extremely pretty, but it works very well and is made to be automated.&lt;/p&gt;
+&lt;p&gt;Let me give a few examples of when visualization helps...&lt;/p&gt;
+&lt;p&gt;In SELinux, there is the notion of domain transitions: security contexts
+that can transition to another security context (and thus change the
+permissions that the application/process has). Knowing where domains can
+transition to (and how) as well as how domains can be transitioned to
+(so input/output, if you may) is an important aspect to validate the
+security of a system. The information can be obtained from tools such as
+&lt;strong&gt;sesearch&lt;/strong&gt;, but even on a small system you easily find hundreds of
+transitions that can occur. Visualizing the transitions in a graph
+(using &lt;strong&gt;dot&lt;/strong&gt; or &lt;strong&gt;neato&lt;/strong&gt;) shows how a starting point can move (or
+cannot move - equally important to know ;-) to another domain. So a
+simple &lt;strong&gt;sesearch&lt;/strong&gt; with a few &lt;strong&gt;awk&lt;/strong&gt; statements in the middle and a
+&lt;strong&gt;dot&lt;/strong&gt; at the end produces a nice graph in PNG format to analyze
+further.&lt;/p&gt;
+&lt;p&gt;A second visualization is about dependencies. Be it package dependencies
+or library dependencies, or even architectural dependencies (in IT
+architecturing, abstraction of assets and such also provides a
+dependency-like structure), with the Graphviz tools the generation of
+dependency graphs can be done automatically. At work, I sometimes use a
+simple home-brew web-based API to generate the data (similar to
+&lt;a href="http://ashitani.jp/gv/"&gt;Ashitani's Ajax/Graphviz&lt;/a&gt;) since the
+workstations don't allow installation of your own software - and they're
+windows.&lt;/p&gt;
+&lt;p&gt;Another purpose I use graphviz for is to quickly visualize processes
+during the design. Of course, this can be done using Visio or Draw.io
+easily as well, but these have the disadvantage that you already require
+some idea on how the process will evolve. With the dot language, I can
+just start writing processes in a simple way, combining steps into
+clusters (or in scheduling terms: streams or applications ;-) and let
+Graphviz visualize it for me. When the process is almost finished, I can
+either copy the result in Draw.io to generate a nicer drawing or use the
+Graphviz result (especially when the purpose was just rapid
+prototyping).&lt;/p&gt;
+&lt;p&gt;And sometimes it is just fun to generate graphs based on data. For
+instance, I can take the IRC logs of #gentoo or #gentoo-hardened to
+generate graphs showing interactions between people (who speaks to who
+and how frequently) or to find out the strength of topics (get the
+keywords and generate communication graphs based on those keywords).&lt;/p&gt;</content><category term="Free Software"></category><category term="dependencies"></category><category term="dot"></category><category term="graphviz"></category><category term="mab"></category><category term="neato"></category><category term="scheduling"></category><category term="visualization"></category><category term="visualize"></category></entry></feed>

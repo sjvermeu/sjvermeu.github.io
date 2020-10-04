@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - postgresql</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/postgresql/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-05-25T12:07:00+02:00</updated><entry><title>PostgreSQL with central authentication and authorization</title><link href="http://blog.siphos.be/2015/05/postgresql-with-central-authentication-and-authorization/" rel="alternate"></link><published>2015-05-25T12:07:00+02:00</published><updated>2015-05-25T12:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-25:/2015/05/postgresql-with-central-authentication-and-authorization/</id><summary type="html">&lt;p&gt;I have been running a PostgreSQL cluster for a while as the primary
+backend for many services. The database system is very robust, well
+supported by the community and very powerful. In this post, I'm going to
+show how I use central authentication and authorization with PostgreSQL.&lt;/p&gt;
+
+
+&lt;p&gt;Centralized management is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I have been running a PostgreSQL cluster for a while as the primary
+backend for many services. The database system is very robust, well
+supported by the community and very powerful. In this post, I'm going to
+show how I use central authentication and authorization with PostgreSQL.&lt;/p&gt;
+
+
+&lt;p&gt;Centralized management is an important principle whenever deployments
+become very dispersed. For authentication and authorization, having a
+high-available LDAP is one of the more powerful components in any
+architecture. It isn't the only method though - it is also possible to
+use a distributed approach where the master data is centrally managed,
+but the proper data is distributed to the various systems that need it.
+Such a distributed approach allows for high availability without the
+need for a highly available central infrastructure (user ids, group
+membership and passwords are distributed to the servers rather than
+queried centrally). Here, I'm going to focus on a mixture of both
+methods: central authentication for password verification, and
+distributed authorization.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;PostgreSQL default uses in-database credentials&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;By default, PostgreSQL uses in-database credentials for the
+authentication and authorization. When a &lt;code&gt;CREATE ROLE&lt;/code&gt; (or
+&lt;code&gt;CREATE USER&lt;/code&gt;) command is issued with a password, it is stored in the
+&lt;code&gt;pg_catalog.pg_authid&lt;/code&gt; table:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;postgres# select rolname, rolpassword from pg_catalog.pg_authid;
+    rolname     |             rolpassword             
+----------------+-------------------------------------
+ postgres_admin | 
+ dmvsl          | 
+ johan          | 
+ hdc_owner      | 
+ hdc_reader     | 
+ hdc_readwrite  | 
+ hadoop         | 
+ swift          | 
+ sean           | 
+ hdpreport      | 
+ postgres       | md5c127bc9fc185daf0e06e785876e38484
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;this cannot be moved outside):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;postgres# \l db_hadoop
+                                   List of databases
+   Name    |   Owner   | Encoding |  Collate   |   Ctype    |     Access privileges     
+-----------+-----------+----------+------------+------------+---------------------------
+ db_hadoop | hdc_owner | UTF8     | en_US.utf8 | en_US.utf8 | hdc_owner=CTc/hdc_owner  +
+           |           |          |            |            | hdc_reader=c/hdc_owner   +
+           |           |          |            |            | hdc_readwrite=c/hdc_owner
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Furthermore, PostgreSQL has some additional access controls through its
+&lt;code&gt;pg_hba.conf&lt;/code&gt; file, in which the access towards the PostgreSQL service
+itself can be governed based on context information (such as originating
+IP address, target database, etc.).&lt;/p&gt;
+&lt;p&gt;For more information about the standard setups for PostgreSQL,
+&lt;em&gt;definitely&lt;/em&gt; go through the &lt;a href="http://www.postgresql.org/docs/9.4/static/index.html"&gt;official PostgreSQL
+documentation&lt;/a&gt; as
+it is well documented and kept up-to-date.&lt;/p&gt;
+&lt;p&gt;Now, for central management, in-database settings become more difficult
+to handle.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Using PAM for authentication&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The first step to move the management of authentication and
+authorization outside the database is to look at a way to authenticate
+users (password verification) outside the database. I tend not to use a
+distributed password approach (where a central component is responsible
+for changing passwords on multiple targets), instead relying on a
+high-available LDAP setup, but with local caching (to catch short-lived
+network hick-ups) and local password use for last-hope accounts (such as
+root and admin accounts).&lt;/p&gt;
+&lt;p&gt;PostgreSQL can be configured to directly interact with an LDAP, but I
+like to use &lt;a href="http://www.linux-pam.org/"&gt;Linux PAM&lt;/a&gt; whenever I can. For
+my systems, it is a standard way of managing the authentication of many
+services, so the same goes for PostgreSQL. And with the
+&lt;a href="https://packages.gentoo.org/package/sys-auth/pam_ldap"&gt;sys-auth/pam_ldap&lt;/a&gt;
+package integrating multiple services with LDAP is a breeze. So the
+first step is to have PostgreSQL use PAM for authentication. This is
+handled through its &lt;code&gt;pg_hba.conf&lt;/code&gt; file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# TYPE  DATABASE        USER    ADDRESS         METHOD          [OPTIONS]
+local   all             all                     md5
+host    all             all     all             pam             pamservice=postgresql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will have PostgreSQL use the &lt;code&gt;postgresql&lt;/code&gt; PAM service for
+authentication. The PAM configuration is thus in
+&lt;code&gt;/etc/pam.d/postgresql&lt;/code&gt;. In it, we can either directly use the LDAP PAM
+modules, or use the SSSD modules and have SSSD work with LDAP.&lt;/p&gt;
+&lt;p&gt;Yet, this isn't sufficient. We still need to tell PostgreSQL which users
+can be authenticated - the users need to be defined in the database
+(just without password credentials because that is handled externally
+now). This is done together with the authorization handling.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Users and group membership&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Every service on the systems I maintain has dedicated groups in which
+for instance its administrators are listed. For instance, for the
+PostgreSQL services:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# getent group gpgsqladmin
+gpgsqladmin:x:413843:swift,dmvsl
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A local batch job (ran through cron) queries this group (which I call
+the &lt;em&gt;masterlist&lt;/em&gt;, as well as queries which users in PostgreSQL are
+assigned the &lt;code&gt;postgres_admin&lt;/code&gt; role (which is a superuser role like
+postgres and is used as the intermediate role to assign to
+administrators of a PostgreSQL service), known as the &lt;em&gt;slavelist&lt;/em&gt;.
+Delta's are then used to add the user or remove it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Note: membersToAdd / membersToRemove / _psql are custom functions
+#       so do not vainly search for them on your system ;-)
+for member in $(membersToAdd ${masterlist} ${slavelist}) ; do
+  _psql &amp;quot;CREATE USER ${member} LOGIN INHERIT;&amp;quot; postgres
+  _psql &amp;quot;GRANT postgres_admin TO ${member};&amp;quot; postgres
+done
+
+for member in $(membersToRemove ${masterlist} ${slavelist}) ; do
+  _psql &amp;quot;REVOKE postgres_admin FROM ${member};&amp;quot; postgres
+  _psql &amp;quot;DROP USER ${member};&amp;quot; postgres
+done
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The &lt;code&gt;postgres_admin&lt;/code&gt; role is created whenever I create a PostgreSQL
+instance. Likewise, for databases, a number of roles are added as well.
+For instance, for the &lt;code&gt;db_hadoop&lt;/code&gt; database, the &lt;code&gt;hdc_owner&lt;/code&gt;,
+&lt;code&gt;hdc_reader&lt;/code&gt; and &lt;code&gt;hdc_readwrite&lt;/code&gt; roles are created with the right set of
+privileges. Users are then granted this role if they belong to the right
+group in the LDAP. For instance:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# getent group gpgsqlhdc_own
+gpgsqlhdc_own:x:413850:hadoop,johan,christov,sean
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this simple approach, granting users access to a database is a
+matter of adding the user to the right group (like &lt;code&gt;gpgsqlhdc_ro&lt;/code&gt; for
+read-only access to the Hadoop related database(s)) and either wait for
+the cron-job to add it, or manually run the authorization
+synchronization. By standardizing on infrastructural roles (admin,
+auditor) and data roles (owner, rw, ro) managing multiple databases is a
+breeze.&lt;/p&gt;</content><category term="Free Software"></category><category term="postgresql"></category></entry><entry><title>An XCCDF skeleton for PostgreSQL</title><link href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/" rel="alternate"></link><published>2013-12-14T04:00:00+01:00</published><updated>2013-12-14T04:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-14:/2013/12/an-xccdf-skeleton-for-postgresql/</id><summary type="html">&lt;p&gt;In a &lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;previous
+post&lt;/a&gt;
+I wrote about the documentation structure I have in mind for a
+PostgreSQL security best practice. Considering what XCCDF can give us,
+the idea is to have the following structure:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Hardening PostgreSQL
++- Basic setup
++- Instance level configuration
+|  +- Pre-startup configuration
+|  `- PostgreSQL internal configuration
++- Database recommendations
+`- User definitions …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;In a &lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;previous
+post&lt;/a&gt;
+I wrote about the documentation structure I have in mind for a
+PostgreSQL security best practice. Considering what XCCDF can give us,
+the idea is to have the following structure:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Hardening PostgreSQL
++- Basic setup
++- Instance level configuration
+|  +- Pre-startup configuration
+|  `- PostgreSQL internal configuration
++- Database recommendations
+`- User definitions
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For the profiles, I had:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;infrastructure
+instance
+user
++- administrator
++- end user
+`- functional account
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's bring this into an XCCDF document.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;XCCDF (Extensible Configuration Checklist Description Format)&lt;/strong&gt;
+format is an XML structure in which we can document whatever we want -
+but it is primarily used for configuration checklists and best
+practices. The &lt;em&gt;documenting&lt;/em&gt; aspect of a security best practice in XCCDF
+is done through XHTML basic tags (do not use fancy things - limit
+yourself to &lt;code&gt;p&lt;/code&gt;, &lt;code&gt;pre&lt;/code&gt;, &lt;code&gt;em&lt;/code&gt;, &lt;code&gt;strong&lt;/code&gt;, ... tags), so some knowledge on
+XHTML (next to XML in general) is quite important while developing XCCDF
+guides. At least, if you don't use special editors for that.&lt;/p&gt;
+&lt;p&gt;We start with the basics:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;Two things I want to focus on here: the &lt;code&gt;xmlns:h&lt;/code&gt; and &lt;code&gt;id&lt;/code&gt; attributes.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;xmlns:h&lt;/code&gt; attribute is an XML requirement, telling whatever XML
+    parser is used later that tags that use the &lt;code&gt;h:&lt;/code&gt; namespace is for
+    XHTML tags. So later in the document, we'll use &lt;code&gt;&amp;lt;h:p&amp;gt;...&amp;lt;/h:p&amp;gt;&lt;/code&gt; for
+    XHTML paragraphs.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;id&lt;/code&gt; attribute is XCCDF specific, and since XCCDF 1.2 also
+    requires to be in this particular syntax:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;    &amp;lt;/p&amp;gt;
+        xccdf_&amp;lt;namespace&amp;gt;_benchmark_&amp;lt;name&amp;gt;
+
+    &amp;lt;p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;The `&amp;lt;namespace&amp;gt;` is recommended to be an inverted domain
+name structure. I also added my nickname so there are no collisions
+with namespaces provided by other developers in Gentoo. So *SwifT&amp;#39;s
+dev.gentoo.org* becomes *org.gentoo.dev.swift*.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This id structure will be used in other tags as well. Instead of
+&lt;code&gt;*_benchmark&lt;/code&gt; it would be &lt;code&gt;*_rule&lt;/code&gt; (for &lt;code&gt;Rule&lt;/code&gt; ids), &lt;code&gt;*_group&lt;/code&gt; (for
+&lt;code&gt;Group&lt;/code&gt; ids), etc. You get the idea.&lt;/p&gt;
+&lt;p&gt;Now we add in some metadata in the document (with &lt;code&gt;Benchmark&lt;/code&gt; as
+parent):&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;So what is all this?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;status&amp;gt;&lt;/code&gt; tag helps in tracking the state of the document.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;platform&amp;gt;&lt;/code&gt; tag is to tell the XCCDF interpreter when the
+    document is applicable. It references a &lt;strong&gt;CPE (Common
+    Platform Enumeration)&lt;/strong&gt; entity, in this case for PostgreSQL. Later,
+    we will see that an automated test is assigned to the detection of
+    this CPE. If the test succeeds, then PostgreSQL is installed and the
+    XCCDF interpreter can continue testing and evaluating the system for
+    PostgreSQL best practices. If not, then PostgreSQL is not installed
+    and the XCCDF does not apply to the system.
+    &lt;/p&gt;
+    &lt;p&gt;
+    There is a huge advantage to this: you can check all your systems
+    for compliance with the PostgreSQL best practices (this
+    XCCDF document) and on the systems that PostgreSQL is not installed,
+    it will simply state that the document is not applicable (without
+    actually trying to validate all the rules in the document). So there
+    is no direct need to only check systems you know have PostgreSQL on
+    (and thus potentially ignore systems that have PostgreSQL but that
+    you don't know of - usually those systems are much less secure as
+    well ;-).&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;version&amp;gt;&lt;/code&gt; tag versions the document.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;model&amp;gt;&lt;/code&gt; tags tell the XCCDF interpreter which &lt;em&gt;scoring system&lt;/em&gt;
+    should be used.
+    &lt;/p&gt;
+    &lt;p&gt;
+    Scoring will give points to rules, and the XCCDF interpreter will
+    sum the scores of all rules to give a final score to the
+    "compliance" state of the system. But scoring can be done on
+    several levels. The default one uses the hierarchy of the document
+    (nested &lt;code&gt;Group&lt;/code&gt;s and &lt;code&gt;Rule&lt;/code&gt;s) to give a final number whereas the
+    flat one does not care about the structure. Finally, the
+    flat-unweighted one does not take into account the scores given by
+    the author - all rules get the value of 1.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now we define the &lt;code&gt;Profile&lt;/code&gt;s to use. I will give the example for two:
+&lt;em&gt;user&lt;/em&gt; and &lt;em&gt;administrator&lt;/em&gt;, you can fill in the other ones ;-)&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;Finally, the &lt;code&gt;Group&lt;/code&gt;s (still with &lt;code&gt;Benchmark&lt;/code&gt; as their parent, but below
+the &lt;code&gt;Profile&lt;/code&gt;s) which define the documentation structure of the guide:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;With all this defined, our basic skeleton for the PostgreSQL best
+practice document is ready. To create proper content, we can use the
+XHTML code inside the &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; tags, like so:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;As said in the previous post though, just documenting various aspects is
+not enough. It is recommended to add references. In XCCDF, this is done
+through the &lt;code&gt;&amp;lt;reference&amp;gt;&lt;/code&gt; tag, which is within a &lt;code&gt;Group&lt;/code&gt; and usually
+below the &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; information:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;With this alone, it is already possible to write up an XCCDF guide
+describing how to securely setup (in our case) PostgreSQL while keeping
+track of the resources that helped define the secure setup. Tools like
+&lt;a href="http://www.open-scap.org"&gt;openscap&lt;/a&gt; can generate HTML or even Docbook
+(which in turn can be converted to manual pages, PDF, Word, RTF, ...)
+from this information:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# oscap xccdf generate guide --format docbook --output guide.docbook postgresql-xccdf.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the next post, I'll talk about the other documenting entities within
+XCCDF (besides &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; and their meaning) and start with
+enhancing the document with automated checks.&lt;/p&gt;</content><category term="Security"></category><category term="postgresql"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>Documenting security best practices - XCCDF introduction</title><link href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/" rel="alternate"></link><published>2013-12-12T16:04:00+01:00</published><updated>2013-12-12T16:04:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-12:/2013/12/documenting-security-best-practices-xccdf-introduction/</id><summary type="html">&lt;p&gt;When I have some free time, I try to work on a &lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/gentoo.html"&gt;Gentoo Security
+Benchmark&lt;/a&gt;
+which not only documents security best practices (loosely based on the
+&lt;a href="http://www.gentoo.org/doc/en/security/security-handbook.xml"&gt;Gentoo Security
+Handbook&lt;/a&gt;
+which hasn't seen much updates in the last few years) but also uses the
+SCAP protocols. This set of protocols allows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When I have some free time, I try to work on a &lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/gentoo.html"&gt;Gentoo Security
+Benchmark&lt;/a&gt;
+which not only documents security best practices (loosely based on the
+&lt;a href="http://www.gentoo.org/doc/en/security/security-handbook.xml"&gt;Gentoo Security
+Handbook&lt;/a&gt;
+which hasn't seen much updates in the last few years) but also uses the
+SCAP protocols. This set of protocols allows security administrators to
+automate and document many of their tasks, and a security best practices
+guide is almost a must-have in any organization. So I decided to do a
+few write-ups about these SCAP protocols and how I hope to be using them
+more in the future.&lt;/p&gt;
+&lt;p&gt;In this post, I'm going to focus on a very simple matter: documenting.
+SCAP goes much, much beyond documenting, but I'll discuss those various
+features in subsequent posts. The end goal of the series is to have a
+best practice document for PostgreSQL.&lt;/p&gt;
+&lt;p&gt;To document the secure state of a component, it is important to first
+have an idea about what you are going to document. Some people might
+want to document best practices across many technologies so that there
+is a coherent, single document explaining the security best practices
+for the entire organization. In my opinion, that is not manageable in
+the long term. We tried that with the Gentoo Security Handbook, but you
+quickly start wrestling with the order of chapters, style concerns and
+what not. Also, some technologies will be much more discussed in depth
+than others, making the book look "unfinished".&lt;/p&gt;
+&lt;p&gt;Personally, I rather focus on a specific technology. For instance:
+&lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/openssh.html"&gt;Hardening
+OpenSSH&lt;/a&gt;
+(very much work in progress - the rules are generated automatically for
+now and will be rewritten in the near future). It talks about a single
+component (OpenSSH) allowing the freedom for the author to focus on what
+matters. By providing security best practices on these component levels,
+you'll create a set of security best practices that can often be reused.
+This is what &lt;a href="http://www.cisecurity.org"&gt;the Center for Internet
+Security&lt;/a&gt; is doing with its benchmarks:
+popular technologies are described in detail on how to configure them to
+be more secure.&lt;/p&gt;
+&lt;p&gt;Once you know what technology you want to describe, we need to consider
+how this technology is used. Some technologies are very flexible in
+their setup, and might have different security setups depending on their
+use. For instance, an OpenLDAP server can be used internally as a public
+address book, or disclosed on the Internet in a multi-replicated setup
+with authentication data in it. The security best practices for these
+deployments will vary. The &lt;strong&gt;XCCDF (Extensible Configuration Checklist
+Description Format)&lt;/strong&gt; standard allows authors to write a single guide,
+while taking into account the different deployment approaches through
+the use of &lt;code&gt;Profile&lt;/code&gt; settings.&lt;/p&gt;
+&lt;p&gt;In XCCDF, &lt;code&gt;Profile&lt;/code&gt;s allow for selectively enabling or disabling
+document fragments (called &lt;code&gt;Group&lt;/code&gt;s) and checks (called &lt;code&gt;Rule&lt;/code&gt;s - I will
+post about checks later) or even change values (like the minimum
+password length) depending on the profile. A document can then describe
+settings with different profiles depending on the use and deployment of
+the technology. Profiles can also inherit from each other, so you can
+have a base (default) security conscious setup, and enhance it through
+other profiles.&lt;/p&gt;
+&lt;p&gt;Next to the "how", we also need to consider the structure we want for
+such a best practice:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We will have rules in place for the deployment of PostgreSQL itself.
+    These rules range from making sure a stable, patched version is
+    used, to the proper rights on the software files, partitioning and
+    file system rules and operating system level requirements (such as
+    particular kernel parameters).&lt;/li&gt;
+&lt;li&gt;We will also have rules for each instance. We could plan on running
+    multiple PostgreSQL instances next to each other, so these rules are
+    distinct from the deployment rules. These rules include settings on
+    instance level, process ownership (in case of running PostgreSQL as
+    different service user), etc.&lt;/li&gt;
+&lt;li&gt;We might even have rules for databases and users (roles) in
+    the database.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It &lt;em&gt;might&lt;/em&gt; make sense to split the best practices in separate documents,
+such as one for PostgreSQL infrastructure (which is database-agnostic)
+and one for PostgreSQL databases (and users). I would start with one
+document for the technology if I was responsible for the entire
+definition, but if this responsibility is not with one person (or team),
+it makes sense to use different documents. Also, as we will see later,
+XCCDF documents can be "played" against a target. If the target is
+different (for infrastructure, the target usually is the host on which
+PostgreSQL is installed, whereas for the database settings the target is
+probably the PostgreSQL instance itself) I would definitely have the
+definitions through separate profiles, but that does not mean the
+document needs to be split either.&lt;/p&gt;
+&lt;p&gt;Finally, documenting a secure best practice also involves keeping track
+of the references. It is not only about documenting something and why
+&lt;em&gt;you&lt;/em&gt; think this is the best approach, but also about referring readers
+to more information and other resources that collaborate your story.
+These can be generic control objectives (such as those provided by the
+&lt;a href="http://www.opensecurityarchitecture.org/cms/library/0802control-catalogue"&gt;open security
+architecture&lt;/a&gt;)
+or specific best practices of the vendor itself or third parties.&lt;/p&gt;
+&lt;p&gt;At the end, for a PostgreSQL security guide, we would probably start
+with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Hardening PostgreSQL
++- Basic setup
++- Instance level configuration
+|  +- Pre-startup configuration
+|  `- PostgreSQL internal configuration
++- Database recommendations
+`- User definitions
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Profile-wise, I probably would need an &lt;em&gt;infrastructure&lt;/em&gt; profile, an
+&lt;em&gt;instance&lt;/em&gt; profile, a &lt;em&gt;user&lt;/em&gt; profile and a &lt;em&gt;database&lt;/em&gt; profile. I might
+even have profiles for the different roles (&lt;em&gt;functional account&lt;/em&gt;,
+&lt;em&gt;administrator&lt;/em&gt; and &lt;em&gt;end user&lt;/em&gt; profiles which inherit from the &lt;em&gt;user&lt;/em&gt;
+profile) as they will have different rules assigned to them.&lt;/p&gt;
+&lt;p&gt;In my next post, we'll create a skeleton XCCDF document and already talk
+about some of the XCCDF features that we can benefit from immediately.&lt;/p&gt;</content><category term="Security"></category><category term="postgresql"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>What could SELinux have done to mitigate the postgresql vulnerability?</title><link href="http://blog.siphos.be/2013/04/what-could-selinux-have-done-to-mitigate-the-postgresql-vulnerability/" rel="alternate"></link><published>2013-04-16T14:00:00+02:00</published><updated>2013-04-16T14:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-16:/2013/04/what-could-selinux-have-done-to-mitigate-the-postgresql-vulnerability/</id><summary type="html">&lt;p&gt;&lt;a href="http://www.gentoo.org"&gt;Gentoo&lt;/a&gt; is one of the various distributions
+which supports &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux"&gt;SELinux&lt;/a&gt;
+as a &lt;em&gt;Mandatory Access Control&lt;/em&gt; system to, amongst other things,
+mitigate the results of a succesfull exploit against software. So what
+about the recent &lt;a href="http://www.postgresql.org/support/security/faq/2013-04-04/"&gt;PostgreSQL
+vulnerability&lt;/a&gt;?&lt;/p&gt;
+&lt;p&gt;When correctly configured, the PostgreSQL daemon will run in the
+&lt;code&gt;postgresql_t&lt;/code&gt; domain. In SELinux-speak …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://www.gentoo.org"&gt;Gentoo&lt;/a&gt; is one of the various distributions
+which supports &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux"&gt;SELinux&lt;/a&gt;
+as a &lt;em&gt;Mandatory Access Control&lt;/em&gt; system to, amongst other things,
+mitigate the results of a succesfull exploit against software. So what
+about the recent &lt;a href="http://www.postgresql.org/support/security/faq/2013-04-04/"&gt;PostgreSQL
+vulnerability&lt;/a&gt;?&lt;/p&gt;
+&lt;p&gt;When correctly configured, the PostgreSQL daemon will run in the
+&lt;code&gt;postgresql_t&lt;/code&gt; domain. In SELinux-speak, a domain can be seen as a name
+granted to a set of permissions (what is allowed) and assigned to one or
+more processes. A process that "runs in domain postgresql_t" will be
+governed by the policy rules (what is and isn't allowed) for that
+domain.&lt;/p&gt;
+&lt;p&gt;The vulnerability we speak of is about creating new files or overwriting
+existing files, potentially corrupting the database itself (when the
+database files are overwritten). Creating new files is handled through
+the &lt;em&gt;create&lt;/em&gt; privilege on files (and &lt;em&gt;add_name&lt;/em&gt; on directories),
+writing into files is handled through the &lt;em&gt;write&lt;/em&gt; privilege. Given
+certain circumstances, one could even &lt;a href="http://blog.blackwinghq.com/2013/04/08/2/"&gt;write commands inside
+files&lt;/a&gt; that are executed by
+particular users on the system (btw, the link gives a great explanation
+on the vulnerability).&lt;/p&gt;
+&lt;p&gt;So let's look at what SELinux does and could have done.&lt;/p&gt;
+&lt;p&gt;In the current situation, as we explained, &lt;code&gt;postgresql_t&lt;/code&gt; is the only
+domain we need to take into account (the PostgreSQL policy does not use
+separate domains for the runtime processes). Let's look at what
+directory labels it is allowed to write into:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sesearch -s postgresql_t -c dir -p add_name -SCATd
+Found 11 semantic av rules:
+   allow postgresql_t postgresql_log_t : dir { add_name } ; 
+   allow postgresql_t var_log_t : dir { add_name } ; 
+   allow postgresql_t var_lock_t : dir { add_name } ; 
+   allow postgresql_t tmp_t : dir { add_name } ; 
+   allow postgresql_t postgresql_tmp_t : dir { add_name } ; 
+   allow postgresql_t postgresql_var_run_t : dir { add_name } ; 
+   allow postgresql_t postgresql_db_t : dir { add_name } ; 
+   allow postgresql_t etc_t : dir { add_name } ; 
+   allow postgresql_t tmpfs_t : dir { add_name } ; 
+   allow postgresql_t var_lib_t : dir { add_name } ; 
+   allow postgresql_t var_run_t : dir { add_name } ;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So the PostgreSQL service is allowed to create files inside directories
+labeled with one of the following labels:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;postgresql_log_t&lt;/code&gt;, used for PostgreSQL log files
+    (&lt;code&gt;/var/log/postgresql&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;var_log_t&lt;/code&gt;, used for the generic log files (&lt;code&gt;/var/log&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;var_lock_t&lt;/code&gt;, used for lock files (&lt;code&gt;/run/lock&lt;/code&gt; or &lt;code&gt;/var/lock&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tmp_t&lt;/code&gt;, used for the temporary file directory (&lt;code&gt;/tmp&lt;/code&gt; or
+    &lt;code&gt;/var/tmp&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;postgresql_tmp_t&lt;/code&gt;, used for the PostgreSQL temporary
+    files/directories&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;postgresql_var_run_t&lt;/code&gt;, used for the runtime information (like
+    PID files) of PostgreSQL (&lt;code&gt;/var/run/postgresql&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;postgresql_db_t&lt;/code&gt;, used for the PostgreSQL database files
+    (&lt;code&gt;/var/lib/postgresql&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;etc_t&lt;/code&gt;, used for the generic system configuration files (&lt;code&gt;/etc/&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;var_lib_t&lt;/code&gt;, used for the &lt;code&gt;/var/lib&lt;/code&gt; data&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;var_run_t&lt;/code&gt;, used for the &lt;code&gt;/var/run&lt;/code&gt; or &lt;code&gt;/run&lt;/code&gt; data&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Next to this, depending on the label of the directory, the PostgreSQL
+service is allowed to write into files with the following label assigned
+(of importance to both creating new files as well as overwriting
+existing ones):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sesearch -s postgresql_t -c file -p write -SCATd
+Found 11 semantic av rules:
+   allow postgresql_t postgresql_log_t : file { write } ; 
+   allow postgresql_t postgresql_lock_t : file { write } ; 
+   allow postgresql_t faillog_t : file { write } ; 
+   allow postgresql_t lastlog_t : file { write } ; 
+   allow postgresql_t postgresql_tmp_t : file { write } ; 
+   allow postgresql_t hugetlbfs_t : file { write } ; 
+   allow postgresql_t postgresql_var_run_t : file { write } ; 
+   allow postgresql_t postgresql_db_t : file { write } ; 
+   allow postgresql_t postgresql_t : file { write } ; 
+   allow postgresql_t security_t : file { write } ; 
+   allow postgresql_t etc_t : file { write } ;
+
+Found 6 semantic te rules:
+   type_transition postgresql_t var_log_t : file postgresql_log_t; 
+   type_transition postgresql_t var_lock_t : file postgresql_lock_t; 
+   type_transition postgresql_t tmp_t : file postgresql_tmp_t; 
+   type_transition postgresql_t tmpfs_t : file postgresql_tmp_t; 
+   type_transition postgresql_t var_lib_t : file postgresql_db_t; 
+   type_transition postgresql_t var_run_t : file postgresql_var_run_t;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If an exploit creates a new file, the &lt;em&gt;add_name&lt;/em&gt; permission on the
+directory is needed. If otoh the exploit is overwriting existing files,
+I think the only permission needed here is the &lt;em&gt;write&lt;/em&gt; on the files
+(also &lt;em&gt;open&lt;/em&gt; but all the writes have &lt;em&gt;open&lt;/em&gt; as well in the above case).&lt;/p&gt;
+&lt;p&gt;Now accessing and being able to write files into the database file
+directory is expected - it is the functionality of the server, so unless
+we could separate domains more, this is a "hit" we need to take. Sadly
+though, this is also the label used for the PostgreSQL service account
+home directory here (not sure if this is for all distributions), making
+it more realistic that an attacker writes something in the home
+directory &lt;code&gt;.profile&lt;/code&gt; file and hopes for the administrator to do
+something like &lt;strong&gt;su postgres -&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Next, the &lt;code&gt;etc_t&lt;/code&gt; write privileges also worry me, not mainly because it
+can write there, but also because I can hardly understand why -
+PostgreSQL is supposed to run under its own, non-root user (luckily) so
+unless there are &lt;code&gt;etc_t&lt;/code&gt; labeled directories owned by the PostgreSQL
+service account (or world writeable - please no, kthx). And this isn't
+an "inherited" permission from something - the policy currently has
+&lt;code&gt;files_manage_etc_files(postgresql_t)&lt;/code&gt; set, and has been since 2005 or
+earlier. I'm really wondering if this is still needed.&lt;/p&gt;
+&lt;p&gt;But I digress. Given that there are no PostgreSQL-owned directories nor
+world-writeable ones in &lt;code&gt;/etc&lt;/code&gt;, let's look at a few other ones.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;security_t&lt;/code&gt; is used for the SELinux pseudo file system, and is used
+    for the SEPostgreSQL support. From the looks of it, only the root
+    Linux user has the rights to do really harmful things on this file
+    system (and only if he too has write permissions on &lt;code&gt;security_t&lt;/code&gt;),
+    non-root should be limited to verifying if contexts exist or have
+    particular rights. Still, I might investigate this further as I'm
+    intrigued about many of the pseudo files in &lt;code&gt;/sys/fs/selinux&lt;/code&gt; that
+    I'm not fully sure yet what they deal with.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tmp_t&lt;/code&gt; should not be a major concern. Most (if not all) daemons and
+    services that use temporary files have file transitions to their own
+    type so that access to these files, even if it would be allowed by
+    regular permissions, is still prohibited by SELinux&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;lastlog_t&lt;/code&gt; is also a weird one, again because it shouldn't be
+    writeable for anyone else but root accounts; if succesfull, an
+    attacker can overwrite the lastlog information which might be used
+    by some as a means for debugging who was logged on when (part
+    of forensics).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Given the information above, it is a bit sad to see that SELinux can't
+protect PostgreSQL users from this particular vulnerability - most of
+the "mitigation" (if any) is because the process runs as non-root to
+begin with (which is another hint at users not to think SELinux is
+sufficient to restrict the permissions of processes). But could it have
+been different?&lt;/p&gt;
+&lt;p&gt;In my opinion, yes, and I'll see if we can learn from it for the future.&lt;/p&gt;
+&lt;p&gt;First of all, we should do more policy code auditing. It might not be
+easy to remove policy rules generally, but we should at least try. I use
+a small script that enables auditing (SELinux auditing, so &lt;em&gt;auditallow&lt;/em&gt;
+statements) for the entire domain, and then selectively disables
+auditing until I get no hits anymore. The remainder of &lt;em&gt;auditallow&lt;/em&gt;
+statements warrant a closer look to see if they are still needed or not.
+I'll get onto that in the next few days.&lt;/p&gt;
+&lt;p&gt;Second, we might want to have service accounts use a different home
+directory, where they do have the necessary search privileges for, but
+no write privileges. Exploits that write stuff into a home directory
+(hoping for a &lt;strong&gt;su postgresql -&lt;/strong&gt;) are then mitigated a bit.&lt;/p&gt;
+&lt;p&gt;Third, we might want to look into separating the domains according to
+the architecture of the service. This requires intimate knowledge of the
+ins and outs of PostgreSQL and might even require PostgreSQL patching,
+so is not something light. But if no patching is needed (such as when
+all process launches are done using known file executions) we could have
+a separate domain for the master process, server processes and perhaps
+even the various subfunction processes (like the WAL writer, BG writer,
+etc.). The Postfix service has such a more diverse (but also complex)
+policy. Such a subdomain structure in the policy might reduce the risk
+if the vulnerable process (I think this is the master process) does not
+need to write to database files (as this is handled by other processes),
+so no &lt;code&gt;postgresql_db_t&lt;/code&gt; write privileges.&lt;/p&gt;
+&lt;p&gt;If others have ideas on how we can improve service security (for
+instance through SELinux policy development) or knows of other exploits
+related to this vulnerability that I didn't come across yet, please give
+a comment on it below.&lt;/p&gt;</content><category term="Security"></category><category term="postgresql"></category><category term="selinux"></category><category term="vulnerability"></category></entry><entry><title>How far reaching vulnerabilities can go</title><link href="http://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/" rel="alternate"></link><published>2013-04-09T19:39:00+02:00</published><updated>2013-04-09T19:39:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-09:/2013/04/how-far-reaching-vulnerabilities-can-go/</id><summary type="html">&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
+significant security vulnerability. The PostgreSQL team announced it up
+front and communicated how they would deal with the vulnerability (which
+basically comes down to saying that it is severe, that the public
+repositories will be temporarily …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
+significant security vulnerability. The PostgreSQL team announced it up
+front and communicated how they would deal with the vulnerability (which
+basically comes down to saying that it is severe, that the public
+repositories will be temporarily frozen as developers add in the
+necessary fixes and start building the necessary software for a new
+release, and at the release moment give more details about the
+vulnerability.&lt;/p&gt;
+&lt;p&gt;The exploitability of the vulnerability was quickly identified, and we
+know that compromises wouldn't take long. A &lt;a href="http://schemaverse.tumblr.com/post/47312545952/the-schemaverse-was-hacked"&gt;blog
+post&lt;/a&gt;
+from the schemaverse tells us that exploits won't take long (less than
+24 hours) and due to the significance of the vulnerability, it cannot be
+stressed enough that patching should really be part of the minimal
+security requirements of any security-conscious organization. But
+patching alone isn't the only thing to consider.&lt;/p&gt;
+&lt;p&gt;The notice that PostgreSQL mentions also that restricting access to the
+database through &lt;code&gt;pg_hba.conf&lt;/code&gt; isn't sufficient, as the vulnerable code
+is executed before the &lt;code&gt;pg_hba.conf&lt;/code&gt; file is read. So one of the
+mitigations for the vulnerability would be a firewall (hostbased or
+network) that restricts access to the database so only trusted addresses
+are allowed. I'm personally an advocate in favor of hostbased firewalls.&lt;/p&gt;
+&lt;p&gt;But the thing that hits me the most, is the amount of applications that
+use "embedded" postgresql database services in their product. If you
+take part of a larger organization with a large portfolio of software
+titles running in the data center, you'll undoubtedly have seen lists
+(through network scans or otherwise) of systems that are running
+PostgreSQL as part of the product installation (and not as a "managed"
+database service). The HP GUIDManager or the NNMI components or the
+Systems Insight Manager use embedded PostgreSQL services. The cloudera
+manager can be easily set up with an "embedded" PostgreSQL (which
+doesn't mean it isn't a full-fledged PostgreSQL, but rather that the
+setup and management of the service is handled by the product instead of
+by "your own" DBA team). Same with Servoy.&lt;/p&gt;
+&lt;p&gt;I don't disagree with all products providing embedded database
+platforms, and especially not with choosing for PostgreSQL which I
+consider a very mature, stable and feature-rich (and not to be
+forgotten, very active community) database platform. But I do hope that
+these products take up their responsibility and release updated versions
+or patches for their installations to their customers &lt;em&gt;very&lt;/em&gt; soon.&lt;/p&gt;
+&lt;p&gt;Perhaps I should ask our security operational team to take a scan to
+actively follow-up on these...&lt;/p&gt;</content><category term="Security"></category><category term="firewall"></category><category term="patching"></category><category term="postgresql"></category><category term="security"></category></entry></feed>

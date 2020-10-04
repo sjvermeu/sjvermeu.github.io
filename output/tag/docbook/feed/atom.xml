@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - docbook</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/docbook/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-04-20T03:50:00+02:00</updated><entry><title>Transforming GuideXML to DocBook</title><link href="http://blog.siphos.be/2013/04/transforming-guidexml-to-docbook/" rel="alternate"></link><published>2013-04-20T03:50:00+02:00</published><updated>2013-04-20T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-20:/2013/04/transforming-guidexml-to-docbook/</id><summary type="html">&lt;p&gt;I recently
+&lt;a href="http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/docbook.xsl?sortby=date&amp;amp;view=log"&gt;committed&lt;/a&gt;
+an XSL stylesheet that allows us to transform the GuideXML documents
+(both guides and handbooks) to DocBook. This isn't part of a more
+elaborate move to try and push DocBook instead of GuideXML for the
+Gentoo Documentation though (I'd rather direct documentation development
+more to the Gentoo …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I recently
+&lt;a href="http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/docbook.xsl?sortby=date&amp;amp;view=log"&gt;committed&lt;/a&gt;
+an XSL stylesheet that allows us to transform the GuideXML documents
+(both guides and handbooks) to DocBook. This isn't part of a more
+elaborate move to try and push DocBook instead of GuideXML for the
+Gentoo Documentation though (I'd rather direct documentation development
+more to the Gentoo wiki instead once translations are allowed): instead,
+I use it to be able to generate our documentation in other formats (such
+as PDF but also ePub) when asked.&lt;/p&gt;
+&lt;p&gt;If you're not experienced with XSL: XSL stands for &lt;em&gt;Extensible
+Stylesheet Language&lt;/em&gt; and can be seen as a way of "programming" in XML. A
+stylesheet allows developers to transform one XML document towards
+another format (either another XML, or as &lt;a href="http://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/"&gt;text-like output like
+wiki&lt;/a&gt;)
+while manipulating its contents. In case of documentation, we try to
+keep as much structure in the document as possible, but other uses could
+be to transform a large XML with only a few interesting fields towards a
+very small XML (only containing those fields you need) for further
+processing.&lt;/p&gt;
+&lt;p&gt;For now (and probably for the foreseeable future), the stylesheet is to
+be used in an offline mode (we are not going to provide auto-generated
+PDFs of all documents) as the process to convert a document from
+GuideXML to DocBook to XML:FO to PDF is quite resource-intensive. But
+users that are interested can use the stylesheet as linked above to
+create their own PDFs of the documentation.&lt;/p&gt;
+&lt;p&gt;Assuming you have a checkout of the Gentoo documentation, this process
+can be done as follows (example for the AMD64 handbook):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ xsltproc docbook.xsl /path/to/handbook-amd64.xml &amp;gt; /somewhere/handbook-amd64.docbook
+$ cd /somewhere
+$ xsltproc --output handbook-amd64.fo --stringparam paper.type A4   
+ /usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl handbook-amd64.docbook
+$ fop handbook-amd64.fo handbook-amd64.pdf
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The docbook stylesheets are offered by the
+&lt;em&gt;app-text/docbook-xsl-stylesheets&lt;/em&gt; package whereas the &lt;strong&gt;fop&lt;/strong&gt; command
+is provided by &lt;em&gt;dev-java/fop&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;I have an example output available (temporarily) at my &lt;a href="http://dev.gentoo.org/~swift/tmp/handbook-amd64.pdf"&gt;dev space (amd64
+handbook)&lt;/a&gt; but I'm
+not going to maintain this for long (so the link might not work in the
+near future).&lt;/p&gt;</content><category term="Gentoo"></category><category term="docbook"></category><category term="Gentoo"></category><category term="guidexml"></category><category term="pdf"></category><category term="xsl"></category></entry></feed>

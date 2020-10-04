@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - portage</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/portage/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-01-21T23:05:00+01:00</updated><entry><title>Old Gentoo system? Not a problem...</title><link href="http://blog.siphos.be/2015/01/old-gentoo-system-not-a-problem/" rel="alternate"></link><published>2015-01-21T23:05:00+01:00</published><updated>2015-01-21T23:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-01-21:/2015/01/old-gentoo-system-not-a-problem/</id><summary type="html">&lt;p&gt;If you have a very old Gentoo system that you want to upgrade, you might
+have some issues with too old software and Portage which can't just
+upgrade to a recent state. Although many methods exist to work around
+it, one that I have found to be very useful is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you have a very old Gentoo system that you want to upgrade, you might
+have some issues with too old software and Portage which can't just
+upgrade to a recent state. Although many methods exist to work around
+it, one that I have found to be very useful is to have access to old
+Portage snapshots. It often allows the administrator to upgrade the
+system in stages (say in 6-months blocks), perhaps not the entire world
+but at least the system set.&lt;/p&gt;
+&lt;p&gt;Finding old snapshots might be difficult though, so at one point I
+decided to create &lt;a href="http://dev.gentoo.org/~swift/snapshots/"&gt;a list of old
+snapshots&lt;/a&gt;, two months apart,
+together with the GPG signature (so people can verify that the snapshot
+was not tampered with by me in an attempt to create a Gentoo botnet). I
+haven't needed it in a while anymore, but I still try to update the list
+every two months, which I just did with the snapshot of January 20th
+this year.&lt;/p&gt;
+&lt;p&gt;I hope it at least helps a few other admins out there.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="tree"></category></entry><entry><title>Stepping through the build process with ebuild</title><link href="http://blog.siphos.be/2014/04/stepping-through-the-build-process-with-ebuild/" rel="alternate"></link><published>2014-04-20T11:59:00+02:00</published><updated>2014-04-20T11:59:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-20:/2014/04/stepping-through-the-build-process-with-ebuild/</id><summary type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
+slightly modified. As I don't use the tool myself (it was a
+user-reported issue) I decided to quickly drum up a live ebuild for the
+application and install it (as the patch was in the upstream …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
+slightly modified. As I don't use the tool myself (it was a
+user-reported issue) I decided to quickly drum up a live ebuild for the
+application and install it (as the patch was in the upstream repository
+but not in a release yet). The patch is for
+&lt;a href="http://fcron.free.fr/"&gt;fcron&lt;/a&gt;'s SELinux support, so the file I created
+is
+&lt;a href="https://github.com/sjvermeu/gentoo.overlay/tree/master/sys-process/fcron"&gt;fcron-9999.ebuild&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Sadly, the build failed at the documentation generation (something about
+"No targets to create en/HTML/index.html"). That's unfortunate, because
+that means I'm not going to ask to push the live ebuild to the Portage
+tree itself (yet). But as my primary focus is to validate the patch (and
+not create a live ebuild) I want to ignore this error and go on. I don't
+need the fcron documentation right now, so how about I just continue?&lt;/p&gt;
+&lt;p&gt;To do so, I start using the &lt;strong&gt;ebuild&lt;/strong&gt; command. As the failure occurred
+in the build phase (&lt;em&gt;compile&lt;/em&gt;) and at the end (documentation was the
+last step), I tell Portage that it should assume the build has
+completed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then I tell Portage to install the (built) files into the &lt;code&gt;images/&lt;/code&gt;
+directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The installation phase fails again (with the same error as during the
+build, which is logical as the &lt;code&gt;Makefile&lt;/code&gt; can't install files that
+haven't been properly build yet.) As documentation is the last step, I
+tell Portage to assume the installation phase has completed as well,
+continuing with the merging of the files to the life file system:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.installed
+~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild qmerge
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Et voila, &lt;code&gt;fcron-9999&lt;/code&gt; is now installed on the system, ready to validate
+the patch I had to check.&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="phase"></category><category term="portage"></category></entry><entry><title>Upgrading old Gentoo installations</title><link href="http://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/" rel="alternate"></link><published>2013-12-29T14:18:00+01:00</published><updated>2013-12-29T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-29:/2013/12/upgrading-old-gentoo-installations/</id><summary type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+#463240&lt;/a&gt; about the
+difficulty of upgrading a Gentoo Linux deployment after a long time of
+inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading
+Gentoo&lt;/a&gt; article on the
+Gentoo wiki that describes in great detail how upgrades can be
+accomplished. But one of the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+#463240&lt;/a&gt; about the
+difficulty of upgrading a Gentoo Linux deployment after a long time of
+inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading
+Gentoo&lt;/a&gt; article on the
+Gentoo wiki that describes in great detail how upgrades can be
+accomplished. But one of the methods I personally suggest most is to do
+small, incremental upgrades.&lt;/p&gt;
+&lt;p&gt;Say you have a system from early 2009. Not too long ago, but also not
+that recent anymore. If you would upgrade that system using the regular
+approach, your system would probably be using a non-existing profile
+(the &lt;code&gt;/etc/make.profile&lt;/code&gt; symlink would point to a non-existing
+location), and if you switch the profile to an existing one, you might
+have to deal with problems like the profile requiring certain features
+(or EAPI version) that the software currently available on your system
+doesn't support.&lt;/p&gt;
+&lt;p&gt;This problem is mentioned in the upgrade guide through the following:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Make sure your Portage is updated before performing any profile
+changes.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;However, it does not tell how to update Portage. In my opinion the best
+way forward is to install an older Portage tree snapshot (somewhat more
+recent than your own deployment) and upgrade &lt;em&gt;at least&lt;/em&gt; portage, perhaps
+also the packages belonging to the &lt;em&gt;system&lt;/em&gt; set. So for a system that
+has not been updated since January 2009, you might want to try the
+portage tree snapshot of July 2009, then January 2010, then July 2010,
+etc. until you have a recent deployment again.&lt;/p&gt;
+&lt;p&gt;All that is left for you to do is to find such a snapshot (as the
+Portage tree snapshots from the mirrors are cleaned out after a few
+months). I try to keep a set of &lt;a href="http://dev.gentoo.org/~swift/snapshots/"&gt;Portage tree snapshots
+available&lt;/a&gt; with a 2-month
+period which should be sufficient for most users to gradually upgrade
+their systems.&lt;/p&gt;
+&lt;p&gt;Considering I've used this method a few times already I'm going to add
+them to the &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;upgrading
+instructions&lt;/a&gt; as well.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="upgrade"></category></entry><entry><title>The mix of libffi with other changes</title><link href="http://blog.siphos.be/2013/11/the-mix-of-libffi-with-other-changes/" rel="alternate"></link><published>2013-11-03T10:27:00+01:00</published><updated>2013-11-03T10:27:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-11-03:/2013/11/the-mix-of-libffi-with-other-changes/</id><summary type="html">&lt;p&gt;I &lt;a href="http://blog.siphos.be/2013/04/securely-handling-libffi/"&gt;once again&lt;/a&gt;
+came across libffi. Not only does the libffi approach fight with SELinux
+alone, it also triggers the TPE (Trusted Path Execution) protections in
+grSecurity. And when I tried to reinstall Portage, Portage seemed to
+create some sort of runtime environment in a temporary directory as
+well, and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I &lt;a href="http://blog.siphos.be/2013/04/securely-handling-libffi/"&gt;once again&lt;/a&gt;
+came across libffi. Not only does the libffi approach fight with SELinux
+alone, it also triggers the TPE (Trusted Path Execution) protections in
+grSecurity. And when I tried to reinstall Portage, Portage seemed to
+create some sort of runtime environment in a temporary directory as
+well, and SELinux wasn't up to allowing that either.&lt;/p&gt;
+&lt;p&gt;Let's first talk about a quick workaround for the libffi-with-TPE issue.
+Because libffi wants to create executable files in a world-writable
+directory and then execute that file (try finding the potential security
+issue here) TPE is prohibiting the execution. The easiest workaround is
+to add the &lt;code&gt;portage&lt;/code&gt; Linux user, as well as the Linux accounts that you
+use to run emerge with (even just things like &lt;strong&gt;emerge --info&lt;/strong&gt;) in the
+&lt;code&gt;wheel&lt;/code&gt; group. This group is exempt from TPE protections (unless you
+configured a different group in your kernel for this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# zgrep CONFIG_GRKERNSEC_TPE_TRUSTED_GID /proc/config.gz
+CONFIG_GRKERNSEC_TPE_TRUSTED_GID=10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next we also need to allow the &lt;code&gt;portage_t&lt;/code&gt; domain to execute files
+labeled with &lt;code&gt;portage_tmpfs_t&lt;/code&gt;. You can do this by creating your own
+SELinux policy module with the following content (or use selocal):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;can_exec(portage_t, portage_tmpfs_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This works around the libffi issue for now. A better solution still has
+to be implemented (as discussed in the previous post).&lt;/p&gt;
+&lt;p&gt;With regards to the portage installation failing, you'll notice this
+quickly when you get an error like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge -1 portage
+Calculating dependencies  ... done!
+Traceback (most recent call last):
+  File &amp;quot;/usr/bin/emerge&amp;quot;, line 50, in &amp;lt;module&amp;gt;
+    retval = emerge_main()
+  File &amp;quot;/usr/lib64/portage/pym/_emerge/main.py&amp;quot;, line 1031, in emerge_main
+    return run_action(emerge_config)
+  File &amp;quot;/usr/lib64/portage/pym/_emerge/actions.py&amp;quot;, line 4062, in run_action
+    emerge_config.args, spinner)
+  File &amp;quot;/usr/lib64/portage/pym/_emerge/actions.py&amp;quot;, line 453, in action_build
+    retval = mergetask.merge()
+  File &amp;quot;/usr/lib64/portage/pym/_emerge/Scheduler.py&amp;quot;, line 946, in merge
+    rval = self._handle_self_update()
+  File &amp;quot;/usr/lib64/portage/pym/_emerge/Scheduler.py&amp;quot;, line 316, in _handle_self_update
+    _prepare_self_update(self.settings)
+  File &amp;quot;/usr/lib64/portage/pym/portage/package/ebuild/doebuild.py&amp;quot;, line 2326, in _prepare_self_update
+    shutil.copytree(orig_bin_path, portage._bin_path, symlinks=True)
+  File &amp;quot;/usr/lib64/portage/pym/portage/__init__.py&amp;quot;, line 259, in __call__
+    rval = self._func(*wrapped_args, **wrapped_kwargs)
+  File &amp;quot;/usr/lib64/python3.3/shutil.py&amp;quot;, line 343, in copytree
+    raise Error(errors)
+shutil.Error: [(b&amp;#39;/usr/lib64/portage/bin/ebuild-helpers/prepalldocs&amp;#39;, 
+b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/prepalldocs&amp;#39;, 
+&amp;quot;[Errno 13] Permission denied: &amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/prepalldocs&amp;#39;&amp;quot;), 
+(b&amp;#39;/usr/lib64/portage/bin/ebuild-helpers/prepinfo&amp;#39;, 
+b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/prepinfo&amp;#39;, 
+&amp;quot;[Errno 13] Permission denied: &amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/prepinfo&amp;#39;&amp;quot;), 
+(b&amp;#39;/usr/lib64/portage/bin/ebuild-helpers/newlib.so&amp;#39;, 
+b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib.so&amp;#39;, 
+&amp;quot;[Errno 13] Permission denied: &amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib.so&amp;#39;&amp;quot;), 
+[...]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And the errors go on and on and on.&lt;/p&gt;
+&lt;p&gt;I've been able to get it working again by allowing the following SELinux
+permissions:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t portage_tmp_t:dir relabel_dir_perms;
+allow portage_t portage_tmp_t:lnk_file relabel_lnk_file_perms;
+allow portage_t bin_t:dir relabel_dir_perms;
+allow portage_t bin_t:file relabel_file_perms;
+allow portage_t bin_t:lnk_file relabel_lnk_file_perms;
+allow portage_t portage_exec_t:file relabel_file_perms;
+allow portage_t portage_fetch_exec_t:file relabel_file_perms;
+allow portage_t lib_t:dir relabel_dir_perms;
+allow portage_t lib_t:file relabel_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can somewhat shorten this by combining types (but this doesn't work
+with selocal for now):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
+allow portage_t { portage_tmp_t bin_t }:lnk_file relabel_lnk_file_perms;
+allow portage_t { bin_t portage_exec_t portage_fetch_exec_t lib_t}:file relabel_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At the end of the emerge process (when the new portage is installed) you
+might want to reset the labels of all files provided by the portage
+package:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rlpkg portage
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;These changes have not been passed into the policy yet as I first need
+to find out why exactly they are needed, and as you can see from &lt;a href="http://dev.gentoo.org/devaway/"&gt;the
+gentoo devaway&lt;/a&gt; page, time is not on my
+side to do this. I'll try to free up some time in the next few days to
+handle this as well as the &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;SELinux userspace
+release&lt;/a&gt; but no
+promises here.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; I found why - it is the &lt;code&gt;_prepare_self_update&lt;/code&gt; in the
+&lt;code&gt;doebuild.py&lt;/code&gt; script. It creates temporary copies of the Portage
+binaries and Portage python libraries, which is why we need to support
+relabel operations on the files. Support for this is now in the policy
+repository.&lt;/p&gt;
+&lt;/p&gt;</content><category term="Security"></category><category term="Gentoo"></category><category term="hardened"></category><category term="libffi"></category><category term="portage"></category><category term="selinux"></category></entry><entry><title>Underestimated or underused: Portage (e)logging</title><link href="http://blog.siphos.be/2013/09/underestimated-or-underused-portage-elogging/" rel="alternate"></link><published>2013-09-25T10:09:00+02:00</published><updated>2013-09-25T10:09:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-09-25:/2013/09/underestimated-or-underused-portage-elogging/</id><summary type="html">&lt;p&gt;Within 30 minutes of each other, two people on the &lt;code&gt;#gentoo&lt;/code&gt; channel
+asked if Portage kept logs of the messages displayed during the build
+and installation of a package. Of course, the answer is a sounding "yes"
+- and depending on your needs, you can even save more of the logging …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Within 30 minutes of each other, two people on the &lt;code&gt;#gentoo&lt;/code&gt; channel
+asked if Portage kept logs of the messages displayed during the build
+and installation of a package. Of course, the answer is a sounding "yes"
+- and depending on your needs, you can even save more of the logging. If
+you haven't read the &lt;a href="http://www.gentoo.org/doc/en/handbook"&gt;Gentoo
+handbook&lt;/a&gt; yet, do so - it
+contains a section on &lt;a href="http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=3&amp;amp;chap=1#doc_chap4"&gt;Logging
+Features&lt;/a&gt;
+that explains how and when logging is enabled.&lt;/p&gt;
+&lt;p&gt;Let's start with the default &lt;em&gt;elog&lt;/em&gt; support. By default, Gentoo's
+Portage will log messages that ebuild developers have put in the
+packages through the use of the &lt;code&gt;elog&lt;/code&gt;, &lt;code&gt;ewarn&lt;/code&gt; and &lt;code&gt;eerror&lt;/code&gt; functions.
+These methods are used by the developers to notify the administrator
+about something useful or important (usually &lt;code&gt;elog&lt;/code&gt;), a potential issue
+that might occur (&lt;code&gt;ewarn&lt;/code&gt;) or even a problem that was found (&lt;code&gt;eerror&lt;/code&gt;).
+Let's look at a snippet of the &lt;code&gt;app-admin/eselect-postgresql-1.0.10&lt;/code&gt;
+package:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pkg_postinst() {
+    ewarn &amp;quot;If you are updating from app-admin/eselect-postgresql-0.4 or older, run:&amp;quot;
+    ewarn
+    ewarn &amp;quot;    eselect postgresql update&amp;quot;
+    ewarn
+    ewarn &amp;quot;To get your system in a proper state.&amp;quot;
+    elog &amp;quot;You should set your desired PostgreSQL slot:&amp;quot;
+    elog &amp;quot;    eselect postgresql list&amp;quot;
+    elog &amp;quot;    eselect postgresql set &amp;quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here, the developer warns the administrator that, if an upgrade of the
+package from version 0.4 or older occurred, an additional action needs
+to be taken. For others, he informs the administrators how to mark the
+proper active PostgreSQL slot (using the &lt;code&gt;elog&lt;/code&gt; methods).&lt;/p&gt;
+&lt;p&gt;Portage will save this information by default in &lt;code&gt;/var/log/portage/elog&lt;/code&gt;
+as separate files for each deployment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ls /var/log/portage/elog/*eselect-postgres*
+/var/log/portage/elog/app-admin:eselect-postgresql-1.0.10:20130818-184756.log
+/var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-131631.log
+/var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-200851.log
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If &lt;code&gt;FEATURES="split-elog"&lt;/code&gt; is set in your &lt;code&gt;make.conf&lt;/code&gt; file, then the
+elog files will be stored in separate category subdirectories. Below is
+the content of such a single file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ cat /var/log/portage/elog/app-admin\:eselect-postgresql-1.0.10\:20130818-184756.log
+INFO: setup
+Package:    app-admin/eselect-postgresql-1.0.10
+Repository: gentoo
+Maintainer: titanofold@gentoo.org postgresql
+USE:        abi_x86_64 amd64 elibc_glibc kernel_linux multilib selinux userland_GNU
+FEATURES:   preserve-libs sandbox selinux sesandbox
+WARN: postinst
+If you are updating from app-admin/eselect-postgresql-0.4 or older, run:
+
+    eselect postgresql update
+
+To get your system in a proper state.
+LOG: postinst
+You should set your desired PostgreSQL slot:
+    eselect postgresql list
+    eselect postgresql set &amp;lt;slot&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the file, package information is provided, and each set of logging
+paragraphs is accompanied with information where in the build process
+the logging came up. For instance, &lt;code&gt;WARN: postinst&lt;/code&gt; sais that the
+following text is through the &lt;code&gt;ewarn&lt;/code&gt; method in the post install phase
+of the package installation process.&lt;/p&gt;
+&lt;p&gt;By default Portage logs this, but you can ask it to mail the logs as
+well. For more information about that, check the handbook link earlier
+and look for the &lt;code&gt;PORTAGE_ELOG_SYSTEM&lt;/code&gt; and &lt;code&gt;PORTAGE_ELOG_MAIL*&lt;/code&gt;
+variables. Or look at &lt;strong&gt;man make.conf&lt;/strong&gt; which also contains all the
+information needed.&lt;/p&gt;
+&lt;p&gt;Now, this only pertains to the specific logging that ebuild maintainers
+added in the packages. But what if you want to keep track of all the
+build logs? In that case, you need to define &lt;code&gt;PORT_LOGDIR&lt;/code&gt; in your
+&lt;code&gt;make.conf&lt;/code&gt; file. This variable has to point to a location where Portage
+(which usually runs as the &lt;code&gt;portage&lt;/code&gt; Linux user) has write access to and
+where it is allowed to store the build logs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ grep PORT_LOGDIR /etc/portage/make.conf 
+PORT_LOGDIR=&amp;quot;/var/log/portage&amp;quot;
+~$ ls -ldZ /var/log/portage/
+drwxrwsr-x. 3 portage portage system_u:object_r:portage_log_t 679936 Sep 24 13:12 /var/log/portage/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With the variable set, build logs will be provided for each emerge (and
+unmerge) operation of the package. These logs contain everything shown
+on the terminal during a build process. Of course, this directory will
+grow considerably in size so it is wise to properly handle old log
+files. You can use logrotate for this, or just a single cronjob that
+cleans up log files older than say 6 months. But Portage also provides
+this functionality. If you set &lt;code&gt;FEATURES="clean-logs"&lt;/code&gt; in your
+&lt;code&gt;make.conf&lt;/code&gt; file, then all log files older than 7 days will be removed
+from the system. You can fine-tune this by setting &lt;code&gt;PORT_LOGDIR_CLEAN&lt;/code&gt;
+to the command you want executed. Its default value can be found in the
+&lt;code&gt;/usr/share/portage/config/make.globals&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;If you set &lt;code&gt;PORT_LOGDIR&lt;/code&gt;, be aware that the elog files (described at the
+beginning) will be stored in &lt;code&gt;${PORT_LOGDIR}/elog&lt;/code&gt;. Similar to the
+elogging, build logging can also be done in category subdirectories. If
+&lt;code&gt;FEATURES="split-log"&lt;/code&gt; is set, the build logs will be stored in
+&lt;code&gt;${PORT_LOGDIR}/build/&amp;lt;category&amp;gt;&lt;/code&gt; instead of &lt;code&gt;${PORT_LOGDIR}&lt;/code&gt; directly.&lt;/p&gt;
+&lt;p&gt;Hopefully this post brings some users closer to this nice feature of
+Portage.&lt;/p&gt;</content><category term="Gentoo"></category><category term="elog"></category><category term="Gentoo"></category><category term="logging"></category><category term="portage"></category></entry><entry><title>Why our policies don't like emerge --config</title><link href="http://blog.siphos.be/2013/08/why-our-policies-dont-like-emerge-config/" rel="alternate"></link><published>2013-08-23T11:53:00+02:00</published><updated>2013-08-23T11:53:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/why-our-policies-dont-like-emerge-config/</id><summary type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
+done on request of the administrator for certain packages. For instance,
+for the &lt;code&gt;dev-db/postgresql-server&lt;/code&gt; package we can call its
+&lt;code&gt;pkg_config()&lt;/code&gt; phase to create the PostgreSQL instance and configure it
+so that the configuration of the database is stored …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
+done on request of the administrator for certain packages. For instance,
+for the &lt;code&gt;dev-db/postgresql-server&lt;/code&gt; package we can call its
+&lt;code&gt;pkg_config()&lt;/code&gt; phase to create the PostgreSQL instance and configure it
+so that the configuration of the database is stored in
+&lt;code&gt;/etc/postgresql-9.2&lt;/code&gt; rather than together with the data files.&lt;/p&gt;
+&lt;p&gt;When you run Gentoo with SELinux however, you might already have noticed
+that this doesn't work. The reason is that, whenever an administrator
+calls &lt;strong&gt;emerge&lt;/strong&gt;, the process (and by default its child processes) will
+run in a confined domain called &lt;code&gt;portage_t&lt;/code&gt;. The domain is still quite
+privileged, but not as privileged as the administrator domain
+&lt;code&gt;sysadm_t&lt;/code&gt;. It holds the rights to build software and install files,
+directories and other things on the file system. But it does not support
+switching users for instance, which is what the PostgreSQL
+&lt;code&gt;pkg_config()&lt;/code&gt; does: it wants to run a certain command as the &lt;code&gt;postgres&lt;/code&gt;
+user, which is prohibited by SELinux.&lt;/p&gt;
+&lt;p&gt;I'm not sure yet how to tackle this properly. One thing is that I might
+update Portage to run in the user domain by default, and transition
+dynamically towards the proper domains according to the task(s) it is
+executing. We already do this for building software (where we transition
+to a &lt;code&gt;portage_sandbox_t&lt;/code&gt; confined domain), perhaps it can be expanded to
+support transitioning to &lt;code&gt;portage_t&lt;/code&gt; when it isn't running the
+&lt;code&gt;pkg_config()&lt;/code&gt; phase. But that means injecting (more) SELinux-specific
+code in Portage, something I'd rather not do (introduces additional
+complexity and maintenance).&lt;/p&gt;
+&lt;p&gt;Another possibility would be to have administrators explicitly state
+that no transition should occur, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With a minor addition to the policy, this gave me a good hope... until I
+noticed that &lt;strong&gt;emerge&lt;/strong&gt; underlyingly calls &lt;strong&gt;ebuild&lt;/strong&gt; and &lt;strong&gt;ebuild.sh&lt;/strong&gt;,
+both labeled as &lt;code&gt;portage_exec_t&lt;/code&gt;, so these calls transition to
+&lt;code&gt;portage_t&lt;/code&gt; again.&lt;/p&gt;
+&lt;p&gt;I'm going to look further into this - there are quite a few options
+still open.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="pkg_config"></category><category term="portage"></category><category term="selinux"></category></entry></feed>

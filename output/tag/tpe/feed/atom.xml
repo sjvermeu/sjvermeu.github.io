@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - tpe</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/tpe/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-05T03:50:00+02:00</updated><entry><title>Overview of Linux capabilities, part 2</title><link href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/" rel="alternate"></link><published>2013-05-05T03:50:00+02:00</published><updated>2013-05-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-05:/2013/05/overview-of-linux-capabilities-part-2/</id><summary type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+capabilities&lt;/a&gt;
+and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
+them&lt;/a&gt;,
+I started with a small overview of
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;file-related&lt;/a&gt;
+capabilities. So next up are process-related capabilities (note, this
+isn't a conform terminology, more some categorization that I do myself).&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;CAP_IPC_LOCK&lt;/dt&gt;
+&lt;dd&gt;Allow the …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+capabilities&lt;/a&gt;
+and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
+them&lt;/a&gt;,
+I started with a small overview of
+&lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;file-related&lt;/a&gt;
+capabilities. So next up are process-related capabilities (note, this
+isn't a conform terminology, more some categorization that I do myself).&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;CAP_IPC_LOCK&lt;/dt&gt;
+&lt;dd&gt;Allow the process to lock memory&lt;/dd&gt;
+&lt;dt&gt;CAP_IPC_OWNER&lt;/dt&gt;
+&lt;dd&gt;Bypass the permission checks for operations on System V IPC objects
+(similar to the &lt;code&gt;CAP_DAC_OVERRIDE&lt;/code&gt; for files)&lt;/dd&gt;
+&lt;dt&gt;CAP_KILL&lt;/dt&gt;
+&lt;dd&gt;Bypass permission checks for sending signals&lt;/dd&gt;
+&lt;dt&gt;CAP_SETUID&lt;/dt&gt;
+&lt;dd&gt;Allow the process to make arbitrary manipulations of process UIDs
+and create forged UID when passing socket credentials via UNIX
+domain sockets&lt;/dd&gt;
+&lt;dt&gt;CAP_SETGID&lt;/dt&gt;
+&lt;dd&gt;Same, but then for GIDs&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_NICE&lt;/dt&gt;
+&lt;dd&gt;
+&lt;p&gt;This capability governs several permissions/abilities, namely to
+allow the process to
+&lt;/p&gt;
+-   change the &lt;em&gt;nice&lt;/em&gt; value of itself and other processes
+-   set real-time scheduling priorities for itself, and set
+    scheduling policies and priorities for arbitrary processes
+-   set the CPU affinity for arbitrary processes
+-   apply &lt;em&gt;migrate_pages&lt;/em&gt; to arbitrary processes and allow
+    processes to be migrated to arbitrary nodes
+-   apply &lt;em&gt;move_pages&lt;/em&gt; to arbitrary processes
+-   use the &lt;code&gt;MPOL_MF_MOVE_ALL&lt;/code&gt; flag with &lt;em&gt;mbind()&lt;/em&gt; and
+    &lt;em&gt;move_pages()&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;p&gt;
+The abilities related to page moving, migration and nodes is of
+importance for NUMA systems, not something most workstations have
+or need.&lt;/p&gt;
+&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_PACCT&lt;/dt&gt;
+&lt;dd&gt;Use &lt;em&gt;acct()&lt;/em&gt;, to enable or disable system resource accounting for
+the process&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_PTRACE&lt;/dt&gt;
+&lt;dd&gt;Allow the process to trace arbitrary processes using &lt;em&gt;ptrace()&lt;/em&gt;,
+apply &lt;em&gt;get_robust_list()&lt;/em&gt; against arbitrary processes and inspect
+processes using &lt;em&gt;kcmp()&lt;/em&gt;.&lt;/dd&gt;
+&lt;dt&gt;CAP_SYS_RAWIO&lt;/dt&gt;
+&lt;dd&gt;Allow the process to perform I/O port operations, access
+&lt;code&gt;/proc/kcore&lt;/code&gt; and employ the &lt;code&gt;FIBMAP&lt;/code&gt; &lt;em&gt;ioctl()&lt;/em&gt; operation.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;Capabilities such as &lt;code&gt;CAP_KILL&lt;/code&gt; and &lt;code&gt;CAP_SETUID&lt;/code&gt; are very important to
+govern correctly, but this post would be rather dull (given that the
+definitions of the above capabilities can be found from the manual page)
+if I wouldn't talk a bit more about its feasibility. Take a look at the
+following C application code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#include &amp;lt;errno.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;sys/capability.h&amp;gt;
+#include &amp;lt;sys/prctl.h&amp;gt;
+#include &amp;lt;sys/types.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+
+int main(int argc, char ** argv) {
+  printf(&amp;quot;cap_setuid and cap_setgid: %d\n&amp;quot;, prctl(PR_CAPBSET_READ, CAP_SETUID|CAP_SETGID, 0, 0, 0));
+  printf(&amp;quot; %s\n&amp;quot;, cap_to_text(cap_get_file(argv[0]), NULL));
+  printf(&amp;quot; %s\n&amp;quot;, cap_to_text(cap_get_proc(), NULL));
+  if (setresuid(0, 0, 0));
+    printf(&amp;quot;setresuid(): %s\n&amp;quot;, strerror(errno));
+  execve(&amp;quot;/bin/sh&amp;quot;, NULL, NULL);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At first sight, it looks like an application to get root privileges
+(&lt;em&gt;setresuid()&lt;/em&gt;) and then spawn a shell. If that application would be
+given &lt;code&gt;CAP_SETUID&lt;/code&gt; and &lt;code&gt;CAP_SETGID&lt;/code&gt; effectively, it would allow anyone
+who executed it to automatically get a root shell, wouldn't it?&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gcc -o test -lcap test.c
+# setcap cap_setuid,cap_setgid+ep test
+$ ./test
+cap_setuid and cap_setgid: 1
+ = cap_setgid,cap_setuid+ep
+ =
+setresuid() failed: Operation not permitted
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So what happened? After all, the two capabilities are set with the &lt;em&gt;+ep&lt;/em&gt;
+flags given. Then why aren't these capabilities enabled? Well, this
+binary was stored on a file system that is mounted with the &lt;em&gt;nosuid&lt;/em&gt;
+option. As a result, this capability is &lt;em&gt;not&lt;/em&gt; enabled and the
+application didn't work. If I move the file to another file system that
+doesn't have the &lt;em&gt;nosuid&lt;/em&gt; option:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
+cap_setuid and cap_setgid: 1
+ = cap_setgid,cap_setuid+ep
+ = cap_setgid,cap_setuid+ep
+setresuid() failed: Operation not permitted
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So the capabilities now do get enabled, so why does this still fail?
+This now is due to SELinux:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&amp;quot;test&amp;quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And if you enable grSecurity's TPE, we can't even start the binary to
+begin with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ./test
+-bash: ./test: Permission denied
+$ /lib/ld-linux-x86-64.so.2 /home/test/test
+/home/test/test: error while loading shared libraries: /home/test/test: failed to map segment from shared object: Permission denied
+
+# dmesg
+...
+[ 5579.567842] grsec: From 192.168.100.1: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/test/test by /home/test/test[bash:4221] uid/euid:1002/1002 gid/egid:100/100, parent /bin/bash[bash:4195] uid/euid:1002/1002 gid/egid:100/100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When all these "security obstacles" are not enabled, then the call
+succeeds:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
+cap_setuid and cap_setgid: 1
+ = cap_setgid,cap_setuid+ep
+ = cap_setgid,cap_setuid+ep
+setresuid() failed: Success
+root@hpl tmp #
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This again shows how important it is to regularly review
+capability-enabled files on the file system, as this is a major security
+problem that cannot be detected by only looking for setuid binaries, but
+also that securing a system is not limited to one or a few settings: one
+always has to take the entire setup into consideration, hardening the
+system so it becomes more difficult for malicious users to abuse it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# filecap -a
+file                 capabilities
+/usr/local/bin/test     setgid, setuid
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="grsecurity"></category><category term="linux"></category><category term="nosuid"></category><category term="selinux"></category><category term="tpe"></category></entry></feed>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - event</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/event/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-17T03:50:00+02:00</updated><entry><title>Looking at the local Linux kernel privilege escalation</title><link href="http://blog.siphos.be/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/" rel="alternate"></link><published>2013-05-17T03:50:00+02:00</published><updated>2013-05-17T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-17:/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/</id><summary type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
+escalation, which has received the
+&lt;a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2094"&gt;CVE-2013-2094&lt;/a&gt;
+ID.
+&lt;a href="http://arstechnica.com/security/2013/05/critical-linux-vulnerability-imperils-users-even-after-silent-fix/"&gt;arstechnica&lt;/a&gt;
+has a write-up with links to good resources on the Internet, but I
+definitely want to point readers to the
+&lt;a href="http://www.reddit.com/r/netsec/comments/1eb9iw/sdfucksheeporgs_semtexc_local_linux_root_exploit/c9ykrck"&gt;explanation&lt;/a&gt;
+that Brad Spengler made on the vulnerability.&lt;/p&gt;
+&lt;p&gt;In …&lt;/p&gt;</summary><content type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
+escalation, which has received the
+&lt;a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2094"&gt;CVE-2013-2094&lt;/a&gt;
+ID.
+&lt;a href="http://arstechnica.com/security/2013/05/critical-linux-vulnerability-imperils-users-even-after-silent-fix/"&gt;arstechnica&lt;/a&gt;
+has a write-up with links to good resources on the Internet, but I
+definitely want to point readers to the
+&lt;a href="http://www.reddit.com/r/netsec/comments/1eb9iw/sdfucksheeporgs_semtexc_local_linux_root_exploit/c9ykrck"&gt;explanation&lt;/a&gt;
+that Brad Spengler made on the vulnerability.&lt;/p&gt;
+&lt;p&gt;In short, the vulnerability is an &lt;em&gt;out-of-bound&lt;/em&gt; access to an array
+within the Linux perf code (which is a performance measuring subsystem
+enabled when &lt;code&gt;CONFIG_PERF_EVENTS&lt;/code&gt; is enabled). This subsystem is often
+enabled as it offers a wide range of performance measurement techniques
+(see &lt;a href="https://perf.wiki.kernel.org/index.php/Main_Page"&gt;its wiki&lt;/a&gt; for
+more information). You can check on your own system through the kernel
+configuration (&lt;strong&gt;zgrep CONFIG_PERF_EVENTS /proc/config.gz&lt;/strong&gt; if you
+have the latter pseudo-file available - it is made available through
+&lt;code&gt;CONFIG_IKCONFIG_PROC&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;The public exploit maps memory in userland, fills it with known data,
+then triggers an out-of-bound decrement that tricks the kernel into
+decrementing this data (mapped in userland). By looking at where the
+decrement occurred, the exploit now knows the base address of the array.
+Next, it targets (through the same vulnerability) the IDT base
+(Interrupt Descriptor Table) and targets the overflow interrupt vector.
+It increments the top part of the address that the vector points to
+(which is 0xffffffff, becoming 0x00000000 thus pointing to the
+userland), maps this memory region itself with shellcode, and then
+triggers the overflow. The shell code used in the public exploit
+modifies the credentials of the current task, sets uid/gid with root and
+gives full capabilities, and then executes a shell.&lt;/p&gt;
+&lt;p&gt;As Brad mentions, &lt;a href="https://grsecurity.net/~spender/uderef.txt"&gt;UDEREF&lt;/a&gt;
+(an option in a grSecurity enabled kernel) should mitigate the attempt
+to get to the userland. On my system, the exploit fails with the
+following (start of) oops (without affecting the system further) when it
+tries to close the file descriptor returned from the syscall that
+invokes the decrement:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
+[ 1926.227019] BUG: unable to handle kernel paging request at 0000000381f5815c
+[ 1926.227019] IP: [] sw_perf_event_destroy+0x1a/0xa0
+[ 1926.227019] PGD 58a7c000 
+[ 1926.227019] Thread overran stack, or stack corrupted
+[ 1926.227019] Oops: 0002 [#4] PREEMPT SMP 
+[ 1926.227019] Modules linked in: libcrc32c
+[ 1926.227019] CPU 0 
+[ 1926.227019] Pid: 4267, comm: test Tainted: G      D      3.8.7-hardened #1 Bochs Bochs
+[ 1926.227019] RIP: 0010:[]  [] sw_perf_event_destroy+0x1a/0xa0
+[ 1926.227019] RSP: 0018:ffff880058a03e08  EFLAGS: 00010246
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The exploit also finds that the decrement didn't succeed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A second mitigation is that
+&lt;a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf"&gt;KERNEXEC&lt;/a&gt;
+(also offered through grSecurity) which prevents the kernel from
+executing data that is writable (including userland data). So modifying
+the IDT would be mitigated as well.&lt;/p&gt;
+&lt;p&gt;Another important mitigation is TPE - &lt;em&gt;Trusted Path Execution&lt;/em&gt;. This
+feature prevents the execution of binaries that are not located in a
+root-owned directory and owned by a trusted group (which on my system is
+10 = wheel). So users attempting to execute such code will fail with a
+&lt;em&gt;Permission denied&lt;/em&gt; error, and the following is shown in the logs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, even though a nicely hardened system should be fairly immune
+against the currently circling public exploit, it should be noted that
+it is not immune against the vulnerability itself. The methods above
+mentioned make it so that that particular way of gaining root access is
+not possible, but it still allows an attacker to decrement and increment
+memory in specific locations so other exploits might be found to modify
+the system.&lt;/p&gt;
+&lt;p&gt;Now out-of-bound vulnerabilities are not new. Recently (february this
+year), a
+&lt;a href="http://www.phoronix.com/scan.php?page=news_item&amp;amp;px=MTMxMTg"&gt;vulnerability&lt;/a&gt;
+in the networking code also provided an attack vector to get a local
+privilege escalation. A mandatory access control system like SELinux has
+little impact on such vulnerabilities if you allow users to execute
+their own code. Even confined users can modify the exploit to disable
+SELinux (since the shell code is ran with ring0 privileges it can access
+and modify the SELinux state information in the kernel).&lt;/p&gt;
+&lt;p&gt;Many thanks to Brad for the excellent write-up, and to the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo
+Hardened&lt;/a&gt; team for providing the
+grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="Security"></category><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry></feed>

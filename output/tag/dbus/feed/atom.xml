@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - dbus</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/dbus/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-06-30T20:07:00+02:00</updated><entry><title>D-Bus and SELinux</title><link href="http://blog.siphos.be/2014/06/d-bus-and-selinux/" rel="alternate"></link><published>2014-06-30T20:07:00+02:00</published><updated>2014-06-30T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-30:/2014/06/d-bus-and-selinux/</id><summary type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
+D-Bus&lt;/a&gt; comes the
+inevitable related post about SELinux with D-Bus.&lt;/p&gt;
+&lt;p&gt;Some users might not know that D-Bus is an SELinux-aware application.
+That means it has SELinux-specific code in it, which has the D-Bus
+behavior based on the SELinux policy (and might not necessarily honor
+the "permissive …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
+D-Bus&lt;/a&gt; comes the
+inevitable related post about SELinux with D-Bus.&lt;/p&gt;
+&lt;p&gt;Some users might not know that D-Bus is an SELinux-aware application.
+That means it has SELinux-specific code in it, which has the D-Bus
+behavior based on the SELinux policy (and might not necessarily honor
+the "permissive" flag). This code is used as an additional
+authentication control within D-Bus.&lt;/p&gt;
+&lt;p&gt;Inside the SELinux policy, a &lt;em&gt;dbus&lt;/em&gt; permission class is supported, even
+though the Linux kernel doesn't do anything with this class. The class
+is purely for D-Bus, and it is D-Bus that checks the permission
+(although work is being made to &lt;a href="https://lwn.net/Articles/580194/"&gt;implement D-Bus in kernel
+(kdbus)&lt;/a&gt;). The class supports two
+permission checks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;acquire_svc&lt;/em&gt; which tells the domain(s) allowed to "own" a service
+    (which might, thanks to the SELinux support, be different from the
+    domain itself)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;send_msg&lt;/em&gt; which tells which domain(s) can send messages to a
+    service domain&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Inside the D-Bus security configuration (the &lt;code&gt;busconfig&lt;/code&gt; XML file,
+remember) a service configuration might tell D-Bus that the service
+itself is labeled differently from the process that owned the service.
+The default is that the service inherits the label from the domain, so
+when &lt;code&gt;dnsmasq_t&lt;/code&gt; registers a service on the system bus, then this
+service also inherits the &lt;code&gt;dnsmasq_t&lt;/code&gt; label.&lt;/p&gt;
+&lt;p&gt;The necessary permission checks for the &lt;code&gt;sysadm_t&lt;/code&gt; user domain to send
+messages to the dnsmasq service, and the dnsmasq service itself to
+register it as a service:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
+allow sysadm_t dnsmasq_t:dbus send_msg;
+allow dnsmasq_t sysadm_t:dbus send_msg;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For the &lt;code&gt;sysadm_t&lt;/code&gt; domain, the two rules are needed as we usually not
+only want to send a message to a D-Bus service, but also receive a reply
+(which is also handled through a &lt;em&gt;send_msg&lt;/em&gt; permission but in the
+inverse direction).&lt;/p&gt;
+&lt;p&gt;However, with the following XML snippet inside its service configuration
+file, owning a certain resource is checked against a different label:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
+  &amp;lt;selinux&amp;gt;
+    &amp;lt;associate
+      own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;
+      context=&amp;quot;system_u:object_r:dnsmasq_dbus_t:s0&amp;quot; /&amp;gt;
+  &amp;lt;/selinux&amp;gt;
+&amp;lt;/busconfig&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this, the rules would become as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
+allow dnsmasq_t self:dbus send_msg;
+allow sysadm_t dnsmasq_t:dbus send_msg;
+allow dnsmasq_t sysadm_t:dbus send_msg;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that &lt;em&gt;only&lt;/em&gt; the access for acquiring a service based on a name
+(i.e. owning a service) is checked based on the different label. Sending
+and receiving messages is still handled by the domains of the processes
+(actually the labels of the connections, but these are always the
+process domains).&lt;/p&gt;
+&lt;p&gt;I am not aware of any policy implementation that uses a different label
+for owning services, and the implementation is more suited to "force"
+D-Bus to only allow services with a correct label. This ensures that
+other domains that might have enough privileges to interact with D-Bus
+and own a service cannot own these particular services. After all, other
+services don't usually have the privileges (policy-wise) to
+&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="SELinux"></category><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>D-Bus, quick recap</title><link href="http://blog.siphos.be/2014/06/d-bus-quick-recap/" rel="alternate"></link><published>2014-06-29T19:16:00+02:00</published><updated>2014-06-29T19:16:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-29:/2014/06/d-bus-quick-recap/</id><summary type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
+some sort of IPC, but higher level than the POSIX IPC methods. After
+some reading, I think I start to understand how it works and how
+administrators can work with it. So a quick write-down is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
+some sort of IPC, but higher level than the POSIX IPC methods. After
+some reading, I think I start to understand how it works and how
+administrators can work with it. So a quick write-down is in place so I
+don't forget in the future.&lt;/p&gt;
+&lt;p&gt;There is one &lt;em&gt;system&lt;/em&gt; bus and, for each X session of a user, also a
+&lt;em&gt;session&lt;/em&gt; bus.&lt;/p&gt;
+&lt;p&gt;A bus is governed by a &lt;code&gt;dbus-daemon&lt;/code&gt; process. A bus itself has objects
+on it, which are represented through path-like constructs (like
+&lt;code&gt;/org/freedesktop/ConsoleKit&lt;/code&gt;). These objects are provided by a service
+(application). Applications "own" such services, and identify these
+through a namespace-like value (such as &lt;code&gt;org.freedesktop.ConsoleKit&lt;/code&gt;).&lt;br&gt;
+Applications can send signals to the bus, or messages through methods
+exposed by the service. If methods are invoked (i.e. messages send) then
+the application must specify the interface (such as
+&lt;code&gt;org.freedesktop.ConsoleKit.Manager.Stop&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Administrators can monitor the bus through &lt;strong&gt;dbus-monitor&lt;/strong&gt;, or send
+messages through &lt;strong&gt;dbus-send&lt;/strong&gt;. For instance, the following command
+invokes the &lt;code&gt;org.freedesktop.ConsoleKit.Manager.Stop&lt;/code&gt; method provided by
+the object at &lt;code&gt;/org/freedesktop/ConsoleKit&lt;/code&gt; owned by the
+service/application at &lt;code&gt;org.freedesktop.ConsoleKit&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ dbus-send --system --print-reply 
+  --dest=org.freedesktop.ConsoleKit 
+  /org/freedesktop/ConsoleKit/Manager 
+  org.freedesktop.ConsoleKit.Manager.Stop
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;What I found most interesting however was to query the busses. You can
+do this with &lt;strong&gt;dbus-send&lt;/strong&gt; although it is much easier to use tools such
+as &lt;strong&gt;d-feet&lt;/strong&gt; or &lt;strong&gt;qdbus&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;To list current services on the system bus:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system
+:1.1
+ org.freedesktop.ConsoleKit
+:1.10
+:1.2
+:1.3
+ org.freedesktop.PolicyKit1
+:1.36
+ fi.epitest.hostap.WPASupplicant
+ fi.w1.wpa_supplicant1
+:1.4
+:1.42
+:1.5
+:1.6
+:1.7
+ org.freedesktop.UPower
+:1.8
+:1.9
+org.freedesktop.DBus
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The numbers are generated by D-Bus itself, the namespace-like strings
+are taken by the objects. To see what is provided by a particular
+service:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1
+/
+/org
+/org/freedesktop
+/org/freedesktop/PolicyKit1
+/org/freedesktop/PolicyKit1/Authority
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The methods made available through one of these:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1 /org/freedesktop/PolicyKit1/Authority
+method QDBusVariant org.freedesktop.DBus.Properties.Get(QString interface_name, QString property_name)
+method QVariantMap org.freedesktop.DBus.Properties.GetAll(QString interface_name)
+...
+property read uint org.freedesktop.PolicyKit1.Authority.BackendFeatures
+property read QString org.freedesktop.PolicyKit1.Authority.BackendName
+property read QString org.freedesktop.PolicyKit1.Authority.BackendVersion
+method void org.freedesktop.PolicyKit1.Authority.AuthenticationAgentResponse(QString cookie, QDBusRawType::(sa{sv} identity)
+method void org.freedesktop.PolicyKit1.Authority.CancelCheckAuthorization(QString cancellation_id)
+signal void org.freedesktop.PolicyKit1.Authority.Changed()
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Access to methods and interfaces is governed through XML files in
+&lt;code&gt;/etc/dbus-1/system.d&lt;/code&gt; (or &lt;code&gt;session.d&lt;/code&gt; depending on the bus). Let's look
+at &lt;code&gt;/etc/dbus-1/system.d/dnsmasq.conf&lt;/code&gt; as an example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
+        &amp;lt;policy user=&amp;quot;root&amp;quot;&amp;gt;
+                &amp;lt;allow own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+                &amp;lt;allow send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+        &amp;lt;/policy&amp;gt;
+        &amp;lt;policy user=&amp;quot;dnsmasq&amp;quot;&amp;gt;
+                &amp;lt;allow own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+                &amp;lt;allow send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+        &amp;lt;/policy&amp;gt;
+        &amp;lt;policy context=&amp;quot;default&amp;quot;&amp;gt;
+                &amp;lt;deny own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+                &amp;lt;deny send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
+        &amp;lt;/policy&amp;gt;
+&amp;lt;/busconfig&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The configuration mentions that only the root Linux user can 'assign' a
+service/application to the &lt;code&gt;uk.org.thekelleys.dnsmasq&lt;/code&gt; name, and root
+can send messages to this same service/application name. The default is
+that no-one can own and send to this service/application name. As a
+result, only the Linux root user can interact with this object.&lt;/p&gt;
+&lt;p&gt;D-Bus also supports starting of services when a method is invoked
+(instead of running this service immediately). This is configured
+through &lt;code&gt;*.service&lt;/code&gt; files inside &lt;code&gt;/usr/share/dbus-1/system-services/&lt;/code&gt;.&lt;/p&gt;</content><category term="Free Software"></category><category term="dbus"></category><category term="linux"></category></entry></feed>

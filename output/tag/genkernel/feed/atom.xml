@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - genkernel</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/genkernel/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-03-26T14:18:00+01:00</updated><entry><title>Fixing the busybox build failure</title><link href="http://blog.siphos.be/2014/03/fixing-the-busybox-build-failure/" rel="alternate"></link><published>2014-03-26T14:18:00+01:00</published><updated>2014-03-26T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-26:/2014/03/fixing-the-busybox-build-failure/</id><summary type="html">&lt;p&gt;Since a few months I have a build failure every time I try to generate
+an initial ram file system (as my current primary workstation uses a
+separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt;/boot&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;* busybox: &amp;gt;&amp;gt; Compiling...
+* ERROR: Failed to compile the &amp;quot;all&amp;quot; target...
+* 
+* -- Grepping log... --
+* 
+*           - busybox-1.7.4-signal-hack.patch …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Since a few months I have a build failure every time I try to generate
+an initial ram file system (as my current primary workstation uses a
+separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt;/boot&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;* busybox: &amp;gt;&amp;gt; Compiling...
+* ERROR: Failed to compile the &amp;quot;all&amp;quot; target...
+* 
+* -- Grepping log... --
+* 
+*           - busybox-1.7.4-signal-hack.patch
+* busybox: &amp;gt;&amp;gt; Configuring...
+*COMMAND: make -j2 CC=&amp;quot;gcc&amp;quot; LD=&amp;quot;ld&amp;quot; AS=&amp;quot;as&amp;quot;  
+*  HOSTCC  scripts/basic/fixdep
+*make: execvp: /var/tmp/genkernel/18562.2920.28766.17301/busybox-1.20.2/scripts/gen_build_files.sh: Permission denied
+*make: *** [gen_build_files] Error 127
+*make: *** Waiting for unfinished jobs....
+*/bin/sh: scripts/basic/fixdep: Permission denied
+*make[1]: *** [scripts/basic/fixdep] Error 1
+*make: *** [scripts_basic] Error 2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I know it isn't SELinux that is causing this, as I have no denial
+messages and even putting SELinux in permissive mode doesn't help. Today
+I found the time to look at it with more fresh eyes, and noticed that it
+wants to execute a file (&lt;code&gt;gen_build_files.sh&lt;/code&gt;) situated in &lt;code&gt;/var/tmp&lt;/code&gt;
+somewhere. That file system however is mounted with &lt;code&gt;noexec&lt;/code&gt; (amongst
+other settings) so executing anything from within that file system is
+not allowed.&lt;/p&gt;
+&lt;p&gt;The solution? Update &lt;code&gt;/etc/genkernel.conf&lt;/code&gt; and have &lt;code&gt;TMPDIR&lt;/code&gt; point to a
+location where executing &lt;em&gt;is&lt;/em&gt; allowed. Of course, this being a SELinux
+system, the new location will need to be labeled as &lt;code&gt;tmp_t&lt;/code&gt; as well, but
+that's just a simple thing to do.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
+~# restorecon -R /var/build/genkernel
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The new location is not world-writable (only for root as only root
+builds initial ram file systems here) so not having &lt;code&gt;noexec&lt;/code&gt; here is ok.&lt;/p&gt;</content><category term="Gentoo"></category><category term="busybox"></category><category term="genkernel"></category><category term="Gentoo"></category><category term="initramfs"></category><category term="initrd"></category><category term="noexec"></category><category term="tmp"></category></entry></feed>

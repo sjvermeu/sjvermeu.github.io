@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - ccss</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/ccss/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-12-26T04:13:00+01:00</updated><entry><title>Giving weights to compliance rules</title><link href="http://blog.siphos.be/2013/12/giving-weights-to-compliance-rules/" rel="alternate"></link><published>2013-12-26T04:13:00+01:00</published><updated>2013-12-26T04:13:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-26:/2013/12/giving-weights-to-compliance-rules/</id><summary type="html">&lt;p&gt;Now that we wrote up a few OVAL statements and used those instead of SCE
+driven checks (where possible), let's finish up and go back to the XCCDF
+document and see how we can put weights in place.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;CVE (Common Vulnerability Exposure)&lt;/strong&gt; standard allows for
+vulnerabilities to be given …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Now that we wrote up a few OVAL statements and used those instead of SCE
+driven checks (where possible), let's finish up and go back to the XCCDF
+document and see how we can put weights in place.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;CVE (Common Vulnerability Exposure)&lt;/strong&gt; standard allows for
+vulnerabilities to be given weights through a scoring mechanism called
+&lt;strong&gt;CVSS (Common Vulnerability Scoring System)&lt;/strong&gt;. The method for giving
+weights to such vulnerabilities is based on several factors, which you
+can play with through an &lt;a href="https://nvd.nist.gov/cvss.cfm?calculator&amp;amp;version=2"&gt;online CVSS
+calculator&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Giving weights on a vulnerability based on these metrics is not that
+difficult, but what about compliance misconfigurations?&lt;/p&gt;
+&lt;p&gt;There is a suggested standard for this, &lt;strong&gt;CCSS (Common Configuration
+Scoring System)&lt;/strong&gt; which is based on the CVSS scoring and CMSS scoring.
+Especially the base scoring is tailored to the CVSS scoring, so let's
+look at an example from the &lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/guide-gentoo-xccdf.html"&gt;Gentoo Security
+Benchmark&lt;/a&gt;
+(still in draft):&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;The base scoring of a misconfiguration focuses on the following items:&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;Access Vector (AV)&lt;/dt&gt;
+&lt;dd&gt;How can the misconfiguration be "reached" or exploited - Local (on
+the system), Adjacent Network or Network&lt;/dd&gt;
+&lt;dt&gt;Access Complexity (AC)&lt;/dt&gt;
+&lt;dd&gt;How complex would it be to exploit the misconfiguration - High,
+Medium or Low&lt;/dd&gt;
+&lt;dt&gt;Authentication (Au)&lt;/dt&gt;
+&lt;dd&gt;Does the attacker need to be authenticated in order to exploit the
+misconfiguration - None, Single (one account) or Multiple (several
+accounts or multi-factor authenticated)&lt;/dd&gt;
+&lt;dt&gt;Confidentiality (C)&lt;/dt&gt;
+&lt;dd&gt;Does a successful exploit have impact on the confidentiality of the
+system or data (None, Partial or Complete)&lt;/dd&gt;
+&lt;dt&gt;Integrity (I)&lt;/dt&gt;
+&lt;dd&gt;Does a successful exploit have impact on the integrity of the system
+or data (None, Partial or Complete)&lt;/dd&gt;
+&lt;dt&gt;Availability (A)&lt;/dt&gt;
+&lt;dd&gt;Does a successful exploit have impact on the availability of the
+system or data (None, Partial or Complete)&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;In order to exploit that &lt;code&gt;/tmp&lt;/code&gt; is not on a separate file system, we can
+think about dumping lots of information in &lt;code&gt;/tmp&lt;/code&gt;, flooding the root
+file system. This is simple to accomplish locally and requires a single
+authentication (you need to be authenticated on the system). Once
+performed, this only impacts availability.&lt;/p&gt;
+&lt;p&gt;The CCSS (and thus CVSS) base vector looks like so:
+&lt;code&gt;AV:L/AC:L/Au:S/C:N/I:N/A:C&lt;/code&gt; and gives a base score of 4.6, which is
+reflected in the XCCDF in the &lt;code&gt;weight="4.6"&lt;/code&gt; attribute.&lt;/p&gt;
+&lt;p&gt;The severity I give in the XCCDF is "gut feeling". Basically, I use the
+following description:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;high constitutes a grave or critical problem. A rule with this
+    severity MUST be tackled as it detected a misconfiguration that is
+    easily exploitable and could lead to full system compromise.&lt;/li&gt;
+&lt;li&gt;medium reflects a fairly serious problem. A rule with this severity
+    SHOULD be tackled as it detected a misconfiguration that is
+    easily exploitable.&lt;/li&gt;
+&lt;li&gt;low reflects a non-serious problem. A rule with this severity has
+    detected a misconfiguration but its influence on the overall system
+    security is minor (if other compliance rules are followed).&lt;/li&gt;
+&lt;li&gt;info reflects an informational rule. Failure to comply with this
+    rule does not mean failure to comply with the document itself.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Of course, you can put your own weights and severities in your XCCDF
+documents. Important however is to make sure it is properly documented -
+other people who read the document must be aware of the consequences of
+the rules if they are not compliant.&lt;/p&gt;
+&lt;p&gt;By introducing weights and severities, administrators of systems that
+are not compliant (or of a large set of systems) can prioritize which
+misconfigurations or vulnerabilities they will handle first. And it
+reduces the amount of discussions as well, because without these, your
+administrators will start debating what to tackle first, each with their
+own vision and opinion. Which is great, but not when time is ticking.
+Having a predefined priority list makes it clear how to react now.&lt;/p&gt;
+&lt;p&gt;That's it for this post series. I hope you enjoyed it and learned from
+it. Of course, this wont be the last post related to SCAP so stay tuned
+for more ;-)&lt;/p&gt;
+&lt;p&gt;This post is the final one in a series on SCAP content:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;Documenting security best practices – XCCDF
+    introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
+    PostgreSQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;Documenting a bit more than just
+    descriptions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;Running a bit with the XCCDF
+    document&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/remediation-through-scap/"&gt;Remediation through
+    SCAP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/what-is-oval/"&gt;What is OVAL?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/doing-a-content-check-with-oval/"&gt;Doing a content check with
+    OVAL&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Security"></category><category term="ccss"></category><category term="cvss"></category><category term="scap"></category><category term="xccdf"></category></entry></feed>

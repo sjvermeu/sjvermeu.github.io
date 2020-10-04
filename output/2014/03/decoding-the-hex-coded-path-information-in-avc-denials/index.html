@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>Decoding the hex-coded path information in AVC denials - Simplicity is a form of art...</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="http://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/">
+
+        <meta name="author" content="Sven Vermeulen" />
+        <meta name="keywords" content="avc,decode,path,selinux" />
+        <meta name="description" content="When investigating AVC denials, some denials show a path that isn&#39;t human readable, like so: type=AVC msg=audit(1396189189.734:1913): avc: denied { execute } for pid=17955 comm=&#34;emerge&#34; path=2F7661722F666669737A69596157202864656C6574656429 dev=&#34;dm-3&#34; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file To know what this …" />
+
+        <meta property="og:site_name" content="Simplicity is a form of art..." />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Decoding the hex-coded path information in AVC denials"/>
+        <meta property="og:url" content="http://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/"/>
+        <meta property="og:description" content="When investigating AVC denials, some denials show a path that isn&#39;t human readable, like so: type=AVC msg=audit(1396189189.734:1913): avc: denied { execute } for pid=17955 comm=&#34;emerge&#34; path=2F7661722F666669737A69596157202864656C6574656429 dev=&#34;dm-3&#34; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file To know what this …"/>
+        <meta property="article:published_time" content="2014-03-30" />
+            <meta property="article:section" content="SELinux" />
+            <meta property="article:tag" content="avc" />
+            <meta property="article:tag" content="decode" />
+            <meta property="article:tag" content="path" />
+            <meta property="article:tag" content="selinux" />
+            <meta property="article:author" content="Sven Vermeulen" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://blog.siphos.be/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://blog.siphos.be/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://blog.siphos.be/theme/css/pygments/native.css" rel="stylesheet">
+    <link href="http://blog.siphos.be/theme/tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://blog.siphos.be/theme/css/style.css" type="text/css"/>
+
+        <link href="http://blog.siphos.be/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... ATOM Feed"/>
+
+
+
+        <link href="http://blog.siphos.be/feeds/selinux.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Simplicity is a form of art... SELinux ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://blog.siphos.be/" class="navbar-brand">
+Simplicity is a form of art...            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><span>
+                <form class="navbar-search" action="/search.html">
+                  <input type="text" class="search-query" placeholder="Search" name="q" id="tipue_search_input" required>
+                </form></span>
+              </li>
+              <li><a href="http://blog.siphos.be/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/"
+                       rel="bookmark"
+                       title="Permalink to Decoding the hex-coded path information in AVC denials">
+                        Decoding the hex-coded path information in AVC denials
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-03-30T16:37:00+02:00"> Sun 30 March 2014</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="http://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="http://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://blog.siphos.be/tag/avc/">avc</a>
+        /
+	<a href="http://blog.siphos.be/tag/decode/">decode</a>
+        /
+	<a href="http://blog.siphos.be/tag/path/">path</a>
+        /
+	<a href="http://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>When investigating AVC denials, some denials show a path that isn't
+human readable, like so:</p>
+<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&quot;emerge&quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&quot;dm-3&quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
+</code></pre></div>
+
+
+<p>To know what this file is (or actually was, because such encoded paths
+mean that the file ~~wasn't accessible anymore at the time that the
+denial was shown~~ contains a space), you need to hex-decode the value.
+For instance, with python:</p>
+<div class="highlight"><pre><span></span><code>~$ python -c &quot;import base64; print(base64.b16decode(\&quot;2F7661722F666669737A69596157202864656C6574656429\&quot;));&quot;;
+b&#39;/var/ffisziYaW (deleted)&#39;
+</code></pre></div>
+
+
+<p>In the above example, <code>/var/ffisziYaW</code> was the path of the file (note
+that, as it starts with ffi, it is caused by libffi which I've blogged
+about before). The reason that the file was deleted at the time the
+denial was generated is because what libffi does is create a file, get
+the file descriptor and unlink the file (so it is deleted and only the
+(open) file handle allows for accessing it) before it wants to execute
+it. As a result, the execution (which is denied) triggers a denial for
+the file whose path is no longer valid (as it is now appended with
+"<code>(deleted)</code>").</p>
+<p><em>Edit 1:</em> Thanks to IooNag who pointed me to the truth that it is due to
+a space in the file name, not because it was deleted. Having the file
+deleted makes the patch be appended with "<code>(deleted)</code>" which contains a
+space.</p>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <p>
+        To comment as a guest, use "Or sign up with disqus" and then select the "I'd rather post as guest" option.
+        </p>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'decoding-the-hex-coded-path-information-in-avc-denials';
+                var disqus_url = 'http://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://github.com/sjvermeu"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                <li class="list-group-item"><a href="https://twitter.com/sjvermeu"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2018 Sven Vermeulen
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://blog.siphos.be/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://blog.siphos.be/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://blog.siphos.be/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'simplicityisaformofart'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+</body>
+</html>

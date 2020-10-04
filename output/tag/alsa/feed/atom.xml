@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - alsa</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/alsa/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-03-31T18:33:00+02:00</updated><entry><title>Proof of concept for USE enabled policies</title><link href="http://blog.siphos.be/2014/03/proof-of-concept-for-use-enabled-policies/" rel="alternate"></link><published>2014-03-31T18:33:00+02:00</published><updated>2014-03-31T18:33:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-31:/2014/03/proof-of-concept-for-use-enabled-policies/</id><summary type="html">&lt;p&gt;&lt;em&gt;tl;dr:&lt;/em&gt; Some (&lt;code&gt;-9999&lt;/code&gt;) policy ebuilds now have &lt;code&gt;USE&lt;/code&gt; support for
+building in (or leaving out) SELinux policy statements.&lt;/p&gt;
+&lt;p&gt;One of the "problems" I have been facing since I took on the maintenance
+of SELinux policies within Gentoo Hardened is the (seeming) inability to
+make a "least privilege" policy that …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;em&gt;tl;dr:&lt;/em&gt; Some (&lt;code&gt;-9999&lt;/code&gt;) policy ebuilds now have &lt;code&gt;USE&lt;/code&gt; support for
+building in (or leaving out) SELinux policy statements.&lt;/p&gt;
+&lt;p&gt;One of the "problems" I have been facing since I took on the maintenance
+of SELinux policies within Gentoo Hardened is the (seeming) inability to
+make a "least privilege" policy that suits the flexibility that Gentoo
+offers. As a quick recap: SELinux policies describe the "acceptable
+behavior" of an application (well, domain to be exact), often known as
+the "normalized behavior" in the security world. When an application
+(which runs within a SELinux domain) wants to perform some action which
+is not part of the policy, then this action is denied.&lt;/p&gt;
+&lt;p&gt;Some applications can have very broad acceptable behavior. A web server
+for instance might need to connect to a database, but that is not the
+case if the web server only serves static information, or dynamic
+information that doesn't need a database. To support this, SELinux has
+&lt;em&gt;booleans&lt;/em&gt; through which optional policy statements can be enabled or
+disabled. So far so good.&lt;/p&gt;
+&lt;p&gt;Let's look at a second example: ALSA. When ALSA enabled applications
+want to access the sound devices, they use IPC resources to
+"collaborate" around the sound subsystem (semaphores and shared memory
+to be exact). Semaphores inherit the type of the domain that first
+created the semaphore (so if &lt;strong&gt;mplayer&lt;/strong&gt; creates it, then the semaphore
+has the &lt;code&gt;mplayer_t&lt;/code&gt; context) whereas shared memory usually gets the
+tmpfs-related type (&lt;code&gt;mplayer_tmpfs_t&lt;/code&gt;). When a second application wants
+to access the sound device as well, it needs access to the semaphore and
+shared memory. Assuming this second application is the browser, then
+&lt;code&gt;mozilla_t&lt;/code&gt; needs access to semaphores by &lt;code&gt;mplayer_t&lt;/code&gt;. And the same for
+&lt;code&gt;chromium_t&lt;/code&gt;. Or &lt;code&gt;java_t&lt;/code&gt; applications that are ALSA-enabled. And
+&lt;code&gt;alsa_t&lt;/code&gt;. And all other applications that are ALSA enabled.&lt;/p&gt;
+&lt;p&gt;In Gentoo, ALSA support can be made optional through &lt;code&gt;USE="alsa"&lt;/code&gt;. If a
+user decides not to use ALSA, then it doesn't make sense to allow all
+those domains access to each others' semaphores and shared memory. And
+although SELinux booleans can help, this would mean that for each
+application domain, something like the following policy would need to
+be, optionally, allowed:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# For the mplayer_t domain:
+optional_policy(`
+  tunable_policy(`use_alsa&amp;#39;,`
+    mozilla_rw_semaphores(mplayer_t)
+    mozilla_rw_shm(mplayer_t)
+    mozilla_tmpfs_rw_files(mplayer_t)
+  &amp;#39;)
+&amp;#39;)
+
+optional_policy(`
+  tunable_policy(`use_alsa&amp;#39;,`
+    chromium_rw_semaphores(mplayer_t)
+    chromium_rw_shm(mplayer_t)
+    chromium_tmpfs_rw_files(mplayer_t)
+  &amp;#39;)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And this for all domains that are ALSA-enabled. Every time a new
+application is added that knows ALSA, the same code needs to be added to
+all policies. And this only uses a single SELinux boolean (whereas
+Gentoo supports &lt;code&gt;USE="alsa"&lt;/code&gt; on per-package level), although we can
+create separate booleans for each domain if we want to. Not that that
+will make it more manageable.&lt;/p&gt;
+&lt;p&gt;One way of dealing with this would be to use attributes. Say we have a
+policy like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;attribute alsadomain;
+attribute alsatmpfsfile;
+
+allow alsadomain alsadomain:sem rw_sem_perms;
+allow alsadomain alsadomain:shm rw_shm_perms;
+allow alsadomain alsatmpfsfile:file rw_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;By assigning the attribute to the proper domains whenever ALSA support
+is needed, we can toggle this more easily:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# In alsa.if
+interface(`alsa_domain&amp;#39;,`
+  gen_require(`
+    attribute alsadomain;
+    attribute alsatmpfsfile;
+  &amp;#39;)
+  typeattribute $1 alsadomain;
+  typeattribute $2 alsatmpfsfile;
+&amp;#39;)
+
+
+# In mplayer.te
+optional_policy(`
+  tunable_policy(`use_alsa&amp;#39;,`
+    alsa_domain(mplayer_t, mplayer_tmpfs_t)
+  &amp;#39;)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That would solve the problem of needlessly adding more calls in a policy
+for every ALSA application. And hey, we can probably live with either a
+global boolean (&lt;code&gt;use_alsa&lt;/code&gt;) or per-domain one (&lt;code&gt;mplayer_use_alsa&lt;/code&gt;) and
+toggle this according to our needs.&lt;/p&gt;
+&lt;p&gt;Sadly, the above is not possible: one cannot define &lt;code&gt;typeattribute&lt;/code&gt;
+assignments inside a &lt;code&gt;tunable_policy&lt;/code&gt; code: attributes are part of the
+non-conditional part of a SELinux policy. The solution would be to
+create build-time conditionals (rather than run-time):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ifdef(`use_alsa&amp;#39;,`
+  optional_policy(`
+    alsa_domain(mplayer_t, mplayer_tmpfs_t)
+  &amp;#39;)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This does mean that &lt;code&gt;use_alsa&lt;/code&gt; has to be known when the policy is built.
+For Gentoo, that's not that bad, as policies are part of separate
+packages, like &lt;code&gt;sec-policy/selinux-mplayer&lt;/code&gt;. So what I now added was
+USE-enabled build-time decisions that trigger this code. The
+&lt;code&gt;selinux-mplayer&lt;/code&gt; package has &lt;code&gt;IUSE="alsa"&lt;/code&gt; which will enable, if set,
+the &lt;code&gt;use_alsa&lt;/code&gt; build-time conditional.&lt;/p&gt;
+&lt;p&gt;As a result, we now support a better, fine-grained privilege setting
+inside the SELinux policy which is triggered through the proper USE
+flags.&lt;/p&gt;
+&lt;p&gt;Is this a perfect solution? No, but it is manageable and known to Gentoo
+users. It isn't perfect, because it listens to the USE flag setting for
+the &lt;code&gt;selinux-mplayer&lt;/code&gt; package (and of course globally set USE flags) but
+doesn't "detect" that the firefox application (for which the policy is
+meant) is or isn't built with &lt;code&gt;USE="alsa"&lt;/code&gt;. So users/administrators will
+need to keep this in mind when using package-local USE flag definitions.&lt;/p&gt;
+&lt;p&gt;Also, this will make it a bit more troublesome for myself to manage the
+SELinux policy for Gentoo (as upstream will not use this setup, and as
+such patches from upstream might need a few manual corrections before
+they apply to our tree). However, I gladly take that up if it means my
+system will have somewhat better confinement.&lt;/p&gt;</content><category term="Gentoo"></category><category term="alsa"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

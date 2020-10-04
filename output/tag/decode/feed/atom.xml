@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - decode</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/decode/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2014-03-30T16:37:00+02:00</updated><entry><title>Decoding the hex-coded path information in AVC denials</title><link href="http://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/" rel="alternate"></link><published>2014-03-30T16:37:00+02:00</published><updated>2014-03-30T16:37:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-30:/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/</id><summary type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
+human readable, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To know what this …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
+human readable, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;To know what this file is (or actually was, because such encoded paths
+mean that the file ~~wasn't accessible anymore at the time that the
+denial was shown~~ contains a space), you need to hex-decode the value.
+For instance, with python:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ python -c &amp;quot;import base64; print(base64.b16decode(\&amp;quot;2F7661722F666669737A69596157202864656C6574656429\&amp;quot;));&amp;quot;;
+b&amp;#39;/var/ffisziYaW (deleted)&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the above example, &lt;code&gt;/var/ffisziYaW&lt;/code&gt; was the path of the file (note
+that, as it starts with ffi, it is caused by libffi which I've blogged
+about before). The reason that the file was deleted at the time the
+denial was generated is because what libffi does is create a file, get
+the file descriptor and unlink the file (so it is deleted and only the
+(open) file handle allows for accessing it) before it wants to execute
+it. As a result, the execution (which is denied) triggers a denial for
+the file whose path is no longer valid (as it is now appended with
+"&lt;code&gt;(deleted)&lt;/code&gt;").&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Edit 1:&lt;/em&gt; Thanks to IooNag who pointed me to the truth that it is due to
+a space in the file name, not because it was deleted. Having the file
+deleted makes the patch be appended with "&lt;code&gt;(deleted)&lt;/code&gt;" which contains a
+space.&lt;/p&gt;</content><category term="SELinux"></category><category term="avc"></category><category term="decode"></category><category term="path"></category><category term="selinux"></category></entry></feed>

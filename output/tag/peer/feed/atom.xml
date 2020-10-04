@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - peer</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/peer/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-05-12T03:50:00+02:00</updated><entry><title>Peer labeling in SELinux policy</title><link href="http://blog.siphos.be/2013/05/peer-labeling-in-selinux-policy/" rel="alternate"></link><published>2013-05-12T03:50:00+02:00</published><updated>2013-05-12T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-12:/2013/05/peer-labeling-in-selinux-policy/</id><summary type="html">&lt;p&gt;Allow me to start with an important warning: I don't have much hands-on
+experience with the remainder of this post. Its based on the few
+resources I found on the Internet and a few tests done locally which
+I've investigated in my attempt to understand SELinux policy writing for
+networking …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Allow me to start with an important warning: I don't have much hands-on
+experience with the remainder of this post. Its based on the few
+resources I found on the Internet and a few tests done locally which
+I've investigated in my attempt to understand SELinux policy writing for
+networking stuff.&lt;/p&gt;
+&lt;p&gt;So, with that out of the way, let's look into &lt;em&gt;peer labeling&lt;/em&gt;. As
+mentioned in my &lt;a href="http://blog.siphos.be/2013/05/selinux-policy-and-network-controls/"&gt;previous
+post&lt;/a&gt;,
+SELinux supports some more advanced networking security features than
+the default socket restrictions. I mentioned SECMARK and NetLabel
+before, but NetLabel is actually part of the family of &lt;em&gt;peer&lt;/em&gt; labeling
+technologies.&lt;/p&gt;
+&lt;p&gt;With this technology approach, all participating systems in the network
+must support the same labeling method. NetLabel supports CIPSO
+(&lt;a href="https://tools.ietf.org/html/draft-ietf-cipso-ipsecurity-01"&gt;Commerial IP Security
+Option&lt;/a&gt;)
+where hosts label their network traffic to be part of a particular
+"Domain of Interpretation". The labels are used by the hosts to identify
+where a packet should be for. NetLabel, within Linux, is then used to
+translate those CIPSO labels. SELinux itself labels the incoming sockets
+based on the NetLabel information and the context of the listening
+socket, resulting in a context that is governed policy-wise through the
+&lt;em&gt;peer&lt;/em&gt; class. Since this is based on the information in the packet
+instead of defined on the system itself, this allows remote systems to
+have a say in how the packets are labeled.&lt;/p&gt;
+&lt;p&gt;Another peer technology is the &lt;em&gt;Labeled IPSec&lt;/em&gt; one. In this case the
+labels are fully provided by the remote system. I think they are based
+on the security association within the IPSec setup.&lt;/p&gt;
+&lt;p&gt;In both cases, in the SELinux policies, three definitions are important
+to keep an eye out on: &lt;em&gt;interface&lt;/em&gt; definitions, &lt;em&gt;node&lt;/em&gt; definitions and
+&lt;em&gt;peer&lt;/em&gt; definitions.&lt;/p&gt;
+&lt;p&gt;Interface definitions allow users to (mainly) set the sensitivity that
+is allowed to pass the interface. Using &lt;strong&gt;semanage interface&lt;/strong&gt; this can
+be controlled by the user. One can also assign a different context to
+the interface - by default, this is &lt;code&gt;netif_t&lt;/code&gt;. The permissions that are
+checked on the traffic is &lt;em&gt;ingress&lt;/em&gt; (incoming) and &lt;em&gt;egress&lt;/em&gt; (outgoing)
+traffic, and most policies set this through the following call (comment
+shows the underlying SELinux rules, where &lt;em&gt;tcp_send&lt;/em&gt; and &lt;em&gt;tcp_recv&lt;/em&gt;
+are - I think - obsolete):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_sendrecv_generic_if(something_t)
+# allow something_t netif_t:netif { tcp_send tcp_recv egress ingress };
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Node definitions define which targets (nodes, which can be IP addresses
+or subnets) traffic meant for a particular socket is allow to originate
+from (&lt;em&gt;recvfrom&lt;/em&gt;) or sent to (&lt;em&gt;sendto&lt;/em&gt;). Again, users can define their
+own node types and manage them using &lt;strong&gt;semanage node&lt;/strong&gt;. The default node
+I already covered in the previous post (&lt;code&gt;node_t&lt;/code&gt;) and is allowed by most
+policies by default through the following call (where the &lt;em&gt;tcp_send&lt;/em&gt;
+and &lt;em&gt;tcp_recv&lt;/em&gt; are probably deprecated as well):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_sendrecv_generic_node(something_t)
+# allow something_t node_t:node { tcp_send tcp_recv sendto recvfrom };
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Finally, peer definitions are based on the labels from the traffic. If
+the system uses NetLabel, then the target label will always be
+&lt;code&gt;netlabel_peer_t&lt;/code&gt; since the workings of CIPSO are mainly (only?) mapped
+towards sensitivity labels (in MLS policy). As a result, SELinux always
+displays the peer as being &lt;code&gt;netlabel_peer_t&lt;/code&gt;. In case of Labeled IPSec,
+this isn't the case as the peer label is transmitted by the peer itself.&lt;/p&gt;
+&lt;p&gt;For NetLabel support, policies generally include two methods - one is to
+support unlabeled traffic (only needed the moment you have support for
+labeled traffic) and one is to allow the NetLabel'ed traffic:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_all_recvfrom_unlabeled(something_t)
+# allow something_t unlabeled_t:peer recv;
+corenet_all_recvfrom_netlabel(something_t)
+# allow something_t netlabel_peer_t:peer recv;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In case of IPSec for instance, the peer will have a provided label, as
+is shown by the call for accepting hadoop traffic:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;hadoop_recvfrom(something_t)
+# allow something_t hadoop_t:peer recv;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, this alone is not sufficient for labeled IPSec. We also need to
+allow the domain to be allowed to send anything towards an IPSec
+security association. There is an interface called
+&lt;em&gt;corenet_tcp_recvfrom_labeled&lt;/em&gt; that takes two arguments which,
+amongst other things, enables &lt;em&gt;sendto&lt;/em&gt; towards its association.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_recvfrom_labeled(some_t, thing_t)
+# allow { some_t thing_t} self:association sendto;
+# allow some_t thing_t:peer recv;
+# allow thing_t some_t:peer recv;
+# corenet_tcp_recvfrom_netlabel(some_t)
+# corenet_tcp_recvfrom_netlabel(thing_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This interface is usually called within a &lt;em&gt;*_tcp_connect()&lt;/em&gt; interface
+for a particular domain, like with the &lt;em&gt;mysql_tcp_connect&lt;/em&gt; example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`mysql_tcp_connect&amp;#39;,`
+        gen_require(`
+                type mysqld_t;
+        &amp;#39;)
+
+        corenet_tcp_recvfrom_labeled($1, mysqld_t)
+        corenet_tcp_sendrecv_mysqld_port($1) # deprecated
+        corenet_tcp_connect_mysqld_port($1)
+        corenet_sendrecv_mysqld_client_packets($1)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When using peer labeling, the domain that is allowed something is based
+on the socket context of the application. Also, the rules when using
+peer labeling are &lt;em&gt;in addition to&lt;/em&gt; the rules mentioned before
+("standard" networking control): &lt;em&gt;name_bind&lt;/em&gt; and &lt;em&gt;name_connect&lt;/em&gt; are
+always checked.&lt;/p&gt;
+&lt;p&gt;For more information, make sure you check &lt;a href="http://paulmoore.livejournal.com"&gt;Paul Moore's
+blog&lt;/a&gt;, such as the
+&lt;a href="http://paulmoore.livejournal.com/2128.html?nojs=1"&gt;egress/ingress&lt;/a&gt;
+information. And if you know of resources that show this in a more
+practical setting (above is mainly to work with the SELinux policy) I'm
+all ears.&lt;/p&gt;</content><category term="SELinux"></category><category term="cipso"></category><category term="ipsec"></category><category term="peer"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

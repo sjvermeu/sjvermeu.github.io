@@ -1,0 +1,1610 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - xccdf</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/xccdf/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2018-03-03T13:20:00+01:00</updated><entry><title>Automating compliance checks</title><link href="http://blog.siphos.be/2018/03/automating-compliance-checks/" rel="alternate"></link><published>2018-03-03T13:20:00+01:00</published><updated>2018-03-03T13:20:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-03-03:/2018/03/automating-compliance-checks/</id><summary type="html">&lt;p&gt;With the configuration baseline for a technical service being described fully (see the &lt;a href="http://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first&lt;/a&gt;, &lt;a href="http://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second&lt;/a&gt; and &lt;a href="http://blog.siphos.be/2018/01/documenting-a-rule/"&gt;third&lt;/a&gt; post in this series), it is time to consider the validation of the settings in an automated manner. The preferred method for this is to use &lt;em&gt;Open Vulnerability and Assessment Language (OVAL)&lt;/em&gt;, which …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With the configuration baseline for a technical service being described fully (see the &lt;a href="http://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first&lt;/a&gt;, &lt;a href="http://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second&lt;/a&gt; and &lt;a href="http://blog.siphos.be/2018/01/documenting-a-rule/"&gt;third&lt;/a&gt; post in this series), it is time to consider the validation of the settings in an automated manner. The preferred method for this is to use &lt;em&gt;Open Vulnerability and Assessment Language (OVAL)&lt;/em&gt;, which is nowadays managed by the &lt;a href="https://oval.cisecurity.org/"&gt;Center for Internet Security&lt;/a&gt;, abbreviated as CISecurity. Previously, OVAL was maintained and managed by Mitre under NIST supervision, and Google searches will often still point to the old sites. However, documentation is now maintained on CISecurity's &lt;a href="https://github.com/OVALProject/Language/tree/5.11.2/docs"&gt;github repositories&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;But I digress...&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Read-only compliance validation&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;One of the main ideas with OVAL is to have a language (XML-based) that represents state information (what something should be) which can be verified in a read-only fashion. Even more, from an operational perspective, it is very important that compliance checks &lt;em&gt;do not alter&lt;/em&gt; anything, but only report.&lt;/p&gt;
+&lt;p&gt;Within its design, OVAL engineering has considered how to properly manage huge sets of assessment rules, and how to document this in an unambiguous manner. In the previous blog posts, ambiguity was resolved through writing style, and not much through actual, enforced definitions.&lt;/p&gt;
+&lt;p&gt;OVAL enforces this. You can't write a generic or ambiguous rule in OVAL. It is very specific, but that also means that it is daunting to implement the first few times. I've written many OVAL sets, and I still struggle with it (although that's because I don't do it enough in a short time-frame, and need to reread my own documentation regularly).&lt;/p&gt;
+&lt;p&gt;The capability to perform read-only validation with OVAL leads to a number of possible use cases. In the &lt;a href="http://oval.mitre.org/language/version5.10/OVAL_Language_Specification_09-14-2011.pdf"&gt;5.10 specification&lt;/a&gt; a number of use cases are provided. Basically, it boils down to vulnerability discovery (is a system vulnerable or not), patch management (is the system patched accordingly or not), configuration management (are the settings according to the rules or not), inventory management (detect what is installed on the system or what the systems' assets are), malware and threat indicator (detect if a system has been compromised or particular malware is active), policy enforcement (verify if a client system adheres to particular rules before it is granted access to a network), change tracking (regularly validating the state of a system and keeping track of changes), and security information management (centralizing results of an entire organization or environment and doing standard analytics on it).&lt;/p&gt;
+&lt;p&gt;In this blog post series, I'm focusing on configuration management.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;OVAL structure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Although the OVAL standard (just like the XCCDF standard actually) entails a number of major components, I'm going to focus on the OVAL definitions. Be aware though that the results of an OVAL scan are also standardized format, as are results of XCCDF scans for instance.&lt;/p&gt;
+&lt;p&gt;OVAL definitions have 4 to 5 blocks in them:
+- the &lt;strong&gt;definition&lt;/strong&gt; itself, which describes what is being validated and how. It refers to one or more tests that are to be executed or validated for the definition result to be calculated
+- the &lt;strong&gt;test&lt;/strong&gt; or tests, which are referred to by the definition. In each test, there is at least a reference to an object (what is being tested) and optionally to a state (what should the object look like)
+- the &lt;strong&gt;object&lt;/strong&gt;, which is a unique representation of a resource or resources on the system (a file, a process, a mount point, a kernel parameter, etc.). Object definitions can refer to multiple resources, depending on the definition.
+- the &lt;strong&gt;state&lt;/strong&gt;, which is a sort-of value mapping or validation that needs to be applied to an object to see if it is configured correctly
+- the &lt;strong&gt;variable&lt;/strong&gt;, an optional definition which is what it sounds like, a variable that substitutes an abstract definition with an actual definition,  allowing to write more reusable tests.&lt;/p&gt;
+&lt;p&gt;Let's get an example going, but without the XML structure, so in human language. We want to define that the Kerberos definition on a Linux system should allow forwardable tickets by default. This is accomplished by ensuring that, inside the &lt;code&gt;/etc/krb5.conf&lt;/code&gt; file (which is an INI-style configuration file), the value of the &lt;code&gt;forwardable&lt;/code&gt; key inside the &lt;code&gt;[libdefaults]&lt;/code&gt; section is set to &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In OVAL, the definition itself will document the above in human readable text, assign it a unique ID (like &lt;code&gt;oval:com.example.oval:def:1&lt;/code&gt;) and mark it as being a definition for configuration validation (&lt;code&gt;compliance&lt;/code&gt;). Then, it defines the criteria that need to be checked in order to properly validate if the rule is applicable or not. These criteria include validation if the OVAL statement is actually being run on a Linux system (as it makes no sense to run it against a Cisco router) which is Kerberos enabled, and then the criteria of the file check itself. Each criteria links to a test.&lt;/p&gt;
+&lt;p&gt;The test of the file itself links to an object and a state. There are a number of ways how we can check for this specific case. One is that the object is the &lt;code&gt;forwardable&lt;/code&gt; key in the &lt;code&gt;[libdefaults]&lt;/code&gt; section of the &lt;code&gt;/etc/krb5.conf&lt;/code&gt; file, and the state is the value &lt;code&gt;true&lt;/code&gt;. In this case, the state will point to those two entries (through their unique IDs) and define that the object must exist, and all matches must have a matching state. The "all matches" here is not that important, because there will generally only be one such definition in the &lt;code&gt;/etc/krb5.conf&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;Note however that a different approach to the test can be declared as well. We could state that the object is the &lt;code&gt;[libdefaults]&lt;/code&gt; section inside the &lt;code&gt;/etc/krb5.conf&lt;/code&gt; file, and the state is the value &lt;code&gt;true&lt;/code&gt; for the &lt;code&gt;forwardable&lt;/code&gt; key. In this case, the test declares that multiple objects must exist, and (at least) one must match the state.&lt;/p&gt;
+&lt;p&gt;As you can see, the OVAL language tries to map definitions to unambiguous definitions. So, how does this look like in OVAL XML?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The OVAL XML structure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://blog.siphos.be/static/2018/oval.xml"&gt;full example&lt;/a&gt; contains a few more entries than those we declare next, in order to be complete. The most important definitions though are documented below.&lt;/p&gt;
+&lt;p&gt;Let's start with the definition. As stated, it will refer to tests that need to match for the definition to be valid.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;definitions&amp;gt;
+  &amp;lt;definition id=&amp;quot;oval:com.example.oval:def:1&amp;quot; version=&amp;quot;1&amp;quot; class=&amp;quot;compliance&amp;quot;&amp;gt;
+    &amp;lt;metadata&amp;gt;
+      &amp;lt;title&amp;gt;libdefaults.forwardable in /etc/krb5.conf must be set to true&amp;lt;/title&amp;gt;
+      &amp;lt;affected family=&amp;quot;unix&amp;quot;&amp;gt;
+        &amp;lt;platform&amp;gt;Red Hat Enterprise Linux 7&amp;lt;/platform&amp;gt;
+      &amp;lt;/affected&amp;gt;
+      &amp;lt;description&amp;gt;
+        By default, tickets obtained from the Kerberos environment must be forwardable.
+      &amp;lt;/description&amp;gt;
+    &amp;lt;/metadata&amp;gt;
+    &amp;lt;criteria operator=&amp;quot;AND&amp;quot;&amp;gt;
+      &amp;lt;criterion test_ref=&amp;quot;oval:com.example.oval:tst:1&amp;quot; comment=&amp;quot;Red Hat Enterprise Linux is installed&amp;quot;/&amp;gt;
+      &amp;lt;criterion test_ref=&amp;quot;oval:com.example.oval:tst:2&amp;quot; comment=&amp;quot;/etc/krb5.conf&amp;#39;s libdefaults.forwardable is set to true&amp;quot;/&amp;gt;
+    &amp;lt;/criteria&amp;gt;
+  &amp;lt;/definition&amp;gt;
+&amp;lt;/definitions&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first thing to keep in mind is the (weird) identification structure. Just like with XCCDF, it is not sufficient to have your own id convention. You need to start an id with &lt;code&gt;oval:&lt;/code&gt; followed by the reverse domain definition (here &lt;code&gt;com.example.oval&lt;/code&gt;), followed by the type (&lt;code&gt;def&lt;/code&gt; for definition) and a sequence number.&lt;/p&gt;
+&lt;p&gt;Also, take a look at the criteria. Here, two tests need to be compliant (hence the &lt;code&gt;AND&lt;/code&gt; operator). However, more complex operations can be done as well. It is even allowed to nest multiple criteria, and refer to previous definitions, like so (taken from the &lt;a href="https://raw.githubusercontent.com/GovReady/ubuntu-scap/master/ssg-rhel6-oval.xml"&gt;ssg-rhel6-oval.xml file&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;criteria comment=&amp;quot;package hal removed or service haldaemon is not configured to start&amp;quot; operator=&amp;quot;OR&amp;quot;&amp;gt;
+  &amp;lt;extend_definition comment=&amp;quot;hal removed&amp;quot; definition_ref=&amp;quot;oval:ssg:def:211&amp;quot;/&amp;gt;
+  &amp;lt;criteria operator=&amp;quot;AND&amp;quot; comment=&amp;quot;service haldaemon is not configured to start&amp;quot;&amp;gt;
+    &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 0&amp;quot; test_ref=&amp;quot;oval:ssg:tst:212&amp;quot;/&amp;gt;
+    &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 1&amp;quot; test_ref=&amp;quot;oval:ssg:tst:213&amp;quot;/&amp;gt;
+    &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 2&amp;quot; test_ref=&amp;quot;oval:ssg:tst:214&amp;quot;/&amp;gt;
+    &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 3&amp;quot; test_ref=&amp;quot;oval:ssg:tst:215&amp;quot;/&amp;gt;
+    &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 4&amp;quot; test_ref=&amp;quot;oval:ssg:tst:216&amp;quot;/&amp;gt;
+    &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 5&amp;quot; test_ref=&amp;quot;oval:ssg:tst:217&amp;quot;/&amp;gt;
+    &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 6&amp;quot; test_ref=&amp;quot;oval:ssg:tst:218&amp;quot;/&amp;gt;
+  &amp;lt;/criteria&amp;gt;
+&amp;lt;/criteria&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next, let's look at the tests.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;tests&amp;gt;
+  &amp;lt;unix:file_test id=&amp;quot;oval:com.example.oval:tst:1&amp;quot; version=&amp;quot;1&amp;quot; check_existence=&amp;quot;all_exist&amp;quot; check=&amp;quot;all&amp;quot; comment=&amp;quot;/etc/redhat-release exists&amp;quot;&amp;gt;
+    &amp;lt;unix:object object_ref=&amp;quot;oval:com.example.oval:obj:1&amp;quot; /&amp;gt;
+  &amp;lt;/unix:file_test&amp;gt;
+  &amp;lt;ind:textfilecontent54_test id=&amp;quot;oval:com.example.oval:tst:2&amp;quot; check=&amp;quot;all&amp;quot; check_existence=&amp;quot;all_exist&amp;quot; version=&amp;quot;1&amp;quot; comment=&amp;quot;The value of forwardable in /etc/krb5.conf&amp;quot;&amp;gt;
+    &amp;lt;ind:object object_ref=&amp;quot;oval:com.example.oval:obj:2&amp;quot; /&amp;gt;
+    &amp;lt;ind:state state_ref=&amp;quot;oval:com.example.oval:ste:2&amp;quot; /&amp;gt;
+  &amp;lt;/ind:textfilecontent54_test&amp;gt;
+&amp;lt;/tests&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There are two tests defined here. The first test just checks if &lt;code&gt;/etc/redhat-release&lt;/code&gt; exists. If not, then the test will fail and the definition itself will result to false (as in, not compliant). This isn't actually a proper definition, because you want the test to not run when it is on a different platform, but for the sake of example and simplicity, let's keep it as is.&lt;/p&gt;
+&lt;p&gt;The second test will check for the value of the &lt;code&gt;forwardable&lt;/code&gt; key in &lt;code&gt;/etc/krb5.conf&lt;/code&gt;. For it, it refers to an object and a state. The test states that all objects must exist (&lt;code&gt;check_existence="all_exist"&lt;/code&gt;) and that all objects must match the state (&lt;code&gt;check="all"&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;The object definition looks like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;objects&amp;gt;
+  &amp;lt;unix:file_object id=&amp;quot;oval:com.example.oval:obj:1&amp;quot; comment=&amp;quot;The /etc/redhat-release file&amp;quot; version=&amp;quot;1&amp;quot;&amp;gt;
+    &amp;lt;unix:filepath&amp;gt;/etc/redhat-release&amp;lt;/unix:filepath&amp;gt;
+  &amp;lt;/unix:file_object&amp;gt;
+  &amp;lt;ind:textfilecontent54_object id=&amp;quot;oval:com.example.oval:obj:2&amp;quot; comment=&amp;quot;The forwardable key&amp;quot; version=&amp;quot;1&amp;quot;&amp;gt;
+    &amp;lt;ind:filepath&amp;gt;/etc/krb5.conf&amp;lt;/ind:filepath&amp;gt;
+    &amp;lt;ind:pattern operation=&amp;quot;pattern match&amp;quot;&amp;gt;^\s*forwardable\s*=\s*((true|false))\w*&amp;lt;/ind:pattern&amp;gt;
+    &amp;lt;ind:instance datatype=&amp;quot;int&amp;quot; operation=&amp;quot;equals&amp;quot;&amp;gt;1&amp;lt;/ind:instance&amp;gt;
+  &amp;lt;/ind:textfilecontent54_object&amp;gt;
+&amp;lt;/objects&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first object is a simple file reference. The second is a text file content object. More specifically, it matches the line inside &lt;code&gt;/etc/krb5.conf&lt;/code&gt; which has &lt;code&gt;forwardable = true&lt;/code&gt; or &lt;code&gt;forwardable = false&lt;/code&gt; in it. An expression is made on it, so that we can refer to the subexpression as part of the test.&lt;/p&gt;
+&lt;p&gt;This test looks like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;states&amp;gt;
+  &amp;lt;ind:textfilecontent54_state id=&amp;quot;oval:com.example.oval:ste:2&amp;quot; version=&amp;quot;1&amp;quot;&amp;gt;
+    &amp;lt;ind:subexpression datatype=&amp;quot;string&amp;quot;&amp;gt;true&amp;lt;/ind:subexpression&amp;gt;
+  &amp;lt;/ind:textfilecontent54_state&amp;gt;
+&amp;lt;/states&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This test refers to a subexpression, and wants it to be &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Testing the checks with Open-SCAP&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The Open-SCAP tool is able to test OVAL statements directly. For instance, with the above definition in a file called &lt;code&gt;oval.xml&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap oval eval --results oval-results.xml oval.xml
+Definition oval:com.example.oval:def:1: true
+Evaluation done.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The output of the command shows that the definition was evaluated successfully. If you want more information, open up the &lt;code&gt;oval-results.xml&lt;/code&gt; file which contains all the details about the test. This results file is also very useful while developing OVAL as it shows the entire result of objects, tests and so forth.&lt;/p&gt;
+&lt;p&gt;For instance, the &lt;code&gt;/etc/redhat-release&lt;/code&gt; file was only checked to see if it exists, but the results file shows what other parameters can be verified with it as well:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;unix-sys:file_item id=&amp;quot;1233781&amp;quot; status=&amp;quot;exists&amp;quot;&amp;gt;
+  &amp;lt;unix-sys:filepath&amp;gt;/etc/redhat-release&amp;lt;/unix-sys:filepath&amp;gt;
+  &amp;lt;unix-sys:path&amp;gt;/etc&amp;lt;/unix-sys:path&amp;gt;
+  &amp;lt;unix-sys:filename&amp;gt;redhat-release&amp;lt;/unix-sys:filename&amp;gt;
+  &amp;lt;unix-sys:type&amp;gt;regular&amp;lt;/unix-sys:type&amp;gt;
+  &amp;lt;unix-sys:group_id datatype=&amp;quot;int&amp;quot;&amp;gt;0&amp;lt;/unix-sys:group_id&amp;gt;
+  &amp;lt;unix-sys:user_id datatype=&amp;quot;int&amp;quot;&amp;gt;0&amp;lt;/unix-sys:user_id&amp;gt;
+  &amp;lt;unix-sys:a_time datatype=&amp;quot;int&amp;quot;&amp;gt;1515186666&amp;lt;/unix-sys:a_time&amp;gt;
+  &amp;lt;unix-sys:c_time datatype=&amp;quot;int&amp;quot;&amp;gt;1514927465&amp;lt;/unix-sys:c_time&amp;gt;
+  &amp;lt;unix-sys:m_time datatype=&amp;quot;int&amp;quot;&amp;gt;1498674992&amp;lt;/unix-sys:m_time&amp;gt;
+  &amp;lt;unix-sys:size datatype=&amp;quot;int&amp;quot;&amp;gt;52&amp;lt;/unix-sys:size&amp;gt;
+  &amp;lt;unix-sys:suid datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:suid&amp;gt;
+  &amp;lt;unix-sys:sgid datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:sgid&amp;gt;
+  &amp;lt;unix-sys:sticky datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:sticky&amp;gt;
+  &amp;lt;unix-sys:uread datatype=&amp;quot;boolean&amp;quot;&amp;gt;true&amp;lt;/unix-sys:uread&amp;gt;
+  &amp;lt;unix-sys:uwrite datatype=&amp;quot;boolean&amp;quot;&amp;gt;true&amp;lt;/unix-sys:uwrite&amp;gt;
+  &amp;lt;unix-sys:uexec datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:uexec&amp;gt;
+  &amp;lt;unix-sys:gread datatype=&amp;quot;boolean&amp;quot;&amp;gt;true&amp;lt;/unix-sys:gread&amp;gt;
+  &amp;lt;unix-sys:gwrite datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:gwrite&amp;gt;
+  &amp;lt;unix-sys:gexec datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:gexec&amp;gt;
+  &amp;lt;unix-sys:oread datatype=&amp;quot;boolean&amp;quot;&amp;gt;true&amp;lt;/unix-sys:oread&amp;gt;
+  &amp;lt;unix-sys:owrite datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:owrite&amp;gt;
+  &amp;lt;unix-sys:oexec datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:oexec&amp;gt;
+  &amp;lt;unix-sys:has_extended_acl datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:has_extended_acl&amp;gt;
+&amp;lt;/unix-sys:file_item&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, this is just on OVAL level. The final step is to link it in the XCCDF file.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Referring to OVAL in XCCDF&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The XCCDF Rule entry allows for a &lt;code&gt;check&lt;/code&gt; element, which refers to an automated check for compliance.&lt;/p&gt;
+&lt;p&gt;For instance, the above rule could be referred to like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;Rule id=&amp;quot;xccdf_com.example_rule_krb5-forwardable-true&amp;quot;&amp;gt;
+  &amp;lt;title&amp;gt;Enable forwardable tickets on RHEL systems&amp;lt;/title&amp;gt;
+  ...
+  &amp;lt;check system=&amp;quot;http://oval.mitre.org/XMLSchema/oval-definitions-5&amp;quot;&amp;gt;
+    &amp;lt;check-content-ref href=&amp;quot;oval.xml&amp;quot; name=&amp;quot;oval:com.example.oval:def:1&amp;quot; /&amp;gt;
+  &amp;lt;/check&amp;gt;
+&amp;lt;/Rule&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With this set in the Rule, Open-SCAP can validate it while checking the configuration baseline:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --oval-results --results xccdf-results.xml xccdf.xml
+...
+Title   Enable forwardable kerberos tickets in krb5.conf libdefaults
+Rule    xccdf_com.example_rule_krb5-forwardable-tickets
+Ident   RHEL7-01007
+Result  pass
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;A huge advantage here is that, alongside the detailed results of the run, there is also better human readable output as it shows the title of the Rule being checked.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The detailed capabilities of OVAL&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the above example I've used two examples: a file validation (against &lt;code&gt;/etc/redhat-release&lt;/code&gt;) and a file content one (against &lt;code&gt;/etc/krb5.conf&lt;/code&gt;). However, OVAL has many more checks and support for it, and also has constraints that you need to be aware of.&lt;/p&gt;
+&lt;p&gt;In the &lt;a href="https://github.com/OVALProject/Language/tree/master/docs"&gt;OVAL Project&lt;/a&gt; github account, the Language repository keeps track of the current documentation. By browsing through it, you'll notice that the OVAL capabilities are structured based on the target technology that you can check. Right now, this is AIX, Android, Apple iOS, Cisco ASA, Cisco CatOS, VMWare ESX, FreeBSD, HP-UX, Cisco iOS and iOS-XE, Juniper JunOS, Linux, MacOS, NETCONF, Cisco PIX, Microsoft SharePoint, Unix (generic), Microsoft Windows, and independent.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/independent-definitions-schema.md"&gt;independent&lt;/a&gt; one contains tests and support for resources that are often reusable toward different platforms (as long as your OVAL and XCCDF supporting tools can run it on those platforms). A few notable supporting tests are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;filehash58_test&lt;/code&gt; which can check for a number of common hashes (such as SHA-512 and MD5). This is useful when you want to make sure that a particular (binary or otherwise) file is available on the system. In enterprises, this could be useful for license files, or specific library files.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;textfilecontent54_test&lt;/code&gt; which can check the content of a file, with support for regular expressions.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;xmlfilecontent_test&lt;/code&gt; which is a specialized test toward XML files&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Keep in mind though that, as we have seen above, INI files specifically have no specialization available. It would be nice if CISecurity would develop support for common textual data formats, such as CSV (although that one is easily interpretable with the existing ones), JSON, YAML and INI.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/unix-definitions-schema.md"&gt;unix&lt;/a&gt; one contains tests specific to Unix and Unix-like operating systems (so yes, it is also useful for Linux), and together with the &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/linux-definitions-schema.md"&gt;linux&lt;/a&gt; one a wide range of configurations can be checked. This includes support for generic extended attributes (&lt;code&gt;fileextendedattribute_test&lt;/code&gt;) as well as SELinux specific rules (&lt;code&gt;selinuxboolean_test&lt;/code&gt; and &lt;code&gt;selinuxsecuritycontext_test&lt;/code&gt;), network interface settings (&lt;code&gt;interface_test&lt;/code&gt;), runtime processes (&lt;code&gt;process58_test&lt;/code&gt;), kernel parameters (&lt;code&gt;sysctl_test&lt;/code&gt;), installed software tests (such as &lt;code&gt;rpminfo_test&lt;/code&gt; for RHEL and other RPM enabled operating systems) and more.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="oval"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting a rule</title><link href="http://blog.siphos.be/2018/01/documenting-a-rule/" rel="alternate"></link><published>2018-01-24T20:40:00+01:00</published><updated>2018-01-24T20:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-24:/2018/01/documenting-a-rule/</id><summary type="html">&lt;p&gt;In the &lt;a href="http://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first post&lt;/a&gt; I talked about why configuration documentation is important. In the &lt;a href="http://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second post&lt;/a&gt; I looked into a good structure for configuration documentation of a technological service, and ended with an XCCDF template in which this documentation can be structured.&lt;/p&gt;
+&lt;p&gt;The next step is to document the rules …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the &lt;a href="http://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first post&lt;/a&gt; I talked about why configuration documentation is important. In the &lt;a href="http://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second post&lt;/a&gt; I looked into a good structure for configuration documentation of a technological service, and ended with an XCCDF template in which this documentation can be structured.&lt;/p&gt;
+&lt;p&gt;The next step is to document the rules themselves, i.e. the actual content of a configuration baseline.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Fine-grained rules&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While from a high-level point of view, configuration items could be documented in a coarse-grained manner, a proper configuration baseline documents rules very fine-grained. Let's first consider a bad example:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;All application code files are root-owned, with read-write privileges for owner and group, and executable where it makes sense.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;While such a rule could be interpreted correctly, it also leaves room for misinterpretation and ambiguity. Furthermore, it is not explicit. What are application code files? Where are they stored? What about group ownership? The executable permission, when does that make sense? Does the rule also imply that there is no privilege for world-wide access, or does it just ignore that?&lt;/p&gt;
+&lt;p&gt;A better example (or set of examples) would be:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/opt/postgresql&lt;/code&gt; is recursively user-owned by root&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/opt/postgresql&lt;/code&gt; is recursively group-owned by root&lt;/li&gt;
+&lt;li&gt;No files under &lt;code&gt;/opt/postgresql&lt;/code&gt; are executable except when specified further&lt;/li&gt;
+&lt;li&gt;All files in &lt;code&gt;/opt/postgresql/bin&lt;/code&gt; are executable&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/opt/postgresql&lt;/code&gt; has &lt;code&gt;system_u:object_r:usr_t:s0&lt;/code&gt; as SELinux context&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/opt/postgresql/bin/postgres&lt;/code&gt; has &lt;code&gt;system_u:object_r:postgresql_exec_t:s0&lt;/code&gt; as SELinux context&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And even that list is still not complete, but you get the gist. The focus here is to have fine-grained rules which are explicit and not ambiguous.&lt;/p&gt;
+&lt;p&gt;Of course, the above configuration rule is still a "simple" permission set. Configuration baselines go further than that of course. They can act on file content ("no PAM configuration files can refer to pam_rootok.so except for runuser and su"), run-time processes ("The processes with /usr/sbin/sshd as command and with -D as option must run within the sshd_t SELinux domain"), database query results, etc.&lt;/p&gt;
+&lt;p&gt;This granularity is especially useful later on when you want to automate compliance checks, because the more fine-grained a description is, the easier it is to develop and maintain checks on it. But before we look into remediation, let's document the rule a bit further.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Metadata on the rules&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Let's consider the following configuration rule:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;code&gt;/opt/postgresql/bin/postgres&lt;/code&gt; has &lt;code&gt;system_u:object_r:postgresql_exec_t:s0&lt;/code&gt; as SELinux context&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In the configuration baseline, we don't just want to state that this is the rule, and be finished. We need to describe the rule in more detail, as was described in the &lt;a href="http://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;previous post&lt;/a&gt;. More specifically, we definitely want to
+- know the rule's severity is, or how "bad" it would be if we detect a deviation from the rule
+- have an indication if the rule is security-sensitive or more oriented to manageability
+- a more elaborate description of the rule than just the title
+- an indication why this rule is in place (what does it solve, fix or simplify)
+- information on how to remediate if a deviation is found
+- know if the rule is applicable to our environment or not&lt;/p&gt;
+&lt;p&gt;The severity in the &lt;em&gt;Security Content Automation Protocol (SCAP)&lt;/em&gt; standard, which defines the XCCDF standard as well as OVAL and a few others like CVSS, uses the following possible values for severity: unknown, info, low, medium, high.&lt;/p&gt;
+&lt;p&gt;To indicate if a rule is security-oriented or not, XCCDF's role attribute is best used. With the role attribute, you state if a rule is to be included in the final scoring (a weighted value given to the compliance of a system) or not. If it is, then it is security sensitive.&lt;/p&gt;
+&lt;p&gt;The indication of a rule applicability in the environment might seem strange. If you document the configuration baseline, shouldn't it include only those settings you want? Well, yes and no. Personally, I like to include recommendations that we &lt;em&gt;do not follow&lt;/em&gt; in the baseline as well.&lt;/p&gt;
+&lt;p&gt;Suppose for instance that an audit comes along and says you need to enable data encryption on the database. Let's put aside that an auditor should focus mainly/solely on the risks, and let the solutions be managed by the team (but be involved in accepting solutions of course), the team might do an assessment and find that data encryption on the database level (i.e. the database files are encrypted so non-DBA users with operating system interactive rights cannot read the data) is actually not going to remediate any risk, yet introduce more complexity.&lt;/p&gt;
+&lt;p&gt;In that situation, and assuming that the auditor agrees with a different control, you might want to add a rule to the configuration baseline about this. Either you document the wanted state (database files do not need to be encrypted), or you document the suggestion (database files should be encrypted) but explicitly state that you do not require or implement it, and document the reasoning for it. The rule is then augmented with references to the audit recommendation for historical reasons and to facilitate future discussions.&lt;/p&gt;
+&lt;p&gt;And yes, I know the rule "database files should be encrypted" is still ambiguous. The actual rule should be more specific to the technology).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Documenting a rule in XCCDF&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In XCCDF, a rule is defined through the &lt;code&gt;Rule&lt;/code&gt; XML entity, and is placed within a &lt;code&gt;Group&lt;/code&gt;. The Group entities are used to structure the document, while the &lt;code&gt;Rule&lt;/code&gt; entities document specific configuration directives.&lt;/p&gt;
+&lt;p&gt;The postgres related rule of above could be written as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;Rule id=&amp;quot;xccdf_com.example_rule_pgsql-selinux-context&amp;quot;
+      role=&amp;quot;full&amp;quot;
+      selected=&amp;quot;1&amp;quot;
+      weight=&amp;quot;5.1&amp;quot;
+      severity=&amp;quot;high&amp;quot;
+      cluster-id=&amp;quot;network&amp;quot;&amp;gt;
+  &amp;lt;title&amp;gt;
+    /opt/postgresql/bin/postgres has system_u:object_r:postgresql_exec_t:s0 as SELinux context
+  &amp;lt;/title&amp;gt;
+  &amp;lt;description&amp;gt;
+    &amp;lt;xhtml:p&amp;gt;
+      The postgres binary is the main binary of the PostgreSQL database daemon. Once started, it launches the necessary workers. To ensure that PostgreSQL runs in the proper SELinux domain (postgresql_t) its binary must be labeled with postgresql_exec_t.
+    &amp;lt;/xhtml:p&amp;gt;
+    &amp;lt;xhtml:p&amp;gt;
+      The current state of the label can be obtained using stat, or even more simple, the -Z option to ls:
+    &amp;lt;/xhtml:p&amp;gt;
+    &amp;lt;xhtml:pre&amp;gt;~$ ls -Z /opt/postgresql/bin/postgres
+-rwxr-xr-x. root root system_u:object_r:postgresql_exec_t:s0 /opt/postgresql/bin/postgres
+    &amp;lt;/xhtml:pre&amp;gt;
+  &amp;lt;/description&amp;gt;
+  &amp;lt;rationale&amp;gt;
+    &amp;lt;xhtml:p&amp;gt;
+      The domain in which a process runs defines the SELinux controls that are active on the process. Services such as PostgreSQL have an established policy set that controls what a database service can and cannot do on the system.
+    &amp;lt;/xhtml:p&amp;gt;
+    &amp;lt;xhtml:p&amp;gt;
+      If the PostgreSQL daemon does not run in the postgresql_t domain, then SELinux might either block regular activities of the database (service availability impact), block behavior that impacts its effectiveness (integrity issue) or allow behavior that shouldn&amp;#39;t be allowed. The latter can have significant consequences once a vulnerability is exploited.
+    &amp;lt;/xhtml:p&amp;gt;
+  &amp;lt;/rationale&amp;gt;
+  &amp;lt;fixtext&amp;gt;
+    Restore the context of the file using restorecon or chcon.
+  &amp;lt;/fixtext&amp;gt;
+  &amp;lt;fix strategy=&amp;quot;restrict&amp;quot; system=&amp;quot;urn:xccdf:fix:script:sh&amp;quot;&amp;gt;restorecon /opt/postgresql/bin/postgres
+  &amp;lt;/fix&amp;gt;
+  &amp;lt;ident system=&amp;quot;http://example.com/configbaseline&amp;quot;&amp;gt;pgsql-01032&amp;lt;/ident&amp;gt;
+&amp;lt;/Rule&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Although this is lots of XML, it is easy to see what each element declares. The &lt;a href="https://csrc.nist.gov/CSRC/media/Publications/nistir/7275/rev-4/final/documents/nistir-7275r4_updated-march-2012_clean.pdf"&gt;NIST IR 7275 document&lt;/a&gt; is a very good resource to continuously consult in order to find the right elements and their interpretation.&lt;/p&gt;
+&lt;p&gt;There is one element added that is "specific" to the content of this blog post series and not the XCCDF standard, namely the identification. As mentioned in an earlier post, organizations might have their own taxonomy for technical service identification, and requirements on how to number or identify rules. In the above example, the rule is identified as &lt;code&gt;pgsql-01032&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;There is another attribute in use above that might need more clarification: the weight of the rule.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Abusing CVSS for configuration weight scoring&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the above example, a weight is given to the rule scoring (weight of 5.1). This number is obtained through a &lt;a href="https://www.first.org/cvss/calculator/3.0#CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:N/E:U/RL:O/CR:H/IR:H/AR:H/MAV:N/MAC:H/MPR:N/MUI:N/MS:U/MC:L/MI:N/MA:L"&gt;CVSS calculator&lt;/a&gt;, which is generally used to identify the risk of a security issue or vulnerability. CVSS stands for &lt;em&gt;Common Vulnerability Scoring System&lt;/em&gt; and is a popular way to weight security risks (which are then associated with vulnerability reports, &lt;em&gt;Common Vulnerabilities and Exposures (CVE)&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;Misconfigurations can also be slightly interpreted as a security risk, although it requires some mental bridges. Rather than scoring the rule, you score the risk that it mitigates, and consider the worst thing that could happen if that rule is not implemented correctly. Now, worst-case thinking is subjective, so there will always be discussion on the weight of a rule. It is therefore important to have a consensus in the team (if the configuration baseline is team-owned) if this weight is actively used. Of course, an organization might choose to ignore the weight, or use a different scoring mechanism.&lt;/p&gt;
+&lt;p&gt;In the above situation, I scored what would happen if a vulnerability in PostgreSQL was successfully exploited, and SELinux couldn't mitigate the risk as the label of the file was wrong. The result of a wrong label &lt;em&gt;could be&lt;/em&gt; that the PostgreSQL service runs in a higher privileged domain, or even in an unconfined domain (no SELinux restrictions active), so there is a heightened risk of confidentiality loss (beyond the database) and even integrity risk.&lt;/p&gt;
+&lt;p&gt;However, the confidentiality risk is scored as low, and integrity even in between (base risk is low, but due to other constraints put in place integrity impact is reduced further) because PostgreSQL runs as a non-administrative user on the system, and perhaps because the organization uses dedicated systems for database hosting (so other services are not easily impacted).&lt;/p&gt;
+&lt;p&gt;As mentioned, this is somewhat abusing the CVSS methodology, but is imo much more effective than trying to figure out your own scoring methodology. With CVSS, you start with scoring the risk regardless of context (CVSS Base), then adjust based on recent state or knowledge (CVSS Temporal), and finally adjust further with knowledge of the other settings or mitigating controls in place (CVSS Environmental).&lt;/p&gt;
+&lt;p&gt;Personally, I prefer to only use the CVSS Base scoring for configuration baselines, because the other two are highly depending on time (which is, for documentation, challenging) and the other controls (which is more of a concern for service technical documentation). So in my preferred situation, the rule would be scored as 5.4 rather than 5.1. But that's just me.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Isn't this CCE?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;People who use SCAP a bit more might already be thinking if I'm not reinventing the wheel here. After all, SCAP also has a standard called &lt;em&gt;Common Configuration Enumeration (CCE)&lt;/em&gt; which seems to be exactly what I'm doing here: enumerating the configuration of a technical service. And indeed, if you look at the &lt;a href="https://nvd.nist.gov/config/cce/index"&gt;CCE list&lt;/a&gt; you'll find a number of Excel sheets (sigh) that define common configurations.&lt;/p&gt;
+&lt;p&gt;For instance, for Red Hat Enterprise Linux v5, there is an enumeration identified as CCE-4361-2, which states:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;File permissions for /etc/pki/tls/ldap should be set correctly&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The CCE description then goes on stating that this is a permission setting (CCE Parameter), which can be rectified with &lt;code&gt;chmod&lt;/code&gt; (CCE Technical Mechanism), and refers to a source for the setting.&lt;/p&gt;
+&lt;p&gt;However, CCE has a number of downsides.&lt;/p&gt;
+&lt;p&gt;First of all, it isn't being maintained anymore. And although XCCDF itself is also a quite old standard, it is still being looked into (a draft new version is being prepared) and is actively used as a standard. Red Hat is investing time and resources into secure configurations and compliancy aligned with SCAP, and other vendors publish SCAP-specific resources as well. CCE however would be a list, and thus requires continuous management. That RHELv5 is the most recent RHEL CCE list is a bad thing.&lt;/p&gt;
+&lt;p&gt;Second, CCE's structure is for me insufficient to use in configuration baselines. XCCDF has a much more mature and elaborate set of settings for this. What CCE does is actually what I use in the above example as the organization-specific identifier.&lt;/p&gt;
+&lt;p&gt;Finally, there aren't many tools that actively use CCE, unlike CVSS, XCCDF, OVAL, CVSS and other standards under the SCAP umbrella, which are all still actively used and developed upon by tools such as Open-SCAP.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Profiling&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Before finishing this post, I want to talk about profiling.&lt;/p&gt;
+&lt;p&gt;Within an XCCDF benchmark, several profiles can be defined. In the XCCDF template I defined a single profile that covers all rules, but this can be fine-tuned to the needs of the organization. In XCCDF profiles, you can select individual rules (which ones are active for a profile and which ones aren't) and even fine-tune values for rules. This is called tailoring in XCCDF.&lt;/p&gt;
+&lt;p&gt;A first use case for profiles is to group different rules based on the selected setup. In case of Nginx for instance, one can consider Nginx being used as either a reverse proxy, a static website hosting or a dynamic web application hosting. In all three cases, some rules will be the same, but several rules will be different. Within XCCDF, you can document all rules, and then use profiles to group the rules related to a particular service use.&lt;/p&gt;
+&lt;p&gt;XCCDF allows for profile inheritance. This means that you can define a base Profile (all the rules that need to be applied, regardless of the service use) and then extend the profiles with individual rule selections.&lt;/p&gt;
+&lt;p&gt;With profiles, you can also fine-tune values. For instance, you could have a password policy in place that states that passwords on internal machines have to be at least 10 characters long, but on DMZ systems they need to be at least 15 characters long. Instead of defining two rules, the rule could refer to a particular variable (Value in XCCDF) which is then selected based on the Profile. The value for a password length is then by default 10, but the Profile for DMZ systems selects the other value (15).&lt;/p&gt;
+&lt;p&gt;Now, value-based tailoring is imo already a more advanced use of XCCDF, and is best looked into when you also start using OVAL or other automated checks. The tailoring information is then passed on to the automated compliance check so that the right value is validated.&lt;/p&gt;
+&lt;p&gt;Value-based tailoring also makes rules either more complex to write, or ambiguous to interpret without full profile awareness. Considering the password length requirement, the rule could become:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The /etc/pam.d/password-auth file must refer to pam_passwdqc.so for the password service with a minimal password length of 10 (default) or 15 (DMZ) for the N4 password category&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;At least the rule is specific. Another approach would be to document it as follows:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The /etc/pam.d/password-auth file must refer to pam_passwdqc.so with the proper organizational password controls&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The documentation of the rule might document the proper controls further, but the rule is much less specific. Later checks might report that a system fails this check, referring to the title, which is insufficient for engineers or administrators to resolve.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Generating the guide&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To close off this post, let's finish with how to generate the guide based on an XCCDF document. Personally, I use two approaches for this.&lt;/p&gt;
+&lt;p&gt;The first one is to rely on Open-SCAP. With Open-SCAP, you can generate guides easily:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf generate guide xccdf.xml &amp;gt; ConfigBaseline.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The second one, which I use more often, is a custom XSL style sheet, which also introduces the knowledge and interpretations of what this blog post series brings up (including the organizational identification). The end result is similar (the same content) but uses a structure/organization that is more in line with expectations.&lt;/p&gt;
+&lt;p&gt;For instance, in my company, the information security officers want to have a tabular overview of all the rules in a configuration baseline. So the XSL style sheet generates such a tabular overview, and uses in-documenting linking to the more elaborate descriptions of all the rules.&lt;/p&gt;
+&lt;p&gt;An &lt;a href="http://blog.siphos.be/static/2018/xccdf.xsl"&gt;older version&lt;/a&gt; is online for those interested. It uses JavaScript as well (in case you are security sensitive you might want to look into it) to allow collapsing rule documentation for faster online viewing.&lt;/p&gt;
+&lt;p&gt;The custom XSL has an additional advantage, namely that there is no dependency on Open-SCAP to generate the guides (even though it is perfectly possible to copy the XSL and continue). I can successfully generate the guide using &lt;a href="https://www.microsoft.com/en-us/download/details.aspx?id=21714"&gt;Microsoft's msxml&lt;/a&gt; utility, using xsltproc, etc depending on the platform I'm on.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Structuring a configuration baseline</title><link href="http://blog.siphos.be/2018/01/structuring-a-configuration-baseline/" rel="alternate"></link><published>2018-01-17T09:10:00+01:00</published><updated>2018-01-17T09:10:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-17:/2018/01/structuring-a-configuration-baseline/</id><summary type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and technology agnostic.&lt;/p&gt;
+&lt;p&gt;If you haven't read the blog post on &lt;a href="http://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;documenting configuration changes&lt;/a&gt;, it might be a good idea to do so as it declares the scope of configuration baselines and why I think XCCDF is a good match for this.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Chaptered documentation&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As mentioned previously, a configuration baseline describes the configuration of a particular technological service (rather than a business service which is an integrated set of technologies and applications). To document and maintain the configuration state of the technology, I suggest the following eight chapters (to begin with):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Architecture&lt;/li&gt;
+&lt;li&gt;Operating system and services&lt;/li&gt;
+&lt;li&gt;Software deployment and file system&lt;/li&gt;
+&lt;li&gt;Technical service settings&lt;/li&gt;
+&lt;li&gt;Authentication, authorization, access control and auditing&lt;/li&gt;
+&lt;li&gt;Service specific settings&lt;/li&gt;
+&lt;li&gt;Cryptographic services&lt;/li&gt;
+&lt;li&gt;Data and information handling&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Within each chapter, sections can be declared depending on how the technology works. For instance, for database technologies one can have a distinction between system-wide settings, instance-specific settings and even database-specific settings. Or, if the organization has specific standards on user definitions, a chapter on "User settings" can be used. The above is just a suggestion in an attempt to cover most aspects of a configuration baseline.&lt;/p&gt;
+&lt;p&gt;With the sections of the chapter, rules are then defined which specify the actual configuration setting (or valid range) applicable to the technology. But the rule goes further than just a single-line configuration setting description.&lt;/p&gt;
+&lt;p&gt;Each rule should have a &lt;em&gt;unique identifier&lt;/em&gt; so that other documents can reliably link to the rules in the document. Although XCCDF has a convention for this, I feel that the XCCDF way here is more useful for technical referencing while the organization is better off with a more human addressable approach. So while a rule in XCCDF has the identifier &lt;code&gt;xccdf_com.example.postgresql_rule_selinux-enforcing&lt;/code&gt; the human addressable identifier would be &lt;code&gt;postgresql_selinux-enforcing&lt;/code&gt; or even &lt;code&gt;postgresql-00001&lt;/code&gt;. In the company that I work for, we already have a taxonomy for services and a decision to use numerical identifiers on the configuration baseline rules.&lt;/p&gt;
+&lt;p&gt;Each rule should be properly described, documenting what the rule is for. In case of a ranged value, it should also document how this range can be properly applied. For instance, if the number of worker threads is based on the number of cores available in the system, document the formula.&lt;/p&gt;
+&lt;p&gt;Each rule should also document the risk that it wants to mitigate (be it a security risk, or a manageability aspect of the service, or a performance related tuning parameter). This aspect of the baseline is important whenever an implementation wants an exception to the rule (not follow it) or a deviation (different value). Personally, to make sure that the baseline is manageable, I don't expect engineers to immediately fill in the risk in great detail, but rather holistically. The actual risk determination is then only done when an implementation wants an exception or deviation, and then includes a list of potential mitigating actions to take. This way, a 300+ rule document does not require all 300+ rules to have a risk determination, especially if only a dozen or so rules have exceptions or deviations in the organization.&lt;/p&gt;
+&lt;p&gt;Each rule should have sources linked to it. These sources help the reader understand what the rule is based on, such as a publicly available secure configuration baseline, an audit recommendation, a specific incident, etc. If the rule is also controversial, it might benefit from links to meeting minutes.&lt;/p&gt;
+&lt;p&gt;Each rule might have consequences listed as well. These are known changes or behavior aspects that follow the implementation of the rule. For instance, a rule might state that TLS mutual authentication is mandatory, and the consequence is that all interacting clients must have a properly defined certificate (so proper PKI requirements) as well as client registration in the application.&lt;/p&gt;
+&lt;p&gt;Finally, and importantly as well, each rule identifies the scope at which exceptions or deviations can be granted. For smaller groups and organizations, this might not matter that much, but for larger organizations, some configuration baseline rules can be "approved" by a small team or by the application owner, while others need formal advise of a security officer and approval on a decision body.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Finding a balanced approval hierarchy&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The exception management for configuration baselines should not be underestimated. It is not viable to have all settings handled by top management decision bodies, but some configuration changes might result in such a huge impact that a formal decision needs to be taken somewhere, with proper accountability assigned (yes, this is the architect in me speaking).&lt;/p&gt;
+&lt;p&gt;Rather than attempting to create a match for all rules, I again like to keep the decision here in the middle, just like I do with the risk determination. The maintainer of the configuration baseline can leave the "scope" of a rule open, and have an intermediate decision body as the main decision body. Whenever an exception or deviation is asked, the risk determination is made and filled in, and with this documented rule now complete a waiver is asked on the decision body. Together with the waiver request, the maintainer also asks this decision body if the rule in the future also needs to be granted on that decision body or elsewhere.&lt;/p&gt;
+&lt;p&gt;The scope is most likely tied to the impact of the rule towards other services. A performance specific rule that only affects the application hosted on the technology can be easily scoped as being application-only. This means that the application or service owner can decide to deviate from the baseline. A waiver for a rule that influences system behavior might need to be granted by the system administrator (or team) as well as application or service owners that use this system. Following this logic, I generally use the following scope terminology:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;tbd (to be determined), meaning that there is no assessment done yet&lt;/li&gt;
+&lt;li&gt;application, meaning that the impact is only on a single application and thus can be taken by the application owner&lt;/li&gt;
+&lt;li&gt;instance, meaning that the impact is on an instance and thus might be broader than a single application, but is otherwise contained to the technology. Waivers are granted by the responsible system administrator and application owner(s)&lt;/li&gt;
+&lt;li&gt;system, meaning that the impact is on the entire system and thus goes beyond the technology. Waivers are granted by the responsible system administrator, application owner(s) and with advise from a security officer&lt;/li&gt;
+&lt;li&gt;network, meaning that the impact can spread to other systems or influence behavior of other systems, but remains technical in nature. Waivers are granted by an infrastructure architecture board with advise from a security officer&lt;/li&gt;
+&lt;li&gt;organization, meaning that the impact goes beyond technical influence but also impacts business processes. Waivers are granted by an architecture board with advise from a security officer and senior service owner, and might even be redirected to a higher management board.&lt;/li&gt;
+&lt;li&gt;group, meaning that the impact influences multiple businesses. Waivers are granted by a specific management board&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Each scope also has a "-pending" value, so "network-pending". This means that the owner of the configuration baseline suggests that this is the scope on which waivers can be established, but still needs to receive formal validation.&lt;/p&gt;
+&lt;p&gt;The main decision body is then a particular infrastructure architecture board, which will redirect requests to other decision bodies if the scope goes beyond what that architecture board handles.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Architectural settings&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The first chapter in a baseline is perhaps the more controversial one, as it is not a technical setting and hard to validate. However, in my experience, tying architectural constraints in a configuration baseline is much more efficient than having a separate track for a number of reasons.&lt;/p&gt;
+&lt;p&gt;For one, I strongly believe that architecture deviations are like configuration deviations. They should be documented similarly, and follow the same path as configuration baseline deviations. The scope off architectural rules are also all over the place, from application-level impact up to organization-wide.&lt;/p&gt;
+&lt;p&gt;Furthermore, architectural positioning of services should not be solely an (infrastructure) architecture concern, but supported by the other stakeholders as well, and especially the responsible for the technology service.&lt;/p&gt;
+&lt;p&gt;For instance, a rule could be that no databases should be positioned within an organizations &lt;em&gt;DeMilitarized Zone (DMZ)&lt;/em&gt;, which is a network design that shields off internally positioned services from the outside world. Although this is not a configuration setting, it makes sense to place it in the configuration baseline of the database technology. There are several ways to validate automatically if this rule is followed, depending for instance the organization IP plan.&lt;/p&gt;
+&lt;p&gt;Another rule could be that web applications that host browser-based applications should only be linked through a reverse proxy, or that a load balancer must be put in front of an application server, etc. This might result in additional rules in the chapter that covers access control as well (such as having a particular IP filter in place), but these rules are the consequence of the architectural positioning of the service.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Operating system and services&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The second chapter covers settings specific to the operating system on which the technology is deployed. Such settings can be system-wide settings like Linux' sysctl parameters, services which need to be enabled or disabled when the technology is deployed, and deviations from the configuration baseline of the operating system.&lt;/p&gt;
+&lt;p&gt;An example of the latter depends of course on the configuration baseline of the operating system (assuming this is a baseline for a technology deployed on top of an operating system, it could very well be a different platform). Suppose for instance that the baseline has the &lt;code&gt;squashfs&lt;/code&gt; kernel module disabled, but the technology itself requires squashfs, then a waiver is needed. This is the level where this is documented.&lt;/p&gt;
+&lt;p&gt;Another setting could be an extension of the SSH configuration (the term "services" in the chapter title here focuses on system services, such as OpenSSH), or the implementation of additional audit rules on OS-level (although auditing can also be covered in a different section).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Software deployment and file system&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The third chapter focuses on the installation of the technology itself, and the file system requirements related to the technology service.&lt;/p&gt;
+&lt;p&gt;Rules here look into file ownership and permissions, mount settings, and file system declarations. Some baselines might even define rules about integrity of certain files (the &lt;em&gt;Open Vulnerability and Assessment Language (OVAL)&lt;/em&gt; supports checksum-based validations) although I think this is better tackled through a specific integrity process. Still, if such an integrity process does not exist and automated validation of baselines is implemented, then integrity validation of critical files could be in scope.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Technical service settings&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the fourth chapter, settings are declared regarding the service without being service-specific. A service-specific setting is one that requires functional knowledge of the service, whereas technical service settings can be interpreted without functionally understanding the technology at hand.&lt;/p&gt;
+&lt;p&gt;Let's take PostgreSQL as an example. A service-specific setting would be the maximum number of non-frozen transaction IDs before a VACUUM operation is triggered (the &lt;code&gt;autovacuum_freeze_max_age&lt;/code&gt; parameter). If you are not working with PostgreSQL much, then this makes as much sense as &lt;a href="https://en.wikipedia.org/wiki/Prisencolinensinainciusol"&gt;Prisencolinensinainciusol&lt;/a&gt;. It sounds like English, but that's about as far as you get.&lt;/p&gt;
+&lt;p&gt;A technical service setting on PostgreSQL that is likely more understandable is the runtime account under which the database runs (you don't want it to run as root), or the TCP port on which it listens. Although both are technical in nature, they're much more understandable for others and, perhaps the most important reason of all, often more reusable in deployments across technologies.&lt;/p&gt;
+&lt;p&gt;This reusability is key for larger organizations as they will have numerous technologies to support, and the technical service settings offer a good baseline for initial secure setup. They focus on the runtime account of the service, the privileges of the runtime account (be it capability-based on Linux or account rights on Windows), the interfaces on which the service is reachable, the protocol or protocols it supports, etc.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Authentication, authorization, access control and auditing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The next chapter focuses on the &lt;em&gt;Authentication, Authorization and Accounting (AAA)&lt;/em&gt; services, but slightly worded differently (AAA is commonly used in networking related setups, I just borrow it and extend it). If the configuration baseline is extensive, then it might make sense to have separate sections for each of these security concepts.&lt;/p&gt;
+&lt;p&gt;Some technologies have a strong focus on user management as well. In that case, it might make sense to first describe the various types of users that the technology supports (like regular users, machine users, internal service users, shared users, etc.) and then, per user type, document how these security services act on it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Service specific settings&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The next chapter covers settings that are very specific to the service. These are often the settings that are found in the best practices documentation, secure deployment instructions of the vendor, performance tuning parameters, etc.&lt;/p&gt;
+&lt;p&gt;I tend to look first at the base configuration and administration guides for technologies, and see what the main structure is that those documents follow. Often, this can be borrowed for the configuration baseline. Next, consider performance related tuning, as that is often service specific and not related to the other chapters.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Cryptographic services&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In this chapter, the focus is on the cryptographic services and configuration.&lt;/p&gt;
+&lt;p&gt;The most well-known example here is related to any TLS configuration and tuning. Whereas the location of the private key (used for TLS services) is generally mentioned in the third chapter (or at least the secure storage of the private key), this section will focus on using this properly. It looks at selecting proper TLS version, making a decent and manageable set of ciphers to support, enabling &lt;em&gt;Online Certificate Status Protocol (OCSP)&lt;/em&gt; on web servers, etc.&lt;/p&gt;
+&lt;p&gt;But services often use cryptographic related algorithms in various other places as well. Databases can provide transparent data file encryption to ensure that offline access to the database files does not result in data leakage for instance. Or they implement column-level encryption.&lt;/p&gt;
+&lt;p&gt;Application servers might support crypto related routines to the applications they host, and the configuration baseline can then identify which crypto modules are supported and which ones aren't.&lt;/p&gt;
+&lt;p&gt;Services might be using cryptographic hashes which are configurable, or could be storing user passwords in a database using configurable settings. OpenLDAP for instance supports multiple hashing methods (and also supports storing in plain-text if you want this), so it makes sense to select a hashing method that is hard to brute-force (slow to compute for instance) and is salted (to make certain types of attacks more challenging).&lt;/p&gt;
+&lt;p&gt;If the service makes use of stored credentials or keytabs, document how they are protected here as well.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Data and information handling&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Information handling covers both the regular data management activities (like backup/restore, data retention, archival, etc.) as well as sensitive information handling (to comply with privacy rules).&lt;/p&gt;
+&lt;p&gt;The regular data management related settings look into both the end user data handling (as far as this is infrastructurally related - this isn't meant to become a secure development guide) as well as service-internal data handling. When the technology is meant to handle data (like a database or LDAP) then certain related settings could be both in the service specific settings chapter or in this one. Personally, I tend to prefer that technology-specific and non-reusable settings are in the former, while the data and information handling chapter covers the integration and technology-agnostic data handling.&lt;/p&gt;
+&lt;p&gt;If the service handles sensitive information, it is very likely that additional constraints or requirements were put in place beyond the "traditional" cryptographic requirements. Although such requirements are often implemented on the application level (like tagging the data properly and then, based on the tags, handle specific fine-grained access controls, archival and data retention), more and more technologies provide out-of-the-box (or at least reusable) methods that can be configured.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;An XCCDF template&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To support the above structure, I've made an &lt;a href="http://blog.siphos.be/static/2018/xccdf-template.xml"&gt;XCCDF template&lt;/a&gt; that might be a good start for documenting the configuration baseline of a technology. It also structures the chapters a bit more with various sections, but those are definitely not mandatory to use as it strongly depends on the technology being documented, the maturity of the organization, etc.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting configuration changes</title><link href="http://blog.siphos.be/2018/01/documenting-configuration-changes/" rel="alternate"></link><published>2018-01-07T21:20:00+01:00</published><updated>2018-01-07T21:20:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-07:/2018/01/documenting-configuration-changes/</id><summary type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very …&lt;/p&gt;</summary><content type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very crucial.&lt;/p&gt;
+&lt;p&gt;In this blog post series, I'm going to look into using the &lt;em&gt;Extensible Configuration Checklist Description Format (XCCDF)&lt;/em&gt; as the way to document these. This first post is an introduction to XCCDF functionally, and what I position it for.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Documentation is a good thing&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;With the ongoing struggle for time and resources, documenting configurations and architectures is often not top-of-mind. However, the lack of this information also leads to various problems: incidents due to misconfiguration, slow recovery timings due to incomprehensible setups, and not to forget: meetings. Yes, meetings, which are continuously discussing service aspects that influence one or more parameters, without any good traceability of past decisions.&lt;/p&gt;
+&lt;p&gt;Some technologies allow to keep track of some metadata regarding to configurations. In configuration management tools like &lt;a href="https://puppet.com"&gt;Puppet&lt;/a&gt; or &lt;a href="https://saltstack.com"&gt;Saltstack&lt;/a&gt; engineers define the target state of their infrastructure, and the configuration management tool enforces this state on the service. Engineers can add in historical information as comments into these systems, and use version control on the files to have traceability of the settings.&lt;/p&gt;
+&lt;p&gt;However, although in-line comments are very important, even for configuration sets, it is not a full documentation approach. In larger environments, where you are regularly audited for quality and security, or where multiple roles and stakeholders need to understand the settings and configuration of services, pointing to the code is not going to cut it.&lt;/p&gt;
+&lt;p&gt;Configuration items need to be documented not solely with the documentation rule itself, but with the motivation related to it, and additional fields of interest depending on how the organization deals with it. This documentation can then be referred to from the configuration management infrastructure (so engineers and technical stakeholders can trace back settings) but also vice-versa: the documentation can refer to the configuration management implementation (so other stakeholders can deduce how the settings are implemented or even enforced).&lt;/p&gt;
+&lt;p&gt;With a proper configuration document at hand, especially if it is supported through the configuration management tool(s) in the organization (regardless if it is one or multiple), it is much easier to have the necessary interviews with auditors, project leaders, functional and technical analysts, architects or even remote support teams.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Two-part documentation hierarchy&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The first thing to decide upon is at which level a team will document the settings. Is a single document possible for all infrastructure services? Most likely not. I believe that settings should be documented on the technology level (as it is specific to a particular technology) and on the 'business service' level (as it is specific to a particular implementation).&lt;/p&gt;
+&lt;p&gt;On the technology level, we're talking about configuration documentation for "PostgreSQL", "Apache Knox" or "Nginx". At this level, the baseline is defined for a technology. The resulting document is then the &lt;em&gt;configuration baseline&lt;/em&gt; for that component.&lt;/p&gt;
+&lt;p&gt;On the business service level, we're talking about configuration documentation for a particular service that is a combination of multiple implementations. For instance, a company intranet portal service is operationally implemented through a reverse proxy (HAProxy), an intelligent load balancer (Seesaw), next-gen firewall (pfSense), web server (Nginx), application server (Node.js), database (PostgreSQL), and operating systems (Linux). And more technologies come into play when we consider software deployment, monitoring, backup/restore, software-defined network, storage provisioning, archival solutions, license management services, etc.&lt;/p&gt;
+&lt;p&gt;Hence, a configuration document should be available on this service level ("company intranet portal") which defines the usage profile of a service (more about that later) and the specific parameters related to this service, but only when they either deviate from the configuration baseline, or take a particular value within a range defined in the configuration baseline. This document is the &lt;em&gt;service technical configuration&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;So, as an example, on the Nginx configuration baseline, a rule might state that the maximum file size per upload is 12M (through the &lt;code&gt;client_max_body_size&lt;/code&gt; parameter). If the service has no problem with this rule, then it does not need to be documented on the service technical configuration. However, if this needs to be adapted (say that for the company portal the maximum file size is 64M) then it is documented.&lt;/p&gt;
+&lt;p&gt;Another example is a ranged setting, where the baseline identifies a set of valid values and the service technical configuration makes a particular selection. For instance, the Nginx configuration baseline might mention that there must be between 5 and 50 worker processes (through the &lt;code&gt;worker_processes&lt;/code&gt; parameter). In the service technical configuration the particular value is then selected.&lt;/p&gt;
+&lt;p&gt;From an architecture and security point of view, the first example is a deviation which must consider the risks and consequences that are applicable to the rule. These are (or should be) documented in the configuration baseline, including where this deviation can be approved (assuming the organization has a decision body for such things). The second example is not a deviation and, as such, is free to be chosen by the implementation team. The configuration baseline will generally inform the implementation teams about how to pick a proper value.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Service usage profiles&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I've talked about a &lt;em&gt;service usage profile&lt;/em&gt; earlier up, but didn't expand on it yet. So, what are these service usage profiles?&lt;/p&gt;
+&lt;p&gt;Well, most technologies can be implemented for a number of targets and functional purposes. A database could be implemented as a dedicated service (one set of databases on a dedicated set of instances for a single business service) or a shared service (multiple databases, possibly on multiple instances for several business services). It can be tuned for online transactional purposes (OLTP) or online analytical processing (OLAP), often through data warehouse designs.&lt;/p&gt;
+&lt;p&gt;A service usage profile is part of the configuration baseline, with settings specific to that particular usage. So for a database the engineering team responsible for the database technology setup might devise that the following usage profiles are applicable to their component:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Dedicated OLTP&lt;/li&gt;
+&lt;li&gt;Shared OLTP&lt;/li&gt;
+&lt;li&gt;Dedicated DWH&lt;/li&gt;
+&lt;li&gt;Shared DWH&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Each usage profile has a number of configuration settings (of which many, if not most, are shared across other usage profiles) and a range of valid values (fine-tuning for a service). The service technical configuration for a particular business service then selects the particular usage profile. For instance, the company intranet portal might use a Dedicated OLTP usage profile for its PostgreSQL database.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How XCCDF supports this structure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Until now, I've only spoken about the values related to configuration documentation, and a high-level introduction to the hierarchy on the configurations. But how does the &lt;a href="https://scap.nist.gov/specifications/xccdf/"&gt;Extensible Configuration Checklist Description&lt;/a&gt; position itself in this?&lt;/p&gt;
+&lt;p&gt;A number of reasons why XCCDF is a valid choice for configuration documentation are given next.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;XCCDF allows technical writers to write the documentation in (basic) HTML while still linking the documentation to specific rules. Rather than having to use a tabular expression on all the valid configuration sets (like using a large spreadsheet table for all rules) and trying to force some documentation in it (Excel is not a text editor), XCCDF uses a hierarchical approach to structure documentation in logical sections (which it calls &lt;em&gt;Groups&lt;/em&gt;) and then refers to the rules applicable to that section (using the &lt;em&gt;Rule&lt;/em&gt; identifier).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;XCCDF has out-of-the-box support for service profiles (through &lt;em&gt;Profile&lt;/em&gt; declarations). Fine-tuning and selecting profiles is called &lt;em&gt;tailoring&lt;/em&gt; in XCCDF. This also includes support for ranged values.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;XCCDF is meant to (but does not have to) refer to the (automated or interview-based) validation of the rules as well. Automated validation of settings means that an engine can read the XCCDF document (and the referred statements) and check if an implementation adheres to the baseline. The standard for this is called &lt;em&gt;Open Vulnerability and Assessment Language (OVAL)&lt;/em&gt;, and a popular free software engine for this is &lt;a href="https://www.open-scap.org"&gt;OpenSCAP&lt;/a&gt;. The standard for interview-based validation is &lt;em&gt;Open Checklist Interactive Language (OCIL)&lt;/em&gt;. I have not played around with OCIL and supporting tooling, so comments on this are always welcome.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;XCCDF is an XML-based format, so its "source code" can easily be versioned in common version control systems like Git. This allows organizations to not only track changes on the documentation, but also have an active development lifecycle management on the configuration documentation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;XCCDFs schema implies a set of metadata to be defined during various declarations. It includes support for the &lt;a href="http://www.dublincore.org/specifications/"&gt;Dublin core metadata&lt;/a&gt; terms for content, references to link other resources structurally, and most importantly has a wide set of supporting entities for rules (which is the level on which configuration items are documented). This includes the rationale (why is the rule defined as is), fix text (human readable), fix (machine readable), rule role (is it security-sensitive and as such must be taken up in a security assessment report or not), severity (how bad is it if this rule is not followed), and many more. This both forces the user to consider the consequences of the rule, as well as guide the writer into properly structured documentation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;XCCDF also suggests a number of classes for the documentation to standardize certain information types. This includes warnings, critical text, examples, and instructions. Such semantic declarations allow for a more uniform set of documentation.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;However, a few constraints exist that you need to be aware of when approaching XCCDF.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;XCCDF is an XML-based document format, and although NIST offers the necessary XML Schema definitions, writing proper XML has always been a challenge for many people. Also, no decent GUI or WYSIWYG tool that manages XCCDF files exists in my opinion. Yes, we have the &lt;a href="https://www.open-scap.org/tools/scap-workbench/"&gt;SCAP Workbench&lt;/a&gt; and the &lt;a href="https://www.g2-inc.com/scap.html"&gt;eSCAPe editor&lt;/a&gt;, but I feel that they are not as effective as they should be. As a result, the team or teams that write the baselines should either be XML-savvy, or you need to provide supporting infrastructure and services for it. However, YMMV.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If the organization is not interested in compliance checks themselves (i.e. automated validation of adherence to the configuration baseline and service technical configuration) then XCCDF will entail too much overhead versus just having a template or approach (such as documenting items in a wiki). However, with some support (and perhaps automation) writing and maintaining XCCDF based configuration baselines becomes much easier.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;More resources&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the past I've &lt;a href="http://blog.siphos.be/tag/xccdf/"&gt;blogged about XCCDF&lt;/a&gt; already, but that was with a previous blog technology and the migration wasn't as successful as I originally thought. XML snippets were all removed, and I'm too lazy to go back to my backups from 2013 and individually correct blogs.&lt;/p&gt;
+&lt;p&gt;A good resource on XCCDF is the &lt;a href="https://csrc.nist.gov/CSRC/media/Publications/nistir/7275/rev-4/final/documents/nistir-7275r4_updated-march-2012_clean.pdf"&gt;NIST IR-7275 publication (PDF)&lt;/a&gt; which covers the XCCDF standard in much detail.&lt;/p&gt;
+&lt;p&gt;The Center for Internet Security (CISecurity) maintains more than a hundred &lt;a href="https://www.cisecurity.org/cis-benchmarks/"&gt;CIS Benchmarks&lt;/a&gt;, all available for free as PDFs, and are often based on XCCDF (available to subscribed members).&lt;/p&gt;
+&lt;p&gt;In the next blog post, I'll talk about the in-document structure of a good configuration baseline.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Giving weights to compliance rules</title><link href="http://blog.siphos.be/2013/12/giving-weights-to-compliance-rules/" rel="alternate"></link><published>2013-12-26T04:13:00+01:00</published><updated>2013-12-26T04:13:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-26:/2013/12/giving-weights-to-compliance-rules/</id><summary type="html">&lt;p&gt;Now that we wrote up a few OVAL statements and used those instead of SCE
+driven checks (where possible), let's finish up and go back to the XCCDF
+document and see how we can put weights in place.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;CVE (Common Vulnerability Exposure)&lt;/strong&gt; standard allows for
+vulnerabilities to be given …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Now that we wrote up a few OVAL statements and used those instead of SCE
+driven checks (where possible), let's finish up and go back to the XCCDF
+document and see how we can put weights in place.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;CVE (Common Vulnerability Exposure)&lt;/strong&gt; standard allows for
+vulnerabilities to be given weights through a scoring mechanism called
+&lt;strong&gt;CVSS (Common Vulnerability Scoring System)&lt;/strong&gt;. The method for giving
+weights to such vulnerabilities is based on several factors, which you
+can play with through an &lt;a href="https://nvd.nist.gov/cvss.cfm?calculator&amp;amp;version=2"&gt;online CVSS
+calculator&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Giving weights on a vulnerability based on these metrics is not that
+difficult, but what about compliance misconfigurations?&lt;/p&gt;
+&lt;p&gt;There is a suggested standard for this, &lt;strong&gt;CCSS (Common Configuration
+Scoring System)&lt;/strong&gt; which is based on the CVSS scoring and CMSS scoring.
+Especially the base scoring is tailored to the CVSS scoring, so let's
+look at an example from the &lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/guide-gentoo-xccdf.html"&gt;Gentoo Security
+Benchmark&lt;/a&gt;
+(still in draft):&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;The base scoring of a misconfiguration focuses on the following items:&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;Access Vector (AV)&lt;/dt&gt;
+&lt;dd&gt;How can the misconfiguration be "reached" or exploited - Local (on
+the system), Adjacent Network or Network&lt;/dd&gt;
+&lt;dt&gt;Access Complexity (AC)&lt;/dt&gt;
+&lt;dd&gt;How complex would it be to exploit the misconfiguration - High,
+Medium or Low&lt;/dd&gt;
+&lt;dt&gt;Authentication (Au)&lt;/dt&gt;
+&lt;dd&gt;Does the attacker need to be authenticated in order to exploit the
+misconfiguration - None, Single (one account) or Multiple (several
+accounts or multi-factor authenticated)&lt;/dd&gt;
+&lt;dt&gt;Confidentiality (C)&lt;/dt&gt;
+&lt;dd&gt;Does a successful exploit have impact on the confidentiality of the
+system or data (None, Partial or Complete)&lt;/dd&gt;
+&lt;dt&gt;Integrity (I)&lt;/dt&gt;
+&lt;dd&gt;Does a successful exploit have impact on the integrity of the system
+or data (None, Partial or Complete)&lt;/dd&gt;
+&lt;dt&gt;Availability (A)&lt;/dt&gt;
+&lt;dd&gt;Does a successful exploit have impact on the availability of the
+system or data (None, Partial or Complete)&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;In order to exploit that &lt;code&gt;/tmp&lt;/code&gt; is not on a separate file system, we can
+think about dumping lots of information in &lt;code&gt;/tmp&lt;/code&gt;, flooding the root
+file system. This is simple to accomplish locally and requires a single
+authentication (you need to be authenticated on the system). Once
+performed, this only impacts availability.&lt;/p&gt;
+&lt;p&gt;The CCSS (and thus CVSS) base vector looks like so:
+&lt;code&gt;AV:L/AC:L/Au:S/C:N/I:N/A:C&lt;/code&gt; and gives a base score of 4.6, which is
+reflected in the XCCDF in the &lt;code&gt;weight="4.6"&lt;/code&gt; attribute.&lt;/p&gt;
+&lt;p&gt;The severity I give in the XCCDF is "gut feeling". Basically, I use the
+following description:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;high constitutes a grave or critical problem. A rule with this
+    severity MUST be tackled as it detected a misconfiguration that is
+    easily exploitable and could lead to full system compromise.&lt;/li&gt;
+&lt;li&gt;medium reflects a fairly serious problem. A rule with this severity
+    SHOULD be tackled as it detected a misconfiguration that is
+    easily exploitable.&lt;/li&gt;
+&lt;li&gt;low reflects a non-serious problem. A rule with this severity has
+    detected a misconfiguration but its influence on the overall system
+    security is minor (if other compliance rules are followed).&lt;/li&gt;
+&lt;li&gt;info reflects an informational rule. Failure to comply with this
+    rule does not mean failure to comply with the document itself.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Of course, you can put your own weights and severities in your XCCDF
+documents. Important however is to make sure it is properly documented -
+other people who read the document must be aware of the consequences of
+the rules if they are not compliant.&lt;/p&gt;
+&lt;p&gt;By introducing weights and severities, administrators of systems that
+are not compliant (or of a large set of systems) can prioritize which
+misconfigurations or vulnerabilities they will handle first. And it
+reduces the amount of discussions as well, because without these, your
+administrators will start debating what to tackle first, each with their
+own vision and opinion. Which is great, but not when time is ticking.
+Having a predefined priority list makes it clear how to react now.&lt;/p&gt;
+&lt;p&gt;That's it for this post series. I hope you enjoyed it and learned from
+it. Of course, this wont be the last post related to SCAP so stay tuned
+for more ;-)&lt;/p&gt;
+&lt;p&gt;This post is the final one in a series on SCAP content:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;Documenting security best practices – XCCDF
+    introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
+    PostgreSQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;Documenting a bit more than just
+    descriptions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;Running a bit with the XCCDF
+    document&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/remediation-through-scap/"&gt;Remediation through
+    SCAP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/what-is-oval/"&gt;What is OVAL?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/doing-a-content-check-with-oval/"&gt;Doing a content check with
+    OVAL&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Security"></category><category term="ccss"></category><category term="cvss"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>Doing a content check with OVAL</title><link href="http://blog.siphos.be/2013/12/doing-a-content-check-with-oval/" rel="alternate"></link><published>2013-12-24T04:25:00+01:00</published><updated>2013-12-24T04:25:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-24:/2013/12/doing-a-content-check-with-oval/</id><summary type="html">&lt;p&gt;Let's create an OVAL check to see if &lt;code&gt;/etc/inittab&lt;/code&gt;'s single user
+definitions only refer to &lt;code&gt;/sbin/sulogin&lt;/code&gt; or &lt;code&gt;/sbin/rc single&lt;/code&gt;. First,
+the skeleton:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;The first thing we notice is that there are several namespaces defined
+within OVAL. These namespaces refer to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let's create an OVAL check to see if &lt;code&gt;/etc/inittab&lt;/code&gt;'s single user
+definitions only refer to &lt;code&gt;/sbin/sulogin&lt;/code&gt; or &lt;code&gt;/sbin/rc single&lt;/code&gt;. First,
+the skeleton:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;The first thing we notice is that there are several namespaces defined
+within OVAL. These namespaces refer to the platforms on which the tests
+can be executed. OVAL has independent definitions, unix-global
+definitions or linux-specific definitions. You can find the overview of
+&lt;a href="http://oval.mitre.org/language/version5.10.1/"&gt;all supported schemas and definitions
+online&lt;/a&gt; - definitely
+something to bookmark if you plan on developing your own OVAL checks.&lt;/p&gt;
+&lt;p&gt;So let's create the definition:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;There is lots of information to be found in this simple snippet.&lt;/p&gt;
+&lt;p&gt;First of all, notice the &lt;code&gt;class="compliance"&lt;/code&gt; part. OVAL definitions can
+be given a class that informs the OVAL interpreter what kind of test it
+is.&lt;/p&gt;
+&lt;p&gt;Supported classes are:&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;compliance&lt;/dt&gt;
+&lt;dd&gt;Does the system adhere to a predefined wanted state&lt;/dd&gt;
+&lt;dt&gt;inventory&lt;/dt&gt;
+&lt;dd&gt;Is the given software or hardware available/installed on the system&lt;/dd&gt;
+&lt;dt&gt;patch&lt;/dt&gt;
+&lt;dd&gt;Is the selected patch installed on the system&lt;/dd&gt;
+&lt;dt&gt;vulnerability&lt;/dt&gt;
+&lt;dd&gt;Is the system vulnerable towards this particular exposure (CVE)&lt;/dd&gt;
+&lt;dt&gt;miscellaneous&lt;/dt&gt;
+&lt;dd&gt;Everything that doesn't fit the above&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;Next, we see metadata that tells the OVAL interpreter that the
+definition applies to Unix family systems, and more specifically a
+Gentoo Linux system. However, this is not a CPE entry
+(&lt;em&gt;cpe:/o:gentoo:linux&lt;/em&gt;). The idea is that the OVAL Interpreter should
+interpret the information as it wants without focusing on CPE details -
+I think (I might be mistaken though) because the SCAP standard does not
+want to introduce loops - a CPE that refers to an OVAL to validate,
+which in turn refers to the same CPE.&lt;/p&gt;
+&lt;p&gt;Also, a reference is included in the OVAL. Remember that we also had
+references in the XCCDF document? Well, the same is true for OVAL
+statements - you can add in references that help administrators get more
+information about a definition. In this case, it refers to a &lt;strong&gt;CCE
+(Common Configuration Enumeration)&lt;/strong&gt; entry. You can find all official
+CCE entries &lt;a href="https://nvd.nist.gov/cce/index.cfm"&gt;online as well&lt;/a&gt;. This
+particular one, CCE-4241-6, sais:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;CCE-4241-6  Platform: rhel5     Date: (C)2011-10-07   (M)2013-11-28
+
+The requirement for a password to boot into single-user mode should be configured correctly.
+
+Parameter: enabled/disabled
+
+Technical Mechanism: via /etc/inittab
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;By requiring &lt;strong&gt;sulogin&lt;/strong&gt; or &lt;strong&gt;rc single&lt;/strong&gt; in &lt;code&gt;inittab&lt;/code&gt;, Gentoo Linux
+will ask for the root password before granting a shell, thereby
+complying with the requirement to have a password before providing a
+shell in single-user mode.&lt;/p&gt;
+&lt;p&gt;Finally, the definition refers to a single test, which we will now look
+into:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;This particular test is part of the &lt;em&gt;independent&lt;/em&gt; definitions. Checking
+the content of a file is something all platforms support. Within this
+independent definition set, a &lt;a href="http://oval.mitre.org/language/version5.10.1/ovaldefinition/documentation/independent-definitions-schema.html"&gt;large set of
+tests&lt;/a&gt;
+are supported, including file hash checking (does the checksum of a file
+still match), environment variable test (verifying the existence and
+content of an environment variable), LDAP tests and also text file
+content tests.&lt;/p&gt;
+&lt;p&gt;In the test, there are two important attributes to closely look into:
+&lt;code&gt;check&lt;/code&gt; and &lt;code&gt;check_existence&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;check_existence&lt;/code&gt; attribute tells the OVAL interpreter how to deal
+with the object definition. In our case, the object will refer to the
+lines in the &lt;code&gt;/etc/inittab&lt;/code&gt; file that match a certain pattern. With
+&lt;code&gt;check_existence="at_least_one_exists"&lt;/code&gt; the OVAL interpreter knows it
+has to have at least one line that matches the pattern before it can
+continue. If no line matches, then the test fails.&lt;/p&gt;
+&lt;p&gt;Other values for &lt;code&gt;check_existence&lt;/code&gt; are "all_exist" (every object
+described must exist), any_exist (doesn't matter if zero, one or more
+exists), none_exist (no object described must exist) and
+"only_one_exists" (one, and only one match for the described objects
+must exist).&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;check&lt;/code&gt; attributes tells the OVAL interpreter how to match the
+object (if there is one) with the state. In our example, &lt;code&gt;check="all"&lt;/code&gt;
+tells the OVAL interpreter that all lines that match the object
+definition must also match the state definition.&lt;/p&gt;
+&lt;p&gt;Other values for &lt;code&gt;check&lt;/code&gt; are "at least one", "none satisfy" and "only
+one". These should be self-explanatory. Notice that there are no
+underscores involved here (unlike with the &lt;code&gt;check_existence&lt;/code&gt; attribute).&lt;/p&gt;
+&lt;p&gt;See the &lt;a href="https://oval.mitre.org/language/version5.10.1/ovaldefinition/documentation/oval-common-schema.html"&gt;common
+schema&lt;/a&gt;
+for more general OVAL attribute information.&lt;/p&gt;
+&lt;p&gt;The test refers to the following object:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;The object represents lines in the &lt;code&gt;/etc/inittab&lt;/code&gt; file that match the
+expression &lt;code&gt;^[\S]+:S:[\S]+:.*&lt;/code&gt;. The OVAL definition uses &lt;a href="http://oval.mitre.org/language/about/perlre.html"&gt;perl-style
+regular expressions&lt;/a&gt;,
+so this means that the lines must start with a non-whitespace string,
+followed by a colon (:), followed by the letter "S", followed by a
+colon, followed by non-whitespace string, followed by colon and then a
+remainder string.&lt;/p&gt;
+&lt;p&gt;Also, the object evaluates if at least one such line is found.&lt;/p&gt;
+&lt;p&gt;The state, also referred to by the test, looks like so:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;Here again we see a regular expression; this time, the expression sais
+that the line must start with "su" and that the fourth field equals
+&lt;code&gt;/sbin/rc single&lt;/code&gt; or &lt;code&gt;/sbin/sulogin&lt;/code&gt;. In our example, if there is at
+least one "single user" line that does not match this expression, then
+the OVAL statement will return a failure and the system is
+non-compliant.&lt;/p&gt;
+&lt;p&gt;Now you could be wondering if this is the best approach. We can create
+an object that refers to all single-user lines in &lt;code&gt;/etc/inittab&lt;/code&gt; that do
+not comply with the expression just in the object definition. The
+expression would be more complex by itself, but wouldn't need a state
+anymore. True, but the advantage here is that the object itself matches
+all single user lines, and can be reused later in other tests. Also, if
+we later evaluate the OVAL statements, we will get an overview of all
+lines that match the object (and then evaluate these lines against the
+state) - similar to the script output we got with SCE tests.&lt;/p&gt;
+&lt;p&gt;We can create other OVALs for all other tests. To refer to these OVAL
+tests in an XCCDF document, take a look at the following example:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;Instead of referring to the SCE engine (with
+&lt;code&gt;system="http://open-scap.org/page/SCE"&lt;/code&gt;) we refer to the OVAL with
+&lt;code&gt;system="http://oval.mitre.org/XMLSchema/oval-definitions-5"&lt;/code&gt;, point the
+XCCDF interpreter where the OVAL statements are stored in
+&lt;code&gt;href="gentoo-oval.xml"&lt;/code&gt; and what definition we want to test
+(&lt;code&gt;oval:org.gentoo.dev.swift:def:22&lt;/code&gt;). The XCCDF interpreter will then
+pass this information on to the OVAL interpreter (in case of openscap,
+this is the same tool, but it doesn't have to be) so it can evaluate the
+right OVAL statement on the system.&lt;/p&gt;
+&lt;p&gt;In the next post, I'll use the &lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/guide-gentoo-xccdf.html"&gt;Gentoo Security
+Benchmark&lt;/a&gt;
+as a guide to explain how to further structure and document things in
+XCCDF/OVAL.&lt;/p&gt;
+&lt;p&gt;This post is part of a series on SCAP content:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;Documenting security best practices - XCCDF
+    introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
+    PostgreSQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;Documenting a bit more than just
+    descriptions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;Running a bit with the XCCDF
+    document&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/remediation-through-scap/"&gt;Remediation through
+    SCAP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/what-is-oval/"&gt;What is OVAL?&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="oval"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>What is OVAL?</title><link href="http://blog.siphos.be/2013/12/what-is-oval/" rel="alternate"></link><published>2013-12-22T04:40:00+01:00</published><updated>2013-12-22T04:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-22:/2013/12/what-is-oval/</id><summary type="html">&lt;p&gt;Time to discuss &lt;strong&gt;OVAL (Open Vulnerability Assessment Language)&lt;/strong&gt;. In
+all the &lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;previous
+posts&lt;/a&gt;
+I focused the checking of rules (does the system comply with the given
+rule) on scripts, through the Script Check Engine supported by openscap.
+The advantage of SCE is that most people can quickly provide automated
+checks …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Time to discuss &lt;strong&gt;OVAL (Open Vulnerability Assessment Language)&lt;/strong&gt;. In
+all the &lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;previous
+posts&lt;/a&gt;
+I focused the checking of rules (does the system comply with the given
+rule) on scripts, through the Script Check Engine supported by openscap.
+The advantage of SCE is that most people can quickly provide automated
+checks to run in script format. But SCE has a few downsides.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;You cannot guarantee that the scripts will do no harm on the system.
+    A badly written script might manipulate system settings, get a huge
+    amount of resources, leave stale result files on the system, flood
+    file systems and more. If you get scripts from other parties, you'll
+    need to review them thoroughly before running them against all
+    your systems. Especially when you run the compliance validation tool
+    (openscap in our example) as root.&lt;/li&gt;
+&lt;li&gt;SCE support is only available for openscap (and perhaps one or
+    two others) as it is not an international standard. If you use any
+    of the &lt;a href="https://nvd.nist.gov/scapproducts.cfm"&gt;SCAP validated tools&lt;/a&gt;
+    then you will not be able to benefit from the SCE scripts. And that
+    would make the XCCDF document back to a purely documenting
+    best practice.&lt;/li&gt;
+&lt;li&gt;Every rule requires separate scripts, even though many of the rules
+    will be very similar and thus reuse a lot of the scripts.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;OVAL on the other hand provides those advantages. An OVAL file is an XML
+file that contains the tests to run, in an (I must say) somewhat complex
+manner. Really, OVAL is not simple, but it does contain advantages that
+SCE doesn't.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It is a standard, part of the SCAP standards. OVAL files are
+    reusable across multiple tools, allowing you to focus once on the
+    rules rather than having to rewrite the rules for every time you
+    change the tool.&lt;/li&gt;
+&lt;li&gt;OVAL can be platform-agnostic. Of course, not all tests are
+    platform-agnostic (validating registry keys is a Windows-only check)
+    but many are.&lt;/li&gt;
+&lt;li&gt;All rules can be mentioned in a single file (or spread across
+    multiple files if that makes management easier), but more
+    importantly rules will also reuse definitions from other rules. If
+    you have three rules that pertain to a file (say &lt;code&gt;/etc/rc.conf&lt;/code&gt;)
+    then the definition of that file is shared across all rules.&lt;/li&gt;
+&lt;li&gt;The OVAL standard is designed to be non-intrusive. All declarations
+    you do in an OVAL file are pure read-only statements. This gives
+    more confidence to have OVAL statements from third parties ran
+    across your organization. Of course, reviewing them never hurts, but
+    you already know that they will not modify any setting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Like SCE, OVAL checks are individual checks that are executed and
+returned. They too return a success or failure (or error) and can
+deliver more detailed information as part of their result (like the SCE
+results output we looked at before) so allow administrators to
+investigate further why a rule failed (without needing to log on to the
+system and look for themselves).&lt;/p&gt;
+&lt;p&gt;A basic structure of OVAL is a &lt;em&gt;definition&lt;/em&gt; that describes what the rule
+is for. The definition refers to one or more &lt;em&gt;tests&lt;/em&gt; that are evaluated
+on a system. These tests refer to an &lt;em&gt;object&lt;/em&gt; that needs to be checked,
+and optionally a &lt;em&gt;state&lt;/em&gt; to which the object should (or shouldn't)
+match.&lt;/p&gt;
+&lt;p&gt;Consider the test we made with SCE to see if a platform is a Gentoo
+Linux system:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2
+3
+4
+5&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class="c1"&gt;# If /etc/gentoo-release exists then the system is a Gentoo Linux system.&lt;/span&gt;
+&lt;span class="nb"&gt;test&lt;/span&gt; -f /etc/gentoo-release &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_PASS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;In OVAL, this would be structured as follows (pseudo-OVAL):&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;definition&lt;/dt&gt;
+&lt;dd&gt;The system is a Gentoo Linux system&lt;/dd&gt;
+&lt;dt&gt;test&lt;/dt&gt;
+&lt;dd&gt;The object that represents /etc/gentoo-release must exist&lt;/dd&gt;
+&lt;dt&gt;object&lt;/dt&gt;
+&lt;dd&gt;The /etc/gentoo-release file&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;The resulting OVAL file is quite complex for a simple rule. I see the
+OVAL complexity as part of a normalization (similar to database
+normalization) process to allow higher reuse. If we later want to check
+the content of the &lt;code&gt;gentoo-release&lt;/code&gt; file, we will reuse the definition
+(object with id &lt;em&gt;oval:org.gentoo.dev.swift:obj:1&lt;/em&gt;) rather than making a
+second object for it, and use that definition to create new tests.&lt;/p&gt;
+&lt;p&gt;The structure of OVAL is the same everywhere. First define the
+definitions, then the tests, then the objects and then, optionally, the
+states. A very important aspect is to have the identifiers (&lt;code&gt;id="..."&lt;/code&gt;)
+correct. The structure of OVAL identifiers is standardized as well:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;dl&gt;
+&lt;dt&gt;namespace&lt;/dt&gt;
+&lt;dd&gt;Like the namespace used in XCCDF documents, this is the reverse
+notation of a domainname. In the example above, this
+is org.gentoo.dev.swift.&lt;/dd&gt;
+&lt;dt&gt;type&lt;/dt&gt;
+&lt;dd&gt;The type of the entry in OVAL. This can be def (definition), tst
+(test), obj (object), ste (state) or var (variable).&lt;/dd&gt;
+&lt;dt&gt;id&lt;/dt&gt;
+&lt;dd&gt;The identifier of this particular entry. This identifier has to be a
+positive integer.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;p&gt;By standardizing the identifiers, you can create repositories within
+your organization, and have other teams reuse your OVAL components when
+needed. As the identifier remains the same (even when you update the
+OVAL object itself to be more precise) those tests keep validating
+correctly. For instance, say that Gentoo Linux would be changed in the
+future not to provide a &lt;code&gt;gentoo-release&lt;/code&gt; file anymore, but
+&lt;code&gt;gentoo-linux-release&lt;/code&gt; file instead (not that it is planning that, it is
+just hypothetical), then you can update the test (with description
+"Gentoo Linux is installed") to check if either of the two files exist:&lt;/p&gt;
+&lt;p&gt;(XML content lost due to blog conversion)&lt;/p&gt;
+&lt;p&gt;If we save all Gentoo releated OVAL statements in a file called
+&lt;code&gt;gentoo-oval.xml&lt;/code&gt; then we can update the &lt;code&gt;gentoo-cpe.xml&lt;/code&gt; file (which we
+discussed in the past) to the following:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;With this change, openscap (or any other XCCDF interpreter) will use the
+OVAL definition to see if a platform is Gentoo Linux or not, and does
+not need to execute the &lt;code&gt;gentoo-platform.sh&lt;/code&gt; script anymore, which is
+now fully deprecated and superceded by the OVAL statement.&lt;/p&gt;
+&lt;p&gt;In the next posts, I'll write up one of the other tests we had (which
+checks the content of a file - one of the most used tests I think) in
+OVAL, and have the XCCDF document updated to only use OVAL statements.&lt;/p&gt;
+&lt;p&gt;This post is part of a series on SCAP content:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;Documenting security best practices - XCCDF
+    introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
+    PostgreSQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;Documenting a bit more than just
+    descriptions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;Running a bit with the XCCDF
+    document&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/remediation-through-scap/"&gt;Remediation through
+    SCAP&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="oval"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>Remediation through SCAP</title><link href="http://blog.siphos.be/2013/12/remediation-through-scap/" rel="alternate"></link><published>2013-12-20T04:47:00+01:00</published><updated>2013-12-20T04:47:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-20:/2013/12/remediation-through-scap/</id><summary type="html">&lt;p&gt;I promised in my &lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;previous
+post&lt;/a&gt;
+to give some information about remediation.&lt;/p&gt;
+&lt;p&gt;Remediation is the process where you fix a system to become compliant
+again after finding out there is a violation on the system. The easiest
+form of remediation of course is to just notify the administrator and
+give …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I promised in my &lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;previous
+post&lt;/a&gt;
+to give some information about remediation.&lt;/p&gt;
+&lt;p&gt;Remediation is the process where you fix a system to become compliant
+again after finding out there is a violation on the system. The easiest
+form of remediation of course is to just notify the administrator and
+give him the instructions to fix the problem - and in the majority of
+cases, this is exactly what you will do, considering that automatically
+fixing things might create more breakage if you are not careful.&lt;/p&gt;
+&lt;p&gt;But suppose that you know, for a few rules, what the remediation really
+should be, and you want to automate it. Well, in that case, you can
+document the remediation (the commands or scripts) in the XCCDF
+document. As you might have noticed in the previous example, this is
+handled through a &lt;code&gt;&amp;lt;fix&amp;gt;&lt;/code&gt; entity.&lt;/p&gt;
+&lt;p&gt;In the fix, we mention how the fix should be executed
+(&lt;em&gt;urn:xccdf:fix:system:commands&lt;/em&gt; is to tell the XCCDF interpreter that
+the remediation are commands executed on the command line (or verbatim
+within a script). The platform attribute allows us to differentiate
+based on the platform (or even version of the platform). The other
+attributes, such as &lt;em&gt;complexity&lt;/em&gt;, &lt;em&gt;disruption&lt;/em&gt; and &lt;em&gt;reboot&lt;/em&gt; is metadata
+that helps in deciding which auto-remediation you want to execute.&lt;/p&gt;
+&lt;p&gt;With openscap, the remediation can be triggered online during the
+evaluation, by adding &lt;code&gt;--remediate&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --remediate --profile ${PROFILE} --cpe gentoo-cpe.xml --results results-test-xccdf.xml test-xccdf.xml
+Title   There should be no /dev/ROOT in /etc/fstab
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-root
+Result  pass
+
+Title   There should be no /dev/BOOT in /etc/fstab
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-boot
+Result  pass
+
+Title   rc_sys should be defined in /etc/rc.conf
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
+Result  fail
+
+ --- Starting remediation ---
+Title   rc_sys should be defined in /etc/rc.conf
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
+Result  fixed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And indeed, the file has been changed and now complies with the rules
+again.&lt;/p&gt;
+&lt;p&gt;We can also generate the remediation scripts offline:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --profile ${PROFILE} --results results-test-xccdf.xml --cpe gentoo-cpe.xml test-xccdf.xml
+~$ oscap xccdf generate fix --output remediate.sh results-test-xccdf.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The resulting &lt;code&gt;remediate.sh&lt;/code&gt; script then contains the steps to remediate
+the failures reported in the &lt;code&gt;results-test-xccdf.xml&lt;/code&gt; file.&lt;/p&gt;
+&lt;p&gt;In general however, auto-remediation is not that recommended. The amount
+of effort you put in creating remediation scripts that are safe to
+execute is huge. If you do this for a single system, it is much easier
+to just remediate manually. If you need to do it for a large set of
+systems, it makes more sense to use a configuration management solution
+like &lt;a href="http://www.ansibleworks.com/"&gt;ansible&lt;/a&gt; or
+&lt;a href="http://puppetlabs.com/"&gt;puppet&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;So, now that we have experience with documenting our best practices and
+running validation, I'll talk about OVAL in the next post.&lt;/p&gt;
+&lt;p&gt;This post is part of a series on SCAP content:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;Documenting security best practices - XCCDF
+    introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
+    PostgreSQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;Documenting a bit more than just
+    descriptions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;Running a bit with the XCCDF
+    document&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="remediation"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>Running a bit with the XCCDF document</title><link href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/" rel="alternate"></link><published>2013-12-18T04:23:00+01:00</published><updated>2013-12-18T04:23:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-18:/2013/12/running-a-bit-with-the-xccdf-document/</id><summary type="html">&lt;p&gt;In my &lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;previous
+post&lt;/a&gt;
+I introduced automated checking of rules through &lt;em&gt;SCE (Script Check
+Engine)&lt;/em&gt;. Let's focus a bit more now on running with an XCCDF document:
+how to automatically check the system, read the results and find more
+information of those results.&lt;/p&gt;
+&lt;p&gt;To provide a usable example, you can …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In my &lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;previous
+post&lt;/a&gt;
+I introduced automated checking of rules through &lt;em&gt;SCE (Script Check
+Engine)&lt;/em&gt;. Let's focus a bit more now on running with an XCCDF document:
+how to automatically check the system, read the results and find more
+information of those results.&lt;/p&gt;
+&lt;p&gt;To provide a usable example, you can download the following files:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/test-xccdf.txt"&gt;test-xccdf.xml&lt;/a&gt;,
+    a sample XCCDF document that documents and tests a few settings
+    (save it with the &lt;code&gt;.xml&lt;/code&gt; extension, I publish it as txt to make
+    downloading and viewing easier).&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/gentoo-cpe.txt"&gt;gentoo-cpe.xml&lt;/a&gt;
+    which defines when a system is a Gentoo system (I'll cover this in
+    a minute).&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/gentoo-platform.sh"&gt;gentoo-platform.sh&lt;/a&gt;
+    which is the script that tests if a system is a Gentoo system.&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/gentoo-fstab-noroot.sh"&gt;gentoo-fstab-noroot.sh&lt;/a&gt;
+    which tests that &lt;code&gt;/dev/ROOT&lt;/code&gt; is not set in &lt;code&gt;/etc/fstab&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/gentoo-fstab-noboot.sh"&gt;gentoo-fstab-noboot.sh&lt;/a&gt;
+    which tests that &lt;code&gt;/dev/BOOT&lt;/code&gt; is not set in &lt;code&gt;/etc/fstab&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/gentoo-rc.conf-rc_sys.sh"&gt;gentoo-rc.conf-rc_sys.sh&lt;/a&gt;
+    which tests that the &lt;code&gt;rc_sys&lt;/code&gt; variable is declared in
+    &lt;code&gt;/etc/rc.conf&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Extract it to a directory of your choice, and let's get started.&lt;/p&gt;
+&lt;p&gt;With &lt;a href="http://www.open-scap.org"&gt;openscap&lt;/a&gt; (available as
+&lt;em&gt;app-forensics/openscap&lt;/em&gt; in Gentoo), we can generate a guide of the
+XCCDF document as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf generate guide test-xccdf.xml &amp;gt; guide-test-xccdf.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The
+&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/guide-test-xccdf.html"&gt;result&lt;/a&gt;
+is an HTML guide that reflects the content of the XCCDF document. By
+default, it contains all text and rules, but shows no information about
+the profiles (if any). We can add in the &lt;code&gt;--profile ...&lt;/code&gt; tag to include
+an overview of the checks that are selected if that profile is selected.
+That would give a result similar to &lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/guide-test-xccdf-withprofile.html"&gt;this
+one&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Using the &lt;code&gt;--format docbook&lt;/code&gt; arguments, the output can also be DocBook
+instead of HTML. The advantage of DocBook is that it can generate a
+multitude of other formats, including
+&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/guide-test-xccdf-withprofile.pdf"&gt;PDF&lt;/a&gt;,
+although I had to do some manual cleanups in the output to have it
+render a PDF here using FOP (there are other methods to create PDFs too)
+such as removing the &lt;code&gt;&amp;lt;preface&amp;gt;&lt;/code&gt; part.&lt;/p&gt;
+&lt;p&gt;Let's try evaluating the XCCDF document on the system:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval test-xccdf.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Nothing happened. That is because there are no rules that are by default
+selected (all rules in the document have &lt;code&gt;selected="false"&lt;/code&gt;) and we have
+not passed on a profile. I don't know if there is a way to automatically
+make a particular profile default, so let's try it with the
+&lt;em&gt;xccdf_org.gentoo.dev.swift_profile_default&lt;/em&gt; (which I always use as
+the default profile name for all my XCCDF documents):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ export PROFILE=&amp;quot;xccdf_org.gentoo.dev.swift_profile_default&amp;quot;
+~$ oscap xccdf eval --profile ${PROFILE} test-xccdf.xml
+
+Title   There should be no /dev/ROOT in /etc/fstab
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-root
+Result  notapplicable
+
+Title   There should be no /dev/BOOT in /etc/fstab
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-boot
+Result  notapplicable
+
+Title   rc_sys should be defined in /etc/rc.conf
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
+Result  notapplicable
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;At least we have output now, but still no results. In fact, all rules
+have &lt;em&gt;notapplicable&lt;/em&gt; as a result. What gives?&lt;/p&gt;
+&lt;p&gt;The reason is that the XCCDF interpreter (&lt;strong&gt;oscap&lt;/strong&gt;) does not know about
+the Gentoo Linux platform, whereas the XCCDF document explicitly
+mentions that it is applicable to a Gentoo Linux system.&lt;/p&gt;
+&lt;p&gt;What we need to do is to provide the XCCDF interpreter with a test that
+helps it evaluate if a system is a Gentoo Linux system or not. In other
+words, a test that the XCCDF interpreter will run if the
+&lt;em&gt;cpe:/o:gentoo:linux&lt;/em&gt; platform is mentioned. We do this with a &lt;em&gt;CPE
+dictionary&lt;/em&gt; element which is saved as
+&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/gentoo-cpe.txt"&gt;gentoo-cpe.xml&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In the dictionary, the coupling between cpe:/o:gentoo:linux and a scripted
+check called gentoo-platform.sh is made. Let's now give this info to oscap:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --profile ${PROFILE} --cpe gentoo-cpe.xml test-xccdf.xml
+Title   There should be no /dev/ROOT in /etc/fstab
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-root
+Result  pass
+
+Title   There should be no /dev/BOOT in /etc/fstab
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-boot
+Result  pass
+
+Title   rc_sys should be defined in /etc/rc.conf
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
+Result  pass
+
+OpenSCAP Error: Document is empty [./gentoo-platform.sh:1] [elements.c:207]
+No definition with ID: (null) in definition model. [oval_probe.c:338]
+No definition with ID: (null) in result model. [oval_agent.c:184]
+No definition with ID: (null) in definition model. [oval_probe.c:338]
+No definition with ID: (null) in result model. [oval_agent.c:184]
+No definition with ID: (null) in definition model. [oval_probe.c:338]
+No definition with ID: (null) in result model. [oval_agent.c:184]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Great; we now see that openscap ran the tests and gave feedback. It also
+gave a few errors. These can be ignored now - it is openscap that tries
+to interpret the shell scripts as OVAL scripts (I'll talk about OVAL in
+a later post). After changing my system to be non-compliant, I see that
+openscap detects that as well:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Title   rc_sys should be defined in /etc/rc.conf
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
+Result  fail
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, by itself the rule might give us enough clues as to what is wrong,
+but sometimes you might want to get the output of the scripts as well.
+You can enable this through the &lt;code&gt;--check-engine-results&lt;/code&gt; option. This
+will leave the generated output of the scripts available as XML files.&lt;/p&gt;
+&lt;p&gt;In it, we see the output (through &lt;code&gt;&amp;lt;sceres:stdout&amp;gt;&lt;/code&gt;) of the &lt;strong&gt;grep&lt;/strong&gt;
+command we did in the script.&lt;/p&gt;
+&lt;p&gt;Finally, by adding in a &lt;code&gt;--report report-test-xccdf.html&lt;/code&gt; to the
+argument list, the results of the XCCDF evaluation is also saved as
+&lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/report-test-xccdf.html"&gt;HTML&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The oscap command has many more options, which I will not discuss in
+more detail now, but are important to know (for instance, you can save
+the XCCDF results in XML format for future processing).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval -h
+ oscap -&amp;gt; xccdf -&amp;gt; eval
+
+Perform evaluation driven by XCCDF file and use OVAL as checking engine
+
+Usage: oscap [options] xccdf eval [options] INPUT_FILE [oval-definitions-files]
+
+INPUT_FILE - XCCDF file or a source data stream file
+
+Options:
+   --profile               - The name of Profile to be evaluated.
+   --tailoring-file        - Use given XCCDF Tailoring file.
+   --tailoring-id  - Use given DS component as XCCDF Tailoring file.
+   --cpe                   - Use given CPE dictionary or language (autodetected)
+                                   for applicability checks.
+   --oval-results                - Save OVAL results as well.
+   --sce-results                 - Save SCE results as well. (DEPRECATED! use --check-engine-results)
+   --check-engine-results        - Save results from check engines loaded from plugins as well.
+   --export-variables            - Export OVAL external variables provided by XCCDF.
+   --results               - Write XCCDF Results into file.
+   --results-arf           - Write ARF (result data stream) into file.
+   --report                - Write HTML report into file.
+   --skip-valid                  - Skip validation.
+   --fetch-remote-resources      - Download remote content referenced by XCCDF.
+   --progress                    - Switch to sparse output suitable for progress reporting.
+                                   Format is &amp;quot;$rule_id:$result\n&amp;quot;.
+   --datastream-id           - ID of the datastream in the collection to use.
+                                   (only applicable for source datastreams)
+   --xccdf-id                - ID of component-ref with XCCDF in the datastream that should be evaluated.
+                                   (only applicable for source datastreams)
+   --benchmark-id            - ID of XCCDF Benchmark in some component in the datastream that should be evaluated.
+                                   (only applicable for source datastreams)
+                                   (only applicable when datastream-id AND xccdf-id are not specified)
+   --remediate                   - Automatically execute XCCDF fix elements for failed rules.
+                                   Use of this option is always at your own risk.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In my next post, I'll talk a bit more about remediation.&lt;/p&gt;
+&lt;p&gt;This post is part of a series on SCAP content:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;Documenting security best practices - XCCDF
+    introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
+    PostgreSQL&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;Documenting a bit more than just
+    descriptions&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>XCCDF - Documenting a bit more than just descriptions</title><link href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/" rel="alternate"></link><published>2013-12-16T04:58:00+01:00</published><updated>2013-12-16T04:58:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-16:/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/</id><summary type="html">&lt;p&gt;In my &lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;previous
+post&lt;/a&gt; I
+made a skeleton XCCDF document. By now, we can create a well documented
+"baseline" (best practice) for our subject (say PostgreSQL). But for now
+I only talked about &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; whereas XCCDF allows many other tags
+as well.&lt;/p&gt;
+&lt;p&gt;You can add &lt;em&gt;metadata&lt;/em&gt; information for a particular …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In my &lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;previous
+post&lt;/a&gt; I
+made a skeleton XCCDF document. By now, we can create a well documented
+"baseline" (best practice) for our subject (say PostgreSQL). But for now
+I only talked about &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; whereas XCCDF allows many other tags
+as well.&lt;/p&gt;
+&lt;p&gt;You can add &lt;em&gt;metadata&lt;/em&gt; information for a particular &lt;code&gt;Group&lt;/code&gt;. It is
+recommended to use the &lt;a href="http://dublincore.org/"&gt;dublin core&lt;/a&gt; notation:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)`&lt;/p&gt;
+&lt;p&gt;If you use metadata information however, it should &lt;strong&gt;not&lt;/strong&gt; be used
+&lt;em&gt;instead&lt;/em&gt; of XCCDF elements.&lt;/p&gt;
+&lt;p&gt;Another set of elements that can be used are &lt;code&gt;warning&lt;/code&gt; elements:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;&amp;lt;rationale&amp;gt;&lt;/code&gt; element can be used to explain in more detail why a
+rule is important.&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;Some elements we saw before also apply on the specific &lt;code&gt;&amp;lt;Group&amp;gt;&lt;/code&gt;
+elements, such as &lt;code&gt;&amp;lt;status&amp;gt;&lt;/code&gt; or &lt;code&gt;&amp;lt;version&amp;gt;&lt;/code&gt;. The combination of these
+elements should allow for a pretty good explanation of the secure setup
+we want to achieve.&lt;/p&gt;
+&lt;p&gt;But documentation is one thing - how about checking something
+automatically? Enter the XCCDF &lt;code&gt;Rule&lt;/code&gt; element.&lt;/p&gt;
+&lt;p&gt;Rules are particular tests, checks if you wish, that you want to have
+executed. To start off, let's look at a &lt;code&gt;Rule&lt;/code&gt; element that, as
+automated approach, calls a script. To accomplish this, we use the &lt;strong&gt;SCE
+(Script Check Engine)&lt;/strong&gt; method. This is &lt;em&gt;not&lt;/em&gt; part of the SCAP standard
+by itself (SCAP uses OVAL for automated checks - I'll discuss OVAL
+later) but XCCDF allows for other check systems to be used. And SCE is
+supported by &lt;a href="http://www.open-scap.org"&gt;openscap&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;First of all, we have the &lt;code&gt;Rule&lt;/code&gt; element itself, with the specially
+crafted &lt;code&gt;id&lt;/code&gt; attribute as seen before. There are three attributes used
+in the example:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;selected="false"&lt;/code&gt; tells the XCCDF interpreter that the Rule should
+    not be automatically selected. In other words, only if a &lt;code&gt;Profile&lt;/code&gt;
+    refers to the rule will be rule be triggered (and the
+    check executed).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;severity="low"&lt;/code&gt; is a matter of documenting how severe a
+    non-compliant rule is.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;weight="0.0"&lt;/code&gt; gives a weight on the &lt;code&gt;Rule&lt;/code&gt;. In this case, the
+    weight is 0, meaning that the rule might be recommended but by
+    itself does not introduce a security vulnerability or mismatch. Of
+    course, you are free to use whatever value suits you best.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We also notice a &lt;code&gt;fixtext&lt;/code&gt; element. When the rule failed (the system is
+not compliant to the rule) then the fixtext should assist administrators
+in securing the system again. In other words, &lt;code&gt;fixtext&lt;/code&gt; are the
+human-readable instructions on remediating the system.&lt;/p&gt;
+&lt;p&gt;Finally, we have the &lt;code&gt;check&lt;/code&gt; element. This element tells the XCCDF
+interpreter that an automated validation is defined. The type of
+automated validation is provided by the &lt;code&gt;system&lt;/code&gt; attribute, which in
+this case refers to the SCE system. The &lt;code&gt;check-content-ref&lt;/code&gt; element
+refers to the script to be executed.&lt;/p&gt;
+&lt;p&gt;Let's look at the contents of the script:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Get CHOST value&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting CHOST variable content through portageq.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;portageq envvar CHOST&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;then&lt;/span&gt;
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- The portageq command failed. Falling back to glibc build info.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat /var/db/pkg/sys-libs/glibc-*/CHOST &lt;span class="p"&gt;|&lt;/span&gt; tail -1&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got CHOST=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Get current GCC version&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting current GCC version through /etc/env.d/gcc/config-*&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;grep CURRENT /etc/env.d/gcc/config-* &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:CURRENT=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;-::g&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:\([0-9\.-r]*\){&lt;/span&gt;$&lt;span class="s2"&gt;,-.*&lt;/span&gt;$&lt;span class="s2"&gt;}:\1:g&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got version=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Get type&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting compiler type (profile/spec) through its CURRENT= value.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;grep CURRENT /etc/env.d/gcc/config-* &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:CURRENT=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;-&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;::g&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s:^-::g&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got type=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Checking USE flags of gcc-&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; for hardened USE flag.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+grep -q hardened /var/db/pkg/sys-devel/gcc-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/USE&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;current_hardened_use&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$?&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_hardened_use&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; -ne &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;then&lt;/span&gt;
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! GCC &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; is not build with USE=hardened!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! Please enable a hardened profile.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;else&lt;/span&gt;
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- GCC &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; is build with USE=hardened.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;then&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- The default type is used which is a hardened type.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_PASS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;else&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! A non-default type is used: &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! This means not all hardened toolchain measures are enabled.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;As you can see, the script can give output when needed, but the most
+important part is that it has to return a particular return value. This
+return value is provided through environment variables
+(&lt;code&gt;XCCDF_RESULT_*&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;All we need to do now is to include this &lt;code&gt;Rule&lt;/code&gt; in the &lt;code&gt;Profile&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;We can now evaluate the XCCDF file on the system if we refer to the
+right profile. By selecting the profile, the XCCDF interpreter will also
+automatically check the rules referred to by the profile (and the rules
+that do not have &lt;code&gt;selected="false"&lt;/code&gt; set too).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# oscap xccdf eval --profile ... gentoo-xccdf.xml
+
+Title   Test if the hardened toolchain is used
+Rule    xccdf_org.gentoo.dev.swift_rule_installation-toolchain-hardened
+Result  pass
+
+Title   Test if sulogin is used for single-user boot (/etc/inittab)
+Rule    xccdf_org.gentoo.dev.swift_rule_inittab-sulogin
+Result  fail
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, if you want to check this on several systems, you would need to
+distribute not only the XCCDF file, but also all files referred to by
+the XCCDF document. As this is counterproductive, SCAP supports &lt;em&gt;Data
+Streams&lt;/em&gt;. A data stream is a single file that includes the content of
+all files. With openscap, data streams can be made as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# oscap ds sds-compose postgresql-xccdf.xml postgresql-ds.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So now we have a document explaining the secure setup of a component,
+and included automated checks to validate system compliance with the
+document using scripts. In the next post, I'll go on with OVAL.&lt;/p&gt;
+&lt;p&gt;This post is part of a series on SCAP content:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;Documenting security best practices - XCCDF
+    introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
+    PostgreSQL&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>An XCCDF skeleton for PostgreSQL</title><link href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/" rel="alternate"></link><published>2013-12-14T04:00:00+01:00</published><updated>2013-12-14T04:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-14:/2013/12/an-xccdf-skeleton-for-postgresql/</id><summary type="html">&lt;p&gt;In a &lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;previous
+post&lt;/a&gt;
+I wrote about the documentation structure I have in mind for a
+PostgreSQL security best practice. Considering what XCCDF can give us,
+the idea is to have the following structure:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Hardening PostgreSQL
++- Basic setup
++- Instance level configuration
+|  +- Pre-startup configuration
+|  `- PostgreSQL internal configuration
++- Database recommendations
+`- User definitions …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;In a &lt;a href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/"&gt;previous
+post&lt;/a&gt;
+I wrote about the documentation structure I have in mind for a
+PostgreSQL security best practice. Considering what XCCDF can give us,
+the idea is to have the following structure:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Hardening PostgreSQL
++- Basic setup
++- Instance level configuration
+|  +- Pre-startup configuration
+|  `- PostgreSQL internal configuration
++- Database recommendations
+`- User definitions
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For the profiles, I had:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;infrastructure
+instance
+user
++- administrator
++- end user
+`- functional account
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's bring this into an XCCDF document.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;XCCDF (Extensible Configuration Checklist Description Format)&lt;/strong&gt;
+format is an XML structure in which we can document whatever we want -
+but it is primarily used for configuration checklists and best
+practices. The &lt;em&gt;documenting&lt;/em&gt; aspect of a security best practice in XCCDF
+is done through XHTML basic tags (do not use fancy things - limit
+yourself to &lt;code&gt;p&lt;/code&gt;, &lt;code&gt;pre&lt;/code&gt;, &lt;code&gt;em&lt;/code&gt;, &lt;code&gt;strong&lt;/code&gt;, ... tags), so some knowledge on
+XHTML (next to XML in general) is quite important while developing XCCDF
+guides. At least, if you don't use special editors for that.&lt;/p&gt;
+&lt;p&gt;We start with the basics:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;Two things I want to focus on here: the &lt;code&gt;xmlns:h&lt;/code&gt; and &lt;code&gt;id&lt;/code&gt; attributes.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;xmlns:h&lt;/code&gt; attribute is an XML requirement, telling whatever XML
+    parser is used later that tags that use the &lt;code&gt;h:&lt;/code&gt; namespace is for
+    XHTML tags. So later in the document, we'll use &lt;code&gt;&amp;lt;h:p&amp;gt;...&amp;lt;/h:p&amp;gt;&lt;/code&gt; for
+    XHTML paragraphs.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;id&lt;/code&gt; attribute is XCCDF specific, and since XCCDF 1.2 also
+    requires to be in this particular syntax:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;    &amp;lt;/p&amp;gt;
+        xccdf_&amp;lt;namespace&amp;gt;_benchmark_&amp;lt;name&amp;gt;
+
+    &amp;lt;p&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;The `&amp;lt;namespace&amp;gt;` is recommended to be an inverted domain
+name structure. I also added my nickname so there are no collisions
+with namespaces provided by other developers in Gentoo. So *SwifT&amp;#39;s
+dev.gentoo.org* becomes *org.gentoo.dev.swift*.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This id structure will be used in other tags as well. Instead of
+&lt;code&gt;*_benchmark&lt;/code&gt; it would be &lt;code&gt;*_rule&lt;/code&gt; (for &lt;code&gt;Rule&lt;/code&gt; ids), &lt;code&gt;*_group&lt;/code&gt; (for
+&lt;code&gt;Group&lt;/code&gt; ids), etc. You get the idea.&lt;/p&gt;
+&lt;p&gt;Now we add in some metadata in the document (with &lt;code&gt;Benchmark&lt;/code&gt; as
+parent):&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;So what is all this?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;status&amp;gt;&lt;/code&gt; tag helps in tracking the state of the document.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;platform&amp;gt;&lt;/code&gt; tag is to tell the XCCDF interpreter when the
+    document is applicable. It references a &lt;strong&gt;CPE (Common
+    Platform Enumeration)&lt;/strong&gt; entity, in this case for PostgreSQL. Later,
+    we will see that an automated test is assigned to the detection of
+    this CPE. If the test succeeds, then PostgreSQL is installed and the
+    XCCDF interpreter can continue testing and evaluating the system for
+    PostgreSQL best practices. If not, then PostgreSQL is not installed
+    and the XCCDF does not apply to the system.
+    &lt;/p&gt;
+    &lt;p&gt;
+    There is a huge advantage to this: you can check all your systems
+    for compliance with the PostgreSQL best practices (this
+    XCCDF document) and on the systems that PostgreSQL is not installed,
+    it will simply state that the document is not applicable (without
+    actually trying to validate all the rules in the document). So there
+    is no direct need to only check systems you know have PostgreSQL on
+    (and thus potentially ignore systems that have PostgreSQL but that
+    you don't know of - usually those systems are much less secure as
+    well ;-).&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;version&amp;gt;&lt;/code&gt; tag versions the document.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;model&amp;gt;&lt;/code&gt; tags tell the XCCDF interpreter which &lt;em&gt;scoring system&lt;/em&gt;
+    should be used.
+    &lt;/p&gt;
+    &lt;p&gt;
+    Scoring will give points to rules, and the XCCDF interpreter will
+    sum the scores of all rules to give a final score to the
+    "compliance" state of the system. But scoring can be done on
+    several levels. The default one uses the hierarchy of the document
+    (nested &lt;code&gt;Group&lt;/code&gt;s and &lt;code&gt;Rule&lt;/code&gt;s) to give a final number whereas the
+    flat one does not care about the structure. Finally, the
+    flat-unweighted one does not take into account the scores given by
+    the author - all rules get the value of 1.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now we define the &lt;code&gt;Profile&lt;/code&gt;s to use. I will give the example for two:
+&lt;em&gt;user&lt;/em&gt; and &lt;em&gt;administrator&lt;/em&gt;, you can fill in the other ones ;-)&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;Finally, the &lt;code&gt;Group&lt;/code&gt;s (still with &lt;code&gt;Benchmark&lt;/code&gt; as their parent, but below
+the &lt;code&gt;Profile&lt;/code&gt;s) which define the documentation structure of the guide:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;With all this defined, our basic skeleton for the PostgreSQL best
+practice document is ready. To create proper content, we can use the
+XHTML code inside the &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; tags, like so:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;As said in the previous post though, just documenting various aspects is
+not enough. It is recommended to add references. In XCCDF, this is done
+through the &lt;code&gt;&amp;lt;reference&amp;gt;&lt;/code&gt; tag, which is within a &lt;code&gt;Group&lt;/code&gt; and usually
+below the &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; information:&lt;/p&gt;
+&lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;With this alone, it is already possible to write up an XCCDF guide
+describing how to securely setup (in our case) PostgreSQL while keeping
+track of the resources that helped define the secure setup. Tools like
+&lt;a href="http://www.open-scap.org"&gt;openscap&lt;/a&gt; can generate HTML or even Docbook
+(which in turn can be converted to manual pages, PDF, Word, RTF, ...)
+from this information:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# oscap xccdf generate guide --format docbook --output guide.docbook postgresql-xccdf.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In the next post, I'll talk about the other documenting entities within
+XCCDF (besides &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; and their meaning) and start with
+enhancing the document with automated checks.&lt;/p&gt;</content><category term="Security"></category><category term="postgresql"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>Documenting security best practices - XCCDF introduction</title><link href="http://blog.siphos.be/2013/12/documenting-security-best-practices-xccdf-introduction/" rel="alternate"></link><published>2013-12-12T16:04:00+01:00</published><updated>2013-12-12T16:04:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-12:/2013/12/documenting-security-best-practices-xccdf-introduction/</id><summary type="html">&lt;p&gt;When I have some free time, I try to work on a &lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/gentoo.html"&gt;Gentoo Security
+Benchmark&lt;/a&gt;
+which not only documents security best practices (loosely based on the
+&lt;a href="http://www.gentoo.org/doc/en/security/security-handbook.xml"&gt;Gentoo Security
+Handbook&lt;/a&gt;
+which hasn't seen much updates in the last few years) but also uses the
+SCAP protocols. This set of protocols allows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When I have some free time, I try to work on a &lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/gentoo.html"&gt;Gentoo Security
+Benchmark&lt;/a&gt;
+which not only documents security best practices (loosely based on the
+&lt;a href="http://www.gentoo.org/doc/en/security/security-handbook.xml"&gt;Gentoo Security
+Handbook&lt;/a&gt;
+which hasn't seen much updates in the last few years) but also uses the
+SCAP protocols. This set of protocols allows security administrators to
+automate and document many of their tasks, and a security best practices
+guide is almost a must-have in any organization. So I decided to do a
+few write-ups about these SCAP protocols and how I hope to be using them
+more in the future.&lt;/p&gt;
+&lt;p&gt;In this post, I'm going to focus on a very simple matter: documenting.
+SCAP goes much, much beyond documenting, but I'll discuss those various
+features in subsequent posts. The end goal of the series is to have a
+best practice document for PostgreSQL.&lt;/p&gt;
+&lt;p&gt;To document the secure state of a component, it is important to first
+have an idea about what you are going to document. Some people might
+want to document best practices across many technologies so that there
+is a coherent, single document explaining the security best practices
+for the entire organization. In my opinion, that is not manageable in
+the long term. We tried that with the Gentoo Security Handbook, but you
+quickly start wrestling with the order of chapters, style concerns and
+what not. Also, some technologies will be much more discussed in depth
+than others, making the book look "unfinished".&lt;/p&gt;
+&lt;p&gt;Personally, I rather focus on a specific technology. For instance:
+&lt;a href="http://dev.gentoo.org/~swift/docs/security_benchmarks/openssh.html"&gt;Hardening
+OpenSSH&lt;/a&gt;
+(very much work in progress - the rules are generated automatically for
+now and will be rewritten in the near future). It talks about a single
+component (OpenSSH) allowing the freedom for the author to focus on what
+matters. By providing security best practices on these component levels,
+you'll create a set of security best practices that can often be reused.
+This is what &lt;a href="http://www.cisecurity.org"&gt;the Center for Internet
+Security&lt;/a&gt; is doing with its benchmarks:
+popular technologies are described in detail on how to configure them to
+be more secure.&lt;/p&gt;
+&lt;p&gt;Once you know what technology you want to describe, we need to consider
+how this technology is used. Some technologies are very flexible in
+their setup, and might have different security setups depending on their
+use. For instance, an OpenLDAP server can be used internally as a public
+address book, or disclosed on the Internet in a multi-replicated setup
+with authentication data in it. The security best practices for these
+deployments will vary. The &lt;strong&gt;XCCDF (Extensible Configuration Checklist
+Description Format)&lt;/strong&gt; standard allows authors to write a single guide,
+while taking into account the different deployment approaches through
+the use of &lt;code&gt;Profile&lt;/code&gt; settings.&lt;/p&gt;
+&lt;p&gt;In XCCDF, &lt;code&gt;Profile&lt;/code&gt;s allow for selectively enabling or disabling
+document fragments (called &lt;code&gt;Group&lt;/code&gt;s) and checks (called &lt;code&gt;Rule&lt;/code&gt;s - I will
+post about checks later) or even change values (like the minimum
+password length) depending on the profile. A document can then describe
+settings with different profiles depending on the use and deployment of
+the technology. Profiles can also inherit from each other, so you can
+have a base (default) security conscious setup, and enhance it through
+other profiles.&lt;/p&gt;
+&lt;p&gt;Next to the "how", we also need to consider the structure we want for
+such a best practice:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We will have rules in place for the deployment of PostgreSQL itself.
+    These rules range from making sure a stable, patched version is
+    used, to the proper rights on the software files, partitioning and
+    file system rules and operating system level requirements (such as
+    particular kernel parameters).&lt;/li&gt;
+&lt;li&gt;We will also have rules for each instance. We could plan on running
+    multiple PostgreSQL instances next to each other, so these rules are
+    distinct from the deployment rules. These rules include settings on
+    instance level, process ownership (in case of running PostgreSQL as
+    different service user), etc.&lt;/li&gt;
+&lt;li&gt;We might even have rules for databases and users (roles) in
+    the database.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It &lt;em&gt;might&lt;/em&gt; make sense to split the best practices in separate documents,
+such as one for PostgreSQL infrastructure (which is database-agnostic)
+and one for PostgreSQL databases (and users). I would start with one
+document for the technology if I was responsible for the entire
+definition, but if this responsibility is not with one person (or team),
+it makes sense to use different documents. Also, as we will see later,
+XCCDF documents can be "played" against a target. If the target is
+different (for infrastructure, the target usually is the host on which
+PostgreSQL is installed, whereas for the database settings the target is
+probably the PostgreSQL instance itself) I would definitely have the
+definitions through separate profiles, but that does not mean the
+document needs to be split either.&lt;/p&gt;
+&lt;p&gt;Finally, documenting a secure best practice also involves keeping track
+of the references. It is not only about documenting something and why
+&lt;em&gt;you&lt;/em&gt; think this is the best approach, but also about referring readers
+to more information and other resources that collaborate your story.
+These can be generic control objectives (such as those provided by the
+&lt;a href="http://www.opensecurityarchitecture.org/cms/library/0802control-catalogue"&gt;open security
+architecture&lt;/a&gt;)
+or specific best practices of the vendor itself or third parties.&lt;/p&gt;
+&lt;p&gt;At the end, for a PostgreSQL security guide, we would probably start
+with:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Hardening PostgreSQL
++- Basic setup
++- Instance level configuration
+|  +- Pre-startup configuration
+|  `- PostgreSQL internal configuration
++- Database recommendations
+`- User definitions
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Profile-wise, I probably would need an &lt;em&gt;infrastructure&lt;/em&gt; profile, an
+&lt;em&gt;instance&lt;/em&gt; profile, a &lt;em&gt;user&lt;/em&gt; profile and a &lt;em&gt;database&lt;/em&gt; profile. I might
+even have profiles for the different roles (&lt;em&gt;functional account&lt;/em&gt;,
+&lt;em&gt;administrator&lt;/em&gt; and &lt;em&gt;end user&lt;/em&gt; profiles which inherit from the &lt;em&gt;user&lt;/em&gt;
+profile) as they will have different rules assigned to them.&lt;/p&gt;
+&lt;p&gt;In my next post, we'll create a skeleton XCCDF document and already talk
+about some of the XCCDF features that we can benefit from immediately.&lt;/p&gt;</content><category term="Security"></category><category term="postgresql"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>Putting OVAL at work</title><link href="http://blog.siphos.be/2013/08/putting-oval-at-work/" rel="alternate"></link><published>2013-08-01T15:01:00+02:00</published><updated>2013-08-01T15:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/putting-oval-at-work/</id><summary type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
+you might get the feeling of "How does this work". The underlying
+interfaces, like OVAL and XCCDF, might seem a bit daunting to implement.&lt;/p&gt;
+&lt;p&gt;This is correct, but you need to remember that the standards are
+protocols, agreements that can be made …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
+you might get the feeling of "How does this work". The underlying
+interfaces, like OVAL and XCCDF, might seem a bit daunting to implement.&lt;/p&gt;
+&lt;p&gt;This is correct, but you need to remember that the standards are
+protocols, agreements that can be made across products so that several
+products, each with their own expertise, can work together easily. It is
+a matter of interoperability between components.&lt;/p&gt;
+&lt;p&gt;Let's look at the following diagram to see how OVAL and XCCDF &lt;em&gt;can&lt;/em&gt; be
+used. I'm not saying this is the only way forward, but it is a possible
+approach.&lt;/p&gt;
+&lt;p&gt;(Diagram lost during blog conversion)&lt;/p&gt;
+&lt;p&gt;On the local side (and local here doesn't mean a single server, but
+rather an organization or company) a list of checks is maintained. These
+checks are OVAL checks, which can be downloaded from reputable sites
+like NVD or are given to you by vendors (some vendors provide OVAL as
+part of vulnerability reports). Do not expect this list to be hundreds
+of checks - start small, the local database of checks will grow anyhow.&lt;/p&gt;
+&lt;p&gt;The advantage is that the downloaded checks (OVALs) already have a
+unique identifier (the OVAL ID). For instance, the check "Disable Java
+in Firefox" for Windows is &lt;code&gt;oval:org.mitre.oval:def:12609&lt;/code&gt;. If
+additional Windows operating systems are added, this ID remains the same
+(it is updated) because the check (and purpose) remains the same.&lt;/p&gt;
+&lt;p&gt;Locally, the OVAL checks are ran against targets by an OVAL interpreter.
+Usually, you will have multiple interpreters in the organization, some
+of them focused on desktops, some on servers, some perhaps on network
+equipment, etc. By itself that doesn't matter, as long as they interpret
+the OVAL checks. The list of targets to check against are usually
+managed in a configuration management database.&lt;/p&gt;
+&lt;p&gt;Targets can be of various granularity. The "Disable Java in Firefox"
+will be against an operating system (where the check then sees if the
+installed Firefox indeed has the setting disabled), but a check that
+validates the permissions (rights) of a user will be against this user
+account.&lt;/p&gt;
+&lt;p&gt;The results of the OVAL checks are stored in a database that maps the
+result against the target. By itself this result database does not
+contain much more logic than "This rule is OK against this target and
+that rule isn't" (well, there is some granularity, but not much more)
+and the time stamp when this was done.&lt;/p&gt;
+&lt;p&gt;Next comes the XCCDF. XCCDF defines the state that you want the system
+to be in. It is a benchmark, a document describing how the system /
+target should be configured. XCCDF documents usually contain the whole
+shebang of configuration settings, and then differentiate them based on
+profiles. For instance, a web server attached to the Internet might have
+a different profile than a web server used internally or for development
+purposes.&lt;/p&gt;
+&lt;p&gt;The XCCDF document refers to OVAL checks, and thus uses the results from
+the OVAL result database to see if a target is fully aligned with the
+requirements or not. The XCCDF results themselves are also stored, often
+together with exceptions (if any) that are approved (for instance, you
+want to keep track of the workstations where Java &lt;em&gt;is&lt;/em&gt; enabled in
+Firefox and only report for those systems where it is enabled by the
+user without approval). Based on these results, reports can be generated
+on the state of your park.&lt;/p&gt;
+&lt;p&gt;Not all checks are already available as OVAL checks. Of course you can
+write them yourself, but there are also other possibilities. Next to
+OVAL, there are (less standardized) methods for doing checks which
+integrate with XCCDF as well. The idea you'll need to focus on then is
+the same as with OVAL: what is your source, how do you store it, you
+need interpreters that can "play" it, and on the reporting side you'll
+need to store the results so you can combine them later in your
+reporting.&lt;/p&gt;</content><category term="Security"></category><category term="baseline"></category><category term="benchmark"></category><category term="oval"></category><category term="security"></category><category term="xccdf"></category></entry></feed>

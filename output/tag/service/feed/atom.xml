@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - service</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/service/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2013-03-20T12:31:00+01:00</updated><entry><title>Fiddling with puppet apply</title><link href="http://blog.siphos.be/2013/03/fiddling-with-puppet-apply/" rel="alternate"></link><published>2013-03-20T12:31:00+01:00</published><updated>2013-03-20T12:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-20:/2013/03/fiddling-with-puppet-apply/</id><summary type="html">&lt;p&gt;As part of a larger exercise, I am switching my local VM set from a
+more-or-less scripted manual configuration towards a fully
+Puppet-powered one. Of course, it still uses a lot of custom modules and
+is most likely too ugly to expose to the wider internet, but it does
+seem …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As part of a larger exercise, I am switching my local VM set from a
+more-or-less scripted manual configuration towards a fully
+Puppet-powered one. Of course, it still uses a lot of custom modules and
+is most likely too ugly to expose to the wider internet, but it does
+seem to improve my ability to quickly rebuild images if I corrupt them
+somehow.&lt;/p&gt;
+&lt;p&gt;One of the tricks I am using is to use a local apply instead of using a
+Puppet master server - mainly because that master server is again a VM
+that might need to be build up and consumes some resources that I'd
+rather have free for other VMs. So what I do now is akin to the
+following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;All I have to do is make sure that the /mnt/puppet location is a shared
+resource (in my case, an NFSv4 read-only mount) which I can just mount
+on a fresh image.&lt;/p&gt;
+&lt;p&gt;Part of this exercise I noticed that Puppet by default uses the regular
+&lt;em&gt;gentoo&lt;/em&gt; provider for the services. I'd like to use the &lt;em&gt;openrc&lt;/em&gt;
+provider instead, as I can easily tweak that one to work with SELinux (I
+need to prepend &lt;strong&gt;run_init&lt;/strong&gt; to the &lt;strong&gt;rc-service&lt;/strong&gt; calls, otherwise
+SELinux wants to authenticate the user and Puppet doesn't like that; I
+have a pam_rootok.so statement in the run_init PAM file to allow
+unattended calls towards rc-service).&lt;/p&gt;
+&lt;p&gt;A quick Google revealed that all I had to do was to add a &lt;em&gt;provider
+=&amp;gt; openrc&lt;/em&gt; in the service definitions, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;service { &amp;quot;net.eth0&amp;quot;:
+  provider =&amp;gt; openrc,
+  ensure =&amp;gt; running,
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As mentioned, I still manually patch the openrc provider (located in
+/usr/lib64/ruby/site_ruby/1.9.1/puppet/provider/service) so that the
+run_init command is known as well, and that all invocations of the
+rc-service is prepended with run_init:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+  commands :runinit =&amp;gt; &amp;#39;/usr/sbin/run_init&amp;#39;
+  commands :rcservice =&amp;gt; &amp;#39;/sbin/rc-service&amp;#39;
+...
+ [command(:runinit), command(:rcservice), @resource[:name], :start ]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And the same for the stop and status definitions. I might use Portage'
+postinst hook to automatically apply the patch so I don't need to do
+this manually each time.&lt;/p&gt;</content><category term="Gentoo"></category><category term="provider"></category><category term="puppet"></category><category term="selinux"></category><category term="service"></category></entry></feed>

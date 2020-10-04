@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - xdg</title><link href="http://blog.siphos.be/" rel="alternate"></link><link href="http://blog.siphos.be/tag/xdg/feed/atom.xml" rel="self"></link><id>http://blog.siphos.be/</id><updated>2015-08-11T19:18:00+02:00</updated><entry><title>Why we do confine Firefox</title><link href="http://blog.siphos.be/2015/08/why-we-do-confine-firefox/" rel="alternate"></link><published>2015-08-11T19:18:00+02:00</published><updated>2015-08-11T19:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-11:/2015/08/why-we-do-confine-firefox/</id><summary type="html">&lt;p&gt;If you're a bit following the SELinux development community you will know
+&lt;a href="http://danwalsh.livejournal.com"&gt;Dan Walsh&lt;/a&gt;, a &lt;a href="http://people.redhat.com/dwalsh/"&gt;Red Hat&lt;/a&gt;
+security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
+about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
+should've asked why the &lt;em&gt;reference policy&lt;/em&gt; or &lt;em&gt;Red Hat/Fedora policy&lt;/em&gt; does not
+confine Firefox, because SELinux …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you're a bit following the SELinux development community you will know
+&lt;a href="http://danwalsh.livejournal.com"&gt;Dan Walsh&lt;/a&gt;, a &lt;a href="http://people.redhat.com/dwalsh/"&gt;Red Hat&lt;/a&gt;
+security engineer. Today he &lt;a href="http://danwalsh.livejournal.com/72697.html"&gt;blogged&lt;/a&gt; 
+about &lt;em&gt;CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox&lt;/em&gt;. He 
+should've asked why the &lt;em&gt;reference policy&lt;/em&gt; or &lt;em&gt;Red Hat/Fedora policy&lt;/em&gt; does not
+confine Firefox, because SELinux is, as I've
+&lt;a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/"&gt;mentioned before&lt;/a&gt;,
+not the same as its policy.&lt;/p&gt;
+&lt;p&gt;In effect, Gentoo's SELinux policy &lt;em&gt;does&lt;/em&gt; confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+&lt;a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies"&gt;develop desktop policies&lt;/a&gt;
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;How Gentoo wants to support more confined desktop applications&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;What Gentoo Hardened tries to do is to support the
+&lt;a href="http://standards.freedesktop.org/basedir-spec/basedir-spec-0.8.html"&gt;XDG Base Directory Specification&lt;/a&gt;
+for several documentation types. Downloads are marked as &lt;code&gt;xdg_downloads_home_t&lt;/code&gt;,
+pictures are marked as &lt;code&gt;xdg_pictures_home_t&lt;/code&gt;, etc.&lt;/p&gt;
+&lt;p&gt;With those types defined, we grant the regular user domains full access to
+those types, but start removing access to user content from applications. Rules
+such as the following are commented out or removed from the policies:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# userdom_manage_user_home_content_dirs(mozilla_t)
+# userdom_manage_user_home_content_files(mozilla_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Instead, we add in a call to a template we have defined ourselves:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;userdom_user_content_access_template(mozilla, { mozilla_t mozilla_plugin_t })
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This call makes access to user content optional through SELinux booleans. For
+instance, for the &lt;code&gt;mozilla_t&lt;/code&gt; domain (which is used for Firefox), the following
+booleans are created:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Read generic (user_home_t) user content
+mozilla_read_generic_user_content       -&amp;gt;      true
+
+# Read all user content
+mozilla_read_all_user_content           -&amp;gt;      false
+
+# Manage generic (user_home_t) user content
+mozilla_manage_generic_user_content     -&amp;gt;      false
+
+# Manage all user content
+mozilla_manage_all_user_content         -&amp;gt;      false
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see, the default setting is that Firefox can read user content, but
+only non-specific types. So &lt;code&gt;ssh_home_t&lt;/code&gt;, which is used for the SSH related
+files, is not readable by Firefox with our policy &lt;em&gt;by default&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;By changing these booleans, the policy is fine-tuned to the requirements of
+the administrator. On my systems, &lt;code&gt;mozilla_read_generic_user_content&lt;/code&gt; is switched
+off.&lt;/p&gt;
+&lt;p&gt;You might ask how we can then still support a browser if it cannot access user
+content to upload or download. Well, as mentioned before, we support the XDG
+types. The browser is allowed to manage &lt;code&gt;xdg_download_home_t&lt;/code&gt; files and
+directories. For the majority of cases, this is sufficient. I also don't mind
+copying over files to the &lt;code&gt;~/Downloads&lt;/code&gt; directory just for uploading files. But
+I am well aware that this is not what the majority of users would want, which
+is why the default is as it is.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;There is much more work to be done sadly&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As said earlier, the default policy will allow &lt;em&gt;reading&lt;/em&gt; of user files if those
+files are not typed specifically. Types that are protected by our policy (but not
+by the reference policy standard) includes SSH related files at &lt;code&gt;~/.ssh&lt;/code&gt; and
+GnuPG files at &lt;code&gt;~/.gnupg&lt;/code&gt;. Even other configuration files, such as for my Mutt
+configuration (&lt;code&gt;~/.muttrc&lt;/code&gt;) which contains a password for an IMAP server I connect
+to, are not reachable.&lt;/p&gt;
+&lt;p&gt;However, it is still far from perfect. One of the reasons is that many desktop
+applications are not "converted" yet to our desktop policy approach. Yes, Chromium
+is also already converted, and policies we've added such as for Skype also do not
+allow direct access unless the user explicitly enabled it. But Evolution for instance
+isn't yet.&lt;/p&gt;
+&lt;p&gt;Converting desktop policies to a more strict setup requires lots of testing, which
+translates to many human resources. Within Gentoo, only a few developers and 
+contributors are working on policies, and considering that this is not a change
+that is already part of the (upstream) reference policy, some contributors also
+do not want to put lots of focus on it either. But without having done the works,
+it will not be easy (nor probably acceptable) to upstream this (the XDG patch has
+been submitted a few times already but wasn't deemed ready yet then).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Having a more restrictive policy isn't the end&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As the blog post of Dan rightly mentioned, there are still quite some other
+ways of accessing information that we might want to protect. An application 
+might not have access to user files, but can be able to communicate (for instance
+through DBus) with an application that does, and through that instruct it to
+pass on the data.&lt;/p&gt;
+&lt;p&gt;Plugins might require permissions which do not match with the principles set up
+earlier. When we tried out Google Talk (needed for proper Google Hangouts support)
+we noticed that it requires many, many more privileges. Luckily, we were able to
+write down and develop a policy for the Google Talk plugin (&lt;code&gt;googletalk_plugin_t&lt;/code&gt;)
+so it is still properly confined. But this is just a single plugin, and I'm sure
+that more plugins exist which will have similar requirements. Which leads to more
+policy development.&lt;/p&gt;
+&lt;p&gt;But having workarounds does not make the effort we do worthless. Being able to
+work around a firewall through application data does not make the firewall
+useless, it is just one of the many security layers. The same is true with SELinux
+policies.&lt;/p&gt;
+&lt;p&gt;I am glad that we at least try to confine desktop applications more, and
+that Gentoo Hardened users who use SELinux are at least somewhat more protected
+from the vulnerability (even with the default case) and that our investment for
+this is sound.&lt;/p&gt;</content><category term="SELinux"></category><category term="gentoo"></category><category term="selinux"></category><category term="policy"></category><category term="firefox"></category><category term="cve"></category><category term="vulnerability"></category><category term="xdg"></category></entry></feed>
