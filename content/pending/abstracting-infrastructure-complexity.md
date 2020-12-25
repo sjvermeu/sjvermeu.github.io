@@ -71,7 +71,8 @@ infastructure services in an abstract way, and document it in the same way so
 that services are more easily explained.
 
 ![An Archimate based view on the abstractions listed]({static}/images/202012/abstracting-infrastructure-complexity-kvm.png)
-*A possible visualization of the abstraction model, here in Archimate*
+
+*Figure 1 - A possible visualization of the abstraction model, here in Archimate*
 
 The abstraction I apply is the following:
 
