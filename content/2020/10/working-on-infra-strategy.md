@@ -13,6 +13,8 @@ probably discuss that more later.
 Today, I want to write about a task I had to do this year as brand new domain
 architect for infrastructure.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Transitioning to domain architect**
 
 While I have been an infrastructure architect for quite some time already, my
@@ -204,5 +206,4 @@ We'll see how it pans out.
 So, do you think this is a sensible approach I took? How did you tackle
 communication and collaboration of such initiatives during COVID-19 measures? 
 
-<!-- PELICAN_END_SUMMARY -->
 
