@@ -151,7 +151,6 @@ authentication and authorization. When a <code>CREATE ROLE</code> (or
  postgres       | md5c127bc9fc185daf0e06e785876e38484
 </code></pre></div>
 
-
 <p>this cannot be moved outside):</p>
 <div class="highlight"><pre><span></span><code>postgres# \l db_hadoop
                                    List of databases
@@ -161,7 +160,6 @@ authentication and authorization. When a <code>CREATE ROLE</code> (or
            |           |          |            |            | hdc_reader=c/hdc_owner   +
            |           |          |            |            | hdc_readwrite=c/hdc_owner
 </code></pre></div>
-
 
 <p>Furthermore, PostgreSQL has some additional access controls through its
 <code>pg_hba.conf</code> file, in which the access towards the PostgreSQL service
@@ -195,7 +193,6 @@ local   all             all                     md5
 host    all             all     all             pam             pamservice=postgresql
 </code></pre></div>
 
-
 <p>This will have PostgreSQL use the <code>postgresql</code> PAM service for
 authentication. The PAM configuration is thus in
 <code>/etc/pam.d/postgresql</code>. In it, we can either directly use the LDAP PAM
@@ -211,7 +208,6 @@ PostgreSQL services:</p>
 <div class="highlight"><pre><span></span><code># getent group gpgsqladmin
 gpgsqladmin:x:413843:swift,dmvsl
 </code></pre></div>
-
 
 <p>A local batch job (ran through cron) queries this group (which I call
 the <em>masterlist</em>, as well as queries which users in PostgreSQL are
@@ -232,7 +228,6 @@ for member in $(membersToRemove ${masterlist} ${slavelist}) ; do
 done
 </code></pre></div>
 
-
 <p>The <code>postgres_admin</code> role is created whenever I create a PostgreSQL
 instance. Likewise, for databases, a number of roles are added as well.
 For instance, for the <code>db_hadoop</code> database, the <code>hdc_owner</code>,
@@ -242,7 +237,6 @@ group in the LDAP. For instance:</p>
 <div class="highlight"><pre><span></span><code># getent group gpgsqlhdc_own
 gpgsqlhdc_own:x:413850:hadoop,johan,christov,sean
 </code></pre></div>
-
 
 <p>With this simple approach, granting users access to a database is a
 matter of adding the user to the right group (like <code>gpgsqlhdc_ro</code> for

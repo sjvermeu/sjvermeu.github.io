@@ -188,14 +188,12 @@ SELinux policy code:</p>
 (portcon tcp 1440 (system_u object_r test_port_t ((s0) (s0))))
 </code></pre></div>
 
-
 <p>The code declares a port type (<code>test_port_t</code>) and uses it for the TCP
 port 1440.</p>
 <p>In order to use this code, we have to build a policy file which includes
 all currently active CIL code, together with the test code:</p>
 <div class="highlight"><pre><span></span><code>~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
 </code></pre></div>
-
 
 <p>The result is a <code>policy.29</code> (the command forces version 29 as the
 current Linux kernel used on this system does not support version 30)
@@ -205,7 +203,6 @@ having copied the file, load the new policy file using <code>load_policy</code>.
 <div class="highlight"><pre><span></span><code>~# semanage port -l | grep 1440
 test_port_t           tcp      1440
 </code></pre></div>
-
 
 <p>To verify that it really is available and not just parsed by the
 userspace, let's connect to it and hope for a nice denial message:</p>

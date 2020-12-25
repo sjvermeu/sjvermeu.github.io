@@ -223,11 +223,9 @@ invokes the decrement:&lt;/p&gt;
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The exploit also finds that the decrement didn't succeed:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;A second mitigation is that
 &lt;a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf"&gt;KERNEXEC&lt;/a&gt;
@@ -241,7 +239,6 @@ root-owned directory and owned by a trusted group (which on my system is
 &lt;em&gt;Permission denied&lt;/em&gt; error, and the following is shown in the logs:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;However, even though a nicely hardened system should be fairly immune
 against the currently circling public exploit, it should be noted that
@@ -346,7 +343,6 @@ int main(int argc, char ** argv) {
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;At first sight, it looks like an application to get root privileges
 (&lt;em&gt;setresuid()&lt;/em&gt;) and then spawn a shell. If that application would be
 given &lt;code&gt;CAP_SETUID&lt;/code&gt; and &lt;code&gt;CAP_SETGID&lt;/code&gt; effectively, it would allow anyone
@@ -359,7 +355,6 @@ cap_setuid and cap_setgid: 1
  =
 setresuid() failed: Operation not permitted
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So what happened? After all, the two capabilities are set with the &lt;em&gt;+ep&lt;/em&gt;
 flags given. Then why aren't these capabilities enabled? Well, this
@@ -374,12 +369,10 @@ cap_setuid and cap_setgid: 1
 setresuid() failed: Operation not permitted
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So the capabilities now do get enabled, so why does this still fail?
 This now is due to SELinux:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&amp;quot;test&amp;quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And if you enable grSecurity's TPE, we can't even start the binary to
 begin with:&lt;/p&gt;
@@ -393,7 +386,6 @@ $ /lib/ld-linux-x86-64.so.2 /home/test/test
 [ 5579.567842] grsec: From 192.168.100.1: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/test/test by /home/test/test[bash:4221] uid/euid:1002/1002 gid/egid:100/100, parent /bin/bash[bash:4195] uid/euid:1002/1002 gid/egid:100/100
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;When all these "security obstacles" are not enabled, then the call
 succeeds:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
@@ -403,7 +395,6 @@ cap_setuid and cap_setgid: 1
 setresuid() failed: Success
 root@hpl tmp #
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This again shows how important it is to regularly review
 capability-enabled files on the file system, as this is a major security
@@ -438,7 +429,6 @@ assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened

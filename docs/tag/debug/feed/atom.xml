@@ -24,7 +24,6 @@ had with the policy not that long ago:&lt;/p&gt;
 # strace -o strace.log -f -s 256 tmux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The resulting log file (strace.log) might seem daunting at first to look
 at. What you see are the system calls that the process is performing,
 together with their options but also the return code of each call. This
@@ -40,7 +39,6 @@ returns something like EACCESS (Permission Denied).&lt;/p&gt;
 7313  statfs(&amp;quot;/home/swift/.pki/nssdb&amp;quot;, 0x3c3cab6fa50) = -1 EACCES (Permission denied)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Most (if not all) of the methods shown in a strace log are documented
 through manpages, so you can quickly find out that &lt;code&gt;futex()&lt;/code&gt; is about
 fast user-space locking, &lt;code&gt;stat()&lt;/code&gt; (&lt;strong&gt;man 2 stat&lt;/strong&gt; to see the information
@@ -50,7 +48,6 @@ status and &lt;code&gt;statfs()&lt;/code&gt; is for getting file system statisti
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;7313  open(&amp;quot;/proc/filesystems&amp;quot;, O_RDONLY) = -1 EACCES (Permission denied)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the above case, you notice that the application is trying to open the
 &lt;code&gt;/proc/filesystems&lt;/code&gt; file read-only. In the SELinux logs, this might be
 displayed as follows:&lt;/p&gt;
@@ -58,7 +55,6 @@ displayed as follows:&lt;/p&gt;
 pid=860 comm=&amp;quot;nacl_helper_boo&amp;quot; name=&amp;quot;filesystems&amp;quot; dev=&amp;quot;proc&amp;quot; ino=4026532034 
 scontext=staff_u:staff_r:chromium_naclhelper_t tcontext=system_u:object_r:proc_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now the case of &lt;strong&gt;tmux&lt;/strong&gt; before was not an obvious one. In the end, I
 compared the strace output's of two runs (one in enforcing and one in
@@ -74,7 +70,6 @@ Permissive:
 10905 fcntl(9, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You notice the difference? In enforcing-mode, one of the flags on the
 file descriptor has &lt;code&gt;O_RDONLY&lt;/code&gt; whereas the one in permissive mode as
 &lt;code&gt;O_RDWR&lt;/code&gt;. This means that the file descriptor in enforcing mode is
@@ -85,7 +80,6 @@ from:&lt;/p&gt;
 10905 dup(1)     = 10
 10905 dup(2)     = 11
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As the man-pages sais, &lt;code&gt;dup()&lt;/code&gt; duplicates a file descriptor. And
 because, by convention, the first three file descriptors of an
@@ -122,7 +116,6 @@ if (ttyn) {
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp;amp; ~O_NONBLOCK);
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Such obscure problems are much easier to detect and troubleshoot thanks
 to tools like &lt;strong&gt;strace&lt;/strong&gt;.&lt;/p&gt;</content><category term="SELinux"></category><category term="debug"></category><category term="selinux"></category><category term="strace"></category></entry></feed>

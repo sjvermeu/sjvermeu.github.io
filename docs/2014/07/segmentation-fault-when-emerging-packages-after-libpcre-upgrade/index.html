@@ -132,14 +132,12 @@ to the file system, with an error that looks like so:</p>
  *   Failed to set SELinux security labels.
 </code></pre></div>
 
-
 <p>This has been <a href="https://bugs.gentoo.org/show_bug.cgi?id=516608">reported as bug
 516608</a> and, after some
 investigation, the cause is found. First the quick workaround:</p>
 <div class="highlight"><pre><span></span><code>~# cd /etc/selinux/strict/contexts/files
 ~# rm *.bin
 </code></pre></div>
-
 
 <p>And do the same for the other SELinux policy stores on the system
 (targeted, mcs, mls, ...).</p>

@@ -75,190 +75,6 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
-                <h2><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/">A SELinux policy for incron: marking types eligible for watching</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2013-05-29T03:50:00+02:00"> Wed 29 May 2013</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/attribute/">attribute</a>
-        /
-	<a href="https://blog.siphos.be/tag/incrond/">incrond</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-        /
-	<a href="https://blog.siphos.be/tag/watch/">watch</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>In the
-<a herf="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/">previous
-post</a> we made <strong>incrond</strong> able to watch <code>public_content_t</code> and
-<code>public_content_rw_t</code> types. However, this is not scalable, so we might
-want to be able to update the policy more dynamically with additional
-types. To accomplish this, we will make types eligible for watching
-through an attribute.</p>
-<p>So how …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/">A SELinux policy for incron: default set</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2013-05-28T03:50:00+02:00"> Tue 28 May 2013</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/booleans/">booleans</a>
-        /
-	<a href="https://blog.siphos.be/tag/incrond/">incrond</a>
-        /
-	<a href="https://blog.siphos.be/tag/policy/">policy</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>I finished the last post a bit with a
-<a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/">cliffhanger</a>
-as <strong>incrond</strong> is still not working properly, and we got a few denials
-that needed to be resolved; here they are again for your convenience:</p>
-<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&quot;incrond …</code></pre></div>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/">A SELinux policy for incron: the incrond daemon</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2013-05-27T03:50:00+02:00"> Mon 27 May 2013</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/incrond/">incrond</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>With <code>incrontab_t</code> (hopefully) complete, let's look at the <code>incrond_t</code>
-domain. As this domain will also be used to execute the user (and
-system) commands provided through the incrontabs, we need to consider
-how we are going to deal with this wide range of possible permissions
-that it might take. One …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/">A SELinux policy for incron: new types and transitions</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2013-05-26T03:50:00+02:00"> Sun 26 May 2013</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/incron/">incron</a>
-        /
-	<a href="https://blog.siphos.be/tag/policy/">policy</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>So I've shown the <a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/">iterative approach
-used</a>
-to develop policies. Again, please be aware that this is my way of
-developing policies, other policy developers might have a different
-approach. We were working on the <strong>incrontab</strong> command, so let's
-continue with trying to create a new user incrontab:</p>
-<div class="highlight"><pre><span></span><code>$ incrontab -e …</code></pre></div>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/">A SELinux policy for incron: basic set for incrontab</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2013-05-25T03:50:00+02:00"> Sat 25 May 2013</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/incron/">incron</a>
-        /
-	<a href="https://blog.siphos.be/tag/incrontab/">incrontab</a>
-        /
-	<a href="https://blog.siphos.be/tag/policy/">policy</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>Now that our <a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/">regular user is
-allowed</a>
-to execute <strong>incrontab</strong>, let's fire it up and look at the denials to
-build up the policy.</p>
-<div class="highlight"><pre><span></span><code>$ incrontab --help
-</code></pre></div>
-
-
-<p>That doesn't show much does it? Well, if you look into the <code>audit.log</code>
-(or <code>avc.log</code>) file, you'll notice a lot of denials …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
                 <h2><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/">A SELinux policy for incron: our first interface</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -436,6 +252,188 @@ such as the <em>dac_override</em> and <em>dac_read_search</em> capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
 developers often notice that these capabilities are triggered without …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/the-weird-audit_access-permission/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/">Commandline SELinux policy helper functions</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-05-18T03:50:00+02:00"> Sat 18 May 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/bash/">bash</a>
+        /
+	<a href="https://blog.siphos.be/tag/definition/">definition</a>
+        /
+	<a href="https://blog.siphos.be/tag/functions/">functions</a>
+        /
+	<a href="https://blog.siphos.be/tag/interface/">interface</a>
+        /
+	<a href="https://blog.siphos.be/tag/policy/">policy</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+        /
+	<a href="https://blog.siphos.be/tag/support/">support</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>To work on SELinux policies, I use a couple of functions that I can call
+on the shell (command line): <strong>seshowif</strong>, <strong>sefindif</strong>, <strong>seshowdef</strong>
+and <strong>sefinddef</strong>. The idea behind the methods is that I want to search
+(<em>find</em>) for an interface (<em>if</em>) or definition (<em>def</em>) that contains a
+particular method or …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2013/05/secmark-and-selinux/">SECMARK and SELinux</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-05-13T03:50:00+02:00"> Mon 13 May 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/policy/">policy</a>
+        /
+	<a href="https://blog.siphos.be/tag/secmark/">secmark</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>When using SECMARK, the administrator configures the <strong>iptables</strong> or
+<strong>netfilter</strong> rules to add a label to the packet data structure (on the
+host itself) that can be governed through SELinux policies. Unlike peer
+labeling, here the labels assigned to the network traffic is completely
+locally defined. Consider the following command …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/secmark-and-selinux/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2013/05/peer-labeling-in-selinux-policy/">Peer labeling in SELinux policy</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-05-12T03:50:00+02:00"> Sun 12 May 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/cipso/">cipso</a>
+        /
+	<a href="https://blog.siphos.be/tag/ipsec/">ipsec</a>
+        /
+	<a href="https://blog.siphos.be/tag/peer/">peer</a>
+        /
+	<a href="https://blog.siphos.be/tag/policy/">policy</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>Allow me to start with an important warning: I don't have much hands-on
+experience with the remainder of this post. Its based on the few
+resources I found on the Internet and a few tests done locally which
+I've investigated in my attempt to understand SELinux policy writing for
+networking …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/peer-labeling-in-selinux-policy/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/">SELinux policy and network controls</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-05-11T03:50:00+02:00"> Sat 11 May 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/networking/">networking</a>
+        /
+	<a href="https://blog.siphos.be/tag/policy/">policy</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>Let's talk about how SELinux governs network streams (and how it
+reflects this into the policy).</p>
+<p>When you don't do fancy stuff like SECMARK or netlabeling, then the
+classes that you should keep an eye on are <em>tcp_socket</em> and
+<em>udp_socket</em> (depending on the protocol). There used to be <em>node</em> and …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2013/05/selinux-mount-options/">SELinux mount options</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-05-01T03:50:00+02:00"> Wed 01 May 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/mount/">mount</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>When you read through the <a href="http://www.gentoo.org/proj/en/hardened/selinux/selinux-handbook.xml">Gentoo Hardened SELinux
+handbook</a>,
+you'll notice that we sometimes update <code>/etc/fstab</code> with some
+SELinux-specific settings. So, what are these settings about and are
+there more of them?</p>
+<p>First of all, let's look at a particular example from the installation
+instructions so you see what …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/selinux-mount-options/">more ...</a>
                 </div>
             </article>
             <hr/>

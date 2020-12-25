@@ -180,7 +180,6 @@ handler of the form.</p>
 }
 </code></pre></div>
 
-
 <p>Now I need to make sure that the fields that need to be encrypted (the
 various user ids and passwords that are stored on the site) are
 encrypted before they are sent to the server, and decrypted after having
@@ -199,12 +198,10 @@ form, the following javascript function could be triggered on the
 }
 </code></pre></div>
 
-
 <p>Similarly, to decrypt the fields (inside the same form), that part of
 the code would become:</p>
 <div class="highlight"><pre><span></span><code>useridFld.value = Aes.Ctr.decrypt(useridFld.value, pw, 256);
 </code></pre></div>
-
 
 <p>Decryption of the fields can be called by a simple javascript call at
 the end of the page.</p>

@@ -66,12 +66,10 @@ int main(int argc, char * argv[]) {
 };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The code is ran as follows:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ test myusername
 staff_u:staff_r:staff_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As you can see, it shows the output of the &lt;code&gt;id -Z&lt;/code&gt; command. Let's
 enhance this code with some SELinux specific functions. The purpose of
@@ -88,7 +86,6 @@ allowing the application to be build without SELinux code if wanted.&lt;/p&gt;
 #include &amp;lt;selinux/get_context_list.h&amp;gt;
 #endif
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Next, we create a function called &lt;em&gt;selinux_prepare_fork()&lt;/em&gt; which takes
 one input variable: the Linux user name for which we are going to
@@ -111,7 +108,6 @@ int selinux_prepare_fork(char * name) {
 #endif
 };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;We include this call in the application above, and take into account the
 return codes passed on. As can be seen from the comment, if the
@@ -138,7 +134,6 @@ break.&lt;/p&gt;
   child = fork();
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Now all we need to do is fill in the logic in &lt;em&gt;selinux_prepare_fork&lt;/em&gt;.
 Let's start with the variable declarations (boring stuff):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#ifndef SELINUX
@@ -154,7 +149,6 @@ Let's start with the variable declarations (boring stuff):&lt;/p&gt;
   char * sename = 0;
   char * selevel = 0;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With that out of the way, let's take our first step: we want to see if
 SELinux is enabled or not. Applications that are SELinux-aware should
@@ -175,7 +169,6 @@ with the (application) logic.&lt;/p&gt;
   };
   out(DEBUG, &amp;quot;SELinux is enabled.\n&amp;quot;);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As you can see, we use &lt;em&gt;is_selinux_enabled&lt;/em&gt; here to do just that. If
 it returns 0, then it is not enabled. A returncode of 1 means it is
@@ -200,7 +193,6 @@ this later for deciding to continue or not).&lt;/p&gt;
   }
   out(DEBUG, &amp;quot;SELinux mode is %s\n&amp;quot;, permissive ? &amp;quot;permissive&amp;quot; : &amp;quot;enforcing&amp;quot;);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The &lt;em&gt;security_getenforce&lt;/em&gt; method will check the current SELinux mode
 (enforcing or permissive). If SELinux is in permissive mode, then the
@@ -231,7 +223,6 @@ you will see from the code later).&lt;/p&gt;
   out(DEBUG, &amp;quot;Currently in SELinux context \&amp;quot;%s\&amp;quot;\n&amp;quot;, (char *) curcon);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The &lt;em&gt;getcon()&lt;/em&gt; method places the current context in the &lt;em&gt;curcon&lt;/em&gt;
 variable. Note that from this point onwards, we should always
 &lt;em&gt;freecon()&lt;/em&gt; the context before exiting the &lt;em&gt;selinux_prepare_fork()&lt;/em&gt;
@@ -260,7 +251,6 @@ account name.&lt;/p&gt;
   out(DEBUG, &amp;quot;SELinux user for Linux user \&amp;quot;%s\&amp;quot; is \&amp;quot;%s\&amp;quot;\n&amp;quot;, name, sename);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The &lt;em&gt;getseuserbyname()&lt;/em&gt; method returns the SELinux name for the given
 Linux user. It also returns the MLS level (but we're not going to use
 that in the remainder of the code). Again, if it fails, we check the
@@ -281,7 +271,6 @@ permissive state to see how to bail out.&lt;/p&gt;
   };
   out(DEBUG, &amp;quot;SELinux context to transition to is \&amp;quot;%s\&amp;quot;\n&amp;quot;, (char *) newcon);
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The &lt;em&gt;get_default_context()&lt;/em&gt; will do what I blogged about earlier.
 It'll check what the contexts are in the user-specific context files or
@@ -316,7 +305,6 @@ let's stick with this one permission.&lt;/p&gt;
   };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the above code, I didn't yet check the result. This is done in two
 steps.&lt;/p&gt;
 &lt;p&gt;In the first step, I want to know if the current context is a permissive
@@ -341,7 +329,6 @@ mode or not.&lt;/p&gt;
   };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;We check the flags provided to us by the SELinux subsystem and check if
 &lt;code&gt;SELINUX_AVD_FLAGS_PERMISSIVE&lt;/code&gt; is set. If it is, then the current domain
 is permissive, and we register this (in the &lt;code&gt;dom_permissive&lt;/code&gt; variable).
@@ -365,7 +352,6 @@ system) and thus should continue.&lt;/p&gt;
     };
   };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In the second step, we checked if the requested operation (transition)
 is allowed or not. If denied, we log it, but do not break out of the
@@ -394,7 +380,6 @@ of the process to the new context (i.e. a domain transition):&lt;/p&gt;
   return 0;
 #endif
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;That's it - we free'd all our variables and can now have the application
 continue (taking into account the return code of this function). As

@@ -161,7 +161,6 @@ The option -d requires that a line number, as shown by the --list, is given, lik
   selocal -d 12
 </code></pre></div>
 
-
 <p>Let's say that you need to launch a small script you written as a
 daemon, but you want this to run while you are still in the <em>staff_t</em>
 domain (it is a user-sided daemon you use personally). As regular
@@ -174,7 +173,6 @@ do so as follows:</p>
 (some output on building the policy module)
 </code></pre></div>
 
-
 <p>When finished, the local policy is enhanced with the two mentioned
 rules. You can query which rules are currently stored in the policy:</p>
 <div class="highlight"><pre><span></span><code># selocal --list
@@ -182,11 +180,9 @@ rules. You can query which rules are currently stored in the policy:</p>
 13: corenet_tcp_bind_generic_port(staff_t) # Launch local webserv.py daemon
 </code></pre></div>
 
-
 <p>If you need to delete a rule, just pass the line number:</p>
 <div class="highlight"><pre><span></span><code># selocal --delete 13
 </code></pre></div>
-
 
 <p>Having this tool around also makes it easier to test out changes
 suggested through bugreports. When I test such changes, I add in the bug

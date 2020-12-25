@@ -150,7 +150,6 @@ separate <code>/usr</code> and LVM for everything except <code>/boot</code>):</p
 *make: *** [scripts_basic] Error 2
 </code></pre></div>
 
-
 <p>I know it isn't SELinux that is causing this, as I have no denial
 messages and even putting SELinux in permissive mode doesn't help. Today
 I found the time to look at it with more fresh eyes, and noticed that it
@@ -165,7 +164,6 @@ that's just a simple thing to do.</p>
 <div class="highlight"><pre><span></span><code>~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
 ~# restorecon -R /var/build/genkernel
 </code></pre></div>
-
 
 <p>The new location is not world-writable (only for root as only root
 builds initial ram file systems here) so not having <code>noexec</code> here is ok.</p>

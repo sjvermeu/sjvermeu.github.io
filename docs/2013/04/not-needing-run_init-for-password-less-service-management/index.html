@@ -139,7 +139,6 @@ Authenticating root.
  * status: started
 </code></pre></div>
 
-
 <p>So I decided to <strong>strace</strong> the two commands and look for the
 differences. I found out that there is even a SELinux permission for
 being able to use the <em>rootok</em> setting for passwords! Apparently,
@@ -162,7 +161,6 @@ the trace I found that the previous context was also <em>run_init_t</em>
 20451 close(3)
 </code></pre></div>
 
-
 <p>Because there already is a transition to <em>run_init_t</em> upon calling the
 scripts, the underlying call to <strong>runscripts</strong> causes the "previous"
 attribute to be set to <em>run_init_t</em> as well, and only then is
@@ -180,7 +178,6 @@ gen_require(`
 
 allow run_init_t self:passwd rootok;
 </code></pre></div>
-
 
 <p>I'll probably add this in Gentoo's policy.</p>
             </div>

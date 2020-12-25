@@ -140,7 +140,6 @@ Guest:
   32.00 MB transferred (2856.77 MB/sec)
 </code></pre></div>
 
-
 <p>From looking at the code (gotta love Gentoo for making this obvious ;-)
 we know that the memory workload, with a single thread, does something
 like the following:</p>
@@ -158,7 +157,6 @@ repeat until total_bytes &gt;= memory-total-size:
   (stop event timer)
 </code></pre></div>
 
-
 <p>Given that the regression is most noticeable when the memory-block-size
 is very small, the part of the code whose execution count is much
 different between the two runs is the mutex locking, global memory
@@ -171,7 +169,6 @@ any effect:</p>
 Host:      total time:        0.0275s
 Guest:     total time:        0.0286s
 </code></pre></div>
-
 
 <p>The code for the mutex workload, knowing that we run with one thread,
 looks like this:</p>
@@ -187,7 +184,6 @@ until mutex_locks = 0;
 (stop event timer)
 </code></pre></div>
 
-
 <p>To check if the timer might be the culprit, let's look for a benchmark
 that mainly does timer checks. The <em>cpu</em> workload can be used, when we
 tell sysbench that the prime to check is 3 (as its internal loop runs
@@ -197,7 +193,6 @@ the loop completely) and we ask for 524288 executions.</p>
 Host:  total time:  0.1640s
 Guest: total time: 21.0306s
 </code></pre></div>
-
 
 <p>Gotcha! Now, the event timer (again from looking at the code) contains
 two parts: getting the current time (using <code>clock_gettime()</code>) and
@@ -222,7 +217,6 @@ Host:  0m0.019s
 Guest: 0m5.030s
 </code></pre></div>
 
-
 <p>So given that the <code>clock_gettime()</code> is ran twice in the sysbench, we
 already have 10 seconds of overhead on the guest (and only 0,04s on the
 host). When such time-related functions are slow, it is wise to take a
@@ -235,12 +229,10 @@ kvm-clock
 kvm-clock tsc hpet acpi_pm
 </code></pre></div>
 
-
 <p>Although kvm-clock is supposed to be the best clock source, let's switch
 to the tsc clock:</p>
 <div class="highlight"><pre><span></span><code># echo tsc &gt; current_clocksource
 </code></pre></div>
-
 
 <p>If we rerun our test application, we get a much more appreciative
 result:</p>
@@ -248,7 +240,6 @@ result:</p>
 Host:  0m0.019s
 Guest: 0m0.024s
 </code></pre></div>
-
 
 <p>So, what does that mean for our previous benchmark results?</p>
 <div class="highlight"><pre><span></span><code>$ sysbench --test=cpu --cpu-max-prime=20000 run
@@ -271,7 +262,6 @@ Host:            9765 executions
 Guest (before):   512 executions
 Guest (now):      529 executions
 </code></pre></div>
-
 
 <p>So we notice that this small change has nice effects on some of the
 tests. The CPU benchmark improves from 3,55% overhead to 0,95%; fileio

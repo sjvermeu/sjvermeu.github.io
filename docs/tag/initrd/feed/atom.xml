@@ -27,7 +27,6 @@ separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt
 *make: *** [scripts_basic] Error 2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I know it isn't SELinux that is causing this, as I have no denial
 messages and even putting SELinux in permissive mode doesn't help. Today
 I found the time to look at it with more fresh eyes, and noticed that it
@@ -42,7 +41,6 @@ that's just a simple thing to do.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
 ~# restorecon -R /var/build/genkernel
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The new location is not world-writable (only for root as only root
 builds initial ram file systems here) so not having &lt;code&gt;noexec&lt;/code&gt; here is ok.&lt;/p&gt;</content><category term="Gentoo"></category><category term="busybox"></category><category term="genkernel"></category><category term="Gentoo"></category><category term="initramfs"></category><category term="initrd"></category><category term="noexec"></category><category term="tmp"></category></entry></feed>

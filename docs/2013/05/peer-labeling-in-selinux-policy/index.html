@@ -167,7 +167,6 @@ are - I think - obsolete):</p>
 # allow something_t netif_t:netif { tcp_send tcp_recv egress ingress };
 </code></pre></div>
 
-
 <p>Node definitions define which targets (nodes, which can be IP addresses
 or subnets) traffic meant for a particular socket is allow to originate
 from (<em>recvfrom</em>) or sent to (<em>sendto</em>). Again, users can define their
@@ -178,7 +177,6 @@ and <em>tcp_recv</em> are probably deprecated as well):</p>
 <div class="highlight"><pre><span></span><code>corenet_tcp_sendrecv_generic_node(something_t)
 # allow something_t node_t:node { tcp_send tcp_recv sendto recvfrom };
 </code></pre></div>
-
 
 <p>Finally, peer definitions are based on the labels from the traffic. If
 the system uses NetLabel, then the target label will always be
@@ -195,13 +193,11 @@ corenet_all_recvfrom_netlabel(something_t)
 # allow something_t netlabel_peer_t:peer recv;
 </code></pre></div>
 
-
 <p>In case of IPSec for instance, the peer will have a provided label, as
 is shown by the call for accepting hadoop traffic:</p>
 <div class="highlight"><pre><span></span><code>hadoop_recvfrom(something_t)
 # allow something_t hadoop_t:peer recv;
 </code></pre></div>
-
 
 <p>However, this alone is not sufficient for labeled IPSec. We also need to
 allow the domain to be allowed to send anything towards an IPSec
@@ -216,7 +212,6 @@ amongst other things, enables <em>sendto</em> towards its association.</p>
 # corenet_tcp_recvfrom_netlabel(thing_t)
 </code></pre></div>
 
-
 <p>This interface is usually called within a <em>*_tcp_connect()</em> interface
 for a particular domain, like with the <em>mysql_tcp_connect</em> example:</p>
 <div class="highlight"><pre><span></span><code>interface(`mysql_tcp_connect&#39;,`
@@ -230,7 +225,6 @@ for a particular domain, like with the <em>mysql_tcp_connect</em> example:</p>
         corenet_sendrecv_mysqld_client_packets($1)
 &#39;)
 </code></pre></div>
-
 
 <p>When using peer labeling, the domain that is allowed something is based
 on the socket context of the application. Also, the rules when using

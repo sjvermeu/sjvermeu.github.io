@@ -131,7 +131,6 @@ test ~ # ps -eZ | grep screen
 system_u:object_r:unlabeled_t    5047 ?        00:00:00 screen
 </code></pre></div>
 
-
 <p>In permissive mode, this will be visible easily; in enforcing mode, the
 domains you are running in might not be allowed to do anything with
 <code>unlabeled_t</code> files, directories and processes, so <strong>ps</strong> might not show
@@ -142,7 +141,6 @@ ls: cannot access /proc/5047: Permission denied
 test audit # tail audit.log | grep unlabeled
 type=AVC msg=audit(1368698097.494:27806): avc:  denied  { getattr } for  pid=4137 comm=&quot;bash&quot; path=&quot;/proc/5047&quot; dev=&quot;proc&quot; ino=6677 scontext=root:sysadm_r:sysadm_t tcontext=system_u:object_r:unlabeled_t tclass=dir
 </code></pre></div>
-
 
 <p>Notice that, if you reload the module, the process becomes visible
 again. That is because the process context itself (<code>screen_t</code>) is

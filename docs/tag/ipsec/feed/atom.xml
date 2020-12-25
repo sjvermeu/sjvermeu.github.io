@@ -82,7 +82,6 @@ are - I think - obsolete):&lt;/p&gt;
 # allow something_t netif_t:netif { tcp_send tcp_recv egress ingress };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Node definitions define which targets (nodes, which can be IP addresses
 or subnets) traffic meant for a particular socket is allow to originate
 from (&lt;em&gt;recvfrom&lt;/em&gt;) or sent to (&lt;em&gt;sendto&lt;/em&gt;). Again, users can define their
@@ -93,7 +92,6 @@ and &lt;em&gt;tcp_recv&lt;/em&gt; are probably deprecated as well):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_sendrecv_generic_node(something_t)
 # allow something_t node_t:node { tcp_send tcp_recv sendto recvfrom };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Finally, peer definitions are based on the labels from the traffic. If
 the system uses NetLabel, then the target label will always be
@@ -110,13 +108,11 @@ corenet_all_recvfrom_netlabel(something_t)
 # allow something_t netlabel_peer_t:peer recv;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In case of IPSec for instance, the peer will have a provided label, as
 is shown by the call for accepting hadoop traffic:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;hadoop_recvfrom(something_t)
 # allow something_t hadoop_t:peer recv;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;However, this alone is not sufficient for labeled IPSec. We also need to
 allow the domain to be allowed to send anything towards an IPSec
@@ -131,7 +127,6 @@ amongst other things, enables &lt;em&gt;sendto&lt;/em&gt; towards its associatio
 # corenet_tcp_recvfrom_netlabel(thing_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This interface is usually called within a &lt;em&gt;*_tcp_connect()&lt;/em&gt; interface
 for a particular domain, like with the &lt;em&gt;mysql_tcp_connect&lt;/em&gt; example:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`mysql_tcp_connect&amp;#39;,`
@@ -145,7 +140,6 @@ for a particular domain, like with the &lt;em&gt;mysql_tcp_connect&lt;/em&gt; ex
         corenet_sendrecv_mysqld_client_packets($1)
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;When using peer labeling, the domain that is allowed something is based
 on the socket context of the application. Also, the rules when using

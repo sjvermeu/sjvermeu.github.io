@@ -17,7 +17,6 @@ Host throughput, 1M:  3959,78 MB/sec
 Guest throughput, 1M: 3079,29 MB/sec
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The guest has a lower throughput (about 77% of the host), which is lower
 than what most online posts provide on KVM performance. We'll get back
 to that later. Let's look at the default block size of 1k (meaning that
@@ -27,7 +26,6 @@ memory (in load):&lt;/p&gt;
 Host throughput, 1k:  1702,59 MB/sec
 Guest throughput, 1k:   23,67 MB/sec
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This is a lot worse: the guest' throughput is only 1,4% of the host
 throughput! The &lt;code&gt;qemu-kvm&lt;/code&gt; process on the host is also taking up a lot
@@ -53,7 +51,6 @@ Host runtime:    0,3267 s  (event:    0,2278)
 Guest runtime:  40,7672 s  (event:   30,6084)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This means that the guest "throughput" problems from the memory
 identified above seem to be related to this rather than memory-specific
 regressions. To verify if the scheduler itself also shows regressions,
@@ -63,7 +60,6 @@ simultaneously, using the otherwise default settings, during 10 seconds:&lt;/p&g
 Host:   9765 executions (events)
 Guest:   512 executions (events)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Here we get only 5% throughput.&lt;/p&gt;
 &lt;p&gt;Let's focus on the mutex again, as sysbench has an additional mutex
@@ -80,7 +76,6 @@ single mutex.&lt;/p&gt;
 Host (duration):   2600,57 ms
 Guest (duration):  2571,44 ms
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In this example, we see that the mutex operations are almost at the same
 speed (99%) of the host, so pure mutex operations are not likely to be

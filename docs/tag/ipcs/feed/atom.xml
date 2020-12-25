@@ -31,7 +31,6 @@ key        semid      owner      perms      nsems
 0x0056a4d5 32768      swift      660        1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;More information about a particular semaphore can be obtained using
 &lt;strong&gt;ipcs -s -i SEMID&lt;/strong&gt; where &lt;code&gt;SEMID&lt;/code&gt; is the value in the &lt;em&gt;semid&lt;/em&gt; column:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -s -i 32768
@@ -44,7 +43,6 @@ ctime = Sun Mar 30 12:33:38 2014
 semnum     value      ncount     zcount     pid       
 0          0          0          0          32061
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As with all IPC resources, we have information about the owner of the
 semaphore (&lt;code&gt;uid&lt;/code&gt; and &lt;code&gt;gid&lt;/code&gt;), the creator of the semaphore (&lt;code&gt;cuid&lt;/code&gt; and
@@ -68,7 +66,6 @@ key        shmid      owner      perms      bytes      nattch     status
 0x00000000 655370     swift      600        393216     2          dest
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Again, more information can be obtained through &lt;strong&gt;-i SHMID&lt;/strong&gt;. An
 interesting value to look at as well is the creator PID (just in case
 the process still runs, or through the audit logs) and the last PID used
@@ -83,7 +80,6 @@ shmid      owner      cpid       lpid
 root      6017  6016  0 09:49 tty1     00:01:30 /usr/bin/X -nolisten tcp :0 -auth /home/swift/.serverauth.6000
 swift     6147     1  2 09:50 tty1     00:05:10 firefox
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In this case, the shared memory is most likely used to handle the UI of
 firefox towards the X server.&lt;/p&gt;

@@ -33,7 +33,6 @@ that no transition should occur, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With a minor addition to the policy, this gave me a good hope... until I
 noticed that &lt;strong&gt;emerge&lt;/strong&gt; underlyingly calls &lt;strong&gt;ebuild&lt;/strong&gt; and &lt;strong&gt;ebuild.sh&lt;/strong&gt;,
 both labeled as &lt;code&gt;portage_exec_t&lt;/code&gt;, so these calls transition to

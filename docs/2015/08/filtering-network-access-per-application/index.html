@@ -147,7 +147,6 @@ Found 13 semantic av rules:
  DT allow nsswitch_domain ldap_client_packet_t : packet send ; [ authlogin_nsswitch_use_ldap ]
 </code></pre></div>
 
-
 <p>As we can see, the <code>mozilla_t</code> domain is able to send and receive packets of
 type <code>ipp_client_packet_t</code>, <code>soundd_client_packet_t</code>, <code>dns_client_packet_t</code>, 
 <code>speech_client_packet_t</code>, <code>ftp_client_packet_t</code>, <code>http_client_packet_t</code>, 
@@ -167,7 +166,6 @@ SSH incoming and outgoing packets as <code>ssh_server_packet_t</code>:</p>
 ~# iptables -t mangle -A OUTPUT -p tcp --sport 22 -j SECMARK --selctx system_u:object_r:ssh_server_packet_t:s0
 </code></pre></div>
 
-
 <p>But be warned: the moment iptables starts with its SECMARK support, <em>all packets</em>
 will be labeled. Those that are not explicitly labeled through one of the above
 commands will be labeled with the <code>unlabeled_t</code> type, and most domains are not
@@ -183,7 +181,6 @@ allowed any access to <code>unlabeled_t</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="p">(</span><span class="nv">allow</span> <span class="nv">domain</span> <span class="nv">unlabeled_t</span> <span class="p">(</span><span class="nv">packet</span> <span class="p">(</span><span class="nv">send</span> <span class="nv">recv</span><span class="p">)))</span>
 </code></pre></div>
 
-
 <p>This will allow all domains to send and receive packets of the <code>unlabeled_t</code> type.
 Although this is something that might be security-sensitive, it might be a good idea
 to allow at start, together with proper auditing (you can use <code>(auditallow ...)</code> to
@@ -193,7 +190,6 @@ remove the <code>unlabeled_t</code> privilege from the <code>domain</code> attri
 <p>To list the current SECMARK rules, list the firewall rules for the <code>mangle</code> table:</p>
 <div class="highlight"><pre><span></span><code>~# iptables -t mangle -nvL
 </code></pre></div>
-
 
 <p><strong>Only granting one application network access</strong></p>
 <p>These two together allow for creating a firewall that only allows a single domain
@@ -214,12 +210,10 @@ to create a new packet type to use.</p>
 <span class="p">(</span><span class="nv">allow</span> <span class="nv">mozilla_t</span> <span class="nv">myhttp_client_packet_t</span> <span class="p">(</span><span class="nv">packet</span> <span class="p">(</span><span class="nv">send</span> <span class="nv">recv</span><span class="p">)))</span>
 </code></pre></div>
 
-
 <p>Putting the above in a <code>myhttppacket.cil</code> file and loading it allows the type
 to be used:</p>
 <div class="highlight"><pre><span></span><code>~# semodule -i myhttppacket.cil
 </code></pre></div>
-
 
 <p>Now, the <code>myhttp_client_packet_t</code> type can be used in <code>iptables</code> rules. Also, 
 only the <code>mozilla_t</code> domain is allowed to send and receive these packets,
@@ -227,7 +221,6 @@ effectively creating an application-based firewall, as all we now need to do
 is to mark the outgoing packets towards the proxy as <code>myhttp_client_packet_t</code>:</p>
 <div class="highlight"><pre><span></span><code>~# iptables -t mangle -A OUTPUT -p tcp --dport 80 -d 10.15.10.5 -j SECMARK --selctx system_u:object_r:myhttp_client_packet_t:s0
 </code></pre></div>
-
 
 <p>This shows that it is <em>possible</em> to create such firewall rules with SELinux. It
 is however not an out-of-the-box solution, requiring thought and development of

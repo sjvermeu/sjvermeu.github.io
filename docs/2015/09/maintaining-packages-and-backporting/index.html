@@ -133,7 +133,6 @@ wait for a new release.</p>
 <span class="go">0001-Set-self.sename-to-sename-after-calling-semanage_seu.patch</span>
 </code></pre></div>
 
-
 <p>The two generated patch files contain all information about the commit. Thanks
 to the <code>epatch</code> support in the <code>eutils.eclass</code>, these patch files are
 immediately usable within Gentoo's ebuilds.</p>
@@ -155,7 +154,6 @@ to use the new patches:</p>
         # rlpkg is more useful than fixfiles
 </code></pre></div>
 
-
 <p>The patches themselves do not apply for the live ebuilds themselves (they are
 ignored there) as we want the live ebuilds to be as close to the upstream
 project as possible. But because the ebuilds are immediately usable for
@@ -163,7 +161,6 @@ releases, we add the necessary information there first.</p>
 <p>Next, the new release is created:</p>
 <div class="highlight"><pre><span></span><code><span class="go">~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild</span>
 </code></pre></div>
-
 
 <p><strong>Testing the changes</strong></p>
 <p>The new release is then tested. I have a couple of scripts that I use
@@ -176,7 +173,6 @@ tests should fail:</p>
     Executing step &quot;perm_port_off  : Removing permissive mark from portage_t                               &quot; -&gt; ok
     Executing step &quot;selogin_modify : Modifying a SELinux login definition                                  &quot; -&gt; failed
 </code></pre></div>
-
 
 <p>Then, on a test system where the new package has been installed, the same
 testset is executed (together with all other tests) to validate if the problem

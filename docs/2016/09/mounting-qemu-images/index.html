@@ -137,14 +137,12 @@ into raw images:</p>
 <div class="highlight"><pre><span></span><code>~$ qemu-img convert root.qcow2 root.raw
 </code></pre></div>
 
-
 <p>With the image now available in raw format, I can use the loop devices to mount
 the image(s) on my system:</p>
 <div class="highlight"><pre><span></span><code>~# losetup /dev/loop0 root.raw
 ~# kpartx -a /dev/loop0
 ~# mount /dev/mapper/loop0p1 /mnt
 </code></pre></div>
-
 
 <p>The <code>kpartx</code> command will detect the partitions and ensure that those are
 available: the first partition becomes available at <code>/dev/loop0p1</code>, the
@@ -157,12 +155,10 @@ a shadow-compatible hash for a password:</p>
 $1$BHbMVz9i$qYHmULtXIY3dqZkyfW/oO.
 </code></pre></div>
 
-
 <p>The challenge wasn't to find the hash though, but to edit it:</p>
 <div class="highlight"><pre><span></span><code>~# vim /mnt/etc/shadow
 vim: Permission denied
 </code></pre></div>
-
 
 <p>The image that I downloaded used SELinux (of course), which meant that the <code>shadow</code>
 file was labeled with <code>shadow_t</code> which I am not allowed to access. And I didn't
@@ -171,7 +167,6 @@ time left, apparently).</p>
 <p>So I remounted the image, but now with the <code>context=</code> mount option, like so:</p>
 <div class="highlight"><pre><span></span><code>~# mount -o context=&quot;system_u:object_r:var_t:s0: /dev/loop0p1 /mnt
 </code></pre></div>
-
 
 <p>Now all files are labeled with <code>var_t</code> which I do have permissions to edit. But
 I also need to take care that the files that I edited get the proper label again.
@@ -184,7 +179,6 @@ and force a file system relabeling operation.</p>
 ~# kpart -d /dev/loop0
 ~# losetup -d /dev/loop0
 </code></pre></div>
-
 
 <p>With that done, I had root access to the image and could start testing out
 my own set of commands.</p>

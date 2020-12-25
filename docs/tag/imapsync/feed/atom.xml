@@ -32,7 +32,6 @@ sides.&lt;/p&gt;
   --host2 dst-host --user2 dst-user --password2 dst-pw --authmech2 LOGIN --ssl2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The use of the &lt;code&gt;--ssl1&lt;/code&gt; and &lt;code&gt;--ssl2&lt;/code&gt; is not to enable an older or newer version of
 the SSL/TLS protocol. It just enables the use of SSL/TLS for the source host (&lt;code&gt;--ssl1&lt;/code&gt;)
 and destination host (&lt;code&gt;--ssl2&lt;/code&gt;).&lt;/p&gt;
@@ -42,13 +41,11 @@ can be used:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync ... --exclude &amp;quot;Trash|Spam|Drafts&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;It is also possible to transform some mailbox names. For instance, if the source host
 uses &lt;code&gt;Sent&lt;/code&gt; as the mailbox for sent mail, while the target has &lt;code&gt;Sent Items&lt;/code&gt;, then the
 following would enable migrating mails between the right folders:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync ... --folder &amp;quot;Sent&amp;quot; --regextrans2 &amp;#39;s/Sent/Sent Items/&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Conclusions and interesting resources&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Using the application was a breeze. I do recommend to create a test account on both sides

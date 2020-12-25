@@ -107,44 +107,6 @@ resources, happened first. Then, three common templates (<code>Code …</code></
             </article>
             <hr/>
             <article>
-                <h2><a href="https://blog.siphos.be/2014/12/why-does-it-access-etcshadow/">Why does it access /etc/shadow?</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2014-12-30T22:48:00+01:00"> Tue 30 December 2014</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/chkpwd/">chkpwd</a>
-        /
-	<a href="https://blog.siphos.be/tag/pam/">pam</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-        /
-	<a href="https://blog.siphos.be/tag/shadow/">shadow</a>
-        /
-	<a href="https://blog.siphos.be/tag/unix_chkpwd/">unix_chkpwd</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>While updating the SELinux policy for the Courier IMAP daemon, I noticed
-that it (well, the authdaemon that is part of Courier) wanted to access
-<code>/etc/shadow</code>, which is of course a big no-no. It doesn't take long to
-know that this is through the PAM support (more specifically,
-<code>pam_unix …</code></p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/12/why-does-it-access-etcshadow/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
                 <h2><a href="https://blog.siphos.be/2014/12/added-uefi-instructions-to-amd64x86-handbooks/">Added UEFI instructions to AMD64/x86 handbooks</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -177,43 +139,6 @@ and x86 (I don't know how many systems are still using x86 instead of
 the AMD64 one, and if those support UEFI, but the instructions are
 shared and they don't collide). The entire EFI stuff can …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/12/added-uefi-instructions-to-amd64x86-handbooks/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2014/12/handbooks-moved/">Handbooks moved</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2014-12-14T14:42:00+01:00"> Sun 14 December 2014</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/documentation.html">Documentation</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/gentoo/">Gentoo</a>
-        /
-	<a href="https://blog.siphos.be/tag/handbook/">handbook</a>
-        /
-	<a href="https://blog.siphos.be/tag/wiki/">wiki</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>Yesterday the move of the <a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page">Gentoo
-Wiki</a> for the Gentoo
-handbooks (whose most important part are the installation instructions
-for the various supported architectures) has been concluded, with a
-last-minute addition being the <a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page#Viewing_the_handbook">one-page
-views</a>
-so that users who want to can view the installation instructions
-completely within one view …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/12/handbooks-moved/">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -322,7 +247,6 @@ But they often don't take the time to …</p>
 following from the ebuilds:</p>
 <div class="highlight"><pre><span></span><code>DEPEND=&quot;selinux? ( sec-policy/selinux-${packagename} )&quot;
 </code></pre></div>
-
 
 <p>In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
@@ -436,6 +360,75 @@ just waiting for some free time to engage. So what are the challenges …</p>
                 </div>
             </article>
             <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2014/09/after-selinux-system-administration-now-the-selinux-cookbook/">After SELinux System Administration, now the SELinux Cookbook</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-09-24T20:10:00+02:00"> Wed 24 September 2014</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>Almost an entire year ago (just a few days apart) I
+<a href="http://blog.siphos.be/2013/09/it-has-finally-arrived-selinux-system-administration/">announced</a>
+my first published book, called <a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration">SELinux System
+Administration</a>.
+The book covered SELinux administration commands and focuses on Linux
+administrators that need to interact with SELinux-enabled systems.</p>
+<p>An important part of SELinux was only covered very briefly in the …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/09/after-selinux-system-administration-now-the-selinux-cookbook/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2014/08/gentoo-hardened-august-meeting/">Gentoo Hardened august meeting</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-08-29T16:43:00+02:00"> Fri 29 August 2014</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/gentoo.html">Gentoo</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/gentoo/">Gentoo</a>
+        /
+	<a href="https://blog.siphos.be/tag/hardened/">hardened</a>
+        /
+	<a href="https://blog.siphos.be/tag/irc/">irc</a>
+        /
+	<a href="https://blog.siphos.be/tag/meeting/">meeting</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>Another month has passed, so we had another online meeting to discuss
+the progress within Gentoo Hardened.</p>
+<p><em>Lead elections</em></p>
+<p>The yearly lead elections within Gentoo Hardened were up again. Zorry
+(Magnus Granberg) was re-elected as project lead so doesn't need to
+update his LinkedIn profile yet ;-)</p>
+<p><em>Toolchain</em></p>
+<p>blueness (Anthony G …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/08/gentoo-hardened-august-meeting/">more ...</a>
+                </div>
+            </article>
+            <hr/>
 
         <ul class="pagination">
                 <li class="prev"><a href="https://blog.siphos.be/index6.html">&laquo;</a>
@@ -510,8 +503,6 @@ just waiting for some free time to engage. So what are the challenges …</p>
                             href="https://blog.siphos.be/index34.html">34</a></li>
                     <li class=""><a
                             href="https://blog.siphos.be/index35.html">35</a></li>
-                    <li class=""><a
-                            href="https://blog.siphos.be/index36.html">36</a></li>
                 <li class="next"><a
                         href="https://blog.siphos.be/index8.html">&raquo;</a></li>
         </ul>

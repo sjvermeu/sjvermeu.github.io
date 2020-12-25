@@ -153,7 +153,6 @@ c2:2345:respawn:/sbin/agetty 38400 tty2 linux
 ...
 </code></pre></div>
 
-
 <p>These binaries are also explicitly labeled <code>getty_exec_t</code>. As a result,
 the <strong>getty</strong> (or <strong>agetty</strong>) processes run in the <code>getty_t</code> domain
 (because a transition is defined from <code>init_t</code> to <code>getty_t</code> when
@@ -173,7 +172,6 @@ to <code>pam_selinux.so</code>:</p>
 session         required        pam_selinux.so multiple open
 </code></pre></div>
 
-
 <p>Now here is where some of the magic starts (see my post on <a href="http://blog.siphos.be/2012/12/using-pam_selinux-to-switch-contexts/">Using
 pam_selinux to switch
 contexts</a>
@@ -184,7 +182,6 @@ when the <em>root</em> user logs on, it has SELinux checking what SELinux user
 <div class="highlight"><pre><span></span><code>$ semanage login -l | grep ^root
 root                      root
 </code></pre></div>
-
 
 <p>In this case, the SELinux user for root is <em>root</em>, but this is not
 always the case (that login and user are the same). For instance, my
@@ -205,12 +202,10 @@ users/root:system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t s
 users/xguest_u:system_r:local_login_t   xguest_r:xguest_t
 </code></pre></div>
 
-
 <p>Since we are verifying this for the <em>root</em> SELinux user, the following
 line of the <code>users/root</code> file is what matters:</p>
 <div class="highlight"><pre><span></span><code>system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
 </code></pre></div>
-
 
 <p>Here, SELinux looks for the first match in that line that the user has
 access to. This is defined by the roles that the user is allowed to
@@ -218,7 +213,6 @@ access:</p>
 <div class="highlight"><pre><span></span><code>$ semanage user -l | grep root
 root            staff_r sysadm_r
 </code></pre></div>
-
 
 <p>As <em>root</em> is allowed both the <em>staff_r</em> and <em>sysadm_r</em> roles, the
 first one found <em>in the default context file</em> that matches will be used.
@@ -230,7 +224,6 @@ in the <em>default context</em> file. In the example, this is
                         &lt;-----------+-----------&gt; &lt;-------+-------&gt; &lt;------+------&gt; &lt;-----+-----&gt;
                                     `- no matching role   `- first (!)     `- second      `- no match
 </code></pre></div>
-
 
 <p>Now that we know what the context <em>should</em> be, this is used for the
 first execution that the process (still <strong>login</strong>) will do. So <strong>login</strong>

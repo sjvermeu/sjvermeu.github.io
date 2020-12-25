@@ -126,11 +126,9 @@ errors from SELinux and the system itself:</p>
 
 
 
-
 <p>The authentication log shows entries such as the following:</p>
 <div class="highlight"><pre><span></span><code>Sep 14 20:20:05 localhost unix_chkpwd[5522]: could not obtain user info (hdfs)
 </code></pre></div>
-
 
 <p>I've always had issues with getting su to work properly again. Now that I have
 what I think is a working set, let me document it for later (as I still need to
@@ -146,7 +144,6 @@ review why they are needed):</p>
 <span class="c1"># Allow initrc_t to honor the pam_rootok setting</span>
 <span class="n">allow</span> <span class="n">initrc_t</span> <span class="nb">self</span><span class="ss">:passwd</span> <span class="p">{</span> <span class="n">passwd</span> <span class="n">rootok</span> <span class="p">};</span>
 </code></pre></div>
-
 
 <p>With these SELinux rules, switching the user works as expected from within an
 init script.</p>

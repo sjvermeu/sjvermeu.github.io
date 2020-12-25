@@ -150,7 +150,6 @@ PulseAudio is handled through <em>optional_policy</em> statements:</p>
 &#39;)
 </code></pre></div>
 
-
 <p>This means that the rules defined in <em>pulseaudio_tmpfs_content</em> are
 executed if the dependencies match:</p>
 <div class="highlight"><pre><span></span><code>interface(`pulseaudio_tmpfs_content&#39;,`
@@ -161,7 +160,6 @@ executed if the dependencies match:</p>
         typeattribute $1 pulseaudio_tmpfsfile;
 &#39;)
 </code></pre></div>
-
 
 <p>If the <code>pulseaudio_tmpfsfile</code> attribute exists, then the
 <code>mplayer_tmpfs_t</code> type gets the <code>pulseaudio_tmpfsfile</code> attribute
@@ -181,7 +179,6 @@ to enable / disable SELinux rules. For instance, in the mplayer policy:</p>
         allow mencoder_t self:process { execmem execstack };
 &#39;)
 </code></pre></div>
-
 
 <p>If an administrator toggles the <code>allow_mplayer_execstack</code> boolean to
 "on", then the mentioned <code>allow</code> rule becomes active.</p>
@@ -209,7 +206,6 @@ decisions based on this in the policy code:</p>
   &#39;)
 &#39;)
 </code></pre></div>
-
 
 <p>We can add in the USE flags, if set, through the <code>CUSTOM_BUILDOPT</code>
 parameter that the reference policy provides. So introducing this is not

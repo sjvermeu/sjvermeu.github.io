@@ -154,7 +154,6 @@ auth     required     pam_cap.so
 cap_net_raw           user1
 </code></pre></div>
 
-
 <p>The logic used with capabilities can be described as follows (it is not
 as difficult as it looks):</p>
 <div class="highlight"><pre><span></span><code>        pI&#39; = pI
@@ -164,7 +163,6 @@ as difficult as it looks):</p>
   I=Inheritable, P=Permitted, E=Effective // p=process, f=file
   &#39; indicates post-exec().
 </code></pre></div>
-
 
 <p>So, for instance, the second line reads "The permitted set of
 capabilities of the newly forked process is set to the permitted set of
@@ -180,14 +178,12 @@ file                 capabilities
 /bin/anotherping     net_raw
 </code></pre></div>
 
-
 <p>Similarly, with <strong>pscap</strong> you can see the capabilities set on running
 processes.</p>
 <div class="highlight"><pre><span></span><code># pscap -a
 ppid  pid   name        command           capabilities
 6148  6152  root        bash              full
 </code></pre></div>
-
 
 <p>It might be wise to take this up in the daily audit reports.</p>
             </div>

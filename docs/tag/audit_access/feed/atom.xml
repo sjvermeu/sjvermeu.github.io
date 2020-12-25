@@ -13,7 +13,6 @@ wants to disable auditing of this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dontaudit &amp;lt;somedomain&amp;gt; self:capability { dac_read_search dac_override };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;When applications wants to search through directories not owned by the
 user as which the application runs, &lt;em&gt;both&lt;/em&gt; capabilities will be checked
 - first the &lt;em&gt;dac_read_search&lt;/em&gt; one and, if that is denied (it will be
@@ -45,7 +44,6 @@ $ tail -1 /var/log/audit.log
 ...
 type=AVC msg=audit(1367400559.273:5224): avc:  denied  { read } for  pid=12270 comm=&amp;quot;test&amp;quot; name=&amp;quot;logrotate.status&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=2849 scontext=staff_u:staff_r:staff_t tcontext=system_u:object_r:logrotate_var_lib_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This gives the impression that the application is doing nasty stuff,
 even when it is merely checking permissions. One way would be to

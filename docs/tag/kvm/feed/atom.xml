@@ -50,7 +50,6 @@ When I consult KSM, I get the following information:&lt;/p&gt;
 /sys/kernel/mm/ksm/pages_volatile:1035
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The &lt;code&gt;pages_shared&lt;/code&gt; tells me that 48911 pages are shared (which means
 about 191 Mb) through 90090 references (&lt;code&gt;pages_sharing&lt;/code&gt; - meaning the
 various processes have in total 90090 references to pages that are being
@@ -92,7 +91,6 @@ Server:
 Client: none
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Similarly, if you need to enable remote debugging, you can use the
 &lt;strong&gt;gdbserver&lt;/strong&gt; option.&lt;/p&gt;
 &lt;p&gt;Getting information using &lt;strong&gt;info&lt;/strong&gt; is dead-easy, and supports a wide
@@ -109,7 +107,6 @@ floppy0: removable=1 locked=0 tray-open=0 [not inserted]
 sd0: removable=1 locked=0 tray-open=0 [not inserted]
 (qemu) change ide1-cd0 /srv/virt/media/systemrescuecd-x86-2.2.0.iso
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;To powerdown the system, use &lt;strong&gt;system_powerdown&lt;/strong&gt;. If that fails, you
 can use &lt;strong&gt;quit&lt;/strong&gt; to immediately shut down (terminate) the VM. To reset
@@ -167,7 +164,6 @@ CFLAGS=&amp;quot;-march=x86-64 -O2 -pipe&amp;quot;
         -fstack-protector-all&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I am aware that the CFLAGS between the two are not the same (duh), and I
 know as well that the expansion given above isn't entirely accurate. But
 still, it gives some idea on the differences.&lt;/p&gt;
@@ -202,7 +198,6 @@ that I did was a single-thread run for CPU performance testing.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=cpu --cpu-max-prime=20000 run
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This test verifies prime numbers by dividing the number with
 sequentially increasing numbers and verifying that the remainder (modulo
 calculation) is zero. If it is, then the number is not prime and the
@@ -227,7 +222,6 @@ med    total   35,3334   36,4266
      e.total   35,3314   36,2640
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;On average (I did three runs on each system), the guest took 3,55% more
 time to finish the test than the host (&lt;code&gt;total&lt;/code&gt;). If we look at the pure
 calculation (so not the remaining overhead of the inner workings -
@@ -248,7 +242,6 @@ avg    total   17,5185   18,0965
 med    total   17,8084   18,0921
      e.total   35,6131   36,0194
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With these figures, we notice that the guest average total run time
 takes 1,67% more time to complete, and the event time only 1,23%. I was
@@ -282,19 +275,16 @@ $ sysbench --test=fileio --file-total-size=6G --file-test-mode=rndrw --max-time=
 $ sysbench --test=fileio --file-total-size=6G cleanup
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the output, the throughput seems to be most important:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Operations performed:  4348 Read, 2898 Write, 9216 Other = 16462 Total
 Read 67.938Mb  Written 45.281Mb  Total transferred 113.22Mb  (1.8869Mb/sec)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In the above case, the throughput is 1,8869 Mbps. So let's look at the
 (averaged) results:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Host:  1,8424 Mbps
 Guest: 1,5591 Mbps
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The above figures (which are an average of 3 runs) tell us that the
 guest has a throughput of about 84,75% (so we take about 15% performance
@@ -307,7 +297,6 @@ instance, let's look at the impact of &lt;code&gt;data=ordered&lt;/code&gt; vers
 6G, data=journal, barrier=1: 599,85 Kbps
 6G, data=journal, barrier=0: 767,93 Kbps
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;From the figures, we can see that the &lt;code&gt;data=journal&lt;/code&gt; option slows down
 the throughput to a final figure about 30% of the original throughput

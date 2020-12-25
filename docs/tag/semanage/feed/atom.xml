@@ -37,18 +37,15 @@ type testdom_exec_t;
 init_daemon_domain(testdom_t, testdom_exec_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Mark the executable for the daemon as &lt;code&gt;testdom_exec_t&lt;/code&gt; (after building
 and loading the minuscule policy):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# chcon -t testdom_exec_t /opt/something/bin/daemond
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Finally, tell SELinux that &lt;code&gt;testdom_t&lt;/code&gt; is to be seen as a permissive
 domain:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage permissive -a testdom_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;When finished, don't forget to remove the permissive bit
 (&lt;code&gt;semanage permissive -d testdom_t&lt;/code&gt;) and unload/remove the SELinux
@@ -69,7 +66,6 @@ post-installation message of the &lt;code&gt;policycoreutils&lt;/code&gt; packag
 basically sais that you need to execute:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
 module store (and the semanage related files) to be in
@@ -97,7 +93,6 @@ ValueError: SELinux policy is not managed or store cannot be accessed.
 Cannot set persistent booleans without managed policy.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
 migration. Note in the following that there is a warning about 'else'
 blocks that are no longer supported: that's okay, as far as I know (and
@@ -109,7 +104,6 @@ Attempting to rebuild policy from /var/lib/selinux
 sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
 up. You can also rerun the command multiple times:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
@@ -117,11 +111,9 @@ warning: Policy type mcs has already been migrated, but modules still exist in t
 Attempting to rebuild policy from /var/lib/selinux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So... don't worry - the change is small and does not break stuff. And
 for those wondering about CIL I'll talk about it in one of my next

@@ -55,7 +55,6 @@ optional_policy(`
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And this for all domains that are ALSA-enabled. Every time a new
 application is added that knows ALSA, the same code needs to be added to
 all policies. And this only uses a single SELinux boolean (whereas
@@ -71,7 +70,6 @@ allow alsadomain alsadomain:sem rw_sem_perms;
 allow alsadomain alsadomain:shm rw_shm_perms;
 allow alsadomain alsatmpfsfile:file rw_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;By assigning the attribute to the proper domains whenever ALSA support
 is needed, we can toggle this more easily:&lt;/p&gt;
@@ -94,7 +92,6 @@ optional_policy(`
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That would solve the problem of needlessly adding more calls in a policy
 for every ALSA application. And hey, we can probably live with either a
 global boolean (&lt;code&gt;use_alsa&lt;/code&gt;) or per-domain one (&lt;code&gt;mplayer_use_alsa&lt;/code&gt;) and
@@ -109,7 +106,6 @@ create build-time conditionals (rather than run-time):&lt;/p&gt;
   &amp;#39;)
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This does mean that &lt;code&gt;use_alsa&lt;/code&gt; has to be known when the policy is built.
 For Gentoo, that's not that bad, as policies are part of separate

@@ -129,7 +129,6 @@ that needed to be resolved; here they are again for your convenience:</p>
 type=AVC msg=audit(1368734110.913:28354): avc:  denied  { read } for  pid=9716 comm=&quot;incrond&quot; name=&quot;test2&quot; dev=&quot;dm-0&quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
 </code></pre></div>
 
-
 <p>The permission we are looking for here is
 <em>userdom_list_user_home_content</em>, but this is only for when we want
 to watch a user home directory. What if we want to watch a server upload
@@ -158,7 +157,6 @@ not be the same as reading).</p>
 allow incrond_t public_content_t:dir { read getattr };
 </code></pre></div>
 
-
 <p>After editing the incrontab to watch a directory labeled with
 <code>public_content_t</code>, we now get the following:</p>
 <div class="highlight"><pre><span></span><code># tail cron.log
@@ -172,7 +170,6 @@ type=AVC msg=audit(1368773172.314:28387): avc:  denied  { read } for  pid=9716 c
 type=AVC msg=audit(1368773172.315:28388): avc:  denied  { write } for  pid=9716 comm=&quot;incrond&quot; path=&quot;pipe:[14027]&quot; dev=&quot;pipefs&quot; ino=14027 scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=fifo_file
 </code></pre></div>
 
-
 <p>As the incrontab is a user incrontab, we can expect <code>incrond_t</code> to
 require setuid and setgid privileges. Also, the <em>fifo_file</em> access is
 after forking (notice the difference in PID values) and most likely to
@@ -180,7 +177,6 @@ communicate to the master process. So let's allow those:</p>
 <div class="highlight"><pre><span></span><code>allow incrond_t self:capability { setuid setgid };
 allow incrond_t self:fifo_file { read write };
 </code></pre></div>
-
 
 <p>With that set, we get the following upon triggering a file write:</p>
 <div class="highlight"><pre><span></span><code># tail cron.log
@@ -191,7 +187,6 @@ May 17 08:52:46 test incrond[11338]: cannot exec process: Permission denied
 type=AVC msg=audit(1368773566.606:28394): avc:  denied  { read } for  pid=11338 comm=&quot;incrond&quot; name=&quot;ngroups_max&quot; dev=&quot;proc&quot; ino=5711 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:sysctl_kernel_t tclass=file
 type=AVC msg=audit(1368773566.607:28395): avc:  denied  { search } for  pid=11338 comm=&quot;incrond&quot; name=&quot;bin&quot; dev=&quot;dm-3&quot; ino=1048578 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:bin_t tclass=dir
 </code></pre></div>
-
 
 <p>The <code>ngroups_max</code> pseudo-file (in <code>/proc/sys/kernel</code>) returns the
 maximum number of supplementary group IDs per process, and is consulted
@@ -210,7 +205,6 @@ May 17 09:02:55 test incrond[11427]: cannot exec process: Permission denied
 type=AVC msg=audit(1368774175.646:28441): avc:  denied  { read } for  pid=11427 comm=&quot;incrond&quot; name=&quot;sh&quot; dev=&quot;dm-2&quot; ino=131454 scontext=system_u:system_r:incrond_t tcontext=root:object_r:bin_t tclass=lnk_file
 </code></pre></div>
 
-
 <p>Still not there yet apparently. The <strong>incrond</strong> forked process wants to
 execute the script, but to do so it has to follow a symbolic link
 labeled <code>bin_t</code>. This is because the script points to <code>#!/bin/sh</code> which
@@ -219,7 +213,6 @@ execution can occur; only after execution will the transition from
 <code>incrond_t</code> to <code>system_cronjob_t</code> be done.</p>
 <div class="highlight"><pre><span></span><code>corecmd_read_bin_symlinks(incrond_t)
 </code></pre></div>
-
 
 <p>With that set in the policy, the watch works, <strong>incrond</strong> properly
 launches the command and the command properly transitions into
@@ -236,7 +229,6 @@ read_files_pattern($1, { public_content_t public_content_rw_t }, { public_conten
 read_lnk_files_pattern($1, { public_content_t public_content_rw_t }, { public_content_t public_content_rw_t })
 </code></pre></div>
 
-
 <p>The rights here seem to bemore than what we need. Playing around a bit
 with the directories reveals that <strong>incrond</strong> requires a bit more. For
 instance, when you create additional directories (subdirectories) and
@@ -250,12 +242,10 @@ type=AVC msg=audit(1368774968.416:28504): avc:  denied  { search } for  pid=1170
 type=AVC msg=audit(1368774968.416:28505): avc:  denied  { search } for  pid=11704 comm=&quot;incrond&quot; name=&quot;test&quot; dev=&quot;dm-4&quot; ino=1488 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=dir
 </code></pre></div>
 
-
 <p>Similarly if you want to watch on a particular file:</p>
 <div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368775274.655:28552): avc:  denied  { getattr } for  pid=11704 comm=&quot;incrond&quot; path=&quot;/var/www/test/testfile&quot; dev=&quot;dm-4&quot; ino=1709 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=file
 type=AVC msg=audit(1368775274.655:28553): avc:  denied  { read } for  pid=11704 comm=&quot;incrond&quot; name=&quot;testfile&quot; dev=&quot;dm-4&quot; ino=1709 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=file
 </code></pre></div>
-
 
 <p>So it looks like <em>miscfiles_read_public_files</em> isn't that bad after
 all.</p>
@@ -301,7 +291,6 @@ auth_use_nsswitch(incrond_t)
 miscfiles_read_localization(incrond_t)
 miscfiles_read_public_files(incrond_t)
 </code></pre></div>
-
 
 <p>Next on the agenda is another interface to make other types
 "watch-worthy".</p>

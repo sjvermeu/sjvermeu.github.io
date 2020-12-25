@@ -24,7 +24,6 @@ context. Consider this piece of constraint code:&lt;/p&gt;
 );
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This particular constraint definition tells the SELinux subsystem that,
 when an operation against a &lt;em&gt;file&lt;/em&gt; class is performed (any operation, as
 &lt;em&gt;all_file_perms&lt;/em&gt; is used, but individual, specific permissions can be
@@ -104,7 +103,6 @@ root_xproperty_t user_xproperty_t mail_home_t xserver_t java_input_xevent_t user
  ==  || );
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;There RPN notation however isn't the only reason why constraints are
 difficult to read. The other reason is that &lt;strong&gt;seinfo&lt;/strong&gt; does not know
 (anymore) about the attributes used to generate the constraints. As a
@@ -122,7 +120,6 @@ otherwise be shown:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ seshowconstraint file read &amp;quot;user_t staff_t&amp;quot; &amp;gt; constraint-file.dot
 ~$ dot -Tsvg -O constraint-file.dot
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This generates the following graph:&lt;/p&gt;
 &lt;p&gt;!SELinux constraint flow&lt;a href="http://dev.gentoo.org/~swift/blog/201405/constraint-flow.svg"&gt;&lt;/a&gt;&lt;/p&gt;

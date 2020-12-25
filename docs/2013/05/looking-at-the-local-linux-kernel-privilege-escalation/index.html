@@ -186,11 +186,9 @@ invokes the decrement:</p>
 ...
 </code></pre></div>
 
-
 <p>The exploit also finds that the decrement didn't succeed:</p>
 <div class="highlight"><pre><span></span><code>test: semtex.c:76: main: Assertion &#39;i&lt;0x0100000000/4&#39; failed.
 </code></pre></div>
-
 
 <p>A second mitigation is that
 <a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf">KERNEXEC</a>
@@ -204,7 +202,6 @@ root-owned directory and owned by a trusted group (which on my system is
 <em>Permission denied</em> error, and the following is shown in the logs:</p>
 <div class="highlight"><pre><span></span><code>[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
 </code></pre></div>
-
 
 <p>However, even though a nicely hardened system should be fairly immune
 against the currently circling public exploit, it should be noted that

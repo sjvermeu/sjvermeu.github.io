@@ -23,12 +23,10 @@ completed:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Then I tell Portage to install the (built) files into the &lt;code&gt;images/&lt;/code&gt;
 directory:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The installation phase fails again (with the same error as during the
 build, which is logical as the &lt;code&gt;Makefile&lt;/code&gt; can't install files that
@@ -38,7 +36,6 @@ continuing with the merging of the files to the life file system:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.installed
 ~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild qmerge
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Et voila, &lt;code&gt;fcron-9999&lt;/code&gt; is now installed on the system, ready to validate
 the patch I had to check.&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="phase"></category><category term="portage"></category></entry></feed>

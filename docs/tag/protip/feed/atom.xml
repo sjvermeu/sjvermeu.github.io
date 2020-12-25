@@ -1,27 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - protip</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/protip/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2014-01-07T04:31:00+01:00</updated><entry><title>Linux protip: environment for a process</title><link href="https://blog.siphos.be/2014/01/linux-protip-environment-for-a-process/" rel="alternate"></link><published>2014-01-07T04:31:00+01:00</published><updated>2014-01-07T04:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-07:/2014/01/linux-protip-environment-for-a-process/</id><summary type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
-a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
-file. The file however shows the environment variables on one line, with
-a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
-a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
-file. The file however shows the environment variables on one line, with
-a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it
-with newlines instead:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;{lang="bash"}
-~$ sed -e "s:\x0:\n:g" /proc/144320/environ
-TERM=xterm
-SHELL=/bin/bash
-OLDPWD=/home/swift/docs
-USER=root
-SUDO_USER=swift
-SUDO_UID=1001
-USERNAME=root
-MAIL=/var/mail/root
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin
-PWD=/var/db/pkg/eix
-...&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;The trick is to use &lt;code&gt;\x0&lt;/code&gt; (hexcode 0) for the null character, which the
-&lt;strong&gt;sed&lt;/strong&gt; command then replaces with a newline.&lt;/p&gt;</content><category term="Free Software"></category><category term="environ"></category><category term="linux"></category><category term="protip"></category></entry><entry><title>Gentoo protip: using buildpkgonly</title><link href="https://blog.siphos.be/2013/04/gentoo-protip-using-buildpkgonly/" rel="alternate"></link><published>2013-04-25T03:50:00+02:00</published><updated>2013-04-25T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-25:/2013/04/gentoo-protip-using-buildpkgonly/</id><summary type="html">&lt;p&gt;If you don't want to have the majority of builds run in the background
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - protip</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/protip/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2013-04-25T03:50:00+02:00</updated><entry><title>Gentoo protip: using buildpkgonly</title><link href="https://blog.siphos.be/2013/04/gentoo-protip-using-buildpkgonly/" rel="alternate"></link><published>2013-04-25T03:50:00+02:00</published><updated>2013-04-25T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-25:/2013/04/gentoo-protip-using-buildpkgonly/</id><summary type="html">&lt;p&gt;If you don't want to have the majority of builds run in the background
 while you are busy on the system, but you don't want to automatically
 install software in the background when you are not behind your desk,
 then perhaps you can settle for using &lt;a href="https://wiki.gentoo.org/wiki/Binary_package_guide"&gt;binary
@@ -39,7 +17,6 @@ defaults to &lt;code&gt;/usr/portage/packages&lt;/code&gt;). When you are then o
 you can run the update with binary package included:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# emerge -puDk world
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;To use &lt;em&gt;--buildpkgonly&lt;/em&gt;, all package(s) that Portage wants to build must
 have all their dependencies met. If not, then the build will not go
@@ -87,7 +64,6 @@ emerge -puDN --color&lt;span class="o"&gt;=&lt;/span&gt;n --columns --quiet&lt;s
 &lt;span class="k"&gt;done&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;I ran this a couple of days ago when &lt;em&gt;-uDN world&lt;/em&gt; showed 46 package
 updates (including a few hefty ones like chromium). After running this
 script, 35 of them had a binary package ready so the &lt;em&gt;-uDN world&lt;/em&gt; now

@@ -142,14 +142,12 @@ interface(`ntp_domtrans&#39;,`
 ntp_domtrans(hald_t)
 </code></pre></div>
 
-
 <p>In the above example, the purpose is to have <code>hald_t</code> be able to execute
 binaries labeled as <code>ntpd_exec_t</code> and have the resulting process run as the
 <code>ntpd_t</code> domain.</p>
 <p>The following would not be allowed inside the hal module:</p>
 <div class="highlight"><pre><span></span><code>domtrans_pattern(hald_t, ntpd_exec_t, ntpd_t)
 </code></pre></div>
-
 
 <p>This would imply that both <code>hald_t</code>, <code>ntpd_exec_t</code> and <code>ntpd_t</code> are defined
 by the same module, which is not the case.</p>
@@ -168,11 +166,9 @@ how this would be dealt with.</p>
 <span class="p">)</span>
 </code></pre></div>
 
-
 <p>Another module would then call this:</p>
 <div class="highlight"><pre><span></span><code><span class="p">(</span><span class="nv">call</span> <span class="nv">myhttp_sendrecv_client_packet</span> <span class="p">(</span><span class="nv">mozilla_t</span><span class="p">))</span>
 </code></pre></div>
-
 
 <p>That's it. When the policy modules are both loaded, then the <code>mozilla_t</code> domain is able
 to send and receive <code>myhttp_client_packet_t</code> labeled packets.</p>
@@ -195,14 +191,12 @@ object-like approach for policy development.</p>
 <span class="p">)</span>
 </code></pre></div>
 
-
 <p>The other module looks as follows:</p>
 <div class="highlight"><pre><span></span><code><span class="p">(</span><span class="k">block</span> <span class="nv">mozilla</span>
   <span class="p">(</span><span class="nv">typeattributeset</span> <span class="nv">cil_gen_require</span> <span class="nv">mozilla_t</span><span class="p">)</span>
   <span class="p">(</span><span class="nv">call</span> <span class="nv">myhttp.sendrecv_client_packet</span> <span class="p">(</span><span class="nv">mozilla_t</span><span class="p">))</span>
 <span class="p">)</span>
 </code></pre></div>
-
 
 <p>The result is similar, but not fully the same. The packet is no longer called
 <code>myhttp_client_packet_t</code> but <code>myhttp.client_packet_t</code>. In other words, a period (<code>.</code>)
@@ -212,7 +206,6 @@ as well as interface/macro (<code>sendrecv_client_packet</code>):</p>
 <span class="go">  ...</span>
 <span class="go">  allow mozilla_t myhttp.client_packet_t : packet { send recv };</span>
 </code></pre></div>
-
 
 <p>And it looks that namespace support goes even further than that, but I still
 need to learn more about it first.</p>

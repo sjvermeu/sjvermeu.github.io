@@ -509,7 +509,6 @@ Date:   Sun Nov 24 17:47:14 2013 -0500
     the policies created by learning.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The new version requires the use of &lt;code&gt;&amp;gt;=gradm-3.0&lt;/code&gt;. Some hardened-sources
 packages already contain the 3.0 patchset (currently in testing). In a
 few days, a final hardened-sources with a 2.9.1 patchset will be
@@ -529,7 +528,6 @@ be accomplished with the following line in
 &lt;path&gt;package.accept_keywords&lt;/path&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sec-policy/* **
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Recently, revision 5 of the SELinux policies has been pushed to the tree
 (currently in testing). This one also contains a few required changes to
@@ -581,7 +579,6 @@ depends {
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The next few months will be interesting to see how this will evolve ;-)&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Documentation&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;All our documents are on the &lt;a href="https://wiki.gentoo.org"&gt;wiki&lt;/a&gt;, so if you
@@ -625,7 +622,6 @@ to function properly:
     E.g. export REFPOLRELEASE=&amp;quot;/home/user/local/refpolicy-20130424&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So first, we need to export three environment variables needed by the
 script:&lt;/p&gt;
 &lt;ul&gt;
@@ -660,7 +656,6 @@ sec-policy/selinux-alsa
 ...
 Only then do a &amp;#39;repoman commit -m &amp;#39;Release of 2.20130424-r4&amp;#39;&amp;#39;.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The script performs the following steps:&lt;/p&gt;
 &lt;ol&gt;
@@ -740,13 +735,11 @@ configured a different group in your kernel for this:&lt;/p&gt;
 CONFIG_GRKERNSEC_TPE_TRUSTED_GID=10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next we also need to allow the &lt;code&gt;portage_t&lt;/code&gt; domain to execute files
 labeled with &lt;code&gt;portage_tmpfs_t&lt;/code&gt;. You can do this by creating your own
 SELinux policy module with the following content (or use selocal):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;can_exec(portage_t, portage_tmpfs_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This works around the libffi issue for now. A better solution still has
 to be implemented (as discussed in the previous post).&lt;/p&gt;
@@ -785,7 +778,6 @@ b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib
 [...]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And the errors go on and on and on.&lt;/p&gt;
 &lt;p&gt;I've been able to get it working again by allowing the following SELinux
 permissions:&lt;/p&gt;
@@ -800,7 +792,6 @@ allow portage_t lib_t:dir relabel_dir_perms;
 allow portage_t lib_t:file relabel_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can somewhat shorten this by combining types (but this doesn't work
 with selocal for now):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
@@ -808,13 +799,11 @@ allow portage_t { portage_tmp_t bin_t }:lnk_file relabel_lnk_file_perms;
 allow portage_t { bin_t portage_exec_t portage_fetch_exec_t lib_t}:file relabel_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;At the end of the emerge process (when the new portage is installed) you
 might want to reset the labels of all files provided by the portage
 package:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rlpkg portage
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;These changes have not been passed into the policy yet as I first need
 to find out why exactly they are needed, and as you can see from &lt;a href="http://dev.gentoo.org/devaway/"&gt;the
@@ -873,7 +862,6 @@ disable it on others in order for the image to build properly.&lt;/p&gt;
             so that it won&amp;#39;t trip pax protection eg mprotect
 &amp;lt;@blueness&amp;gt; in the case of kernel modules, it can&amp;#39;t mean that obviously!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;One of the mentioned problems is that some ebuilds only enable pax
 markings when &lt;code&gt;pax_kernel&lt;/code&gt; is set. However, that shouldn't be done
@@ -1078,7 +1066,6 @@ context files:&lt;/p&gt;
 # for n in *.bin; do sefcontext_compile ${n%%.bin}; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The &lt;strong&gt;sefcontext_compile&lt;/strong&gt; command will rebuild the SELinux context
 files. When that has been done, &lt;strong&gt;matchpathcon&lt;/strong&gt; should show the right
 context again, and Portage will relabel files correctly. Until then, you
@@ -1224,13 +1211,11 @@ Checking www-servers/apache-2.2.24 ...
   * 424 out of 424 files are good
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If the binary is modified, this would result in something equivalent to:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Checking www-servers/apache-2.2.24 ...
  MD5-DIGEST: /usr/sbin/apache2
   * 423 out of 424 files are good
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I don't know if the modified binary would otherwise work just fine, I
 have not been able to find exact details on the infected binary to (in a
@@ -1245,7 +1230,6 @@ context of &lt;code&gt;bin_t&lt;/code&gt;). If the context is wrong, then starti
 results in:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This is because the modified binary stays in the calling domain context
 (&lt;code&gt;initrc_t&lt;/code&gt;). If you use a targeted policy, then this will not present
@@ -1283,7 +1267,6 @@ DT allow httpd_t gds_db_port_t : tcp_socket { name_connect } ; [ httpd_can_netwo
 DT allow httpd_t gopher_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So by default, the Apache (&lt;code&gt;httpd_t&lt;/code&gt;) domain is allowed to connect to
 DNS port (to resolve hostnames). All other &lt;em&gt;name_connect&lt;/em&gt; calls depend
 on SELinux booleans (mentioned after it) that are by default disabled
@@ -1309,7 +1292,6 @@ Found 2 semantic av rules:
    allow unconfined_domain_type domain : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ; 
    allow httpd_t httpd_t : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Only unconfined domains and the &lt;code&gt;httpd_t&lt;/code&gt; domain itself have access to
 &lt;code&gt;httpd_t&lt;/code&gt; labeled shared memory.&lt;/p&gt;
@@ -1344,7 +1326,6 @@ assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened
@@ -1429,7 +1410,6 @@ Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the things that has been bugging me was why, even with having
 &lt;code&gt;pam_rootok.so&lt;/code&gt; set in &lt;code&gt;/etc/pam.d/run_init&lt;/code&gt;, I cannot enjoy
 passwordless service management without using &lt;strong&gt;run_init&lt;/strong&gt; directly:&lt;/p&gt;
@@ -1441,7 +1421,6 @@ Password:
 Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So I decided to &lt;strong&gt;strace&lt;/strong&gt; the two commands and look for the
 differences. I found out that there is even a SELinux permission for
@@ -1465,7 +1444,6 @@ the trace I found that the previous context was also &lt;em&gt;run_init_t&lt;/em
 20451 close(3)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Because there already is a transition to &lt;em&gt;run_init_t&lt;/em&gt; upon calling the
 scripts, the underlying call to &lt;strong&gt;runscripts&lt;/strong&gt; causes the "previous"
 attribute to be set to &lt;em&gt;run_init_t&lt;/em&gt; as well, and only then is
@@ -1483,7 +1461,6 @@ gen_require(`
 
 allow run_init_t self:passwd rootok;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I'll probably add this in Gentoo's policy.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="pam"></category><category term="rootok"></category><category term="run_init"></category><category term="selinux"></category></entry><entry><title>SELinux tutorial series</title><link href="https://blog.siphos.be/2013/03/selinux-tutorial-series/" rel="alternate"></link><published>2013-03-15T00:34:00+01:00</published><updated>2013-03-15T00:34:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-15:/2013/03/selinux-tutorial-series/</id><summary type="html">&lt;p&gt;As we get a growing number of SELinux users within Gentoo Hardened and
 because the SELinux usage at the firm I work at is most likely going to

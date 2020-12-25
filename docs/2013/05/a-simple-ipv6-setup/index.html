@@ -137,7 +137,6 @@ though.</p>
 <div class="highlight"><pre><span></span><code>dhcpcd_eth0=&quot;-t 5 -L --ipv6ra_own&quot;
 </code></pre></div>
 
-
 <p>I had to enable <code>--ipv6ra_own</code> to get it to obtain its global address,
 otherwise it only got its link local one (<code>fe80::</code> something). I also
 added a hook into <code>/lib/dhcpcd/dhcpcd-hooks</code> to get it to trigger a
@@ -145,7 +144,6 @@ hostname update for IPv6.</p>
 <div class="highlight"><pre><span></span><code>$ cat 28-set-ip6-address 
 if $ifup; then export new_ip_address=${ra1_prefix%%/64}; fi
 </code></pre></div>
-
 
 <p>SELinux-policy wise, I had to enable <code>dhcpc_t</code> to write to the hostname
 proc file and set the system hostname. The first one (21) is needed
@@ -156,13 +154,11 @@ because of the <code>--ipv6ra_own</code> parameter.</p>
 23: allow dhcpc_t self:capability sys_admin; # set hostname
 </code></pre></div>
 
-
 <p>Finally, in <code>/etc/dhcpcd.conf</code>, I removed the <em>nohook lookup-hostname</em>
 and set the <em>force_hostname</em> one:</p>
 <div class="highlight"><pre><span></span><code>#nohook lookup-hostname
 env force_hostname=YES
 </code></pre></div>
-
 
 <p>On the server side, I use the following configuration of dnsmasq
 (snippet):</p>
@@ -170,7 +166,6 @@ env force_hostname=YES
 enable-ra
 dhcp-option=option6:dns-server,[2001:db8:81:e2::26b5:365b:5072]
 </code></pre></div>
-
 
 <p>As you can see, I use the documentation prefix for now (since it is
 meant for internal communication only, and makes it easier to copy/paste
@@ -183,7 +178,6 @@ May 12 18:43:07 test dhcpcd[3869]: eth0: fe80::d848:19ff:fe0d:55c2 is no longer 
 May 12 18:43:07 test dhcpcd[3869]: eth0: deleting default route via fe80::d848:19ff:fe0d:55c2
 May 12 18:43:13 test dhcpcd[3869]: eth0: fe80::d848:19ff:fe0d:55c2 is unreachable, expiring it
 </code></pre></div>
-
 
 <p>To enable IPv6 forwarding, you can use sysctl but I added it in the
 script that sets up the tap0 interface:</p>

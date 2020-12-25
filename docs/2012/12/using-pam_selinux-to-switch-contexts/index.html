@@ -141,7 +141,6 @@ allow source_t file_exec_t:file execute;
 type_transition source_t file_exec_t : process destination_t;
 </code></pre></div>
 
-
 <p>If those four settings are valid, then (and only then) can the automatic
 transition be active.</p>
 <p>Sadly, for applications that run user actions (like cron systems, remote
@@ -174,7 +173,6 @@ account include         system-services
 session include         system-services
 </code></pre></div>
 
-
 <p>I am not going to dive into the details of PAM in this blog post, so
 let's just jump to the session management part. In the above example
 file, if PAM sets up (or shuts down) a user session for the service (at
@@ -190,7 +188,6 @@ session         required        pam_unix.so
 session         optional        pam_permit.so
 </code></pre></div>
 
-
 <p>Until now, nothing SELinux-specific is enabled. But if we change the
 session section of the at service to the following, then the SELinux pam
 module will be called as well:</p>
@@ -198,7 +195,6 @@ module will be called as well:</p>
 session include         system-services
 session optional        pam_selinux.so multiple open
 </code></pre></div>
-
 
 <p>Now that the SELinux module is called, pam_selinux will try to switch
 the context of the process based on the definitions in the
@@ -210,7 +206,6 @@ seuser:  root, level (null)
 Context 0       root:sysadm_r:cronjob_t
 Context 1       root:staff_r:cronjob_t
 </code></pre></div>
-
 
 <p>By providing the contexts in configurable files in
 /etc/selinux/strict/contexts, a non-SELinux aware application suddenly

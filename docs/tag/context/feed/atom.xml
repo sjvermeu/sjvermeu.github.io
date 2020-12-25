@@ -39,7 +39,6 @@ c2:2345:respawn:/sbin/agetty 38400 tty2 linux
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;These binaries are also explicitly labeled &lt;code&gt;getty_exec_t&lt;/code&gt;. As a result,
 the &lt;strong&gt;getty&lt;/strong&gt; (or &lt;strong&gt;agetty&lt;/strong&gt;) processes run in the &lt;code&gt;getty_t&lt;/code&gt; domain
 (because a transition is defined from &lt;code&gt;init_t&lt;/code&gt; to &lt;code&gt;getty_t&lt;/code&gt; when
@@ -59,7 +58,6 @@ to &lt;code&gt;pam_selinux.so&lt;/code&gt;:&lt;/p&gt;
 session         required        pam_selinux.so multiple open
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Now here is where some of the magic starts (see my post on &lt;a href="http://blog.siphos.be/2012/12/using-pam_selinux-to-switch-contexts/"&gt;Using
 pam_selinux to switch
 contexts&lt;/a&gt;
@@ -70,7 +68,6 @@ when the &lt;em&gt;root&lt;/em&gt; user logs on, it has SELinux checking what SE
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ semanage login -l | grep ^root
 root                      root
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In this case, the SELinux user for root is &lt;em&gt;root&lt;/em&gt;, but this is not
 always the case (that login and user are the same). For instance, my
@@ -91,12 +88,10 @@ users/root:system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t s
 users/xguest_u:system_r:local_login_t   xguest_r:xguest_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Since we are verifying this for the &lt;em&gt;root&lt;/em&gt; SELinux user, the following
 line of the &lt;code&gt;users/root&lt;/code&gt; file is what matters:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Here, SELinux looks for the first match in that line that the user has
 access to. This is defined by the roles that the user is allowed to
@@ -104,7 +99,6 @@ access:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ semanage user -l | grep root
 root            staff_r sysadm_r
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As &lt;em&gt;root&lt;/em&gt; is allowed both the &lt;em&gt;staff_r&lt;/em&gt; and &lt;em&gt;sysadm_r&lt;/em&gt; roles, the
 first one found &lt;em&gt;in the default context file&lt;/em&gt; that matches will be used.
@@ -116,7 +110,6 @@ in the &lt;em&gt;default context&lt;/em&gt; file. In the example, this is
                         &amp;lt;-----------+-----------&amp;gt; &amp;lt;-------+-------&amp;gt; &amp;lt;------+------&amp;gt; &amp;lt;-----+-----&amp;gt;
                                     `- no matching role   `- first (!)     `- second      `- no match
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now that we know what the context &lt;em&gt;should&lt;/em&gt; be, this is used for the
 first execution that the process (still &lt;strong&gt;login&lt;/strong&gt;) will do. So &lt;strong&gt;login&lt;/strong&gt;

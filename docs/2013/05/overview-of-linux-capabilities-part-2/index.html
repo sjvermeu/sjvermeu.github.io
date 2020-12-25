@@ -202,7 +202,6 @@ int main(int argc, char ** argv) {
 }
 </code></pre></div>
 
-
 <p>At first sight, it looks like an application to get root privileges
 (<em>setresuid()</em>) and then spawn a shell. If that application would be
 given <code>CAP_SETUID</code> and <code>CAP_SETGID</code> effectively, it would allow anyone
@@ -215,7 +214,6 @@ cap_setuid and cap_setgid: 1
  =
 setresuid() failed: Operation not permitted
 </code></pre></div>
-
 
 <p>So what happened? After all, the two capabilities are set with the <em>+ep</em>
 flags given. Then why aren't these capabilities enabled? Well, this
@@ -230,12 +228,10 @@ cap_setuid and cap_setgid: 1
 setresuid() failed: Operation not permitted
 </code></pre></div>
 
-
 <p>So the capabilities now do get enabled, so why does this still fail?
 This now is due to SELinux:</p>
 <div class="highlight"><pre><span></span><code>type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&quot;test&quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
 </code></pre></div>
-
 
 <p>And if you enable grSecurity's TPE, we can't even start the binary to
 begin with:</p>
@@ -249,7 +245,6 @@ $ /lib/ld-linux-x86-64.so.2 /home/test/test
 [ 5579.567842] grsec: From 192.168.100.1: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/test/test by /home/test/test[bash:4221] uid/euid:1002/1002 gid/egid:100/100, parent /bin/bash[bash:4195] uid/euid:1002/1002 gid/egid:100/100
 </code></pre></div>
 
-
 <p>When all these "security obstacles" are not enabled, then the call
 succeeds:</p>
 <div class="highlight"><pre><span></span><code>$ /usr/local/bin/test
@@ -259,7 +254,6 @@ cap_setuid and cap_setgid: 1
 setresuid() failed: Success
 root@hpl tmp #
 </code></pre></div>
-
 
 <p>This again shows how important it is to regularly review
 capability-enabled files on the file system, as this is a major security

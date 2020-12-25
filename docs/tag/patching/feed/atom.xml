@@ -19,7 +19,6 @@ wait for a new release.&lt;/p&gt;
 &lt;span class="go"&gt;0001-Set-self.sename-to-sename-after-calling-semanage_seu.patch&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The two generated patch files contain all information about the commit. Thanks
 to the &lt;code&gt;epatch&lt;/code&gt; support in the &lt;code&gt;eutils.eclass&lt;/code&gt;, these patch files are
 immediately usable within Gentoo's ebuilds.&lt;/p&gt;
@@ -41,7 +40,6 @@ to use the new patches:&lt;/p&gt;
         # rlpkg is more useful than fixfiles
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The patches themselves do not apply for the live ebuilds themselves (they are
 ignored there) as we want the live ebuilds to be as close to the upstream
 project as possible. But because the ebuilds are immediately usable for
@@ -49,7 +47,6 @@ releases, we add the necessary information there first.&lt;/p&gt;
 &lt;p&gt;Next, the new release is created:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Testing the changes&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The new release is then tested. I have a couple of scripts that I use
@@ -62,7 +59,6 @@ tests should fail:&lt;/p&gt;
     Executing step &amp;quot;perm_port_off  : Removing permissive mark from portage_t                               &amp;quot; -&amp;gt; ok
     Executing step &amp;quot;selogin_modify : Modifying a SELinux login definition                                  &amp;quot; -&amp;gt; failed
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Then, on a test system where the new package has been installed, the same
 testset is executed (together with all other tests) to validate if the problem

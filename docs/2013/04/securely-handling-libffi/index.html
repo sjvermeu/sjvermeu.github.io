@@ -129,7 +129,6 @@ helped me quickly identify what the problem is.</p>
 segmentation fault
 </code></pre></div>
 
-
 <p>The abbreviation "libffi" comes from <em>Foreign Function Interface</em>, and
 is a library that allows developers to dynamically call code from
 another application or library. But the method how it approaches this
@@ -139,7 +138,6 @@ concerns me a bit. Let's look at some <strong>strace</strong> output:</p>
 8560  ftruncate(11, 4096)               = 0
 8560  mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_SHARED, 11, 0) = -1 EACCES (Permission denied)
 </code></pre></div>
-
 
 <p>Generally, what libffi does, is to create a file somewhere where it can
 write files (it checks the various mounts on a system to get a list of
@@ -156,7 +154,6 @@ pid=8560 comm=&quot;emerge&quot; path=2F7661722F66666962713154465A202864656C6574
 dev=&quot;dm-3&quot; ino=6912 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t
 tclass=file
 </code></pre></div>
-
 
 <p>When you notice something like this (an execute on an unnamed file),
 then this is because the file descriptor points to a file already
@@ -191,7 +188,6 @@ more secure manner than allowing exec on world-writeable locations.</p>
 drwxr-x---. 4 portage root system_u:object_r:tmp_t 4096 Apr 22 21:45 /var/portage/
 </code></pre></div>
 
-
 <p>And libffi? Well, allowing applications to create their own executables
 and executing it is something that should be carefully governed. I'm not
 aware of any existing or past vulnerabilities, but I can imagine that
@@ -209,7 +205,6 @@ execute files:</p>
  | grep execute | awk &#39;{print $1}&#39; | sort | uniq | wc -l
 32
 </code></pre></div>
-
 
 <p>Okay, 32 target domains. Not that bad, and certainly doable to verify
 manually (hell, even in a scripted manner). You can now check which of

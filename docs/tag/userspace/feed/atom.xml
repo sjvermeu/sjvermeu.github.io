@@ -33,7 +33,6 @@ security context exists within a binary policy file:&lt;/p&gt;
 user_u:user_r:mozilla_t:s0 is valid
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The package does contain two manpages of old commands which are no longer available
 (or I'm blind, either way, they're not installed and not found in the SELinux userspace
 repository either) such as genpolusers and genpolbools.&lt;/p&gt;
@@ -310,14 +309,12 @@ SELinux policy code:&lt;/p&gt;
 (portcon tcp 1440 (system_u object_r test_port_t ((s0) (s0))))
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The code declares a port type (&lt;code&gt;test_port_t&lt;/code&gt;) and uses it for the TCP
 port 1440.&lt;/p&gt;
 &lt;p&gt;In order to use this code, we have to build a policy file which includes
 all currently active CIL code, together with the test code:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The result is a &lt;code&gt;policy.29&lt;/code&gt; (the command forces version 29 as the
 current Linux kernel used on this system does not support version 30)
@@ -327,7 +324,6 @@ having copied the file, load the new policy file using &lt;code&gt;load_policy&l
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage port -l | grep 1440
 test_port_t           tcp      1440
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;To verify that it really is available and not just parsed by the
 userspace, let's connect to it and hope for a nice denial message:&lt;/p&gt;
@@ -406,7 +402,6 @@ basically sais that you need to execute:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
 module store (and the semanage related files) to be in
 &lt;code&gt;/var/lib/selinux&lt;/code&gt; and no longer in &lt;code&gt;/etc/selinux&lt;/code&gt;. Note that this does
@@ -433,7 +428,6 @@ ValueError: SELinux policy is not managed or store cannot be accessed.
 Cannot set persistent booleans without managed policy.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
 migration. Note in the following that there is a warning about 'else'
 blocks that are no longer supported: that's okay, as far as I know (and
@@ -445,7 +439,6 @@ Attempting to rebuild policy from /var/lib/selinux
 sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
 up. You can also rerun the command multiple times:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
@@ -453,11 +446,9 @@ warning: Policy type mcs has already been migrated, but modules still exist in t
 Attempting to rebuild policy from /var/lib/selinux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So... don't worry - the change is small and does not break stuff. And
 for those wondering about CIL I'll talk about it in one of my next

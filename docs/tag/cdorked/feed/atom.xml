@@ -23,13 +23,11 @@ Checking www-servers/apache-2.2.24 ...
   * 424 out of 424 files are good
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If the binary is modified, this would result in something equivalent to:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Checking www-servers/apache-2.2.24 ...
  MD5-DIGEST: /usr/sbin/apache2
   * 423 out of 424 files are good
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I don't know if the modified binary would otherwise work just fine, I
 have not been able to find exact details on the infected binary to (in a
@@ -44,7 +42,6 @@ context of &lt;code&gt;bin_t&lt;/code&gt;). If the context is wrong, then starti
 results in:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This is because the modified binary stays in the calling domain context
 (&lt;code&gt;initrc_t&lt;/code&gt;). If you use a targeted policy, then this will not present
@@ -82,7 +79,6 @@ DT allow httpd_t gds_db_port_t : tcp_socket { name_connect } ; [ httpd_can_netwo
 DT allow httpd_t gopher_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So by default, the Apache (&lt;code&gt;httpd_t&lt;/code&gt;) domain is allowed to connect to
 DNS port (to resolve hostnames). All other &lt;em&gt;name_connect&lt;/em&gt; calls depend
 on SELinux booleans (mentioned after it) that are by default disabled
@@ -108,7 +104,6 @@ Found 2 semantic av rules:
    allow unconfined_domain_type domain : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ; 
    allow httpd_t httpd_t : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Only unconfined domains and the &lt;code&gt;httpd_t&lt;/code&gt; domain itself have access to
 &lt;code&gt;httpd_t&lt;/code&gt; labeled shared memory.&lt;/p&gt;

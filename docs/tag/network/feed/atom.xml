@@ -35,7 +35,6 @@ Found 13 semantic av rules:
  DT allow nsswitch_domain ldap_client_packet_t : packet send ; [ authlogin_nsswitch_use_ldap ]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;As we can see, the &lt;code&gt;mozilla_t&lt;/code&gt; domain is able to send and receive packets of
 type &lt;code&gt;ipp_client_packet_t&lt;/code&gt;, &lt;code&gt;soundd_client_packet_t&lt;/code&gt;, &lt;code&gt;dns_client_packet_t&lt;/code&gt;, 
 &lt;code&gt;speech_client_packet_t&lt;/code&gt;, &lt;code&gt;ftp_client_packet_t&lt;/code&gt;, &lt;code&gt;http_client_packet_t&lt;/code&gt;, 
@@ -55,7 +54,6 @@ SSH incoming and outgoing packets as &lt;code&gt;ssh_server_packet_t&lt;/code&gt
 ~# iptables -t mangle -A OUTPUT -p tcp --sport 22 -j SECMARK --selctx system_u:object_r:ssh_server_packet_t:s0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;But be warned: the moment iptables starts with its SECMARK support, &lt;em&gt;all packets&lt;/em&gt;
 will be labeled. Those that are not explicitly labeled through one of the above
 commands will be labeled with the &lt;code&gt;unlabeled_t&lt;/code&gt; type, and most domains are not
@@ -71,7 +69,6 @@ allowed any access to &lt;code&gt;unlabeled_t&lt;/code&gt;.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;unlabeled_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This will allow all domains to send and receive packets of the &lt;code&gt;unlabeled_t&lt;/code&gt; type.
 Although this is something that might be security-sensitive, it might be a good idea
 to allow at start, together with proper auditing (you can use &lt;code&gt;(auditallow ...)&lt;/code&gt; to
@@ -81,7 +78,6 @@ remove the &lt;code&gt;unlabeled_t&lt;/code&gt; privilege from the &lt;code&gt;d
 &lt;p&gt;To list the current SECMARK rules, list the firewall rules for the &lt;code&gt;mangle&lt;/code&gt; table:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# iptables -t mangle -nvL
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Only granting one application network access&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;These two together allow for creating a firewall that only allows a single domain
@@ -102,12 +98,10 @@ to create a new packet type to use.&lt;/p&gt;
 &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Putting the above in a &lt;code&gt;myhttppacket.cil&lt;/code&gt; file and loading it allows the type
 to be used:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule -i myhttppacket.cil
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now, the &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; type can be used in &lt;code&gt;iptables&lt;/code&gt; rules. Also, 
 only the &lt;code&gt;mozilla_t&lt;/code&gt; domain is allowed to send and receive these packets,
@@ -115,7 +109,6 @@ effectively creating an application-based firewall, as all we now need to do
 is to mark the outgoing packets towards the proxy as &lt;code&gt;myhttp_client_packet_t&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# iptables -t mangle -A OUTPUT -p tcp --dport 80 -d 10.15.10.5 -j SECMARK --selctx system_u:object_r:myhttp_client_packet_t:s0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This shows that it is &lt;em&gt;possible&lt;/em&gt; to create such firewall rules with SELinux. It
 is however not an out-of-the-box solution, requiring thought and development of

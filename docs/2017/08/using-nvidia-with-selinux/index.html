@@ -140,7 +140,6 @@ for each affected kernel module):</p>
       /lib/modules/4.12.5-gentoo/video/nvidia-uvm.ko
 </code></pre></div>
 
-
 <p>However, from version 4.3.3 onward (as also explained by this excellent
 <a href="https://wiki.gentoo.org/wiki/Signed_kernel_module_support">Signed kernel module support article</a> on the Gentoo wiki) this command
 no longer uses a Perl script, but is an ELF binary. Also, the location
@@ -168,7 +167,6 @@ crashed, like so:</p>
         at net.minecraft.client.main.Main.main(SourceFile:123)
 </code></pre></div>
 
-
 <p>Not really useful to debug for me, but the SELinux denials were a bit more obvious,
 showing requests for read and write to the <code>nvidiactl</code> character device.</p>
 <p>Thanks to <code>matchpathcon</code> I found out that the device files had to have the
@@ -179,12 +177,10 @@ at boot up:</p>
 <div class="highlight"><pre><span></span><code>restorecon /dev/nvidiactl /dev/nvidia0
 </code></pre></div>
 
-
 <p>Also, the domains that needed to use nVidia had to receive the following
 addition SELinux-policy-wise:</p>
 <div class="highlight"><pre><span></span><code>dev_rw_xserver_misc(...)
 </code></pre></div>
-
 
 <p>Perhaps this can be made more fine-grained (as there are several other device
 files marked as <code>xserver_misc_device_t</code>) but for now this should suffice.</p>
@@ -224,19 +220,16 @@ Section &quot;Screen&quot;
 EndSection
 </code></pre></div>
 
-
 <p>And with a single <code>xrandr</code> command I re-enabled split screen support (as by
 default it now showed the same output on both screens):</p>
 <div class="highlight"><pre><span></span><code>~$ xrandr --output eDP-1-1 --left-of HDMI-1-2
 </code></pre></div>
-
 
 <p>I also had to set the output source to the nVidia device, by adding the following
 lines to my <code>~/.xinitrc</code> file:</p>
 <div class="highlight"><pre><span></span><code>xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
 </code></pre></div>
-
 
 <p>And with that, another thing was crossed off from my TODO list. Which has become
 quite large after my holidays (went to Kos, Greece) as I had many books and articles

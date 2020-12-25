@@ -22,13 +22,11 @@ configured a different group in your kernel for this:&lt;/p&gt;
 CONFIG_GRKERNSEC_TPE_TRUSTED_GID=10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next we also need to allow the &lt;code&gt;portage_t&lt;/code&gt; domain to execute files
 labeled with &lt;code&gt;portage_tmpfs_t&lt;/code&gt;. You can do this by creating your own
 SELinux policy module with the following content (or use selocal):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;can_exec(portage_t, portage_tmpfs_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This works around the libffi issue for now. A better solution still has
 to be implemented (as discussed in the previous post).&lt;/p&gt;
@@ -67,7 +65,6 @@ b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib
 [...]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And the errors go on and on and on.&lt;/p&gt;
 &lt;p&gt;I've been able to get it working again by allowing the following SELinux
 permissions:&lt;/p&gt;
@@ -82,7 +79,6 @@ allow portage_t lib_t:dir relabel_dir_perms;
 allow portage_t lib_t:file relabel_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can somewhat shorten this by combining types (but this doesn't work
 with selocal for now):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
@@ -90,13 +86,11 @@ allow portage_t { portage_tmp_t bin_t }:lnk_file relabel_lnk_file_perms;
 allow portage_t { bin_t portage_exec_t portage_fetch_exec_t lib_t}:file relabel_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;At the end of the emerge process (when the new portage is installed) you
 might want to reset the labels of all files provided by the portage
 package:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rlpkg portage
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;These changes have not been passed into the policy yet as I first need
 to find out why exactly they are needed, and as you can see from &lt;a href="http://dev.gentoo.org/devaway/"&gt;the
@@ -126,7 +120,6 @@ helped me quickly identify what the problem is.&lt;/p&gt;
 segmentation fault
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The abbreviation "libffi" comes from &lt;em&gt;Foreign Function Interface&lt;/em&gt;, and
 is a library that allows developers to dynamically call code from
 another application or library. But the method how it approaches this
@@ -136,7 +129,6 @@ concerns me a bit. Let's look at some &lt;strong&gt;strace&lt;/strong&gt; output
 8560  ftruncate(11, 4096)               = 0
 8560  mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_SHARED, 11, 0) = -1 EACCES (Permission denied)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Generally, what libffi does, is to create a file somewhere where it can
 write files (it checks the various mounts on a system to get a list of
@@ -153,7 +145,6 @@ pid=8560 comm=&amp;quot;emerge&amp;quot; path=2F7661722F66666962713154465A202864
 dev=&amp;quot;dm-3&amp;quot; ino=6912 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t
 tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;When you notice something like this (an execute on an unnamed file),
 then this is because the file descriptor points to a file already
@@ -188,7 +179,6 @@ more secure manner than allowing exec on world-writeable locations.&lt;/p&gt;
 drwxr-x---. 4 portage root system_u:object_r:tmp_t 4096 Apr 22 21:45 /var/portage/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And libffi? Well, allowing applications to create their own executables
 and executing it is something that should be carefully governed. I'm not
 aware of any existing or past vulnerabilities, but I can imagine that
@@ -206,7 +196,6 @@ execute files:&lt;/p&gt;
  | grep execute | awk &amp;#39;{print $1}&amp;#39; | sort | uniq | wc -l
 32
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Okay, 32 target domains. Not that bad, and certainly doable to verify
 manually (hell, even in a scripted manner). You can now check which of

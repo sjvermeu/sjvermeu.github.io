@@ -58,7 +58,6 @@ Parameter: enabled/disabled
 Technical Mechanism: via /etc/inittab
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;By requiring &lt;strong&gt;sulogin&lt;/strong&gt; or &lt;strong&gt;rc single&lt;/strong&gt; in &lt;code&gt;inittab&lt;/code&gt;, Gentoo Linux
 will ask for the root password before granting a shell, thereby
 complying with the requirement to have a password before providing a
@@ -230,7 +229,6 @@ Linux system:&lt;/p&gt;
 &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;In OVAL, this would be structured as follows (pseudo-OVAL):&lt;/p&gt;
 &lt;dl&gt;
 &lt;dt&gt;definition&lt;/dt&gt;
@@ -344,14 +342,12 @@ Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  fixed
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And indeed, the file has been changed and now complies with the rules
 again.&lt;/p&gt;
 &lt;p&gt;We can also generate the remediation scripts offline:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --profile ${PROFILE} --results results-test-xccdf.xml --cpe gentoo-cpe.xml test-xccdf.xml
 ~$ oscap xccdf generate fix --output remediate.sh results-test-xccdf.xml
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The resulting &lt;code&gt;remediate.sh&lt;/code&gt; script then contains the steps to remediate
 the failures reported in the &lt;code&gt;results-test-xccdf.xml&lt;/code&gt; file.&lt;/p&gt;
@@ -412,7 +408,6 @@ XCCDF document as follows:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf generate guide test-xccdf.xml &amp;gt; guide-test-xccdf.html
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The
 &lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/guide-test-xccdf.html"&gt;result&lt;/a&gt;
 is an HTML guide that reflects the content of the XCCDF document. By
@@ -431,7 +426,6 @@ such as removing the &lt;code&gt;&amp;lt;preface&amp;gt;&lt;/code&gt; part.&lt;/
 &lt;p&gt;Let's try evaluating the XCCDF document on the system:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval test-xccdf.xml
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Nothing happened. That is because there are no rules that are by default
 selected (all rules in the document have &lt;code&gt;selected="false"&lt;/code&gt;) and we have
@@ -454,7 +448,6 @@ Title   rc_sys should be defined in /etc/rc.conf
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  notapplicable
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;At least we have output now, but still no results. In fact, all rules
 have &lt;em&gt;notapplicable&lt;/em&gt; as a result. What gives?&lt;/p&gt;
@@ -491,7 +484,6 @@ No definition with ID: (null) in definition model. [oval_probe.c:338]
 No definition with ID: (null) in result model. [oval_agent.c:184]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Great; we now see that openscap ran the tests and gave feedback. It also
 gave a few errors. These can be ignored now - it is openscap that tries
 to interpret the shell scripts as OVAL scripts (I'll talk about OVAL in
@@ -501,7 +493,6 @@ openscap detects that as well:&lt;/p&gt;
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  fail
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now, by itself the rule might give us enough clues as to what is wrong,
 but sometimes you might want to get the output of the scripts as well.
@@ -551,7 +542,6 @@ Options:
    --remediate                   - Automatically execute XCCDF fix elements for failed rules.
                                    Use of this option is always at your own risk.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In my next post, I'll talk a bit more about remediation.&lt;/p&gt;
 &lt;p&gt;This post is part of a series on SCAP content:&lt;/p&gt;
@@ -708,7 +698,6 @@ grep -q hardened /var/db/pkg/sys-devel/gcc-&lt;span class="si"&gt;${&lt;/span&gt
 &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;As you can see, the script can give output when needed, but the most
 important part is that it has to return a particular return value. This
 return value is provided through environment variables
@@ -730,7 +719,6 @@ Rule    xccdf_org.gentoo.dev.swift_rule_inittab-sulogin
 Result  fail
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Now, if you want to check this on several systems, you would need to
 distribute not only the XCCDF file, but also all files referred to by
 the XCCDF document. As this is counterproductive, SCAP supports &lt;em&gt;Data
@@ -738,7 +726,6 @@ Streams&lt;/em&gt;. A data stream is a single file that includes the content of
 all files. With openscap, data streams can be made as follows:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# oscap ds sds-compose postgresql-xccdf.xml postgresql-ds.xml
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So now we have a document explaining the secure setup of a component,
 and included automated checks to validate system compliance with the

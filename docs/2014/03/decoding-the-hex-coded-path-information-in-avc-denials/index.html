@@ -126,7 +126,6 @@ human readable, like so:</p>
 <div class="highlight"><pre><span></span><code>type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&quot;emerge&quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&quot;dm-3&quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
 </code></pre></div>
 
-
 <p>To know what this file is (or actually was, because such encoded paths
 mean that the file ~~wasn't accessible anymore at the time that the
 denial was shown~~ contains a space), you need to hex-decode the value.
@@ -134,7 +133,6 @@ For instance, with python:</p>
 <div class="highlight"><pre><span></span><code>~$ python -c &quot;import base64; print(base64.b16decode(\&quot;2F7661722F666669737A69596157202864656C6574656429\&quot;));&quot;;
 b&#39;/var/ffisziYaW (deleted)&#39;
 </code></pre></div>
-
 
 <p>In the above example, <code>/var/ffisziYaW</code> was the path of the file (note
 that, as it starts with ffi, it is caused by libffi which I've blogged

@@ -120,7 +120,6 @@ due to the DAC permissions):</p>
 <div class="highlight"><pre><span></span><code>~$ sesearch -s user_t -t sudo_exec_t -p execute -c file -A
 </code></pre></div>
 
-
 <p>Of course, this is only one of the three requirements for a transition
 from <code>user_t</code> to <code>user_sudo_t</code>, for that you still need process
 transition and entrypoint:</p>
@@ -128,13 +127,11 @@ transition and entrypoint:</p>
 ~$ sesearch -s user_sudo_t -t sudo_exec_t -p entrypoint -A
 </code></pre></div>
 
-
 <p>Now, sometimes you find a rule that you didn't expect:</p>
 <div class="highlight"><pre><span></span><code>~$ sesearch -s user_t -t dmesg_exec_t -p execute -A
 Found 1 semantic av rules:
   allow user_t application_exec_type : file { ioctl read getattr lock execute execute_no_trans open } ;
 </code></pre></div>
-
 
 <p>This is because <code>dmesg_exec_t</code> has the <code>application_exec_type</code> attribute
 set. You can see the list of types that have an attribute set (or vice
@@ -144,7 +141,6 @@ versa) with <strong>seinfo</strong>:</p>
 (Show list of attributes given to the dmesg_exec_t type)
 ~$ seinfo -tdmesg_exec_t -x
 </code></pre></div>
-
 
 <p>Now, during my browsing through the SELinux activities on my system, I
 noticed that I could run <code>/usr/sbin/dnsmasq</code> as root, without generating
@@ -159,7 +155,6 @@ hint of checking the <em>dontaudit</em> rules as well:</p>
 ...
    dontaudit sysadm_t exec_type : file { execute execute_no_trans } ;
 </code></pre></div>
-
 
 <p>So there we had it - it was being denied, just not logged. And because I
 ran in permissive mode, it gets executed anyhow. I disabled the

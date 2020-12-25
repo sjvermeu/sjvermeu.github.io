@@ -153,7 +153,6 @@ XCCDF document as follows:</p>
 <div class="highlight"><pre><span></span><code>~$ oscap xccdf generate guide test-xccdf.xml &gt; guide-test-xccdf.html
 </code></pre></div>
 
-
 <p>The
 <a href="http://dev.gentoo.org/~swift/blog/201312/18/guide-test-xccdf.html">result</a>
 is an HTML guide that reflects the content of the XCCDF document. By
@@ -172,7 +171,6 @@ such as removing the <code>&lt;preface&gt;</code> part.</p>
 <p>Let's try evaluating the XCCDF document on the system:</p>
 <div class="highlight"><pre><span></span><code>~$ oscap xccdf eval test-xccdf.xml
 </code></pre></div>
-
 
 <p>Nothing happened. That is because there are no rules that are by default
 selected (all rules in the document have <code>selected="false"</code>) and we have
@@ -195,7 +193,6 @@ Title   rc_sys should be defined in /etc/rc.conf
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  notapplicable
 </code></pre></div>
-
 
 <p>At least we have output now, but still no results. In fact, all rules
 have <em>notapplicable</em> as a result. What gives?</p>
@@ -232,7 +229,6 @@ No definition with ID: (null) in definition model. [oval_probe.c:338]
 No definition with ID: (null) in result model. [oval_agent.c:184]
 </code></pre></div>
 
-
 <p>Great; we now see that openscap ran the tests and gave feedback. It also
 gave a few errors. These can be ignored now - it is openscap that tries
 to interpret the shell scripts as OVAL scripts (I'll talk about OVAL in
@@ -242,7 +238,6 @@ openscap detects that as well:</p>
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  fail
 </code></pre></div>
-
 
 <p>Now, by itself the rule might give us enough clues as to what is wrong,
 but sometimes you might want to get the output of the scripts as well.
@@ -292,7 +287,6 @@ Options:
    --remediate                   - Automatically execute XCCDF fix elements for failed rules.
                                    Use of this option is always at your own risk.
 </code></pre></div>
-
 
 <p>In my next post, I'll talk a bit more about remediation.</p>
 <p>This post is part of a series on SCAP content:</p>

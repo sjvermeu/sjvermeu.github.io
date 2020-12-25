@@ -198,7 +198,6 @@ Simplicity is a form of art...            </a>
 &lt;/Rule&gt;
 </code></pre></div>
 
-
 <p>Although this is lots of XML, it is easy to see what each element declares. The <a href="https://csrc.nist.gov/CSRC/media/Publications/nistir/7275/rev-4/final/documents/nistir-7275r4_updated-march-2012_clean.pdf">NIST IR 7275 document</a> is a very good resource to continuously consult in order to find the right elements and their interpretation.</p>
 <p>There is one element added that is "specific" to the content of this blog post series and not the XCCDF standard, namely the identification. As mentioned in an earlier post, organizations might have their own taxonomy for technical service identification, and requirements on how to number or identify rules. In the above example, the rule is identified as <code>pgsql-01032</code>.</p>
 <p>There is another attribute in use above that might need more clarification: the weight of the rule.</p>
@@ -241,7 +240,6 @@ Simplicity is a form of art...            </a>
 <p>The first one is to rely on Open-SCAP. With Open-SCAP, you can generate guides easily:</p>
 <div class="highlight"><pre><span></span><code>~$ oscap xccdf generate guide xccdf.xml &gt; ConfigBaseline.html
 </code></pre></div>
-
 
 <p>The second one, which I use more often, is a custom XSL style sheet, which also introduces the knowledge and interpretations of what this blog post series brings up (including the organizational identification). The end result is similar (the same content) but uses a structure/organization that is more in line with expectations.</p>
 <p>For instance, in my company, the information security officers want to have a tabular overview of all the rules in a configuration baseline. So the XSL style sheet generates such a tabular overview, and uses in-documenting linking to the more elaborate descriptions of all the rules.</p>

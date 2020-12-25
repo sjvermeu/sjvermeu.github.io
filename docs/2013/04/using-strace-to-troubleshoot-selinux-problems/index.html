@@ -139,7 +139,6 @@ had with the policy not that long ago:</p>
 # strace -o strace.log -f -s 256 tmux
 </code></pre></div>
 
-
 <p>The resulting log file (strace.log) might seem daunting at first to look
 at. What you see are the system calls that the process is performing,
 together with their options but also the return code of each call. This
@@ -155,7 +154,6 @@ returns something like EACCESS (Permission Denied).</p>
 7313  statfs(&quot;/home/swift/.pki/nssdb&quot;, 0x3c3cab6fa50) = -1 EACCES (Permission denied)
 </code></pre></div>
 
-
 <p>Most (if not all) of the methods shown in a strace log are documented
 through manpages, so you can quickly find out that <code>futex()</code> is about
 fast user-space locking, <code>stat()</code> (<strong>man 2 stat</strong> to see the information
@@ -165,7 +163,6 @@ status and <code>statfs()</code> is for getting file system statistics.</p>
 <div class="highlight"><pre><span></span><code>7313  open(&quot;/proc/filesystems&quot;, O_RDONLY) = -1 EACCES (Permission denied)
 </code></pre></div>
 
-
 <p>In the above case, you notice that the application is trying to open the
 <code>/proc/filesystems</code> file read-only. In the SELinux logs, this might be
 displayed as follows:</p>
@@ -173,7 +170,6 @@ displayed as follows:</p>
 pid=860 comm=&quot;nacl_helper_boo&quot; name=&quot;filesystems&quot; dev=&quot;proc&quot; ino=4026532034 
 scontext=staff_u:staff_r:chromium_naclhelper_t tcontext=system_u:object_r:proc_t tclass=file
 </code></pre></div>
-
 
 <p>Now the case of <strong>tmux</strong> before was not an obvious one. In the end, I
 compared the strace output's of two runs (one in enforcing and one in
@@ -189,7 +185,6 @@ Permissive:
 10905 fcntl(9, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
 </code></pre></div>
 
-
 <p>You notice the difference? In enforcing-mode, one of the flags on the
 file descriptor has <code>O_RDONLY</code> whereas the one in permissive mode as
 <code>O_RDWR</code>. This means that the file descriptor in enforcing mode is
@@ -200,7 +195,6 @@ from:</p>
 10905 dup(1)     = 10
 10905 dup(2)     = 11
 </code></pre></div>
-
 
 <p>As the man-pages sais, <code>dup()</code> duplicates a file descriptor. And
 because, by convention, the first three file descriptors of an
@@ -237,7 +231,6 @@ if (ttyn) {
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp; ~O_NONBLOCK);
 }
 </code></pre></div>
-
 
 <p>Such obscure problems are much easier to detect and troubleshoot thanks
 to tools like <strong>strace</strong>.</p>

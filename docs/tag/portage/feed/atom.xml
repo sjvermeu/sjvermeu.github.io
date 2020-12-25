@@ -41,12 +41,10 @@ completed:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Then I tell Portage to install the (built) files into the &lt;code&gt;images/&lt;/code&gt;
 directory:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The installation phase fails again (with the same error as during the
 build, which is logical as the &lt;code&gt;Makefile&lt;/code&gt; can't install files that
@@ -56,7 +54,6 @@ continuing with the merging of the files to the life file system:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.installed
 ~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild qmerge
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Et voila, &lt;code&gt;fcron-9999&lt;/code&gt; is now installed on the system, ready to validate
 the patch I had to check.&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="phase"></category><category term="portage"></category></entry><entry><title>Upgrading old Gentoo installations</title><link href="https://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/" rel="alternate"></link><published>2013-12-29T14:18:00+01:00</published><updated>2013-12-29T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-29:/2013/12/upgrading-old-gentoo-installations/</id><summary type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
@@ -124,13 +121,11 @@ configured a different group in your kernel for this:&lt;/p&gt;
 CONFIG_GRKERNSEC_TPE_TRUSTED_GID=10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next we also need to allow the &lt;code&gt;portage_t&lt;/code&gt; domain to execute files
 labeled with &lt;code&gt;portage_tmpfs_t&lt;/code&gt;. You can do this by creating your own
 SELinux policy module with the following content (or use selocal):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;can_exec(portage_t, portage_tmpfs_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This works around the libffi issue for now. A better solution still has
 to be implemented (as discussed in the previous post).&lt;/p&gt;
@@ -169,7 +164,6 @@ b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib
 [...]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And the errors go on and on and on.&lt;/p&gt;
 &lt;p&gt;I've been able to get it working again by allowing the following SELinux
 permissions:&lt;/p&gt;
@@ -184,7 +178,6 @@ allow portage_t lib_t:dir relabel_dir_perms;
 allow portage_t lib_t:file relabel_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can somewhat shorten this by combining types (but this doesn't work
 with selocal for now):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
@@ -192,13 +185,11 @@ allow portage_t { portage_tmp_t bin_t }:lnk_file relabel_lnk_file_perms;
 allow portage_t { bin_t portage_exec_t portage_fetch_exec_t lib_t}:file relabel_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;At the end of the emerge process (when the new portage is installed) you
 might want to reset the labels of all files provided by the portage
 package:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rlpkg portage
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;These changes have not been passed into the policy yet as I first need
 to find out why exactly they are needed, and as you can see from &lt;a href="http://dev.gentoo.org/devaway/"&gt;the
@@ -244,7 +235,6 @@ package:&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Here, the developer warns the administrator that, if an upgrade of the
 package from version 0.4 or older occurred, an additional action needs
 to be taken. For others, he informs the administrators how to mark the
@@ -256,7 +246,6 @@ as separate files for each deployment:&lt;/p&gt;
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-131631.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-200851.log
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If &lt;code&gt;FEATURES="split-elog"&lt;/code&gt; is set in your &lt;code&gt;make.conf&lt;/code&gt; file, then the
 elog files will be stored in separate category subdirectories. Below is
@@ -280,7 +269,6 @@ You should set your desired PostgreSQL slot:
     eselect postgresql set &amp;lt;slot&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the file, package information is provided, and each set of logging
 paragraphs is accompanied with information where in the build process
 the logging came up. For instance, &lt;code&gt;WARN: postinst&lt;/code&gt; sais that the
@@ -302,7 +290,6 @@ PORT_LOGDIR=&amp;quot;/var/log/portage&amp;quot;
 ~$ ls -ldZ /var/log/portage/
 drwxrwsr-x. 3 portage portage system_u:object_r:portage_log_t 679936 Sep 24 13:12 /var/log/portage/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With the variable set, build logs will be provided for each emerge (and
 unmerge) operation of the package. These logs contain everything shown
@@ -354,7 +341,6 @@ complexity and maintenance).&lt;/p&gt;
 that no transition should occur, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With a minor addition to the policy, this gave me a good hope... until I
 noticed that &lt;strong&gt;emerge&lt;/strong&gt; underlyingly calls &lt;strong&gt;ebuild&lt;/strong&gt; and &lt;strong&gt;ebuild.sh&lt;/strong&gt;,

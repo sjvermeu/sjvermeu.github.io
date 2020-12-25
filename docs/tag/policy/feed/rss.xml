@@ -51,15 +51,7 @@ but …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements
 building in (or leaving out) SELinux policy statements.&lt;/p&gt;
 &lt;p&gt;One of the "problems" I have been facing since I took on the maintenance
 of SELinux policies within Gentoo Hardened is the (seeming) inability to
-make a "least privilege" policy that …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 31 Mar 2014 18:33:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-31:/2014/03/proof-of-concept-for-use-enabled-policies/</guid><category>Gentoo</category><category>alsa</category><category>policy</category><category>selinux</category></item><item><title>How does foo_t get this privilege?</title><link>https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/</link><description>&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
-was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
-that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
-&lt;p&gt;I used a simple script (which I've been using for a while already)
-called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 05 Jan 2014 04:14:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-01-05:/2014/01/how-does-foo_t-get-this-privilege/</guid><category>SELinux</category><category>policy</category><category>selinux</category><category>seshowtree</category></item><item><title>Private key handling and SELinux protection</title><link>https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/</link><description>&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
-script I wrote.&lt;/p&gt;
-&lt;p&gt;The script is a certificate authority handling script, in which I can
-generate a private key (and certificate assigned to it), sign the
-certificate either by itself (for the root CA key) or …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 02 Jan 2014 04:00:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-01-02:/2014/01/private-key-handling-and-selinux-protection/</guid><category>SELinux</category><category>ca</category><category>certcli</category><category>policy</category><category>selinux</category></item><item><title>Gentoo SELinux policy release script</title><link>https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/</link><description>&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
+make a "least privilege" policy that …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 31 Mar 2014 18:33:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-31:/2014/03/proof-of-concept-for-use-enabled-policies/</guid><category>Gentoo</category><category>alsa</category><category>policy</category><category>selinux</category></item><item><title>Gentoo SELinux policy release script</title><link>https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/</link><description>&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
 new SELinux policy packages. The script is on the
 &lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;repository&lt;/a&gt;
 itself, in the &lt;code&gt;gentoo/&lt;/code&gt; subdirectory, and is called
@@ -99,7 +91,6 @@ to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at 
 build up the policy.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
 (or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 25 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-25:/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/</guid><category>SELinux</category><category>incron</category><category>incrontab</category><category>policy</category><category>selinux</category></item><item><title>A SELinux policy for incron: our first interface</title><link>https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/</link><description>&lt;p&gt;The next step after having &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/"&gt;a basic

@@ -150,7 +150,6 @@ package:</p>
 }
 </code></pre></div>
 
-
 <p>Here, the developer warns the administrator that, if an upgrade of the
 package from version 0.4 or older occurred, an additional action needs
 to be taken. For others, he informs the administrators how to mark the
@@ -162,7 +161,6 @@ as separate files for each deployment:</p>
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-131631.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-200851.log
 </code></pre></div>
-
 
 <p>If <code>FEATURES="split-elog"</code> is set in your <code>make.conf</code> file, then the
 elog files will be stored in separate category subdirectories. Below is
@@ -186,7 +184,6 @@ You should set your desired PostgreSQL slot:
     eselect postgresql set &lt;slot&gt;
 </code></pre></div>
 
-
 <p>In the file, package information is provided, and each set of logging
 paragraphs is accompanied with information where in the build process
 the logging came up. For instance, <code>WARN: postinst</code> sais that the
@@ -208,7 +205,6 @@ PORT_LOGDIR=&quot;/var/log/portage&quot;
 ~$ ls -ldZ /var/log/portage/
 drwxrwsr-x. 3 portage portage system_u:object_r:portage_log_t 679936 Sep 24 13:12 /var/log/portage/
 </code></pre></div>
-
 
 <p>With the variable set, build logs will be provided for each emerge (and
 unmerge) operation of the package. These logs contain everything shown

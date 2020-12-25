@@ -138,7 +138,6 @@ just mount the SELinux file system on that:</p>
 <div class="highlight"><pre><span></span><code>~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
 </code></pre></div>
 
-
 <p>In hindsight, I probably could just have created a <code>/selinux</code> location
 as that location, although deprecated, is still checked by the SELinux
 libraries.</p>
@@ -149,7 +148,6 @@ of copying the data and doing a <strong>chmod -R a-w
 <div class="highlight"><pre><span></span><code>~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
 </code></pre></div>
 
-
 <p>Alas, bad luck - the read-only flag is ignored during the mount, and the
 bind-mount is still read-write. A <a href="http://lwn.net/Articles/281157/">simple article on
 lwn.net</a> informed me about the
@@ -157,7 +155,6 @@ solution: I need to do a remount afterwards to enable the read-only
 state:</p>
 <div class="highlight"><pre><span></span><code>~# mount -o remount,ro /var/chroot/etc/selinux
 </code></pre></div>
-
 
 <p>Great! And because my brain isn't what it used to be, I just make a
 quick blog for future reference ;-)</p>

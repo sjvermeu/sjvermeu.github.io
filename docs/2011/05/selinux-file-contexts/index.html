@@ -140,7 +140,6 @@ configuration related locations...</p>
 /etc/X11/wdm(/.*)?          all files          system_u:object_r:xdm_rw_etc_t
 </code></pre></div>
 
-
 <p>In the above examples, you'll notice that there is quite some overlap.
 To start, the first line already matches all other lines as well. So how
 does SELinux handle this?</p>
@@ -171,7 +170,6 @@ file - with <strong>matchpathcon</strong>:</p>
 /etc/X11/wdm/Xreset.sh   system_u:object_r:xdm_rw_etc_t
 </code></pre></div>
 
-
 <p>If you want to know which line in the <strong>semanage fcontext -l</strong> output is
 used, you can use <strong>findcon</strong> to show which lines match. That together
 with the output of matchpathcon can help you deduce which line is
@@ -184,7 +182,6 @@ causing the label to be set:</p>
 /etc/X11/[wx]dm/Xreset.*        --      system_u:object_r:xsession_exec_t
 /etc/X11/wdm(/.*)?              system_u:object_r:xdm_rw_etc_t
 </code></pre></div>
-
 
 <p>In many cases, the last output line of <strong>findcon</strong> is the line you are
 looking for, but I have not find a source that confirms this behavior so

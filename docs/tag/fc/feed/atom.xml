@@ -56,7 +56,6 @@ added comments to show you how contexts can be (easily) deduced.&lt;/p&gt;
 /etc/init.d/incrond ## incrond_initrc_exec_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With this information at hand, and the behavior of the application we
 know from the previous post, can lead to the following &lt;code&gt;incron.fc&lt;/code&gt; file,
 which defines the file contexts for the application.&lt;/p&gt;
@@ -70,7 +69,6 @@ which defines the file contexts for the application.&lt;/p&gt;
 
 /var/spool/incron(/.*)?         gen_context(system_u:object_r:incron_spool_t,s0)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The syntax of this file closely follows the syntax that &lt;strong&gt;semanage
 fcontext&lt;/strong&gt; takes - at least for the regular expressions in the
@@ -121,7 +119,6 @@ type incron_spool_t;
 files_type(incron_spool_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Knowing which interface calls, like &lt;em&gt;init_daemon_domain&lt;/em&gt; and
 &lt;em&gt;application_domain&lt;/em&gt;, we should use is not obvious at first. Most of
 this can be gathered from existing policies. Other frequently occurring
@@ -152,11 +149,9 @@ build the SELinux policy:&lt;/p&gt;
 # semodule -i incron.pp
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;On Gentoo, you can then relabel the files and directories offered
 through the package using &lt;strong&gt;rlpkg&lt;/strong&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# rlpkg incron
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Next is to start looking at the &lt;strong&gt;incrontab&lt;/strong&gt; application.&lt;/p&gt;</content><category term="SELinux"></category><category term="fc"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category><category term="skeleton"></category><category term="te"></category></entry></feed>

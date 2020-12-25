@@ -46,7 +46,6 @@
 &amp;lt;/definitions&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The first thing to keep in mind is the (weird) identification structure. Just like with XCCDF, it is not sufficient to have your own id convention. You need to start an id with &lt;code&gt;oval:&lt;/code&gt; followed by the reverse domain definition (here &lt;code&gt;com.example.oval&lt;/code&gt;), followed by the type (&lt;code&gt;def&lt;/code&gt; for definition) and a sequence number.&lt;/p&gt;
 &lt;p&gt;Also, take a look at the criteria. Here, two tests need to be compliant (hence the &lt;code&gt;AND&lt;/code&gt; operator). However, more complex operations can be done as well. It is even allowed to nest multiple criteria, and refer to previous definitions, like so (taken from the &lt;a href="https://raw.githubusercontent.com/GovReady/ubuntu-scap/master/ssg-rhel6-oval.xml"&gt;ssg-rhel6-oval.xml file&lt;/a&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;criteria comment=&amp;quot;package hal removed or service haldaemon is not configured to start&amp;quot; operator=&amp;quot;OR&amp;quot;&amp;gt;
@@ -63,7 +62,6 @@
 &amp;lt;/criteria&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next, let's look at the tests.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;tests&amp;gt;
   &amp;lt;unix:file_test id=&amp;quot;oval:com.example.oval:tst:1&amp;quot; version=&amp;quot;1&amp;quot; check_existence=&amp;quot;all_exist&amp;quot; check=&amp;quot;all&amp;quot; comment=&amp;quot;/etc/redhat-release exists&amp;quot;&amp;gt;
@@ -75,7 +73,6 @@
   &amp;lt;/ind:textfilecontent54_test&amp;gt;
 &amp;lt;/tests&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;There are two tests defined here. The first test just checks if &lt;code&gt;/etc/redhat-release&lt;/code&gt; exists. If not, then the test will fail and the definition itself will result to false (as in, not compliant). This isn't actually a proper definition, because you want the test to not run when it is on a different platform, but for the sake of example and simplicity, let's keep it as is.&lt;/p&gt;
 &lt;p&gt;The second test will check for the value of the &lt;code&gt;forwardable&lt;/code&gt; key in &lt;code&gt;/etc/krb5.conf&lt;/code&gt;. For it, it refers to an object and a state. The test states that all objects must exist (&lt;code&gt;check_existence="all_exist"&lt;/code&gt;) and that all objects must match the state (&lt;code&gt;check="all"&lt;/code&gt;).&lt;/p&gt;
@@ -92,7 +89,6 @@
 &amp;lt;/objects&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The first object is a simple file reference. The second is a text file content object. More specifically, it matches the line inside &lt;code&gt;/etc/krb5.conf&lt;/code&gt; which has &lt;code&gt;forwardable = true&lt;/code&gt; or &lt;code&gt;forwardable = false&lt;/code&gt; in it. An expression is made on it, so that we can refer to the subexpression as part of the test.&lt;/p&gt;
 &lt;p&gt;This test looks like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;states&amp;gt;
@@ -102,7 +98,6 @@
 &amp;lt;/states&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This test refers to a subexpression, and wants it to be &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Testing the checks with Open-SCAP&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The Open-SCAP tool is able to test OVAL statements directly. For instance, with the above definition in a file called &lt;code&gt;oval.xml&lt;/code&gt;:&lt;/p&gt;
@@ -110,7 +105,6 @@
 Definition oval:com.example.oval:def:1: true
 Evaluation done.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The output of the command shows that the definition was evaluated successfully. If you want more information, open up the &lt;code&gt;oval-results.xml&lt;/code&gt; file which contains all the details about the test. This results file is also very useful while developing OVAL as it shows the entire result of objects, tests and so forth.&lt;/p&gt;
 &lt;p&gt;For instance, the &lt;code&gt;/etc/redhat-release&lt;/code&gt; file was only checked to see if it exists, but the results file shows what other parameters can be verified with it as well:&lt;/p&gt;
@@ -141,7 +135,6 @@ Evaluation done.
 &amp;lt;/unix-sys:file_item&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Now, this is just on OVAL level. The final step is to link it in the XCCDF file.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Referring to OVAL in XCCDF&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The XCCDF Rule entry allows for a &lt;code&gt;check&lt;/code&gt; element, which refers to an automated check for compliance.&lt;/p&gt;
@@ -155,7 +148,6 @@ Evaluation done.
 &amp;lt;/Rule&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With this set in the Rule, Open-SCAP can validate it while checking the configuration baseline:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --oval-results --results xccdf-results.xml xccdf.xml
 ...
@@ -164,7 +156,6 @@ Rule    xccdf_com.example_rule_krb5-forwardable-tickets
 Ident   RHEL7-01007
 Result  pass
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;A huge advantage here is that, alongside the detailed results of the run, there is also better human readable output as it shows the title of the Rule being checked.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;The detailed capabilities of OVAL&lt;/strong&gt;&lt;/p&gt;
@@ -259,7 +250,6 @@ Result  pass
 &amp;lt;/Rule&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Although this is lots of XML, it is easy to see what each element declares. The &lt;a href="https://csrc.nist.gov/CSRC/media/Publications/nistir/7275/rev-4/final/documents/nistir-7275r4_updated-march-2012_clean.pdf"&gt;NIST IR 7275 document&lt;/a&gt; is a very good resource to continuously consult in order to find the right elements and their interpretation.&lt;/p&gt;
 &lt;p&gt;There is one element added that is "specific" to the content of this blog post series and not the XCCDF standard, namely the identification. As mentioned in an earlier post, organizations might have their own taxonomy for technical service identification, and requirements on how to number or identify rules. In the above example, the rule is identified as &lt;code&gt;pgsql-01032&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;There is another attribute in use above that might need more clarification: the weight of the rule.&lt;/p&gt;
@@ -302,7 +292,6 @@ Result  pass
 &lt;p&gt;The first one is to rely on Open-SCAP. With Open-SCAP, you can generate guides easily:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf generate guide xccdf.xml &amp;gt; ConfigBaseline.html
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The second one, which I use more often, is a custom XSL style sheet, which also introduces the knowledge and interpretations of what this blog post series brings up (including the organizational identification). The end result is similar (the same content) but uses a structure/organization that is more in line with expectations.&lt;/p&gt;
 &lt;p&gt;For instance, in my company, the information security officers want to have a tabular overview of all the rules in a configuration baseline. So the XSL style sheet generates such a tabular overview, and uses in-documenting linking to the more elaborate descriptions of all the rules.&lt;/p&gt;

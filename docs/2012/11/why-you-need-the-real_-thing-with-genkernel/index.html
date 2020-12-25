@@ -115,7 +115,6 @@ read-write, it gave me this:</p>
 <div class="highlight"><pre><span></span><code>mount: / not mounted or bad option
 </code></pre></div>
 
-
 <p>So I did the first thing that always helps me, and that is to disable
 the initramfs booting and boot straight from the kernel. Now for those
 wondering why I boot with an initramfs while it still works directly
@@ -134,7 +133,6 @@ read-only root file system and start looking around. In my <strong>dmesg</strong
 output, I notice the following:</p>
 <div class="highlight"><pre><span></span><code>EXT4-fs (md3): Cannot change data mode on remount
 </code></pre></div>
-
 
 <p>So that's weird, not? What is this data mode? Well, the <a href="https://www.kernel.org/doc/Documentation/filesystems/ext4.txt">data
 mode</a>

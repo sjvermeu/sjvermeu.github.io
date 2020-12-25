@@ -132,7 +132,6 @@ course also made available in the CIL code. For instance the
 (typeattribute user_home_content_type)
 </code></pre></div>
 
-
 <p>Interfaces provided by the module are also applied. You won't find the
 interface CIL code in <code>/var/lib/selinux/mcs/active/modules</code> though; the
 code at that location is already "expanded" and filled in. So for the
@@ -152,13 +151,11 @@ code at that location is already "expanded" and filled in. So for the
 ...
 </code></pre></div>
 
-
 <p>However, when checking which domains use the <code>admindomain</code> attribute,
 notice the following:</p>
 <div class="highlight"><pre><span></span><code>~# seinfo -aadmindomain -x
 ERROR: Provided attribute (admindomain) is not a valid attribute name.
 </code></pre></div>
-
 
 <p>But don't panic - this has a reason: as long as there is no SELinux rule
 applied towards the <code>admindomain</code> attribute, then the SELinux policy
@@ -170,7 +167,6 @@ confirmed by adding a single, cosmetic rule, like so:</p>
    admindomain
       sysadm_t
 </code></pre></div>
-
 
 <p>So there you go. That does mean that if something previously used the
 attribute assignation for any decisions (like "for each domain assigned

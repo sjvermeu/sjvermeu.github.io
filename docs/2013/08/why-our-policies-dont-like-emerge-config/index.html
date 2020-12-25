@@ -151,7 +151,6 @@ that no transition should occur, like so:</p>
 <div class="highlight"><pre><span></span><code>~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
 </code></pre></div>
 
-
 <p>With a minor addition to the policy, this gave me a good hope... until I
 noticed that <strong>emerge</strong> underlyingly calls <strong>ebuild</strong> and <strong>ebuild.sh</strong>,
 both labeled as <code>portage_exec_t</code>, so these calls transition to

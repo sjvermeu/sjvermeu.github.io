@@ -144,13 +144,11 @@ Checking www-servers/apache-2.2.24 ...
   * 424 out of 424 files are good
 </code></pre></div>
 
-
 <p>If the binary is modified, this would result in something equivalent to:</p>
 <div class="highlight"><pre><span></span><code>Checking www-servers/apache-2.2.24 ...
  MD5-DIGEST: /usr/sbin/apache2
   * 423 out of 424 files are good
 </code></pre></div>
-
 
 <p>I don't know if the modified binary would otherwise work just fine, I
 have not been able to find exact details on the infected binary to (in a
@@ -165,7 +163,6 @@ context of <code>bin_t</code>). If the context is wrong, then starting Apache
 results in:</p>
 <div class="highlight"><pre><span></span><code>apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
 </code></pre></div>
-
 
 <p>This is because the modified binary stays in the calling domain context
 (<code>initrc_t</code>). If you use a targeted policy, then this will not present
@@ -203,7 +200,6 @@ DT allow httpd_t gds_db_port_t : tcp_socket { name_connect } ; [ httpd_can_netwo
 DT allow httpd_t gopher_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
 </code></pre></div>
 
-
 <p>So by default, the Apache (<code>httpd_t</code>) domain is allowed to connect to
 DNS port (to resolve hostnames). All other <em>name_connect</em> calls depend
 on SELinux booleans (mentioned after it) that are by default disabled
@@ -229,7 +225,6 @@ Found 2 semantic av rules:
    allow unconfined_domain_type domain : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ; 
    allow httpd_t httpd_t : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ;
 </code></pre></div>
-
 
 <p>Only unconfined domains and the <code>httpd_t</code> domain itself have access to
 <code>httpd_t</code> labeled shared memory.</p>

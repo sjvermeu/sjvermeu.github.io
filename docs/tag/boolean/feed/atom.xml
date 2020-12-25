@@ -12,7 +12,6 @@ latter also displays the description of the boolean:&lt;/p&gt;
 user_ping                      (on   ,   on)  Control users use of ping and traceroute
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can easily query the SELinux policy to see what this boolean
 triggers:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# sesearch -b user_ping -A -C
@@ -25,7 +24,6 @@ ET allow ping_t user_t : fd use ; [ user_ping ]
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;However, often you want to know if a particular access is allowed and,
 if it is conditionally allowed, which boolean enables it. In the case of
 user ping, we want to know if (and when) a user domain (&lt;code&gt;user_t&lt;/code&gt;) is
@@ -34,7 +32,6 @@ allowed to transition to the ping domain (&lt;code&gt;ping_t&lt;/code&gt;):&lt;/
 Found 1 semantic av rules:
 ET allow user_t ping_t : process transition ; [ user_ping ]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So there you go - it is allowed if the &lt;code&gt;user_ping&lt;/code&gt; SELinux boolean is
 enabled.&lt;/p&gt;</content><category term="SELinux"></category><category term="boolean"></category><category term="query"></category><category term="selinux"></category><category term="sesearch"></category></entry><entry><title>Using CUSTOM_BUILDOPT in refpolicy for USE flag-alike functionality?</title><link href="https://blog.siphos.be/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/" rel="alternate"></link><published>2013-08-16T09:17:00+02:00</published><updated>2013-08-16T09:17:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-16:/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/</id><summary type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
@@ -65,7 +62,6 @@ PulseAudio is handled through &lt;em&gt;optional_policy&lt;/em&gt; statements:&l
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This means that the rules defined in &lt;em&gt;pulseaudio_tmpfs_content&lt;/em&gt; are
 executed if the dependencies match:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`pulseaudio_tmpfs_content&amp;#39;,`
@@ -76,7 +72,6 @@ executed if the dependencies match:&lt;/p&gt;
         typeattribute $1 pulseaudio_tmpfsfile;
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute exists, then the
 &lt;code&gt;mplayer_tmpfs_t&lt;/code&gt; type gets the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute
@@ -96,7 +91,6 @@ to enable / disable SELinux rules. For instance, in the mplayer policy:&lt;/p&gt
         allow mencoder_t self:process { execmem execstack };
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If an administrator toggles the &lt;code&gt;allow_mplayer_execstack&lt;/code&gt; boolean to
 "on", then the mentioned &lt;code&gt;allow&lt;/code&gt; rule becomes active.&lt;/p&gt;
@@ -124,7 +118,6 @@ decisions based on this in the policy code:&lt;/p&gt;
   &amp;#39;)
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;We can add in the USE flags, if set, through the &lt;code&gt;CUSTOM_BUILDOPT&lt;/code&gt;
 parameter that the reference policy provides. So introducing this is not
@@ -165,7 +158,6 @@ follows:&lt;/p&gt;
 gen_tunable(incron_notify_non_security_files, false)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With this boolean in place, the policy can be enhanced with code like
 the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tunable_policy(`incron_notify_non_security_files&amp;#39;,`
@@ -173,7 +165,6 @@ the following:&lt;/p&gt;
         files_read_all_dirs_except(incrond_t)
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This code tells SELinux that, &lt;em&gt;if&lt;/em&gt; the
 &lt;em&gt;incron_notify_non_security_files&lt;/em&gt; boolean is set (which by default
@@ -190,11 +181,9 @@ May 17 10:01:15 test incrond[11704]: access denied on /var/log/aide - events wil
 incron_notify_non_security_files --&amp;gt; off
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Let's enable the boolean and try again:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setsebool incron_notify_non_security_files on
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Reloading the incrontab tables now works, and the notifications work as
 well.&lt;/p&gt;

@@ -302,7 +302,6 @@ Date:   Sun Nov 24 17:47:14 2013 -0500
     the policies created by learning.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The new version requires the use of &lt;code&gt;&amp;gt;=gradm-3.0&lt;/code&gt;. Some hardened-sources
 packages already contain the 3.0 patchset (currently in testing). In a
 few days, a final hardened-sources with a 2.9.1 patchset will be
@@ -322,7 +321,6 @@ be accomplished with the following line in
 &lt;path&gt;package.accept_keywords&lt;/path&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sec-policy/* **
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Recently, revision 5 of the SELinux policies has been pushed to the tree
 (currently in testing). This one also contains a few required changes to
@@ -373,7 +371,6 @@ depends {
   targets/desktop/gnome
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The next few months will be interesting to see how this will evolve ;-)&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Documentation&lt;/em&gt;&lt;/p&gt;
@@ -448,7 +445,6 @@ disable it on others in order for the image to build properly.&lt;/p&gt;
             so that it won&amp;#39;t trip pax protection eg mprotect
 &amp;lt;@blueness&amp;gt; in the case of kernel modules, it can&amp;#39;t mean that obviously!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;One of the mentioned problems is that some ebuilds only enable pax
 markings when &lt;code&gt;pax_kernel&lt;/code&gt; is set. However, that shouldn't be done
@@ -858,7 +854,6 @@ assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened

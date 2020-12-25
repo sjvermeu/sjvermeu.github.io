@@ -261,7 +261,6 @@ grep -q hardened /var/db/pkg/sys-devel/gcc-<span class="si">${</span><span class
 <span class="k">fi</span>
 </code></pre></div>
 </td></tr></table>
-
 <p>As you can see, the script can give output when needed, but the most
 important part is that it has to return a particular return value. This
 return value is provided through environment variables
@@ -283,7 +282,6 @@ Rule    xccdf_org.gentoo.dev.swift_rule_inittab-sulogin
 Result  fail
 </code></pre></div>
 
-
 <p>Now, if you want to check this on several systems, you would need to
 distribute not only the XCCDF file, but also all files referred to by
 the XCCDF document. As this is counterproductive, SCAP supports <em>Data
@@ -291,7 +289,6 @@ Streams</em>. A data stream is a single file that includes the content of
 all files. With openscap, data streams can be made as follows:</p>
 <div class="highlight"><pre><span></span><code># oscap ds sds-compose postgresql-xccdf.xml postgresql-ds.xml
 </code></pre></div>
-
 
 <p>So now we have a document explaining the secure setup of a component,
 and included automated checks to validate system compliance with the

@@ -35,13 +35,11 @@ the &lt;code&gt;pam\_u2f&lt;/code&gt; package, as the necessary dependencies wil
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge pam_u2f
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next, for each user, a registration has to be made. This registration is needed for the
 U2F components to be able to correctly authenticate the use of a U2F key for a particular
 user. This is done with &lt;code&gt;pamu2fcfg&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ pamu2fcfg -u&amp;lt;username&amp;gt; &amp;gt; ~/.config/Yubico/u2f_keys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The U2F USB key must be plugged in when the command is executed, as a succesful keypress (on the
 U2F device) is needed to complete the operation.&lt;/p&gt;
@@ -50,7 +48,6 @@ through the &lt;code&gt;/etc/pam.d/system-local-login&lt;/code&gt; PAM configura
 local logon services.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auth     required     pam_u2f.so
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Consider the problems you might face&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;When fiddling with PAM, it is important to keep in mind what could fail. During the setup, it
@@ -75,7 +72,6 @@ udev_read_db(...)
 dev_rw_generic_usb_dev(...)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The first two rules are needed because the operation to trigger the USB key uses the udev tables
 to find out where the key is located/attached, before it interacts with it. This interaction is then
 controlled through the first rule.&lt;/p&gt;
@@ -96,7 +92,6 @@ audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
 &lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
@@ -106,7 +101,6 @@ following:&lt;/p&gt;
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
@@ -119,7 +113,6 @@ limitations, which can lead to output similar to the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;__ratelimit: 53 callbacks suppressed
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In this post, I want to give some pointers in configuring the audit
 subsystem as well as understand these messages...&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;There is auditd and kauditd&lt;/strong&gt;&lt;/p&gt;
@@ -130,7 +123,6 @@ are running:&lt;/p&gt;
 root      1483     1  0 10:11 ?        00:00:00 /sbin/auditd
 root      1486     2  0 10:11 ?        00:00:00 [kauditd]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The &lt;code&gt;/sbin/auditd&lt;/code&gt; daemon is the user-space audit daemon. It &lt;a href="http://man7.org/linux/man-pages/man3/audit_open.3.html"&gt;registers
 itself&lt;/a&gt; with the
@@ -176,7 +168,6 @@ queue. It queries the audit subsystem for its current status:&lt;/p&gt;
 AUDIT_STATUS: enabled=1 flag=1 pid=1483 rate_limit=0 backlog_limit=8192 lost=3 backlog=0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The command displays not only the audit state (enabled or not) but also
 the settings for rate limits (on the audit backlog) and backlog limit.
 It also shows how many events are currently still waiting in the backlog
@@ -196,7 +187,6 @@ audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In this case, the backlog queue was set to contain at most 320 entries
 (which is low for a production system) and more messages were being
 added (the Linux kernel in certain cases allows to have a few more
@@ -213,14 +203,12 @@ kernel.printk_ratelimit = 5
 kernel.printk_ratelimit_burst = 10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the above example, this system allows one message every 5 seconds,
 but does allow a burst of up to 10 messages at once. When the rate
 limitation kicks in, then the kernel will log (at most one per second)
 the number of suppressed events:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Although this limit is kernel-wide, not all kernel log events are
 governed through it. It is the caller subsystem (in our case, the audit

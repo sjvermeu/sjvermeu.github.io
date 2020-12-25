@@ -190,7 +190,6 @@ inherit selinux-policy-2
 &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The real workhorse lays within a &lt;a href="https://devmanual.gentoo.org/eclass-writing/"&gt;Gentoo eclass&lt;/a&gt;,
 something that can be seen as a library for ebuilds. It allows consolidation of functions and
 activities so that a large set of ebuilds can be simplified. The more ebuilds are standardized,
@@ -228,7 +227,6 @@ inherit selinux-policy-2
 &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The eclass generally will try to build the policies, converting them into &lt;code&gt;.pp&lt;/code&gt;
 files. With CIL, this is no longer needed. Instead, what we do is copy the &lt;code&gt;.cil&lt;/code&gt;
 files straight into the location where we place the &lt;code&gt;.pp&lt;/code&gt; files.&lt;/p&gt;
@@ -256,7 +254,6 @@ wait for a new release.&lt;/p&gt;
 &lt;span class="go"&gt;0001-Set-self.sename-to-sename-after-calling-semanage_seu.patch&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The two generated patch files contain all information about the commit. Thanks
 to the &lt;code&gt;epatch&lt;/code&gt; support in the &lt;code&gt;eutils.eclass&lt;/code&gt;, these patch files are
 immediately usable within Gentoo's ebuilds.&lt;/p&gt;
@@ -278,7 +275,6 @@ to use the new patches:&lt;/p&gt;
         # rlpkg is more useful than fixfiles
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The patches themselves do not apply for the live ebuilds themselves (they are
 ignored there) as we want the live ebuilds to be as close to the upstream
 project as possible. But because the ebuilds are immediately usable for
@@ -286,7 +282,6 @@ releases, we add the necessary information there first.&lt;/p&gt;
 &lt;p&gt;Next, the new release is created:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Testing the changes&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The new release is then tested. I have a couple of scripts that I use
@@ -299,7 +294,6 @@ tests should fail:&lt;/p&gt;
     Executing step &amp;quot;perm_port_off  : Removing permissive mark from portage_t                               &amp;quot; -&amp;gt; ok
     Executing step &amp;quot;selogin_modify : Modifying a SELinux login definition                                  &amp;quot; -&amp;gt; failed
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Then, on a test system where the new package has been installed, the same
 testset is executed (together with all other tests) to validate if the problem
@@ -363,7 +357,6 @@ gxml2html&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&
 &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Is it perfect? No, but &lt;a href="http://dev.gentoo.org/~swift/snapshots/"&gt;it works&lt;/a&gt;.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="guidexml"></category><category term="xml"></category><category term="xslt"></category><category term="rst"></category><category term="mediawiki"></category><category term="html"></category></entry><entry><title>Finding a good compression utility</title><link href="https://blog.siphos.be/2015/08/finding-a-good-compression-utility/" rel="alternate"></link><published>2015-08-13T19:15:00+02:00</published><updated>2015-08-13T19:15:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-13:/2015/08/finding-a-good-compression-utility/</id><summary type="html">&lt;p&gt;I recently came across a &lt;a href="http://catchchallenger.first-world.info//wiki/Quick_Benchmark:_Gzip_vs_Bzip2_vs_LZMA_vs_XZ_vs_LZ4_vs_LZO"&gt;wiki page&lt;/a&gt;
 written by &lt;a href="http://catchchallenger.first-world.info/wiki/User:Alpha_one_x86"&gt;Herman Brule&lt;/a&gt;
 which gives a quick benchmark on a couple of compression methods / algorithms.
@@ -390,7 +383,6 @@ app-arch/pxz            app-arch/rar            app-arch/rzip
 app-arch/xar            app-arch/xz-utils       app-arch/zopfli
 app-arch/zpaq
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The script should keep the best compression information: duration, compression
 ratio, compression command, as well as the compressed file itself.&lt;/p&gt;
@@ -474,12 +466,10 @@ The compression delta obtained was 0.11643 within 10.58 seconds.
 This file is now available as test.nef.7z.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the above example, the test file was around 20 MByte. The best compression
 compression command that the script found was:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ 7za -t7z -m0=PPMd:mem=28 a test.nef.7z test.nef
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The resulting file (&lt;code&gt;test.nef.7z&lt;/code&gt;) is 18 MByte, a reduction of 11,64%. The
 compression command took almost 11 seconds to do its thing, which gave an
@@ -488,7 +478,6 @@ efficiency rating of 0,011, which is definitely not a fast one.&lt;/p&gt;
 instance:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;   app-arch/pbzip2                                                  pbzip2           0.6               19287402 0.07973 0.13071
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In this case, the &lt;code&gt;pbzip2&lt;/code&gt; command got almost 8% reduction in less than a
 second, which is considerably more efficient than the 11-seconds long &lt;code&gt;7za&lt;/code&gt;
@@ -515,7 +504,6 @@ The output shows
 When the command supports multithreading, we use the number of available cores on the system (as told by /proc/cpuinfo).
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;For instance, to try it out against a PDF file:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ sw_comprbest -i MEA6-Sven_Vermeulen-Research_Summary.pdf
 Original file (MEA6-Sven_Vermeulen-Research_Summary.pdf) size 117763 bytes
@@ -524,7 +512,6 @@ The best compression was found with zopfli --deflate.
 The compression delta obtained was 0.00982 within 0.19 seconds.
 This file is now available as MEA6-Sven_Vermeulen-Research_Summary.pdf.deflate.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So in this case, the resulting file is hardly better compressed - the PDF
 itself is already compressed. Let's try it against the uncompressed PDF:&lt;/p&gt;
@@ -537,7 +524,6 @@ The compression delta obtained was 0.27739 within 0.18 seconds.
 This file is now available as test.pdf.lrz.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This is somewhat better:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ls -l MEA6-Sven_Vermeulen-Research_Summary.pdf* test.pdf*
 -rw-r--r--. 1 swift swift 117763 Aug  7 14:32 MEA6-Sven_Vermeulen-Research_Summary.pdf
@@ -545,7 +531,6 @@ This file is now available as test.pdf.lrz.
 -rw-r--r--. 1 swift swift 144670 Aug  7 14:34 test.pdf
 -rw-r--r--. 1 swift swift 104540 Aug  7 14:35 test.pdf.lrz
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The resulting file is 11,22% reduced from the original one.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="compression"></category></entry><entry><title>Live SELinux userspace ebuilds</title><link href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/" rel="alternate"></link><published>2015-06-10T20:07:00+02:00</published><updated>2015-06-10T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-10:/2015/06/live-selinux-userspace-ebuilds/</id><summary type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
 applications: libselinux, policycoreutils, libsemanage, libsepol,
@@ -633,7 +618,6 @@ set of commands (in random order) just to get everything to build fine:&lt;/p&gt
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge -u $(qlist -IC dev-haskell) --keep-going
 ~# for n in $(qlist -IC dev-haskell); do emerge -u $n; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;It took quite some reruns, but it finally got through. I never thought I
 had this much Haskell-related packages installed on my system (89
@@ -788,14 +772,12 @@ following from the ebuilds:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
 relabel files after the policy package is deployed …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just finished updating 102 packages. The change? Removing the
 following from the ebuilds:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
@@ -820,7 +802,6 @@ post-installation message of the &lt;code&gt;policycoreutils&lt;/code&gt; packag
 basically sais that you need to execute:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
 module store (and the semanage related files) to be in
@@ -848,7 +829,6 @@ ValueError: SELinux policy is not managed or store cannot be accessed.
 Cannot set persistent booleans without managed policy.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
 migration. Note in the following that there is a warning about 'else'
 blocks that are no longer supported: that's okay, as far as I know (and
@@ -860,7 +840,6 @@ Attempting to rebuild policy from /var/lib/selinux
 sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
 up. You can also rerun the command multiple times:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
@@ -868,58 +847,13 @@ warning: Policy type mcs has already been migrated, but modules still exist in t
 Attempting to rebuild policy from /var/lib/selinux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So... don't worry - the change is small and does not break stuff. And
 for those wondering about CIL I'll talk about it in one of my next
-posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>Showing return code in PS1</title><link href="https://blog.siphos.be/2014/08/showing-return-code-in-ps1/" rel="alternate"></link><published>2014-08-31T01:14:00+02:00</published><updated>2014-08-31T01:14:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-08-31:/2014/08/showing-return-code-in-ps1/</id><summary type="html">&lt;p&gt;If you do daily management on Unix/Linux systems, then checking the
-return code of a command is something you'll do often. If you do SELinux
-development, you might not even notice that a command has failed without
-checking its return code, as policies might prevent the application from
-showing …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you do daily management on Unix/Linux systems, then checking the
-return code of a command is something you'll do often. If you do SELinux
-development, you might not even notice that a command has failed without
-checking its return code, as policies might prevent the application from
-showing any output.&lt;/p&gt;
-&lt;p&gt;To make sure I don't miss out on application failures, I wanted to add
-the return code of the last executed command to my PS1 (i.e. the prompt
-displayed on my terminal).&lt;br&gt;
-I wasn't able to add it to the prompt easily - in fact, I had to use a
-bash feature called the &lt;em&gt;prompt command&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;When the &lt;code&gt;PROMPT_COMMMAND&lt;/code&gt; variable is defined, then bash will execute
-its content (which I declare as a function) to generate the prompt.
-Inside the function, I obtain the return code of the last command (&lt;code&gt;$?&lt;/code&gt;)
-and then add it to the PS1 variable. This results in the following code
-snippet inside my &lt;code&gt;~/.bashrc&lt;/code&gt;:&lt;/p&gt;
-&lt;p&gt;``` {lang="bash"}
-export PROMPT_COMMAND=__gen_ps1&lt;/p&gt;
-&lt;p&gt;function __gen_ps1() {
-  local EXITCODE="$?";
-  # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
-  if type -P dircolors &amp;gt;/dev/null ; then
-    if [[ -f ~/.dir_colors ]] ; then
-      eval $(dircolors -b ~/.dir_colors)
-    elif [[ -f /etc/DIR_COLORS ]] ; then
-      eval $(dircolors -b /etc/DIR_COLORS)
-    fi
-  fi&lt;/p&gt;
-&lt;p&gt;if [[ ${EUID} == 0 ]] ; then
-    PS1="RC=${EXITCODE} [\033[01;31m]\h[\033[01;34m] \W \$[\033[00m] "
-  else
-    PS1="RC=${EXITCODE} [\033[01;32m]\u@\h[\033[01;34m] \w \$[\033[00m] "
-  fi
-}
-```&lt;/p&gt;
-&lt;p&gt;With it, my prompt now nicely shows the return code of the last executed
-command. Neat.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; Sean Patrick Santos showed me my utter failure in that this can
-be accomplished with the &lt;code&gt;PS1&lt;/code&gt; variable immediately, without using the
-overhead of the &lt;code&gt;PROMPT_COMMAND&lt;/code&gt;. Just make sure to properly escape the
-&lt;code&gt;$&lt;/code&gt; sign which I of course forgot in my late-night experiments :-(.&lt;/p&gt;</content><category term="Gentoo"></category><category term="bash"></category><category term="ps1"></category><category term="rc"></category><category term="shell"></category></entry><entry><title>Gentoo Hardened august meeting</title><link href="https://blog.siphos.be/2014/08/gentoo-hardened-august-meeting/" rel="alternate"></link><published>2014-08-29T16:43:00+02:00</published><updated>2014-08-29T16:43:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-08-29:/2014/08/gentoo-hardened-august-meeting/</id><summary type="html">&lt;p&gt;Another month has passed, so we had another online meeting to discuss
+posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>Gentoo Hardened august meeting</title><link href="https://blog.siphos.be/2014/08/gentoo-hardened-august-meeting/" rel="alternate"></link><published>2014-08-29T16:43:00+02:00</published><updated>2014-08-29T16:43:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-08-29:/2014/08/gentoo-hardened-august-meeting/</id><summary type="html">&lt;p&gt;Another month has passed, so we had another online meeting to discuss
 the progress within Gentoo Hardened.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Lead elections&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;The yearly lead elections within Gentoo Hardened were up again. Zorry
@@ -1315,12 +1249,10 @@ completed:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Then I tell Portage to install the (built) files into the &lt;code&gt;images/&lt;/code&gt;
 directory:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The installation phase fails again (with the same error as during the
 build, which is logical as the &lt;code&gt;Makefile&lt;/code&gt; can't install files that
@@ -1330,7 +1262,6 @@ continuing with the merging of the files to the life file system:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.installed
 ~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild qmerge
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Et voila, &lt;code&gt;fcron-9999&lt;/code&gt; is now installed on the system, ready to validate
 the patch I had to check.&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="phase"></category><category term="portage"></category></entry><entry><title>Proof of concept for USE enabled policies</title><link href="https://blog.siphos.be/2014/03/proof-of-concept-for-use-enabled-policies/" rel="alternate"></link><published>2014-03-31T18:33:00+02:00</published><updated>2014-03-31T18:33:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-31:/2014/03/proof-of-concept-for-use-enabled-policies/</id><summary type="html">&lt;p&gt;&lt;em&gt;tl;dr:&lt;/em&gt; Some (&lt;code&gt;-9999&lt;/code&gt;) policy ebuilds now have &lt;code&gt;USE&lt;/code&gt; support for
@@ -1389,7 +1320,6 @@ optional_policy(`
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And this for all domains that are ALSA-enabled. Every time a new
 application is added that knows ALSA, the same code needs to be added to
 all policies. And this only uses a single SELinux boolean (whereas
@@ -1405,7 +1335,6 @@ allow alsadomain alsadomain:sem rw_sem_perms;
 allow alsadomain alsadomain:shm rw_shm_perms;
 allow alsadomain alsatmpfsfile:file rw_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;By assigning the attribute to the proper domains whenever ALSA support
 is needed, we can toggle this more easily:&lt;/p&gt;
@@ -1428,7 +1357,6 @@ optional_policy(`
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That would solve the problem of needlessly adding more calls in a policy
 for every ALSA application. And hey, we can probably live with either a
 global boolean (&lt;code&gt;use_alsa&lt;/code&gt;) or per-domain one (&lt;code&gt;mplayer_use_alsa&lt;/code&gt;) and
@@ -1443,7 +1371,6 @@ create build-time conditionals (rather than run-time):&lt;/p&gt;
   &amp;#39;)
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This does mean that &lt;code&gt;use_alsa&lt;/code&gt; has to be known when the policy is built.
 For Gentoo, that's not that bad, as policies are part of separate
@@ -1551,7 +1478,6 @@ separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt
 *make: *** [scripts_basic] Error 2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I know it isn't SELinux that is causing this, as I have no denial
 messages and even putting SELinux in permissive mode doesn't help. Today
 I found the time to look at it with more fresh eyes, and noticed that it
@@ -1566,7 +1492,6 @@ that's just a simple thing to do.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
 ~# restorecon -R /var/build/genkernel
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The new location is not world-writable (only for root as only root
 builds initial ram file systems here) so not having &lt;code&gt;noexec&lt;/code&gt; here is ok.&lt;/p&gt;</content><category term="Gentoo"></category><category term="busybox"></category><category term="genkernel"></category><category term="Gentoo"></category><category term="initramfs"></category><category term="initrd"></category><category term="noexec"></category><category term="tmp"></category></entry><entry><title>Create your own SELinux Gentoo profile</title><link href="https://blog.siphos.be/2014/03/create-your-own-selinux-gentoo-profile/" rel="alternate"></link><published>2014-03-24T21:51:00+01:00</published><updated>2014-03-24T21:51:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-24:/2014/03/create-your-own-selinux-gentoo-profile/</id><summary type="html">&lt;p&gt;Or any other profile for that matter ;-)&lt;/p&gt;
@@ -1592,61 +1517,7 @@ from &lt;code&gt;features/selinux&lt;/code&gt;.&lt;/p&gt;
 &lt;code&gt;/etc/portage/make.profile&lt;/code&gt; directory (instead of having it be a symlink
 managed by &lt;strong&gt;eselect profile&lt;/strong&gt;) which does support &lt;code&gt;parent&lt;/code&gt; files. In
 that case, just create one with two entries: one path to the profile you
-want, and one path to the &lt;code&gt;features/selinux&lt;/code&gt; location.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="profile"></category></entry><entry><title>Hidden symbols and dynamic linking</title><link href="https://blog.siphos.be/2014/03/hidden-symbols-and-dynamic-linking/" rel="alternate"></link><published>2014-03-24T21:14:00+01:00</published><updated>2014-03-24T21:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-24:/2014/03/hidden-symbols-and-dynamic-linking/</id><summary type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
-ebuild which caused the following stacktrace to occur every time the
-&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
-Traceback (most recent call last):
-  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
-    import seobject
-  File &amp;quot;/usr/lib64/python2.7 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
-ebuild which caused the following stacktrace to occur every time the
-&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
-Traceback (most recent call last):
-  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
-    import seobject
-  File &amp;quot;/usr/lib64/python2.7/site-packages/seobject.py&amp;quot;, line 27, in 
-    import sepolicy
-  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolicy/__init__.py&amp;quot;, line 11, in 
-    import sepolgen.interfaces as interfaces
-  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/interfaces.py&amp;quot;, line 24, in 
-    import access
-  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/access.py&amp;quot;, line 35, in 
-    from selinux import audit2why
-ImportError: /usr/lib64/python2.7/site-packages/selinux/audit2why.so: undefined symbol: sepol_set_policydb
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;Usually this error means that a needed library (a &lt;code&gt;.so&lt;/code&gt; file) is
-missing, or is not part of the &lt;code&gt;/etc/ld.so.conf&lt;/code&gt; list of directories to
-scan. And when SELinux is enabled, you might want to check the
-permissions of that file as well (who knows). But that wasn't the case
-here. After trying to figure things out (which includes switching Python
-versions, grepping for &lt;em&gt;sepol_set_policydb&lt;/em&gt; in &lt;code&gt;libsepol.so&lt;/code&gt; and more)
-I looked at the &lt;code&gt;audit2why.c&lt;/code&gt; code and see if/where
-&lt;em&gt;sepol_set_policydb&lt;/em&gt; is needed, as well as at the &lt;code&gt;libsepol&lt;/code&gt; sources
-to see where it is defined. And yes, the call is (of course) needed, but
-the definition made me wonder if this wasn't a bug:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;{lang="c"}
-int hidden sepol_set_policydb(policydb_t * p)
-{
-        policydb = p;
-        return 0;
-}&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Hidden? But, that means that the function symbol is not available for
-dynamic linking... So if that is the case, shouldn't &lt;code&gt;audit2why.c&lt;/code&gt; not
-call it? Turns out, this was due to a fix we introduced earlier on,
-where &lt;code&gt;libsepol&lt;/code&gt; got linked dynamically instead of statically (i.e.
-using &lt;code&gt;libsepol.a&lt;/code&gt;). Static linking of libraries still allows for the
-(hidden) symbols to be used, whereas dynamic linking doesn't.&lt;/p&gt;
-&lt;p&gt;So that part of the fix got reverted (and should fix the bug we
-introduced), and I learned a bit more about symbols (and the &lt;em&gt;hidden&lt;/em&gt;
-statement).&lt;/p&gt;
-&lt;p&gt;Bonus: if you need to check what symbols are available in a binary /
-shared library, use &lt;strong&gt;nm&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ nm -D /path/to/binary
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Gentoo"></category><category term="elf"></category><category term="hidden"></category><category term="selinux"></category><category term="symbols"></category></entry><entry><title>Closing week? No, starting week...</title><link href="https://blog.siphos.be/2014/03/closing-week-no-starting-week/" rel="alternate"></link><published>2014-03-16T21:36:00+01:00</published><updated>2014-03-16T21:36:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-16:/2014/03/closing-week-no-starting-week/</id><summary type="html">&lt;p&gt;I've been away for a while, and this week will (hopefully) be the last
+want, and one path to the &lt;code&gt;features/selinux&lt;/code&gt; location.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="profile"></category></entry><entry><title>Closing week? No, starting week...</title><link href="https://blog.siphos.be/2014/03/closing-week-no-starting-week/" rel="alternate"></link><published>2014-03-16T21:36:00+01:00</published><updated>2014-03-16T21:36:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-16:/2014/03/closing-week-no-starting-week/</id><summary type="html">&lt;p&gt;I've been away for a while, and this week will (hopefully) be the last
 week of all the effort that is causing this. And that means I'll get
 back to blogging, documentation development, SELinux integration,
 SELinux policy development and more. To be honest, I'm eagerly awaiting
@@ -1803,7 +1674,6 @@ Date:   Sun Nov 24 17:47:14 2013 -0500
     the policies created by learning.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The new version requires the use of &lt;code&gt;&amp;gt;=gradm-3.0&lt;/code&gt;. Some hardened-sources
 packages already contain the 3.0 patchset (currently in testing). In a
 few days, a final hardened-sources with a 2.9.1 patchset will be
@@ -1823,7 +1693,6 @@ be accomplished with the following line in
 &lt;path&gt;package.accept_keywords&lt;/path&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sec-policy/* **
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Recently, revision 5 of the SELinux policies has been pushed to the tree
 (currently in testing). This one also contains a few required changes to
@@ -1874,7 +1743,6 @@ depends {
   targets/desktop/gnome
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The next few months will be interesting to see how this will evolve ;-)&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Documentation&lt;/em&gt;&lt;/p&gt;
@@ -1947,7 +1815,6 @@ to function properly:
     E.g. export REFPOLRELEASE=&amp;quot;/home/user/local/refpolicy-20130424&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So first, we need to export three environment variables needed by the
 script:&lt;/p&gt;
 &lt;ul&gt;
@@ -1982,7 +1849,6 @@ sec-policy/selinux-alsa
 ...
 Only then do a &amp;#39;repoman commit -m &amp;#39;Release of 2.20130424-r4&amp;#39;&amp;#39;.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The script performs the following steps:&lt;/p&gt;
 &lt;ol&gt;
@@ -2062,7 +1928,6 @@ modules. Other than that, most infrastructural tests were successful.&lt;/p&gt;
 selinux_read_policy(sysadm_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The first one is sent upstream as I think it is an obvious one (new
 userspace now using symbolic links). The other one I'm not that sure of,
 but for now it works. I made the above policy changes locally; if
@@ -2113,7 +1978,6 @@ disable it on others in order for the image to build properly.&lt;/p&gt;
             so that it won&amp;#39;t trip pax protection eg mprotect
 &amp;lt;@blueness&amp;gt; in the case of kernel modules, it can&amp;#39;t mean that obviously!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;One of the mentioned problems is that some ebuilds only enable pax
 markings when &lt;code&gt;pax_kernel&lt;/code&gt; is set. However, that shouldn't be done
@@ -2284,7 +2148,6 @@ package:&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Here, the developer warns the administrator that, if an upgrade of the
 package from version 0.4 or older occurred, an additional action needs
 to be taken. For others, he informs the administrators how to mark the
@@ -2296,7 +2159,6 @@ as separate files for each deployment:&lt;/p&gt;
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-131631.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-200851.log
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If &lt;code&gt;FEATURES="split-elog"&lt;/code&gt; is set in your &lt;code&gt;make.conf&lt;/code&gt; file, then the
 elog files will be stored in separate category subdirectories. Below is
@@ -2320,7 +2182,6 @@ You should set your desired PostgreSQL slot:
     eselect postgresql set &amp;lt;slot&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the file, package information is provided, and each set of logging
 paragraphs is accompanied with information where in the build process
 the logging came up. For instance, &lt;code&gt;WARN: postinst&lt;/code&gt; sais that the
@@ -2342,7 +2203,6 @@ PORT_LOGDIR=&amp;quot;/var/log/portage&amp;quot;
 ~$ ls -ldZ /var/log/portage/
 drwxrwsr-x. 3 portage portage system_u:object_r:portage_log_t 679936 Sep 24 13:12 /var/log/portage/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With the variable set, build logs will be provided for each emerge (and
 unmerge) operation of the package. These logs contain everything shown
@@ -2466,7 +2326,6 @@ that no transition should occur, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With a minor addition to the policy, this gave me a good hope... until I
 noticed that &lt;strong&gt;emerge&lt;/strong&gt; underlyingly calls &lt;strong&gt;ebuild&lt;/strong&gt; and &lt;strong&gt;ebuild.sh&lt;/strong&gt;,
 both labeled as &lt;code&gt;portage_exec_t&lt;/code&gt;, so these calls transition to
@@ -2500,7 +2359,6 @@ PulseAudio is handled through &lt;em&gt;optional_policy&lt;/em&gt; statements:&l
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This means that the rules defined in &lt;em&gt;pulseaudio_tmpfs_content&lt;/em&gt; are
 executed if the dependencies match:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`pulseaudio_tmpfs_content&amp;#39;,`
@@ -2511,7 +2369,6 @@ executed if the dependencies match:&lt;/p&gt;
         typeattribute $1 pulseaudio_tmpfsfile;
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute exists, then the
 &lt;code&gt;mplayer_tmpfs_t&lt;/code&gt; type gets the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute
@@ -2531,7 +2388,6 @@ to enable / disable SELinux rules. For instance, in the mplayer policy:&lt;/p&gt
         allow mencoder_t self:process { execmem execstack };
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If an administrator toggles the &lt;code&gt;allow_mplayer_execstack&lt;/code&gt; boolean to
 "on", then the mentioned &lt;code&gt;allow&lt;/code&gt; rule becomes active.&lt;/p&gt;
@@ -2559,7 +2415,6 @@ decisions based on this in the policy code:&lt;/p&gt;
   &amp;#39;)
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;We can add in the USE flags, if set, through the &lt;code&gt;CUSTOM_BUILDOPT&lt;/code&gt;
 parameter that the reference policy provides. So introducing this is not
@@ -2786,7 +2641,6 @@ dev_write_sound(skype_t)
 # dev_write_video_dev(skype_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Load in this policy, and you now have the &lt;code&gt;skype_t&lt;/code&gt; domain without the
 video access. You will get post-install failures when Gentoo pushes out
 an update to the policy though, since it will attempt to reload the
@@ -2900,7 +2754,6 @@ you can run the update with binary package included:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# emerge -puDk world
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;To use &lt;em&gt;--buildpkgonly&lt;/em&gt;, all package(s) that Portage wants to build must
 have all their dependencies met. If not, then the build will not go
 through and you're left with no binary packages at all. So what we do is
@@ -2947,7 +2800,6 @@ emerge -puDN --color&lt;span class="o"&gt;=&lt;/span&gt;n --columns --quiet&lt;s
 &lt;span class="k"&gt;done&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;I ran this a couple of days ago when &lt;em&gt;-uDN world&lt;/em&gt; showed 46 package
 updates (including a few hefty ones like chromium). After running this
 script, 35 of them had a binary package ready so the &lt;em&gt;-uDN world&lt;/em&gt; now
@@ -3042,7 +2894,6 @@ The option -d requires that a line number, as shown by the --list, is given, lik
   selocal -d 12
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Let's say that you need to launch a small script you written as a
 daemon, but you want this to run while you are still in the &lt;em&gt;staff_t&lt;/em&gt;
 domain (it is a user-sided daemon you use personally). As regular
@@ -3055,7 +2906,6 @@ do so as follows:&lt;/p&gt;
 (some output on building the policy module)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;When finished, the local policy is enhanced with the two mentioned
 rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --list
@@ -3063,11 +2913,9 @@ rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
 13: corenet_tcp_bind_generic_port(staff_t) # Launch local webserv.py daemon
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you need to delete a rule, just pass the line number:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --delete 13
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Having this tool around also makes it easier to test out changes
 suggested through bugreports. When I test such changes, I add in the bug
@@ -3119,7 +2967,6 @@ $ xsltproc --output handbook-amd64.fo --stringparam paper.type A4
 $ fop handbook-amd64.fo handbook-amd64.pdf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The docbook stylesheets are offered by the
 &lt;em&gt;app-text/docbook-xsl-stylesheets&lt;/em&gt; package whereas the &lt;strong&gt;fop&lt;/strong&gt; command
 is provided by &lt;em&gt;dev-java/fop&lt;/em&gt;.&lt;/p&gt;
@@ -3150,7 +2997,6 @@ assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened
@@ -3235,7 +3081,6 @@ Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the things that has been bugging me was why, even with having
 &lt;code&gt;pam_rootok.so&lt;/code&gt; set in &lt;code&gt;/etc/pam.d/run_init&lt;/code&gt;, I cannot enjoy
 passwordless service management without using &lt;strong&gt;run_init&lt;/strong&gt; directly:&lt;/p&gt;
@@ -3247,7 +3092,6 @@ Password:
 Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So I decided to &lt;strong&gt;strace&lt;/strong&gt; the two commands and look for the
 differences. I found out that there is even a SELinux permission for
@@ -3271,7 +3115,6 @@ the trace I found that the previous context was also &lt;em&gt;run_init_t&lt;/em
 20451 close(3)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Because there already is a transition to &lt;em&gt;run_init_t&lt;/em&gt; upon calling the
 scripts, the underlying call to &lt;strong&gt;runscripts&lt;/strong&gt; causes the "previous"
 attribute to be set to &lt;em&gt;run_init_t&lt;/em&gt; as well, and only then is
@@ -3289,7 +3132,6 @@ gen_require(`
 
 allow run_init_t self:passwd rootok;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I'll probably add this in Gentoo's policy.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="pam"></category><category term="rootok"></category><category term="run_init"></category><category term="selinux"></category></entry><entry><title>Separate puppet provider for Gentoo/SELinux?</title><link href="https://blog.siphos.be/2013/04/separate-puppet-provider-for-gentooselinux/" rel="alternate"></link><published>2013-04-07T19:22:00+02:00</published><updated>2013-04-07T19:22:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-07:/2013/04/separate-puppet-provider-for-gentooselinux/</id><summary type="html">&lt;p&gt;While slowly transitioning my playground infrastructure towards Puppet,
 I already am in process of creating a custom provider for things such as
@@ -3347,7 +3189,6 @@ rc-status -a -C &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt
 &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;I then have the service provider (I now provide my own instead of
 patching the openrc one) call &lt;strong&gt;runstatus&lt;/strong&gt; to get the state of a
 service, as well as call it after trying to start a service. But as this
@@ -3425,7 +3266,6 @@ www-client/seamonkey-2.17 might fix CVE-2013-0797
 www-client/seamonkey-2.17 might fix CVE-2013-0800
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;As you can see, there is still a lot of work to remove bad ones (and add
 matches for non-default ones), but at least it gives an impression
 (especially those that have CVEs of 2012 or even 2013 are noteworthy),
@@ -3456,7 +3296,6 @@ following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;All I have to do is make sure that the /mnt/puppet location is a shared
 resource (in my case, an NFSv4 read-only mount) which I can just mount
 on a fresh image.&lt;/p&gt;
@@ -3475,7 +3314,6 @@ unattended calls towards rc-service).&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;As mentioned, I still manually patch the openrc provider (located in
 /usr/lib64/ruby/site_ruby/1.9.1/puppet/provider/service) so that the
 run_init command is known as well, and that all invocations of the
@@ -3486,7 +3324,6 @@ rc-service is prepended with run_init:&lt;/p&gt;
 ...
  [command(:runinit), command(:rcservice), @resource[:name], :start ]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And the same for the stop and status definitions. I might use Portage'
 postinst hook to automatically apply the patch so I don't need to do
@@ -3654,7 +3491,6 @@ documents with minor editing afterwards.&lt;/p&gt;
 document you want to transform:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ xsltproc gxml2wiki.xsl /path/to/document.xml
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The output shown on the screen can then be used as a page. The following
 things still need to be corrected manually:&lt;/p&gt;
@@ -3865,7 +3701,6 @@ test ~ # grep POLICY_TYPES /etc/portage/make.conf
 POLICY_TYPES=&amp;quot;targeted strict mcs&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you notice that this is not the case, update the &lt;em&gt;POLICY_TYPES&lt;/em&gt;
 variable and rebuild all SELinux policy packages using &lt;strong&gt;emerge \$(qlist
 -IC sec-policy)&lt;/strong&gt; first.&lt;/p&gt;
@@ -3885,7 +3720,6 @@ total 396
 -rw-r--r--. 1 root root 402931 Dec 19 21:01 policy.27
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Great, we're now going to switch to permissive mode and edit the SELinux
 configuration file to reflect that we are going to boot (later) into the
 mcs policy. Only change the type - I will not boot in permissive mode so
@@ -3895,7 +3729,6 @@ the SELINUX=enforcing can stay.&lt;/p&gt;
 test ~ # vim /etc/selinux/config
 [... set SELINUXTYPE=mcs ...]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;You can run &lt;strong&gt;sestatus&lt;/strong&gt; to verify the changes, but be aware that -
 while the command does say that the mcs policy is loaded, this is not
@@ -3912,12 +3745,10 @@ Policy deny_unknown status:     denied
 Max kernel policy version:      28
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So let's load the mcs policy shall we?&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test ~ # cd /usr/share/selinux/mcs/
 test mcs # semodule -b base.pp -i $(ls *.pp | grep -v base | grep -v unconfined)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Next we are going to relabel all files on the file system, because the
 mcs policy adds in another component in the context (a sensitivity label
@@ -3938,7 +3769,6 @@ test mcs # setfiles -r /mnt/gentoo /etc/selinux/mcs/contexts/files/file_contexts
 test mcs # umount /mnt/gentoo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Finally, edit &lt;code&gt;/etc/fstab&lt;/code&gt; and change all &lt;em&gt;rootcontext=&lt;/em&gt; parameters to
 include a trailing &lt;code&gt;:s0&lt;/code&gt;, otherwise the root contexts of these file
 systems will be illegal (in the mcs-sense) as they do not contain the
@@ -3946,7 +3776,6 @@ sensitivity level information.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test mcs # vim /etc/fstab
 [... edit rootcontext&amp;#39;s to now include &amp;quot;:s0&amp;quot; ...]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;There ya go. Now reboot and notice that all is okay, and we're running
 with the mcs policy loaded.&lt;/p&gt;
@@ -4028,14 +3857,12 @@ read-write, it gave me this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mount: / not mounted or bad option
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So I did the …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today it bit me. I rebooted my workstation, and all hell broke loose.
 Well, actually, it froze. Literally, if you consider my root file
 system. When the system tried to remount the root file system
 read-write, it gave me this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mount: / not mounted or bad option
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So I did the first thing that always helps me, and that is to disable
 the initramfs booting and boot straight from the kernel. Now for those
@@ -4055,7 +3882,6 @@ read-only root file system and start looking around. In my &lt;strong&gt;dmesg&l
 output, I notice the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;EXT4-fs (md3): Cannot change data mode on remount
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So that's weird, not? What is this data mode? Well, the &lt;a href="https://www.kernel.org/doc/Documentation/filesystems/ext4.txt"&gt;data
 mode&lt;/a&gt;
@@ -4797,19 +4623,16 @@ files in the chroot.&lt;/p&gt;
 CHROOT_NOMOUNT=&amp;quot;1&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Now we need to either temporarily add some privileges in SELinux, or run
 the portage_t domain in permissive mode. If you go for privileges, then
 add the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t var_t:chr_file { create getattr setattr };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you however want to temporarily run the portage_t domain in
 permissive mode, do that as follows:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage permissive -a portage_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;We are doing this because we are now going to ask the BIND ebuild to
 prepare the chroot for us. Doing so however requires portage to work on
@@ -4819,7 +4642,6 @@ privileges it needs for building and installing software.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge --config bind
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;When done, remove the previous SELinux allow rules again (or set the
 portage_t domain back in enforcing mode, through &lt;strong&gt;semanage permissive
 -d portage_t&lt;/strong&gt;). Next we need to relabel the files in the chroot. By
@@ -4828,7 +4650,6 @@ because it isn't aware that it needs to see /var/named/chroot as a
 "root" location.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# setfiles -r /var/named/chroot /etc/selinux/strict/contexts/files/file_contexts /var/named/chroot
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So far so good. Now let's create a simple named.conf file (in
 /var/named/chroot/etc/bind):&lt;/p&gt;
@@ -4854,7 +4675,6 @@ view &amp;quot;local&amp;quot; {
   zone &amp;quot;1.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa&amp;quot; { type master; file &amp;quot;pri/inv.com.genfic&amp;quot;; };
 };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The zone files referenced in the configuration file are located in
 /var/named/chroot/var/bind (in a subdirectory called pri - which I use
@@ -4882,7 +4702,6 @@ mail2           IN      AAAA    2001:db8:81:22::50:5e9f:e569;
 ; (...)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;while the one for reverse lookups looks like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$TTL 1h ;
 @       IN      SOA     1.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa ns.genfic.com. (
@@ -4902,11 +4721,9 @@ $ORIGIN 1.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa.
 ; (...)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;We can now start the init script:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rc-service named start
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;On the slave, don't set the allow-transfer directive and set its type to
 "slave". In each zone, you will need to tell where the master is:&lt;/p&gt;
@@ -4917,13 +4734,11 @@ $ORIGIN 1.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa.
 };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;By default, the SELinux policy for BIND does not allow BIND to write
 stuff in its directories. On the slave system, you will need to change
 this. A SELinux boolean here does the trick:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# setsebool -P named_write_master_zones on;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;There ya go ;-) Okay, all very condensely written, but it should give
 some feedback on how to proceed. I'm adding this information to the new
@@ -5051,7 +4866,6 @@ Mar 12 20:21:32 testsys kernel: [    6.562005] type=1400 audit(1331580090.885:6)
   scontext=system_u:system_r:initrc_t tcontext=system_u:system_r:udev_t tclass=netlink_kobject_uevent_socket
 ... (these netlink_kobject_uevent_socket ones are repeated a few times)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I have &lt;em&gt;no idea&lt;/em&gt; who (or what) is executing fuser to find some
 information. The shown PIDs are those of fuser, and of course that isn't
@@ -5213,7 +5027,6 @@ echo 0 &amp;gt; /proc/sys/net/ipv4/ip_forward
 # generated: 2011-12-23T14:53:03+01:00
 # END OF SCRIPT
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now isn't that nice. But generating a fix script is one thing,
 &lt;em&gt;maintaining the XCCDF and OVAL documents&lt;/em&gt; is a completely other
@@ -5823,14 +5636,12 @@ is not used on the system.&lt;/p&gt;
 ~# gpg --homedir /etc/portage/gpg --edit-key 0x239C75C4 trust
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next, edit &lt;code&gt;/etc/make.conf&lt;/code&gt; and set the following parameters:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;FEATURES=&amp;quot;webrsync-gpg&amp;quot;
 PORTAGE_GPG_DIR=&amp;quot;/etc/portage/gpg&amp;quot;
 # Disable &amp;#39;emerge --sync&amp;#39; so emerge-webrsync has to be used
 SYNC=&amp;quot;&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With that done, you're all set. Just run &lt;strong&gt;emerge-webrsync&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;Happy Gentooing!&lt;/p&gt;</content><category term="Gentoo"></category></entry><entry><title>Preliminary SELinux MCS support in Gentoo Hardened</title><link href="https://blog.siphos.be/2011/07/preliminary-selinux-mcs-support-in-gentoo-hardened/" rel="alternate"></link><published>2011-07-21T22:04:00+02:00</published><updated>2011-07-21T22:04:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2011-07-21:/2011/07/preliminary-selinux-mcs-support-in-gentoo-hardened/</id><summary type="html">&lt;p&gt;Users tracking the
@@ -6001,7 +5812,6 @@ system:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ rlog -zLT /etc/config-archive/etc/protocols,v
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The output of the &lt;strong&gt;rlog&lt;/strong&gt; command should allow you to find the revision
 you are interested in. The -zLT option displays date/time in the current

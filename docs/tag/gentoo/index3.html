@@ -111,43 +111,6 @@ shared and they don't collide). The entire EFI stuff can …</p>
             </article>
             <hr/>
             <article>
-                <h2><a href="https://blog.siphos.be/2014/12/handbooks-moved/">Handbooks moved</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2014-12-14T14:42:00+01:00"> Sun 14 December 2014</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/documentation.html">Documentation</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/gentoo/">Gentoo</a>
-        /
-	<a href="https://blog.siphos.be/tag/handbook/">handbook</a>
-        /
-	<a href="https://blog.siphos.be/tag/wiki/">wiki</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>Yesterday the move of the <a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page">Gentoo
-Wiki</a> for the Gentoo
-handbooks (whose most important part are the installation instructions
-for the various supported architectures) has been concluded, with a
-last-minute addition being the <a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page#Viewing_the_handbook">one-page
-views</a>
-so that users who want to can view the installation instructions
-completely within one view …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/12/handbooks-moved/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
                 <h2><a href="https://blog.siphos.be/2014/12/gentoo-handbooks-almost-moved-to-wiki/">Gentoo Handbooks almost moved to wiki</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -252,7 +215,6 @@ But they often don't take the time to …</p>
 following from the ebuilds:</p>
 <div class="highlight"><pre><span></span><code>DEPEND=&quot;selinux? ( sec-policy/selinux-${packagename} )&quot;
 </code></pre></div>
-
 
 <p>In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
@@ -449,6 +411,44 @@ nice write-up of the meeting.</p>
 <p>GCC 4.9 gives some issues with kernel compilations and other components.
 Lately, breakage has been reported with …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/08/gentoo-hardened-july-meeting/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/">Segmentation fault when emerging packages after libpcre upgrade?</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-07-09T20:35:00+02:00"> Wed 09 July 2014</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/file_contexts/">file_contexts</a>
+        /
+	<a href="https://blog.siphos.be/tag/fix/">fix</a>
+        /
+	<a href="https://blog.siphos.be/tag/gentoo/">Gentoo</a>
+        /
+	<a href="https://blog.siphos.be/tag/libselinux/">libselinux</a>
+        /
+	<a href="https://blog.siphos.be/tag/pcre/">pcre</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>SELinux users might be facing failures when emerge is merging a package
+to the file system, with an error that looks like so:</p>
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; Setting SELinux security labels
+/usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &quot;${file_contexts_path}&quot; -r &quot;${D}&quot; &quot;${D}&quot;
+ * ERROR: dev-libs/libpcre-8.35::gentoo …</code></pre></div>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/">more ...</a>
                 </div>
             </article>
             <hr/>

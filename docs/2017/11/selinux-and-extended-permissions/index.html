@@ -124,16 +124,13 @@ Simplicity is a form of art...            </a>
 <div class="highlight"><pre><span></span><code>int unlink(const char *pathname);
 </code></pre></div>
 
-
 <p>Considering that a process (source) is executing unlink (system call) against a target (path) is sufficient for most security implementations. Either the source has the permission to unlink that file or directory, or it hasn't. SELinux maps this to the unlink permission within the file or directory classes:</p>
 <div class="highlight"><pre><span></span><code>allow &lt;domain&gt; &lt;resource&gt; : { file dir }  unlink;
 </code></pre></div>
 
-
 <p>Now, <code>ioctl()</code> is somewhat different. It is a system call that allows device-specific operations which cannot be expressed by regular system calls. Devices can have multiple functions/capabilities, and with <code>ioctl()</code> these capabilities can be interrogated or updated. It has the following interface:</p>
 <div class="highlight"><pre><span></span><code>int ioctl(int fd, unsigned long request, ...);
 </code></pre></div>
-
 
 <p>The file descriptor is the target device on which an operation is launched. The second argument is the request, which is an integer whose value identifiers what kind of operation the <code>ioctl()</code> call is trying to execute. So unlike regular system calls, where the operation itself is the system call, <code>ioctl()</code> actually has a parameter that identifies this.</p>
 <p>A list of possible parameter values on a socket for instance is available in the Linux kernel source code, under <a href="https://elixir.free-electrons.com/linux/latest/source/include/uapi/linux/sockios.h">include/uapi/linnux/sockios.h</a>.</p>
@@ -142,23 +139,19 @@ Simplicity is a form of art...            </a>
 <div class="highlight"><pre><span></span><code>allow &lt;domain&gt; &lt;resource&gt; : &lt;class&gt; ioctl;
 </code></pre></div>
 
-
 <p>This of course does not allow policy developers to differentiate between harmless or informative calls (like SIOCGIFHWADDR to obtain the hardware address associated with a network device) and impactful calls (like SIOCADDRT to add a routing table entry).</p>
 <p>To allow for a fine-grained policy approach, the SELinux developers introduced an extended allow permission, which is capable of differentiating based on an integer value.</p>
 <p>For instance, to allow a domain to get a hardware address (SIOCGIFHWADDR, which is 0x8927) from a TCP socket:</p>
 <div class="highlight"><pre><span></span><code>allowxperm &lt;domain&gt; &lt;resource&gt; : tcp_socket ioctl 0x8927;
 </code></pre></div>
 
-
 <p>This additional parameter can also be ranged:</p>
 <div class="highlight"><pre><span></span><code>allowxperm &lt;domain&gt; &lt;resource&gt; : &lt;class&gt; ioctl 0x8910-0x8927;
 </code></pre></div>
 
-
 <p>And of course, it can also be used to complement (i.e. allow all ioctl parameters except a certain value):</p>
 <div class="highlight"><pre><span></span><code>allowxperm &lt;domain&gt; &lt;resource&gt; : &lt;class&gt; ioctl ~0x8927;
 </code></pre></div>
-
 
 <p><strong>Small or negligible performance hit</strong></p>
 <p>According to a <a href="http://kernsec.org/files/lss2015/vanderstoep.pdf">presentation given by Jeff Vander Stoep</a> on the Linux Security Summit in 2015, the performance impact of this addition in SELinux is well under control, which helped in the introduction of this capability in the Android SELinux implementation.</p>
@@ -166,7 +159,6 @@ Simplicity is a form of art...            </a>
 <div class="highlight"><pre><span></span><code># only allow unprivileged socket ioctl commands
 allowxperm { appdomain -bluetooth } self:{ rawip_socket tcp_socket udp_socket } ioctl { unpriv_sock_ioctls unpriv_tty_ioctls };
 </code></pre></div>
-
 
 <p>And with that, we again show how fine-grained the SELinux access controls can be.</p>
             </div>

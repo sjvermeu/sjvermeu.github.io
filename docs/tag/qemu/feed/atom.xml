@@ -32,14 +32,12 @@ into raw images:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ qemu-img convert root.qcow2 root.raw
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With the image now available in raw format, I can use the loop devices to mount
 the image(s) on my system:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# losetup /dev/loop0 root.raw
 ~# kpartx -a /dev/loop0
 ~# mount /dev/mapper/loop0p1 /mnt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The &lt;code&gt;kpartx&lt;/code&gt; command will detect the partitions and ensure that those are
 available: the first partition becomes available at &lt;code&gt;/dev/loop0p1&lt;/code&gt;, the
@@ -52,12 +50,10 @@ a shadow-compatible hash for a password:&lt;/p&gt;
 $1$BHbMVz9i$qYHmULtXIY3dqZkyfW/oO.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The challenge wasn't to find the hash though, but to edit it:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# vim /mnt/etc/shadow
 vim: Permission denied
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The image that I downloaded used SELinux (of course), which meant that the &lt;code&gt;shadow&lt;/code&gt;
 file was labeled with &lt;code&gt;shadow_t&lt;/code&gt; which I am not allowed to access. And I didn't
@@ -66,7 +62,6 @@ time left, apparently).&lt;/p&gt;
 &lt;p&gt;So I remounted the image, but now with the &lt;code&gt;context=&lt;/code&gt; mount option, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o context=&amp;quot;system_u:object_r:var_t:s0: /dev/loop0p1 /mnt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now all files are labeled with &lt;code&gt;var_t&lt;/code&gt; which I do have permissions to edit. But
 I also need to take care that the files that I edited get the proper label again.
@@ -79,7 +74,6 @@ and force a file system relabeling operation.&lt;/p&gt;
 ~# kpart -d /dev/loop0
 ~# losetup -d /dev/loop0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With that done, I had root access to the image and could start testing out
 my own set of commands.&lt;/p&gt;
@@ -113,7 +107,6 @@ Server:
 Client: none
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Similarly, if you need to enable remote debugging, you can use the
 &lt;strong&gt;gdbserver&lt;/strong&gt; option.&lt;/p&gt;
 &lt;p&gt;Getting information using &lt;strong&gt;info&lt;/strong&gt; is dead-easy, and supports a wide
@@ -130,7 +123,6 @@ floppy0: removable=1 locked=0 tray-open=0 [not inserted]
 sd0: removable=1 locked=0 tray-open=0 [not inserted]
 (qemu) change ide1-cd0 /srv/virt/media/systemrescuecd-x86-2.2.0.iso
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;To powerdown the system, use &lt;strong&gt;system_powerdown&lt;/strong&gt;. If that fails, you
 can use &lt;strong&gt;quit&lt;/strong&gt; to immediately shut down (terminate) the VM. To reset

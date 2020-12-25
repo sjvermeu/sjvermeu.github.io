@@ -135,7 +135,6 @@ following:</p>
 <div class="highlight"><pre><span></span><code>~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
 </code></pre></div>
 
-
 <p>All I have to do is make sure that the /mnt/puppet location is a shared
 resource (in my case, an NFSv4 read-only mount) which I can just mount
 on a fresh image.</p>
@@ -154,7 +153,6 @@ unattended calls towards rc-service).</p>
 }
 </code></pre></div>
 
-
 <p>As mentioned, I still manually patch the openrc provider (located in
 /usr/lib64/ruby/site_ruby/1.9.1/puppet/provider/service) so that the
 run_init command is known as well, and that all invocations of the
@@ -165,7 +163,6 @@ rc-service is prepended with run_init:</p>
 ...
  [command(:runinit), command(:rcservice), @resource[:name], :start ]
 </code></pre></div>
-
 
 <p>And the same for the stop and status definitions. I might use Portage'
 postinst hook to automatically apply the patch so I don't need to do

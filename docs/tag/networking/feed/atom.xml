@@ -61,14 +61,12 @@ corenet_tcp_bind_ftp_data_port(ftpd_t)
 corenet_tcp_bind_all_unreserved_ports(ftpd_t) # In case of passive mode
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This gets translated to the following "real" SELinux statements:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ftpd_t node_t:tcp_socket node_bind;
 allow ftpd_t ftp_port_t:tcp_socket name_bind;
 allow ftpd_t ftp_data_port_t:tcp_socket name_bind;
 allow ftpd_t unreserved_port_type:tcp_socket name_bind;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I mention that &lt;em&gt;corenet_tcp_bind_generic_node&lt;/em&gt; as being somewhat
 legacy. When you use netlabeling, you can define different nodes (a
@@ -83,7 +81,6 @@ of passive mode within the ftp policy is governed through the
 # allow ncftp_t ftp_port_t:tcp_socket name_connect;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Well, I lied. Because of how FTP works, if you use active connections,
 you need to allow the client to bind on an unreserved port, and allow
 the server to connect to unreserved ports (cfr code snippet below), but
@@ -93,7 +90,6 @@ you get the idea.&lt;/p&gt;
 corenet_tcp_bind_generic_node(ncftp_t)
 corenet_tcp_bind_all_unreserved_ports(ncftp_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In the past, policy developers also had to include other lines, but
 these have by time become obsolete (&lt;em&gt;corenet_tcp_sendrecv_ftp_port&lt;/em&gt;

@@ -138,7 +138,6 @@ the capability itself, without the <code>CAP_</code> prefix:</p>
 <div class="highlight"><pre><span></span><code>$ sesearch -c capability -p chown -A
 </code></pre></div>
 
-
 <dl>
 <dt>CAP_CHOWN</dt>
 <dd>Allow making changes to the file UIDs and GIDs.</dd>
@@ -192,7 +191,6 @@ type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_override } for
 pid=8153 comm=&quot;mplayer&quot; capability=1  scontext=staff_u:sysadm_r:mplayer_t
 tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
 </code></pre></div>
-
 
 <p>Notice the time stamp: both checks are triggered at the same time. What
 happens is that the Linux security hooks first check for

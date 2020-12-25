@@ -191,12 +191,10 @@ int main(int argc, char * argv[]) {
 };
 </code></pre></div>
 
-
 <p>The code is ran as follows:</p>
 <div class="highlight"><pre><span></span><code>~$ test myusername
 staff_u:staff_r:staff_t
 </code></pre></div>
-
 
 <p>As you can see, it shows the output of the <code>id -Z</code> command. Let's
 enhance this code with some SELinux specific functions. The purpose of
@@ -213,7 +211,6 @@ allowing the application to be build without SELinux code if wanted.</p>
 #include &lt;selinux/get_context_list.h&gt;
 #endif
 </code></pre></div>
-
 
 <p>Next, we create a function called <em>selinux_prepare_fork()</em> which takes
 one input variable: the Linux user name for which we are going to
@@ -236,7 +233,6 @@ int selinux_prepare_fork(char * name) {
 #endif
 };
 </code></pre></div>
-
 
 <p>We include this call in the application above, and take into account the
 return codes passed on. As can be seen from the comment, if the
@@ -263,7 +259,6 @@ break.</p>
   child = fork();
 </code></pre></div>
 
-
 <p>Now all we need to do is fill in the logic in <em>selinux_prepare_fork</em>.
 Let's start with the variable declarations (boring stuff):</p>
 <div class="highlight"><pre><span></span><code>#ifndef SELINUX
@@ -279,7 +274,6 @@ Let's start with the variable declarations (boring stuff):</p>
   char * sename = 0;
   char * selevel = 0;
 </code></pre></div>
-
 
 <p>With that out of the way, let's take our first step: we want to see if
 SELinux is enabled or not. Applications that are SELinux-aware should
@@ -300,7 +294,6 @@ with the (application) logic.</p>
   };
   out(DEBUG, &quot;SELinux is enabled.\n&quot;);
 </code></pre></div>
-
 
 <p>As you can see, we use <em>is_selinux_enabled</em> here to do just that. If
 it returns 0, then it is not enabled. A returncode of 1 means it is
@@ -325,7 +318,6 @@ this later for deciding to continue or not).</p>
   }
   out(DEBUG, &quot;SELinux mode is %s\n&quot;, permissive ? &quot;permissive&quot; : &quot;enforcing&quot;);
 </code></pre></div>
-
 
 <p>The <em>security_getenforce</em> method will check the current SELinux mode
 (enforcing or permissive). If SELinux is in permissive mode, then the
@@ -356,7 +348,6 @@ you will see from the code later).</p>
   out(DEBUG, &quot;Currently in SELinux context \&quot;%s\&quot;\n&quot;, (char *) curcon);
 </code></pre></div>
 
-
 <p>The <em>getcon()</em> method places the current context in the <em>curcon</em>
 variable. Note that from this point onwards, we should always
 <em>freecon()</em> the context before exiting the <em>selinux_prepare_fork()</em>
@@ -385,7 +376,6 @@ account name.</p>
   out(DEBUG, &quot;SELinux user for Linux user \&quot;%s\&quot; is \&quot;%s\&quot;\n&quot;, name, sename);
 </code></pre></div>
 
-
 <p>The <em>getseuserbyname()</em> method returns the SELinux name for the given
 Linux user. It also returns the MLS level (but we're not going to use
 that in the remainder of the code). Again, if it fails, we check the
@@ -406,7 +396,6 @@ permissive state to see how to bail out.</p>
   };
   out(DEBUG, &quot;SELinux context to transition to is \&quot;%s\&quot;\n&quot;, (char *) newcon);
 </code></pre></div>
-
 
 <p>The <em>get_default_context()</em> will do what I blogged about earlier.
 It'll check what the contexts are in the user-specific context files or
@@ -441,7 +430,6 @@ let's stick with this one permission.</p>
   };
 </code></pre></div>
 
-
 <p>In the above code, I didn't yet check the result. This is done in two
 steps.</p>
 <p>In the first step, I want to know if the current context is a permissive
@@ -466,7 +454,6 @@ mode or not.</p>
   };
 </code></pre></div>
 
-
 <p>We check the flags provided to us by the SELinux subsystem and check if
 <code>SELINUX_AVD_FLAGS_PERMISSIVE</code> is set. If it is, then the current domain
 is permissive, and we register this (in the <code>dom_permissive</code> variable).
@@ -490,7 +477,6 @@ system) and thus should continue.</p>
     };
   };
 </code></pre></div>
-
 
 <p>In the second step, we checked if the requested operation (transition)
 is allowed or not. If denied, we log it, but do not break out of the
@@ -519,7 +505,6 @@ of the process to the new context (i.e. a domain transition):</p>
   return 0;
 #endif
 </code></pre></div>
-
 
 <p>That's it - we free'd all our variables and can now have the application
 continue (taking into account the return code of this function). As

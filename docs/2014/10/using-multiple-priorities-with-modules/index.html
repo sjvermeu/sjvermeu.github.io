@@ -134,7 +134,6 @@ loaded with priority 400. As a result, the following message occurs:</p>
 libsemanage.semanage_direct_install_info: Overriding screen module at lower priority 100 with module at priority 400
 </code></pre></div>
 
-
 <p>So unlike the previous situation, where the older module is substituted
 with the new one, we now have two "screen" modules loaded; the last one
 gets priority 400 and is active. To see all installed modules and
@@ -143,7 +142,6 @@ priorities, use the <code>--list-modules</code> option:</p>
 100 screen     pp
 400 screen     pp
 </code></pre></div>
-
 
 <p>Older versions of modules can be removed by specifying the priority:</p>
 <div class="highlight"><pre><span></span><code>~# semodule -X 100 -r screen

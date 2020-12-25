@@ -28,7 +28,6 @@ for each affected kernel module):&lt;/p&gt;
       /lib/modules/4.12.5-gentoo/video/nvidia-uvm.ko
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;However, from version 4.3.3 onward (as also explained by this excellent
 &lt;a href="https://wiki.gentoo.org/wiki/Signed_kernel_module_support"&gt;Signed kernel module support article&lt;/a&gt; on the Gentoo wiki) this command
 no longer uses a Perl script, but is an ELF binary. Also, the location
@@ -56,7 +55,6 @@ crashed, like so:&lt;/p&gt;
         at net.minecraft.client.main.Main.main(SourceFile:123)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Not really useful to debug for me, but the SELinux denials were a bit more obvious,
 showing requests for read and write to the &lt;code&gt;nvidiactl&lt;/code&gt; character device.&lt;/p&gt;
 &lt;p&gt;Thanks to &lt;code&gt;matchpathcon&lt;/code&gt; I found out that the device files had to have the
@@ -67,12 +65,10 @@ at boot up:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;restorecon /dev/nvidiactl /dev/nvidia0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Also, the domains that needed to use nVidia had to receive the following
 addition SELinux-policy-wise:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dev_rw_xserver_misc(...)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Perhaps this can be made more fine-grained (as there are several other device
 files marked as &lt;code&gt;xserver_misc_device_t&lt;/code&gt;) but for now this should suffice.&lt;/p&gt;
@@ -112,19 +108,16 @@ Section &amp;quot;Screen&amp;quot;
 EndSection
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And with a single &lt;code&gt;xrandr&lt;/code&gt; command I re-enabled split screen support (as by
 default it now showed the same output on both screens):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ xrandr --output eDP-1-1 --left-of HDMI-1-2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I also had to set the output source to the nVidia device, by adding the following
 lines to my &lt;code&gt;~/.xinitrc&lt;/code&gt; file:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And with that, another thing was crossed off from my TODO list. Which has become
 quite large after my holidays (went to Kos, Greece) as I had many books and articles

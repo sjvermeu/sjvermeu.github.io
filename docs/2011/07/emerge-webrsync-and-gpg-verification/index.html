@@ -128,14 +128,12 @@ is not used on the system.</p>
 ~# gpg --homedir /etc/portage/gpg --edit-key 0x239C75C4 trust
 </code></pre></div>
 
-
 <p>Next, edit <code>/etc/make.conf</code> and set the following parameters:</p>
 <div class="highlight"><pre><span></span><code>FEATURES=&quot;webrsync-gpg&quot;
 PORTAGE_GPG_DIR=&quot;/etc/portage/gpg&quot;
 # Disable &#39;emerge --sync&#39; so emerge-webrsync has to be used
 SYNC=&quot;&quot;
 </code></pre></div>
-
 
 <p>With that done, you're all set. Just run <strong>emerge-webrsync</strong>.</p>
 <p>Happy Gentooing!</p>

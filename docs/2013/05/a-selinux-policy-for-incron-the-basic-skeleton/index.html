@@ -179,7 +179,6 @@ added comments to show you how contexts can be (easily) deduced.</p>
 /etc/init.d/incrond ## incrond_initrc_exec_t
 </code></pre></div>
 
-
 <p>With this information at hand, and the behavior of the application we
 know from the previous post, can lead to the following <code>incron.fc</code> file,
 which defines the file contexts for the application.</p>
@@ -193,7 +192,6 @@ which defines the file contexts for the application.</p>
 
 /var/spool/incron(/.*)?         gen_context(system_u:object_r:incron_spool_t,s0)
 </code></pre></div>
-
 
 <p>The syntax of this file closely follows the syntax that <strong>semanage
 fcontext</strong> takes - at least for the regular expressions in the
@@ -244,7 +242,6 @@ type incron_spool_t;
 files_type(incron_spool_t)
 </code></pre></div>
 
-
 <p>Knowing which interface calls, like <em>init_daemon_domain</em> and
 <em>application_domain</em>, we should use is not obvious at first. Most of
 this can be gathered from existing policies. Other frequently occurring
@@ -275,12 +272,10 @@ build the SELinux policy:</p>
 # semodule -i incron.pp
 </code></pre></div>
 
-
 <p>On Gentoo, you can then relabel the files and directories offered
 through the package using <strong>rlpkg</strong>:</p>
 <div class="highlight"><pre><span></span><code># rlpkg incron
 </code></pre></div>
-
 
 <p>Next is to start looking at the <strong>incrontab</strong> application.</p>
             </div>

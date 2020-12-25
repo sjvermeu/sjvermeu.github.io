@@ -18,7 +18,6 @@ looking for top files in the other environments.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Enabling some debugging on the command gave me a slight pointer why this occurred:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv &amp;#39;testing&amp;#39;, u&amp;#39;salt://top.sls&amp;#39;
 [DEBUG   ] No contents loaded for env: testing
@@ -26,13 +25,11 @@ looking for top files in the other environments.&lt;/p&gt;
 [ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I was using a single top file as recommended by Salt, but apparently it was still
 looking for top files in the other environments.&lt;/p&gt;
 &lt;p&gt;Yet, if I split the top files across the environments, I got the following warning:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[WARNING ] Top file merge strategy set to &amp;#39;merge&amp;#39; and multiple top files found. Top file merging order is undefined; for better results use &amp;#39;same&amp;#39; option
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So what's all this about?&lt;/p&gt;
 
@@ -48,7 +45,6 @@ caused by my environments not having a fall-back definition.&lt;/p&gt;
     - /srv/salt/testing
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The problem is that Salt expects ''a'' top file through the environment. What I had to do was to
 set the fallback directory to the base directory again, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;file_roots:
@@ -58,7 +54,6 @@ set the fallback directory to the base directory again, like so:&lt;/p&gt;
     - /srv/salt/testing
     - /srv/salt/base
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With this set, the error disappeared and both salt and myself were happy again.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;When multiple top files are preferred&lt;/strong&gt;&lt;/p&gt;
@@ -77,7 +72,6 @@ only the top file of the affected environment should be used. This is done using
 setting in &lt;code&gt;/etc/salt/master&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;top_file_merging_strategy: same
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If this is used, then the &lt;code&gt;env_order&lt;/code&gt; setting is used to define in which order the environments
 are processed. &lt;/p&gt;
@@ -122,7 +116,6 @@ set to &lt;code&gt;agent-forwarding&lt;/code&gt;:&lt;/p&gt;
   host: myminion.example.com
   priv: agent-forwarding
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;It will use the &lt;code&gt;known_hosts&lt;/code&gt; file of the currently logged on user (the one executing
 the &lt;code&gt;salt-ssh&lt;/code&gt; command) so make sure that the system's key is already known.&lt;/p&gt;

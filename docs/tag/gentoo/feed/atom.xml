@@ -33,7 +33,6 @@ security context exists within a binary policy file:&lt;/p&gt;
 user_u:user_r:mozilla_t:s0 is valid
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The package does contain two manpages of old commands which are no longer available
 (or I'm blind, either way, they're not installed and not found in the SELinux userspace
 repository either) such as genpolusers and genpolbools.&lt;/p&gt;
@@ -262,13 +261,11 @@ the &lt;code&gt;pam\_u2f&lt;/code&gt; package, as the necessary dependencies wil
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge pam_u2f
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next, for each user, a registration has to be made. This registration is needed for the
 U2F components to be able to correctly authenticate the use of a U2F key for a particular
 user. This is done with &lt;code&gt;pamu2fcfg&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ pamu2fcfg -u&amp;lt;username&amp;gt; &amp;gt; ~/.config/Yubico/u2f_keys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The U2F USB key must be plugged in when the command is executed, as a succesful keypress (on the
 U2F device) is needed to complete the operation.&lt;/p&gt;
@@ -277,7 +274,6 @@ through the &lt;code&gt;/etc/pam.d/system-local-login&lt;/code&gt; PAM configura
 local logon services.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auth     required     pam_u2f.so
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Consider the problems you might face&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;When fiddling with PAM, it is important to keep in mind what could fail. During the setup, it
@@ -301,7 +297,6 @@ investigation revealed the following necessary policy rules (refpolicy-style);&l
 udev_read_db(...)
 dev_rw_generic_usb_dev(...)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The first two rules are needed because the operation to trigger the USB key uses the udev tables
 to find out where the key is located/attached, before it interacts with it. This interaction is then
@@ -344,7 +339,6 @@ for each affected kernel module):&lt;/p&gt;
       /lib/modules/4.12.5-gentoo/video/nvidia-uvm.ko
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;However, from version 4.3.3 onward (as also explained by this excellent
 &lt;a href="https://wiki.gentoo.org/wiki/Signed_kernel_module_support"&gt;Signed kernel module support article&lt;/a&gt; on the Gentoo wiki) this command
 no longer uses a Perl script, but is an ELF binary. Also, the location
@@ -372,7 +366,6 @@ crashed, like so:&lt;/p&gt;
         at net.minecraft.client.main.Main.main(SourceFile:123)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Not really useful to debug for me, but the SELinux denials were a bit more obvious,
 showing requests for read and write to the &lt;code&gt;nvidiactl&lt;/code&gt; character device.&lt;/p&gt;
 &lt;p&gt;Thanks to &lt;code&gt;matchpathcon&lt;/code&gt; I found out that the device files had to have the
@@ -383,12 +376,10 @@ at boot up:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;restorecon /dev/nvidiactl /dev/nvidia0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Also, the domains that needed to use nVidia had to receive the following
 addition SELinux-policy-wise:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dev_rw_xserver_misc(...)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Perhaps this can be made more fine-grained (as there are several other device
 files marked as &lt;code&gt;xserver_misc_device_t&lt;/code&gt;) but for now this should suffice.&lt;/p&gt;
@@ -428,19 +419,16 @@ Section &amp;quot;Screen&amp;quot;
 EndSection
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And with a single &lt;code&gt;xrandr&lt;/code&gt; command I re-enabled split screen support (as by
 default it now showed the same output on both screens):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ xrandr --output eDP-1-1 --left-of HDMI-1-2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I also had to set the output source to the nVidia device, by adding the following
 lines to my &lt;code&gt;~/.xinitrc&lt;/code&gt; file:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And with that, another thing was crossed off from my TODO list. Which has become
 quite large after my holidays (went to Kos, Greece) as I had many books and articles
@@ -697,7 +685,6 @@ inherit selinux-policy-2
 &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The real workhorse lays within a &lt;a href="https://devmanual.gentoo.org/eclass-writing/"&gt;Gentoo eclass&lt;/a&gt;,
 something that can be seen as a library for ebuilds. It allows consolidation of functions and
 activities so that a large set of ebuilds can be simplified. The more ebuilds are standardized,
@@ -735,7 +722,6 @@ inherit selinux-policy-2
 &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The eclass generally will try to build the policies, converting them into &lt;code&gt;.pp&lt;/code&gt;
 files. With CIL, this is no longer needed. Instead, what we do is copy the &lt;code&gt;.cil&lt;/code&gt;
 files straight into the location where we place the &lt;code&gt;.pp&lt;/code&gt; files.&lt;/p&gt;
@@ -763,7 +749,6 @@ wait for a new release.&lt;/p&gt;
 &lt;span class="go"&gt;0001-Set-self.sename-to-sename-after-calling-semanage_seu.patch&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The two generated patch files contain all information about the commit. Thanks
 to the &lt;code&gt;epatch&lt;/code&gt; support in the &lt;code&gt;eutils.eclass&lt;/code&gt;, these patch files are
 immediately usable within Gentoo's ebuilds.&lt;/p&gt;
@@ -785,7 +770,6 @@ to use the new patches:&lt;/p&gt;
         # rlpkg is more useful than fixfiles
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The patches themselves do not apply for the live ebuilds themselves (they are
 ignored there) as we want the live ebuilds to be as close to the upstream
 project as possible. But because the ebuilds are immediately usable for
@@ -793,7 +777,6 @@ releases, we add the necessary information there first.&lt;/p&gt;
 &lt;p&gt;Next, the new release is created:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Testing the changes&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The new release is then tested. I have a couple of scripts that I use
@@ -806,7 +789,6 @@ tests should fail:&lt;/p&gt;
     Executing step &amp;quot;perm_port_off  : Removing permissive mark from portage_t                               &amp;quot; -&amp;gt; ok
     Executing step &amp;quot;selogin_modify : Modifying a SELinux login definition                                  &amp;quot; -&amp;gt; failed
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Then, on a test system where the new package has been installed, the same
 testset is executed (together with all other tests) to validate if the problem
@@ -870,7 +852,6 @@ gxml2html&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&
 &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Is it perfect? No, but &lt;a href="http://dev.gentoo.org/~swift/snapshots/"&gt;it works&lt;/a&gt;.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="guidexml"></category><category term="xml"></category><category term="xslt"></category><category term="rst"></category><category term="mediawiki"></category><category term="html"></category></entry><entry><title>Switching OpenSSH to ed25519 keys</title><link href="https://blog.siphos.be/2015/08/switching-openssh-to-ed25519-keys/" rel="alternate"></link><published>2015-08-19T18:26:00+02:00</published><updated>2015-08-19T18:26:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-19:/2015/08/switching-openssh-to-ed25519-keys/</id><summary type="html">&lt;p&gt;With Mike's &lt;a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896"&gt;news item&lt;/a&gt;
 on OpenSSH's deprecation of the &lt;a href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm"&gt;DSA algorithm&lt;/a&gt;
 for the public key authentication, I started switching the few keys I still had
@@ -896,7 +877,6 @@ rsa 2048 bits 0.000959s 0.000029s   1042.9  33956.0
 dsa 1024 bits 0.000098s 0.000103s  10213.9   9702.8
 dsa 2048 bits 0.000293s 0.000339s   3407.9   2947.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As you can see, RSA verification outperforms DSA in verification, while signing
 with DSA is better than RSA. But for what OpenSSH is concerned, this speed
@@ -951,7 +931,6 @@ The key&amp;#39;s randomart image is:
 +----[SHA256]-----+
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Then, make sure that the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; file contains the public key
 (as generated as &lt;code&gt;id_ed25519.pub&lt;/code&gt;). Don't remove the other keys yet until the
 communication is validated. For me, all I had to do was to update the file in
@@ -961,7 +940,6 @@ with non-production first of course).&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -i ~/.ssh/id_ed25519 testuser@testserver
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Make sure that your SSH agent is not running as it might still try to revert
 back to another key if the Ed25519 one does not work. You can validate if the
 connection was using Ed25519 through the &lt;code&gt;auth.log&lt;/code&gt; file:&lt;/p&gt;
@@ -970,13 +948,11 @@ connection was using Ed25519 through the &lt;code&gt;auth.log&lt;/code&gt; file:
 &lt;span class="go"&gt;  192.168.100.1 port 43152 ssh2: ED25519 SHA256:-------redacted----------------&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If this communication succeeds, then you can remove the old key from the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; files.&lt;/p&gt;
 &lt;p&gt;On the client level, you might want to hide &lt;code&gt;~/.ssh/id_dsa&lt;/code&gt; from the SSH agent:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Obsolete - keychain ~/.ssh/id_dsa&lt;/span&gt;
 keychain ~/.ssh/id_ed25519
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If a server update was forgotten, then the authentication will fail and, depending
 on the configuration, either fall back to the regular authentication or fail
@@ -1008,7 +984,6 @@ app-arch/pxz            app-arch/rar            app-arch/rzip
 app-arch/xar            app-arch/xz-utils       app-arch/zopfli
 app-arch/zpaq
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The script should keep the best compression information: duration, compression
 ratio, compression command, as well as the compressed file itself.&lt;/p&gt;
@@ -1092,12 +1067,10 @@ The compression delta obtained was 0.11643 within 10.58 seconds.
 This file is now available as test.nef.7z.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the above example, the test file was around 20 MByte. The best compression
 compression command that the script found was:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ 7za -t7z -m0=PPMd:mem=28 a test.nef.7z test.nef
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The resulting file (&lt;code&gt;test.nef.7z&lt;/code&gt;) is 18 MByte, a reduction of 11,64%. The
 compression command took almost 11 seconds to do its thing, which gave an
@@ -1106,7 +1079,6 @@ efficiency rating of 0,011, which is definitely not a fast one.&lt;/p&gt;
 instance:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;   app-arch/pbzip2                                                  pbzip2           0.6               19287402 0.07973 0.13071
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In this case, the &lt;code&gt;pbzip2&lt;/code&gt; command got almost 8% reduction in less than a
 second, which is considerably more efficient than the 11-seconds long &lt;code&gt;7za&lt;/code&gt;
@@ -1133,7 +1105,6 @@ The output shows
 When the command supports multithreading, we use the number of available cores on the system (as told by /proc/cpuinfo).
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;For instance, to try it out against a PDF file:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ sw_comprbest -i MEA6-Sven_Vermeulen-Research_Summary.pdf
 Original file (MEA6-Sven_Vermeulen-Research_Summary.pdf) size 117763 bytes
@@ -1142,7 +1113,6 @@ The best compression was found with zopfli --deflate.
 The compression delta obtained was 0.00982 within 0.19 seconds.
 This file is now available as MEA6-Sven_Vermeulen-Research_Summary.pdf.deflate.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So in this case, the resulting file is hardly better compressed - the PDF
 itself is already compressed. Let's try it against the uncompressed PDF:&lt;/p&gt;
@@ -1155,7 +1125,6 @@ The compression delta obtained was 0.27739 within 0.18 seconds.
 This file is now available as test.pdf.lrz.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This is somewhat better:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ls -l MEA6-Sven_Vermeulen-Research_Summary.pdf* test.pdf*
 -rw-r--r--. 1 swift swift 117763 Aug  7 14:32 MEA6-Sven_Vermeulen-Research_Summary.pdf
@@ -1163,7 +1132,6 @@ This file is now available as test.pdf.lrz.
 -rw-r--r--. 1 swift swift 144670 Aug  7 14:34 test.pdf
 -rw-r--r--. 1 swift swift 104540 Aug  7 14:35 test.pdf.lrz
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The resulting file is 11,22% reduced from the original one.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="compression"></category></entry><entry><title>Why we do confine Firefox</title><link href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/" rel="alternate"></link><published>2015-08-11T19:18:00+02:00</published><updated>2015-08-11T19:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-11:/2015/08/why-we-do-confine-firefox/</id><summary type="html">&lt;p&gt;If you're a bit following the SELinux development community you will know
 &lt;a href="http://danwalsh.livejournal.com"&gt;Dan Walsh&lt;/a&gt;, a &lt;a href="http://people.redhat.com/dwalsh/"&gt;Red Hat&lt;/a&gt;
@@ -1211,11 +1179,9 @@ such as the following are commented out or removed from the policies:&lt;/p&gt;
 # userdom_manage_user_home_content_files(mozilla_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Instead, we add in a call to a template we have defined ourselves:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;userdom_user_content_access_template(mozilla, { mozilla_t mozilla_plugin_t })
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This call makes access to user content optional through SELinux booleans. For
 instance, for the &lt;code&gt;mozilla_t&lt;/code&gt; domain (which is used for Firefox), the following
@@ -1232,7 +1198,6 @@ mozilla_manage_generic_user_content     -&amp;gt;      false
 # Manage all user content
 mozilla_manage_all_user_content         -&amp;gt;      false
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As you can see, the default setting is that Firefox can read user content, but
 only non-specific types. So &lt;code&gt;ssh_home_t&lt;/code&gt;, which is used for the SSH related
@@ -1372,7 +1337,6 @@ set of commands (in random order) just to get everything to build fine:&lt;/p&gt
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge -u $(qlist -IC dev-haskell) --keep-going
 ~# for n in $(qlist -IC dev-haskell); do emerge -u $n; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;It took quite some reruns, but it finally got through. I never thought I
 had this much Haskell-related packages installed on my system (89
@@ -1545,46 +1509,7 @@ the architecture). And if I'm online I'll of course act on it quickly.&lt;/p&gt;
 "bios" partition. Due to the differences with the possible installation
 alternatives, it is easier for us (me) to just document a common
 partition layout than to try and write everything out (making it just
-harder for new users to follow the instructions).&lt;/p&gt;</content><category term="Documentation"></category><category term="efi"></category><category term="Gentoo"></category><category term="handbook"></category><category term="uefi"></category></entry><entry><title>Handbooks moved</title><link href="https://blog.siphos.be/2014/12/handbooks-moved/" rel="alternate"></link><published>2014-12-14T14:42:00+01:00</published><updated>2014-12-14T14:42:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-14:/2014/12/handbooks-moved/</id><summary type="html">&lt;p&gt;Yesterday the move of the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;Gentoo
-Wiki&lt;/a&gt; for the Gentoo
-handbooks (whose most important part are the installation instructions
-for the various supported architectures) has been concluded, with a
-last-minute addition being the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page#Viewing_the_handbook"&gt;one-page
-views&lt;/a&gt;
-so that users who want to can view the installation instructions
-completely within one view …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Yesterday the move of the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;Gentoo
-Wiki&lt;/a&gt; for the Gentoo
-handbooks (whose most important part are the installation instructions
-for the various supported architectures) has been concluded, with a
-last-minute addition being the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page#Viewing_the_handbook"&gt;one-page
-views&lt;/a&gt;
-so that users who want to can view the installation instructions
-completely within one view.&lt;/p&gt;
-&lt;p&gt;Because we use lots of
-&lt;a href="http://www.mediawiki.org/wiki/Transclusion"&gt;transclusions&lt;/a&gt; (i.e.
-including different wiki articles inside another article) to support a
-common documentation base for the various architectures, I did hit a
-limit that prevented me from creating a single-page for the entire
-handbook (i.e. "Installing Gentoo Linux", "Working with Gentoo",
-"Working with portage" and "Network configuration" together), but I
-could settle with one page per part. I think that matches most of the
-use cases.&lt;/p&gt;
-&lt;p&gt;With the move now done, it is time to start tackling the various bugs
-that were reported against the handbook, as well as initiate
-improvements where needed.&lt;/p&gt;
-&lt;p&gt;I did make a (probably more - but this one is fresh in my memory)
-mistake in the move though. I had to do a lot of the following:&lt;/p&gt;
-&lt;p&gt;``` {lang="xml"}&lt;/p&gt;
-&lt;p&gt;...
-```&lt;/p&gt;
-&lt;p&gt;Without this, transcluded parts would suddenly show the translation tags
-as regular text. Only afterwards (I'm talking about more than &lt;a href="https://wiki.gentoo.org/wiki/Project:Documentation/HandbookDevelopment"&gt;400
-different
-pages&lt;/a&gt;)
-did I read that I should transclude the &lt;code&gt;/en&lt;/code&gt; pages (like
-&lt;code&gt;Handbook:Parts/Installation/About/en&lt;/code&gt; instead of
-&lt;code&gt;Handbook:Parts/Installation/About&lt;/code&gt;) as those do not have the
-translation specifics in them. Sigh.&lt;/p&gt;</content><category term="Documentation"></category><category term="Gentoo"></category><category term="handbook"></category><category term="wiki"></category></entry><entry><title>Gentoo Handbooks almost moved to wiki</title><link href="https://blog.siphos.be/2014/12/gentoo-handbooks-almost-moved-to-wiki/" rel="alternate"></link><published>2014-12-12T17:35:00+01:00</published><updated>2014-12-12T17:35:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-12:/2014/12/gentoo-handbooks-almost-moved-to-wiki/</id><summary type="html">&lt;p&gt;Content-wise, the move is done. I've done a few checks on the content to
+harder for new users to follow the instructions).&lt;/p&gt;</content><category term="Documentation"></category><category term="efi"></category><category term="Gentoo"></category><category term="handbook"></category><category term="uefi"></category></entry><entry><title>Gentoo Handbooks almost moved to wiki</title><link href="https://blog.siphos.be/2014/12/gentoo-handbooks-almost-moved-to-wiki/" rel="alternate"></link><published>2014-12-12T17:35:00+01:00</published><updated>2014-12-12T17:35:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-12:/2014/12/gentoo-handbooks-almost-moved-to-wiki/</id><summary type="html">&lt;p&gt;Content-wise, the move is done. I've done a few checks on the content to
 see if the structure still holds, translations are enabled on all pages,
 the use of partitions is sufficiently consistent for each architecture,
 and so on. The result can be seen on &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;the gentoo handbook main
@@ -1677,14 +1602,12 @@ following from the ebuilds:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
 relabel files after the policy package is deployed …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just finished updating 102 packages. The change? Removing the
 following from the ebuilds:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
@@ -1709,7 +1632,6 @@ post-installation message of the &lt;code&gt;policycoreutils&lt;/code&gt; packag
 basically sais that you need to execute:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
 module store (and the semanage related files) to be in
@@ -1737,7 +1659,6 @@ ValueError: SELinux policy is not managed or store cannot be accessed.
 Cannot set persistent booleans without managed policy.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
 migration. Note in the following that there is a warning about 'else'
 blocks that are no longer supported: that's okay, as far as I know (and
@@ -1749,7 +1670,6 @@ Attempting to rebuild policy from /var/lib/selinux
 sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
 up. You can also rerun the command multiple times:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
@@ -1757,11 +1677,9 @@ warning: Policy type mcs has already been migrated, but modules still exist in t
 Attempting to rebuild policy from /var/lib/selinux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So... don't worry - the change is small and does not break stuff. And
 for those wondering about CIL I'll talk about it in one of my next
@@ -1989,14 +1907,12 @@ to the file system, with an error that looks like so:&lt;/p&gt;
  *   Failed to set SELinux security labels.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This has been &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=516608"&gt;reported as bug
 516608&lt;/a&gt; and, after some
 investigation, the cause is found. First the quick workaround:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# cd /etc/selinux/strict/contexts/files
 ~# rm *.bin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And do the same for the other SELinux policy stores on the system
 (targeted, mcs, mls, ...).&lt;/p&gt;
@@ -2246,7 +2162,6 @@ separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt
 *make: *** [scripts_basic] Error 2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I know it isn't SELinux that is causing this, as I have no denial
 messages and even putting SELinux in permissive mode doesn't help. Today
 I found the time to look at it with more fresh eyes, and noticed that it
@@ -2261,7 +2176,6 @@ that's just a simple thing to do.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
 ~# restorecon -R /var/build/genkernel
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The new location is not world-writable (only for root as only root
 builds initial ram file systems here) so not having &lt;code&gt;noexec&lt;/code&gt; here is ok.&lt;/p&gt;</content><category term="Gentoo"></category><category term="busybox"></category><category term="genkernel"></category><category term="Gentoo"></category><category term="initramfs"></category><category term="initrd"></category><category term="noexec"></category><category term="tmp"></category></entry><entry><title>Create your own SELinux Gentoo profile</title><link href="https://blog.siphos.be/2014/03/create-your-own-selinux-gentoo-profile/" rel="alternate"></link><published>2014-03-24T21:51:00+01:00</published><updated>2014-03-24T21:51:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-24:/2014/03/create-your-own-selinux-gentoo-profile/</id><summary type="html">&lt;p&gt;Or any other profile for that matter ;-)&lt;/p&gt;
@@ -2332,182 +2246,7 @@ Prefix&lt;/a&gt;, multi-tenancy
 on the web application level through the
 &lt;a href="http://www.gentoo.org/proj/en/webapps/index.xml"&gt;webapp-config&lt;/a&gt; tool
 while all necessary software is readily available in the Portage tree.&lt;/p&gt;
-&lt;p&gt;All you need is some imagination...&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="linux"></category><category term="vappliance"></category><category term="virtual appliance"></category></entry><entry><title>Limiting file access with SELinux alone?</title><link href="https://blog.siphos.be/2013/12/limiting-file-access-with-selinux-alone/" rel="alternate"></link><published>2013-12-31T21:18:00+01:00</published><updated>2013-12-31T21:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-31:/2013/12/limiting-file-access-with-selinux-alone/</id><summary type="html">&lt;p&gt;While writing a small script to handle simple certificate authority
-activities using OpenSSL, I considered how to properly protect the files
-that OpenSSL uses for these activities. As you are probably aware, a
-system that hosts the necessary files for CA activities (like signing
-certificate requests) should be very secure …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing a small script to handle simple certificate authority
-activities using OpenSSL, I considered how to properly protect the files
-that OpenSSL uses for these activities. As you are probably aware, a
-system that hosts the necessary files for CA activities (like signing
-certificate requests) should be very secure, and the private key used to
-sign (and the private subkeys) should be very well protected.&lt;/p&gt;
-&lt;p&gt;Without the help of an &lt;a href="https://en.wikipedia.org/wiki/Hardware_security_module"&gt;Hardware Security Module
-(HSM)&lt;/a&gt; these
-private keys are just plain text files on the file system. Access to
-this file system should therefor be very well audited and protected.&lt;/p&gt;
-&lt;p&gt;It of course starts with proper Discretionary Access Control (DAC)
-protections on Linux. The private key should only be accessible by the
-(technical) user used to operate the CA activities. Next, access to this
-user should also be properly protected - if the CA activities are not
-done through the root account, make sure that all users who can get root
-access on the system and to the (technical) user used to perform the CA
-activities are trusted.&lt;/p&gt;
-&lt;p&gt;Sometimes however this isn't sufficient, or you want to protect it even
-more. With SELinux, we can implement a Mandatory Access Control (MAC)
-policy to further restrict access to the private key. The idea is to
-only allow the application (in my case the script) that performs the CA
-activities access to the private key, and nothing more. Even users who
-can get root access, but do not have the privileges SELinux-wise to
-execute the CA management script (with the proper domain transition)
-should not have any access to the private key.&lt;/p&gt;
-&lt;p&gt;I'll discuss a sample policy for that later, but for now I want to focus
-on what that would mean - not allowing other users access.&lt;/p&gt;
-&lt;p&gt;When users log on on a SELinux-enabled system, they (well, the process
-that starts the user session) get assigned a security context. This
-security context defines what the user is allowed to do on the system.
-And although it is "easy" to disallow a domain read access to a
-particular file, we must consider all other activities that the user can
-perform.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;First risk: direct file access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Assume that a user is logged on with the &lt;code&gt;unconfined_t&lt;/code&gt; domain (an
-entire context is more than just the domain, but let's stick to this for
-now). The &lt;code&gt;unconfined_t&lt;/code&gt; domain is an extremely powerful domain -
-basically, SELinux will not prevent much. That doesn't mean that SELinux
-is disabled, but rather that the &lt;code&gt;unconfined_t&lt;/code&gt; domain is granted many
-privileges. So if a user is in the &lt;code&gt;unconfined_t&lt;/code&gt; domain &lt;em&gt;and&lt;/em&gt; is not
-prevented by the standard Linux access controls (for instance because he
-is root), he can do basically everything.&lt;/p&gt;
-&lt;p&gt;SELinux-wise, we can still create a new type that &lt;code&gt;unconfined_t&lt;/code&gt; has no
-immediate access to. By creating a new type (say &lt;code&gt;ca_private_key_t&lt;/code&gt;) and
-not assign it any attributes that the &lt;code&gt;unconfined_t&lt;/code&gt; domain has
-privileges towards, the user would still not be able to access the file
-directly. The same is true for the &lt;code&gt;sysadm_t&lt;/code&gt; domain (a still
-privileged, yet slightly more restricted user domain designed for system
-administrators). However, such users could still access the file
-indirectly.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Second risk: indirect access through new SELinux policies&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;An important privilege that these users have is that they can load a new
-SELinux policy, or disable SELinux (actually switch it to permissive
-mode) if the Linux kernel has this enabled. By allowing users to load a
-new policy, they can basically create a SELinux policy module that
-grants them the necessary accesses towards the file:&lt;/p&gt;
-&lt;p&gt;``` {lang="bash"}
-allow sysadm_t ca_misc_file_t:file manage_file_perms;
-allow sysadm_t ca_misc_file_t:dir manage_dir_perms;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;So in order to prevent this, we have to make sure that these users can
-either not manipulate the SELinux policy - or make sure users on the
-system do not get access to these domains to begin with. Preventing
-loading new policies can be handled by the Linux kernel itself
-(`CONFIG_SECURITY_SELINUX_DEVELOP` should not be set then) and through
-SELinux booleans (`secure_mode_policyload` should be set to `on` and
-toggling the boolean off again should be prohibited). Still, it makes
-more sense to restrict people with access to these roles - something
-I&amp;#39;ll definitely come back to at a later point.
-
-*Third risk: indirect access through attributes*
-
-Another privilege that needs to be watched for is the ability to change
-the context of a file. If the `ca_private_key_t` type would not be
-declared properly, then the type might be assigned an attribute that
-domains have privileges against. Consider the `file_type` attribute,
-granted to file types (at least the name makes sense ;-)
-
-``` {lang=&amp;quot;bash&amp;quot;}
-# seinfo -tca_private_key_t -x
-  ca_private_key_t
-    file_type
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;The moment a domain has been granted read access to the &lt;code&gt;file_type&lt;/code&gt;
-files, then it has read access to the &lt;code&gt;ca_private_key_t&lt;/code&gt; type. In other
-words, while designing the policy, make sure that all granted
-permissions are accounted for.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Fourth risk: "raw" file system (or memory) access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;So if SELinux itself would not allow access to the file(s) anymore, are
-we done yet? Of course not. In the end, the keys are stored on the file
-system, which is located on partitions or disks, accessible by
-privileged users. Someone with direct read access to the block devices
-can still obtain the file directly, so even that should be properly
-governed.&lt;/p&gt;
-&lt;p&gt;This even extends towards memory access, because the private key might
-be cached in buffers (by the kernel) or even mapped in memory (even for
-a short while) and made accessible through direct memory access.&lt;/p&gt;
-&lt;p&gt;Such accesses might not be available to many users, but don't forget
-that on the system other applications are running as well. Some daemons
-might have the necessary privileges to access file systems directly, or
-the memory. Some users might have the rights to execute commands that
-have direct file system access (or memory). Making sure that &lt;em&gt;all&lt;/em&gt;
-domains that have these accesses are properly audited (including the
-access to those domains) will already be quite a challenge.&lt;/p&gt;
-&lt;p&gt;For a system that acts as a certificate handling system, it makes sense
-to limit exposure to a bare minimum as that makes the above auditing a
-bit less daunting.&lt;/p&gt;
-&lt;p&gt;&lt;/p&gt;
-Ok ok, let's assume the security administrator has thought of all those
-things and SELinux policy-wise properly prevents any access. That's
-enough, right?&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Fifth risk: authentication and authorization access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Of course not. Some processes or users might have access to the
-authentication files on the system (and I'm not only talking about the
-&lt;code&gt;/etc/shadow&lt;/code&gt; and &lt;code&gt;/etc/passwd&lt;/code&gt; files, but also the &lt;code&gt;/etc/pam.d/*&lt;/code&gt;
-files, or the libraries used by the PAM modules in &lt;code&gt;/lib/security&lt;/code&gt;, or
-modify rights on binaries likely executed by administrators who do have
-rights we want - there might always be a "recovery user" enabled just in
-case things really go wrong, but such "recovery users" imply that rights
-are still granted somewhere.&lt;/p&gt;
-&lt;p&gt;When modify access is granted to any of the authentication or
-authorization services, then users can grant them privileges you don't
-want to give them. So not only should access to &lt;code&gt;ca_private_key_t&lt;/code&gt;,
-&lt;code&gt;memory_device_t&lt;/code&gt;, &lt;code&gt;device_node&lt;/code&gt; and &lt;code&gt;fixed_disk_device_t&lt;/code&gt; be properly
-governed - also &lt;code&gt;etc_t&lt;/code&gt; (as this is the default for PAM files - this
-really should be worked on) and &lt;code&gt;lib_t&lt;/code&gt; are important types, and these
-are very, very open (many domains have write access to those by
-default).&lt;/p&gt;
-&lt;p&gt;Fine. Let's "hypothetically" consider that the security engineer has
-thought about all SELinux accesses and made a perfect policy. Happy now?&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Sixth risk: system boot privileges&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Actually no... first of all, some users might be able to reboot the
-system with updated boot parameters, or even with a different kernel.
-With this at hand, they can disable SELinux and still access the file.
-So make sure that rebooting the system still happens securely (you can
-use secure boot, signed kernels, ... or at least focus on boot loader
-password protection and console access). The
-&lt;a href="https://wiki.gentoo.org/wiki/Project:Integrity"&gt;Integrity&lt;/a&gt; subproject
-of the &lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;Gentoo Hardened&lt;/a&gt;
-project will focus on these matters more (just waiting for an
-EFI-enabled system to properly start documenting things). In the mean
-time, make sure that the Linux system itself is properly secured.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Seventh risk: direct system access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Yet having a secured boot also doesn't protect us completely. If there
-is access to the system physically, users can still mount the disk on
-their system and access the files. So one might want to consider
-encrypting the partition on which the keys are stored. But the
-encryption key for the partition should still be available somewhere,
-because regular administration might need to reboot the system.&lt;/p&gt;
-&lt;p&gt;A reasonably secure system would keep the encryption key in a HSM device
-(which we don't have - see beginning of this post) or only have it
-decrypted in a secure environment (like a TPM chip on more modern
-systems). Handling TPM and securing keys is definitely also something to
-focus on further in the Integrity subproject.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Eighth risk: backups&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;And if you take backups (which we of course all do) then those backups
-should be properly protected as well. We might want to create encrypted
-backups (meaning that the CA script should allow for encrypting and
-decrypting the private key) and &lt;em&gt;not store the encryption key with the
-backup&lt;/em&gt;. And before asking me why I've emphasized this - I've seen it
-before, and I'll probably see it again in the future. Don't laugh.&lt;/p&gt;
-&lt;p&gt;Almost starts sounding like a nightmare, right? There might even be more
-risks that I haven't covered here (and I haven't even discussed
-potential vulnerabilities in the CA management script itself, or even in
-OpenSSL or other tools like the &lt;a href="http://it.slashdot.org/story/13/12/18/2122226/scientists-extract-rsa-key-from-gnupg-using-sound-of-cpu"&gt;let's hear the encryption
-key&lt;/a&gt;
-attack). Welcome to the world of security ;-)&lt;/p&gt;
-&lt;p&gt;In any case, in the next post I'll focus on the SELinux policy I wrote
-up for the simple script I created. But all the above is just to show
-that SELinux is not the answer - it is merely a part in an entire
-security architecture. A flexible, powerful part... but still a part.&lt;/p&gt;</content><category term="SELinux"></category><category term="access"></category><category term="acl"></category><category term="file access"></category><category term="Gentoo"></category><category term="selinux"></category></entry><entry><title>Upgrading old Gentoo installations</title><link href="https://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/" rel="alternate"></link><published>2013-12-29T14:18:00+01:00</published><updated>2013-12-29T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-29:/2013/12/upgrading-old-gentoo-installations/</id><summary type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+&lt;p&gt;All you need is some imagination...&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="linux"></category><category term="vappliance"></category><category term="virtual appliance"></category></entry><entry><title>Upgrading old Gentoo installations</title><link href="https://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/" rel="alternate"></link><published>2013-12-29T14:18:00+01:00</published><updated>2013-12-29T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-29:/2013/12/upgrading-old-gentoo-installations/</id><summary type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
 #463240&lt;/a&gt; about the
 difficulty of upgrading a Gentoo Linux deployment after a long time of
 inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading
@@ -2600,7 +2339,6 @@ Date:   Sun Nov 24 17:47:14 2013 -0500
     the policies created by learning.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The new version requires the use of &lt;code&gt;&amp;gt;=gradm-3.0&lt;/code&gt;. Some hardened-sources
 packages already contain the 3.0 patchset (currently in testing). In a
 few days, a final hardened-sources with a 2.9.1 patchset will be
@@ -2620,7 +2358,6 @@ be accomplished with the following line in
 &lt;path&gt;package.accept_keywords&lt;/path&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sec-policy/* **
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Recently, revision 5 of the SELinux policies has been pushed to the tree
 (currently in testing). This one also contains a few required changes to
@@ -2671,7 +2408,6 @@ depends {
   targets/desktop/gnome
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The next few months will be interesting to see how this will evolve ;-)&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Documentation&lt;/em&gt;&lt;/p&gt;
@@ -2759,7 +2495,6 @@ to function properly:
     E.g. export REFPOLRELEASE=&amp;quot;/home/user/local/refpolicy-20130424&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So first, we need to export three environment variables needed by the
 script:&lt;/p&gt;
 &lt;ul&gt;
@@ -2794,7 +2529,6 @@ sec-policy/selinux-alsa
 ...
 Only then do a &amp;#39;repoman commit -m &amp;#39;Release of 2.20130424-r4&amp;#39;&amp;#39;.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The script performs the following steps:&lt;/p&gt;
 &lt;ol&gt;
@@ -2904,13 +2638,11 @@ configured a different group in your kernel for this:&lt;/p&gt;
 CONFIG_GRKERNSEC_TPE_TRUSTED_GID=10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next we also need to allow the &lt;code&gt;portage_t&lt;/code&gt; domain to execute files
 labeled with &lt;code&gt;portage_tmpfs_t&lt;/code&gt;. You can do this by creating your own
 SELinux policy module with the following content (or use selocal):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;can_exec(portage_t, portage_tmpfs_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This works around the libffi issue for now. A better solution still has
 to be implemented (as discussed in the previous post).&lt;/p&gt;
@@ -2949,7 +2681,6 @@ b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib
 [...]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And the errors go on and on and on.&lt;/p&gt;
 &lt;p&gt;I've been able to get it working again by allowing the following SELinux
 permissions:&lt;/p&gt;
@@ -2964,7 +2695,6 @@ allow portage_t lib_t:dir relabel_dir_perms;
 allow portage_t lib_t:file relabel_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You can somewhat shorten this by combining types (but this doesn't work
 with selocal for now):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
@@ -2972,13 +2702,11 @@ allow portage_t { portage_tmp_t bin_t }:lnk_file relabel_lnk_file_perms;
 allow portage_t { bin_t portage_exec_t portage_fetch_exec_t lib_t}:file relabel_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;At the end of the emerge process (when the new portage is installed) you
 might want to reset the labels of all files provided by the portage
 package:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rlpkg portage
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;These changes have not been passed into the policy yet as I first need
 to find out why exactly they are needed, and as you can see from &lt;a href="http://dev.gentoo.org/devaway/"&gt;the
@@ -3037,7 +2765,6 @@ disable it on others in order for the image to build properly.&lt;/p&gt;
             so that it won&amp;#39;t trip pax protection eg mprotect
 &amp;lt;@blueness&amp;gt; in the case of kernel modules, it can&amp;#39;t mean that obviously!
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;One of the mentioned problems is that some ebuilds only enable pax
 markings when &lt;code&gt;pax_kernel&lt;/code&gt; is set. However, that shouldn't be done
@@ -3188,7 +2915,6 @@ package:&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Here, the developer warns the administrator that, if an upgrade of the
 package from version 0.4 or older occurred, an additional action needs
 to be taken. For others, he informs the administrators how to mark the
@@ -3200,7 +2926,6 @@ as separate files for each deployment:&lt;/p&gt;
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-131631.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-200851.log
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If &lt;code&gt;FEATURES="split-elog"&lt;/code&gt; is set in your &lt;code&gt;make.conf&lt;/code&gt; file, then the
 elog files will be stored in separate category subdirectories. Below is
@@ -3224,7 +2949,6 @@ You should set your desired PostgreSQL slot:
     eselect postgresql set &amp;lt;slot&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the file, package information is provided, and each set of logging
 paragraphs is accompanied with information where in the build process
 the logging came up. For instance, &lt;code&gt;WARN: postinst&lt;/code&gt; sais that the
@@ -3246,7 +2970,6 @@ PORT_LOGDIR=&amp;quot;/var/log/portage&amp;quot;
 ~$ ls -ldZ /var/log/portage/
 drwxrwsr-x. 3 portage portage system_u:object_r:portage_log_t 679936 Sep 24 13:12 /var/log/portage/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With the variable set, build logs will be provided for each emerge (and
 unmerge) operation of the package. These logs contain everything shown
@@ -3370,7 +3093,6 @@ that no transition should occur, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With a minor addition to the policy, this gave me a good hope... until I
 noticed that &lt;strong&gt;emerge&lt;/strong&gt; underlyingly calls &lt;strong&gt;ebuild&lt;/strong&gt; and &lt;strong&gt;ebuild.sh&lt;/strong&gt;,
 both labeled as &lt;code&gt;portage_exec_t&lt;/code&gt;, so these calls transition to
@@ -3404,7 +3126,6 @@ PulseAudio is handled through &lt;em&gt;optional_policy&lt;/em&gt; statements:&l
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This means that the rules defined in &lt;em&gt;pulseaudio_tmpfs_content&lt;/em&gt; are
 executed if the dependencies match:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`pulseaudio_tmpfs_content&amp;#39;,`
@@ -3415,7 +3136,6 @@ executed if the dependencies match:&lt;/p&gt;
         typeattribute $1 pulseaudio_tmpfsfile;
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute exists, then the
 &lt;code&gt;mplayer_tmpfs_t&lt;/code&gt; type gets the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute
@@ -3435,7 +3155,6 @@ to enable / disable SELinux rules. For instance, in the mplayer policy:&lt;/p&gt
         allow mencoder_t self:process { execmem execstack };
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If an administrator toggles the &lt;code&gt;allow_mplayer_execstack&lt;/code&gt; boolean to
 "on", then the mentioned &lt;code&gt;allow&lt;/code&gt; rule becomes active.&lt;/p&gt;
@@ -3463,7 +3182,6 @@ decisions based on this in the policy code:&lt;/p&gt;
   &amp;#39;)
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;We can add in the USE flags, if set, through the &lt;code&gt;CUSTOM_BUILDOPT&lt;/code&gt;
 parameter that the reference policy provides. So introducing this is not
@@ -3684,7 +3402,6 @@ dev_write_sound(skype_t)
 # dev_write_video_dev(skype_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Load in this policy, and you now have the &lt;code&gt;skype_t&lt;/code&gt; domain without the
 video access. You will get post-install failures when Gentoo pushes out
 an update to the policy though, since it will attempt to reload the
@@ -3731,13 +3448,11 @@ Checking www-servers/apache-2.2.24 ...
   * 424 out of 424 files are good
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If the binary is modified, this would result in something equivalent to:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Checking www-servers/apache-2.2.24 ...
  MD5-DIGEST: /usr/sbin/apache2
   * 423 out of 424 files are good
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I don't know if the modified binary would otherwise work just fine, I
 have not been able to find exact details on the infected binary to (in a
@@ -3752,7 +3467,6 @@ context of &lt;code&gt;bin_t&lt;/code&gt;). If the context is wrong, then starti
 results in:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This is because the modified binary stays in the calling domain context
 (&lt;code&gt;initrc_t&lt;/code&gt;). If you use a targeted policy, then this will not present
@@ -3790,7 +3504,6 @@ DT allow httpd_t gds_db_port_t : tcp_socket { name_connect } ; [ httpd_can_netwo
 DT allow httpd_t gopher_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So by default, the Apache (&lt;code&gt;httpd_t&lt;/code&gt;) domain is allowed to connect to
 DNS port (to resolve hostnames). All other &lt;em&gt;name_connect&lt;/em&gt; calls depend
 on SELinux booleans (mentioned after it) that are by default disabled
@@ -3816,7 +3529,6 @@ Found 2 semantic av rules:
    allow unconfined_domain_type domain : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ; 
    allow httpd_t httpd_t : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Only unconfined domains and the &lt;code&gt;httpd_t&lt;/code&gt; domain itself have access to
 &lt;code&gt;httpd_t&lt;/code&gt; labeled shared memory.&lt;/p&gt;
@@ -3911,7 +3623,6 @@ you can run the update with binary package included:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# emerge -puDk world
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;To use &lt;em&gt;--buildpkgonly&lt;/em&gt;, all package(s) that Portage wants to build must
 have all their dependencies met. If not, then the build will not go
 through and you're left with no binary packages at all. So what we do is
@@ -3958,7 +3669,6 @@ emerge -puDN --color&lt;span class="o"&gt;=&lt;/span&gt;n --columns --quiet&lt;s
 &lt;span class="k"&gt;done&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;I ran this a couple of days ago when &lt;em&gt;-uDN world&lt;/em&gt; showed 46 package
 updates (including a few hefty ones like chromium). After running this
 script, 35 of them had a binary package ready so the &lt;em&gt;-uDN world&lt;/em&gt; now
@@ -4053,7 +3763,6 @@ The option -d requires that a line number, as shown by the --list, is given, lik
   selocal -d 12
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Let's say that you need to launch a small script you written as a
 daemon, but you want this to run while you are still in the &lt;em&gt;staff_t&lt;/em&gt;
 domain (it is a user-sided daemon you use personally). As regular
@@ -4066,7 +3775,6 @@ do so as follows:&lt;/p&gt;
 (some output on building the policy module)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;When finished, the local policy is enhanced with the two mentioned
 rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --list
@@ -4074,11 +3782,9 @@ rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
 13: corenet_tcp_bind_generic_port(staff_t) # Launch local webserv.py daemon
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you need to delete a rule, just pass the line number:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --delete 13
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Having this tool around also makes it easier to test out changes
 suggested through bugreports. When I test such changes, I add in the bug
@@ -4130,7 +3836,6 @@ $ xsltproc --output handbook-amd64.fo --stringparam paper.type A4
 $ fop handbook-amd64.fo handbook-amd64.pdf
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The docbook stylesheets are offered by the
 &lt;em&gt;app-text/docbook-xsl-stylesheets&lt;/em&gt; package whereas the &lt;strong&gt;fop&lt;/strong&gt; command
 is provided by &lt;em&gt;dev-java/fop&lt;/em&gt;.&lt;/p&gt;
@@ -4161,7 +3866,6 @@ assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened
@@ -4246,7 +3950,6 @@ Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the things that has been bugging me was why, even with having
 &lt;code&gt;pam_rootok.so&lt;/code&gt; set in &lt;code&gt;/etc/pam.d/run_init&lt;/code&gt;, I cannot enjoy
 passwordless service management without using &lt;strong&gt;run_init&lt;/strong&gt; directly:&lt;/p&gt;
@@ -4258,7 +3961,6 @@ Password:
 Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So I decided to &lt;strong&gt;strace&lt;/strong&gt; the two commands and look for the
 differences. I found out that there is even a SELinux permission for
@@ -4282,7 +3984,6 @@ the trace I found that the previous context was also &lt;em&gt;run_init_t&lt;/em
 20451 close(3)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Because there already is a transition to &lt;em&gt;run_init_t&lt;/em&gt; upon calling the
 scripts, the underlying call to &lt;strong&gt;runscripts&lt;/strong&gt; causes the "previous"
 attribute to be set to &lt;em&gt;run_init_t&lt;/em&gt; as well, and only then is
@@ -4300,7 +4001,6 @@ gen_require(`
 
 allow run_init_t self:passwd rootok;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I'll probably add this in Gentoo's policy.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="pam"></category><category term="rootok"></category><category term="run_init"></category><category term="selinux"></category></entry><entry><title>Separate puppet provider for Gentoo/SELinux?</title><link href="https://blog.siphos.be/2013/04/separate-puppet-provider-for-gentooselinux/" rel="alternate"></link><published>2013-04-07T19:22:00+02:00</published><updated>2013-04-07T19:22:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-07:/2013/04/separate-puppet-provider-for-gentooselinux/</id><summary type="html">&lt;p&gt;While slowly transitioning my playground infrastructure towards Puppet,
 I already am in process of creating a custom provider for things such as
@@ -4358,7 +4058,6 @@ rc-status -a -C &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt
 &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;I then have the service provider (I now provide my own instead of
 patching the openrc one) call &lt;strong&gt;runstatus&lt;/strong&gt; to get the state of a
 service, as well as call it after trying to start a service. But as this
@@ -4566,7 +4265,6 @@ documents with minor editing afterwards.&lt;/p&gt;
 document you want to transform:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ xsltproc gxml2wiki.xsl /path/to/document.xml
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The output shown on the screen can then be used as a page. The following
 things still need to be corrected manually:&lt;/p&gt;

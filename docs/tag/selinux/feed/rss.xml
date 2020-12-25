@@ -182,7 +182,6 @@ audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
 &lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 10 May 2015 14:18:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-05-10:/2015/05/audit-buffering-and-rate-limiting/</guid><category>Free Software</category><category>audit</category><category>kernel</category><category>security</category><category>selinux</category></item><item><title>Use change management when you are using SELinux to its fullest</title><link>https://blog.siphos.be/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/</link><description>&lt;p&gt;If you are using SELinux on production systems (with which I mean
@@ -202,11 +201,7 @@ binary policy. When the policy supports type attributes, these are …&lt;/p&gt;
 teams for many of the technologies that they use. Most of the time, this
 is for reusable components like database technologies, web application
 servers, operating systems, middleware components (like file transfers,
-messaging infrastructure, ...) and more. All components that are …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 03 Jan 2015 13:36:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-01-03:/2015/01/selinux-is-great-for-enterprises-but-many-dont-know-it-yet/</guid><category>SELinux</category><category>companies</category><category>configuration</category><category>engineering</category><category>enterprise</category><category>selinux</category></item><item><title>Why does it access /etc/shadow?</title><link>https://blog.siphos.be/2014/12/why-does-it-access-etcshadow/</link><description>&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
-that it (well, the authdaemon that is part of Courier) wanted to access
-&lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
-know that this is through the PAM support (more specifically,
-&lt;code&gt;pam_unix …&lt;/code&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 30 Dec 2014 22:48:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-12-30:/2014/12/why-does-it-access-etcshadow/</guid><category>SELinux</category><category>chkpwd</category><category>pam</category><category>selinux</category><category>shadow</category><category>unix_chkpwd</category></item><item><title>Sometimes I forget how important communication is</title><link>https://blog.siphos.be/2014/12/sometimes-i-forget-how-important-communication-is/</link><description>&lt;p&gt;Free software (and documentation) developers don't always have all the
+messaging infrastructure, ...) and more. All components that are …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 03 Jan 2015 13:36:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2015-01-03:/2015/01/selinux-is-great-for-enterprises-but-many-dont-know-it-yet/</guid><category>SELinux</category><category>companies</category><category>configuration</category><category>engineering</category><category>enterprise</category><category>selinux</category></item><item><title>Sometimes I forget how important communication is</title><link>https://blog.siphos.be/2014/12/sometimes-i-forget-how-important-communication-is/</link><description>&lt;p&gt;Free software (and documentation) developers don't always have all the
 time they want. Instead, they grab whatever time they have to do what
 they believe is the most productive - be it documentation editing,
 programming, updating ebuilds, SELinux policy improvements and what not.
@@ -214,7 +209,6 @@ But they often don't take the time to …&lt;/p&gt;</description><dc:creator xml
 following from the ebuilds:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
@@ -271,7 +265,6 @@ human readable, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;To know what this …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 30 Mar 2014 16:37:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-30:/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/</guid><category>SELinux</category><category>avc</category><category>decode</category><category>path</category><category>selinux</category></item><item><title>Querying SELinux policy for boolean information</title><link>https://blog.siphos.be/2014/03/querying-selinux-policy-for-boolean-information/</link><description>&lt;p&gt;Within an SELinux policy, certain access vectors (permissions) can be
 conditionally granted based on the value of a &lt;em&gt;SELinux boolean&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;To find the list of SELinux booleans that are available on your system,
@@ -283,33 +276,10 @@ gave a small (30 minutes) presentation about what SELinux is. The
 &lt;a href="http://dev.gentoo.org/~swift/blog/201403/20140325_GSE_SELinux.pdf"&gt;slides are
 online&lt;/a&gt;
 and cover two aspects of SELinux: some of its design principles, and
-then a set of features provided by SELinux. The talk is directed …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 25 Mar 2014 23:11:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-25:/2014/03/talk-about-selinux-on-gse-linuxsecurity/</guid><category>Security</category><category>gse</category><category>mainframe</category><category>s390x</category><category>security</category><category>selinux</category><category>zenterprise</category></item><item><title>Hidden symbols and dynamic linking</title><link>https://blog.siphos.be/2014/03/hidden-symbols-and-dynamic-linking/</link><description>&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
-ebuild which caused the following stacktrace to occur every time the
-&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
-Traceback (most recent call last):
-  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
-    import seobject
-  File &amp;quot;/usr/lib64/python2.7 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 24 Mar 2014 21:14:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-24:/2014/03/hidden-symbols-and-dynamic-linking/</guid><category>Gentoo</category><category>elf</category><category>hidden</category><category>selinux</category><category>symbols</category></item><item><title>Switching context depending on user code-wise</title><link>https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/</link><description>&lt;p&gt;I blogged about how SELinux decides what the context should be for a
+then a set of features provided by SELinux. The talk is directed …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 25 Mar 2014 23:11:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-25:/2014/03/talk-about-selinux-on-gse-linuxsecurity/</guid><category>Security</category><category>gse</category><category>mainframe</category><category>s390x</category><category>security</category><category>selinux</category><category>zenterprise</category></item><item><title>Switching context depending on user code-wise</title><link>https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/</link><description>&lt;p&gt;I blogged about how SELinux decides what the context should be for a
 particular Linux user; how it checks the default context(s) and tells
 the SELinux-aware application on what the new context should be. Let's
-look into the C code that does so, and how an application should behave …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 12 Jan 2014 22:43:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-01-12:/2014/01/switching-context-depending-on-user-code-wise/</guid><category>SELinux</category><category>default_context</category><category>domain</category><category>libselinux</category><category>selinux</category><category>selinux-aware</category><category>transition</category></item><item><title>How does foo_t get this privilege?</title><link>https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/</link><description>&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
-was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
-that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
-&lt;p&gt;I used a simple script (which I've been using for a while already)
-called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 05 Jan 2014 04:14:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-01-05:/2014/01/how-does-foo_t-get-this-privilege/</guid><category>SELinux</category><category>policy</category><category>selinux</category><category>seshowtree</category></item><item><title>Oh it is cron again...</title><link>https://blog.siphos.be/2014/01/oh-it-is-cron-again/</link><description>&lt;p&gt;Today I was pointed to the following error:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test fcron[6722]: fcron[6722] 3.1.2 started
-test fcron[6722]: Cannot bind socket to &amp;#39;/var/run/fcron.fifo&amp;#39;: Permission denied
-test fcron[6722]:  &amp;quot;at&amp;quot; reboot jobs will only be run at computer&amp;#39;s startup.
-test fcron[6722]: updating configuration from …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Fri, 03 Jan 2014 21:05:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-01-03:/2014/01/oh-it-is-cron-again/</guid><category>SELinux</category><category>cron</category><category>selinux</category></item><item><title>Private key handling and SELinux protection</title><link>https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/</link><description>&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
-script I wrote.&lt;/p&gt;
-&lt;p&gt;The script is a certificate authority handling script, in which I can
-generate a private key (and certificate assigned to it), sign the
-certificate either by itself (for the root CA key) or …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 02 Jan 2014 04:00:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-01-02:/2014/01/private-key-handling-and-selinux-protection/</guid><category>SELinux</category><category>ca</category><category>certcli</category><category>policy</category><category>selinux</category></item><item><title>Limiting file access with SELinux alone?</title><link>https://blog.siphos.be/2013/12/limiting-file-access-with-selinux-alone/</link><description>&lt;p&gt;While writing a small script to handle simple certificate authority
-activities using OpenSSL, I considered how to properly protect the files
-that OpenSSL uses for these activities. As you are probably aware, a
-system that hosts the necessary files for CA activities (like signing
-certificate requests) should be very secure …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 31 Dec 2013 21:18:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-12-31:/2013/12/limiting-file-access-with-selinux-alone/</guid><category>SELinux</category><category>access</category><category>acl</category><category>file access</category><category>Gentoo</category><category>selinux</category></item><item><title>Gentoo SELinux policy release script</title><link>https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/</link><description>&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
+look into the C code that does so, and how an application should behave …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 12 Jan 2014 22:43:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-01-12:/2014/01/switching-context-depending-on-user-code-wise/</guid><category>SELinux</category><category>default_context</category><category>domain</category><category>libselinux</category><category>selinux</category><category>selinux-aware</category><category>transition</category></item><item><title>Gentoo SELinux policy release script</title><link>https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/</link><description>&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
 new SELinux policy packages. The script is on the
 &lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;repository&lt;/a&gt;
 itself, in the &lt;code&gt;gentoo/&lt;/code&gt; subdirectory, and is called
@@ -393,7 +363,6 @@ to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at 
 build up the policy.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
 (or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 25 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-25:/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/</guid><category>SELinux</category><category>incron</category><category>incrontab</category><category>policy</category><category>selinux</category></item><item><title>A SELinux policy for incron: the basic skeleton</title><link>https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/</link><description>&lt;p&gt;So, in the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/"&gt;previous
@@ -524,7 +493,6 @@ Password:
 Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So I …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 09 Apr 2013 22:14:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-04-09:/2013/04/not-needing-run_init-for-password-less-service-management/</guid><category>Gentoo</category><category>Gentoo</category><category>hardened</category><category>pam</category><category>rootok</category><category>run_init</category><category>selinux</category></item><item><title>Separate puppet provider for Gentoo/SELinux?</title><link>https://blog.siphos.be/2013/04/separate-puppet-provider-for-gentooselinux/</link><description>&lt;p&gt;While slowly transitioning my playground infrastructure towards Puppet,
 I already am in process of creating a custom provider for things such as

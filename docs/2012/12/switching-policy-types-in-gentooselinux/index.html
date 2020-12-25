@@ -135,7 +135,6 @@ test ~ # grep POLICY_TYPES /etc/portage/make.conf
 POLICY_TYPES=&quot;targeted strict mcs&quot;
 </code></pre></div>
 
-
 <p>If you notice that this is not the case, update the <em>POLICY_TYPES</em>
 variable and rebuild all SELinux policy packages using <strong>emerge \$(qlist
 -IC sec-policy)</strong> first.</p>
@@ -155,7 +154,6 @@ total 396
 -rw-r--r--. 1 root root 402931 Dec 19 21:01 policy.27
 </code></pre></div>
 
-
 <p>Great, we're now going to switch to permissive mode and edit the SELinux
 configuration file to reflect that we are going to boot (later) into the
 mcs policy. Only change the type - I will not boot in permissive mode so
@@ -165,7 +163,6 @@ the SELINUX=enforcing can stay.</p>
 test ~ # vim /etc/selinux/config
 [... set SELINUXTYPE=mcs ...]
 </code></pre></div>
-
 
 <p>You can run <strong>sestatus</strong> to verify the changes, but be aware that -
 while the command does say that the mcs policy is loaded, this is not
@@ -182,12 +179,10 @@ Policy deny_unknown status:     denied
 Max kernel policy version:      28
 </code></pre></div>
 
-
 <p>So let's load the mcs policy shall we?</p>
 <div class="highlight"><pre><span></span><code>test ~ # cd /usr/share/selinux/mcs/
 test mcs # semodule -b base.pp -i $(ls *.pp | grep -v base | grep -v unconfined)
 </code></pre></div>
-
 
 <p>Next we are going to relabel all files on the file system, because the
 mcs policy adds in another component in the context (a sensitivity label
@@ -208,7 +203,6 @@ test mcs # setfiles -r /mnt/gentoo /etc/selinux/mcs/contexts/files/file_contexts
 test mcs # umount /mnt/gentoo
 </code></pre></div>
 
-
 <p>Finally, edit <code>/etc/fstab</code> and change all <em>rootcontext=</em> parameters to
 include a trailing <code>:s0</code>, otherwise the root contexts of these file
 systems will be illegal (in the mcs-sense) as they do not contain the
@@ -216,7 +210,6 @@ sensitivity level information.</p>
 <div class="highlight"><pre><span></span><code>test mcs # vim /etc/fstab
 [... edit rootcontext&#39;s to now include &quot;:s0&quot; ...]
 </code></pre></div>
-
 
 <p>There ya go. Now reboot and notice that all is okay, and we're running
 with the mcs policy loaded.</p>

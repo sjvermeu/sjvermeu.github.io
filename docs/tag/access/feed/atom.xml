@@ -1,180 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - access</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/access/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2013-12-31T21:18:00+01:00</updated><entry><title>Limiting file access with SELinux alone?</title><link href="https://blog.siphos.be/2013/12/limiting-file-access-with-selinux-alone/" rel="alternate"></link><published>2013-12-31T21:18:00+01:00</published><updated>2013-12-31T21:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-31:/2013/12/limiting-file-access-with-selinux-alone/</id><summary type="html">&lt;p&gt;While writing a small script to handle simple certificate authority
-activities using OpenSSL, I considered how to properly protect the files
-that OpenSSL uses for these activities. As you are probably aware, a
-system that hosts the necessary files for CA activities (like signing
-certificate requests) should be very secure …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing a small script to handle simple certificate authority
-activities using OpenSSL, I considered how to properly protect the files
-that OpenSSL uses for these activities. As you are probably aware, a
-system that hosts the necessary files for CA activities (like signing
-certificate requests) should be very secure, and the private key used to
-sign (and the private subkeys) should be very well protected.&lt;/p&gt;
-&lt;p&gt;Without the help of an &lt;a href="https://en.wikipedia.org/wiki/Hardware_security_module"&gt;Hardware Security Module
-(HSM)&lt;/a&gt; these
-private keys are just plain text files on the file system. Access to
-this file system should therefor be very well audited and protected.&lt;/p&gt;
-&lt;p&gt;It of course starts with proper Discretionary Access Control (DAC)
-protections on Linux. The private key should only be accessible by the
-(technical) user used to operate the CA activities. Next, access to this
-user should also be properly protected - if the CA activities are not
-done through the root account, make sure that all users who can get root
-access on the system and to the (technical) user used to perform the CA
-activities are trusted.&lt;/p&gt;
-&lt;p&gt;Sometimes however this isn't sufficient, or you want to protect it even
-more. With SELinux, we can implement a Mandatory Access Control (MAC)
-policy to further restrict access to the private key. The idea is to
-only allow the application (in my case the script) that performs the CA
-activities access to the private key, and nothing more. Even users who
-can get root access, but do not have the privileges SELinux-wise to
-execute the CA management script (with the proper domain transition)
-should not have any access to the private key.&lt;/p&gt;
-&lt;p&gt;I'll discuss a sample policy for that later, but for now I want to focus
-on what that would mean - not allowing other users access.&lt;/p&gt;
-&lt;p&gt;When users log on on a SELinux-enabled system, they (well, the process
-that starts the user session) get assigned a security context. This
-security context defines what the user is allowed to do on the system.
-And although it is "easy" to disallow a domain read access to a
-particular file, we must consider all other activities that the user can
-perform.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;First risk: direct file access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Assume that a user is logged on with the &lt;code&gt;unconfined_t&lt;/code&gt; domain (an
-entire context is more than just the domain, but let's stick to this for
-now). The &lt;code&gt;unconfined_t&lt;/code&gt; domain is an extremely powerful domain -
-basically, SELinux will not prevent much. That doesn't mean that SELinux
-is disabled, but rather that the &lt;code&gt;unconfined_t&lt;/code&gt; domain is granted many
-privileges. So if a user is in the &lt;code&gt;unconfined_t&lt;/code&gt; domain &lt;em&gt;and&lt;/em&gt; is not
-prevented by the standard Linux access controls (for instance because he
-is root), he can do basically everything.&lt;/p&gt;
-&lt;p&gt;SELinux-wise, we can still create a new type that &lt;code&gt;unconfined_t&lt;/code&gt; has no
-immediate access to. By creating a new type (say &lt;code&gt;ca_private_key_t&lt;/code&gt;) and
-not assign it any attributes that the &lt;code&gt;unconfined_t&lt;/code&gt; domain has
-privileges towards, the user would still not be able to access the file
-directly. The same is true for the &lt;code&gt;sysadm_t&lt;/code&gt; domain (a still
-privileged, yet slightly more restricted user domain designed for system
-administrators). However, such users could still access the file
-indirectly.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Second risk: indirect access through new SELinux policies&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;An important privilege that these users have is that they can load a new
-SELinux policy, or disable SELinux (actually switch it to permissive
-mode) if the Linux kernel has this enabled. By allowing users to load a
-new policy, they can basically create a SELinux policy module that
-grants them the necessary accesses towards the file:&lt;/p&gt;
-&lt;p&gt;``` {lang="bash"}
-allow sysadm_t ca_misc_file_t:file manage_file_perms;
-allow sysadm_t ca_misc_file_t:dir manage_dir_perms;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;So in order to prevent this, we have to make sure that these users can
-either not manipulate the SELinux policy - or make sure users on the
-system do not get access to these domains to begin with. Preventing
-loading new policies can be handled by the Linux kernel itself
-(`CONFIG_SECURITY_SELINUX_DEVELOP` should not be set then) and through
-SELinux booleans (`secure_mode_policyload` should be set to `on` and
-toggling the boolean off again should be prohibited). Still, it makes
-more sense to restrict people with access to these roles - something
-I&amp;#39;ll definitely come back to at a later point.
-
-*Third risk: indirect access through attributes*
-
-Another privilege that needs to be watched for is the ability to change
-the context of a file. If the `ca_private_key_t` type would not be
-declared properly, then the type might be assigned an attribute that
-domains have privileges against. Consider the `file_type` attribute,
-granted to file types (at least the name makes sense ;-)
-
-``` {lang=&amp;quot;bash&amp;quot;}
-# seinfo -tca_private_key_t -x
-  ca_private_key_t
-    file_type
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;The moment a domain has been granted read access to the &lt;code&gt;file_type&lt;/code&gt;
-files, then it has read access to the &lt;code&gt;ca_private_key_t&lt;/code&gt; type. In other
-words, while designing the policy, make sure that all granted
-permissions are accounted for.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Fourth risk: "raw" file system (or memory) access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;So if SELinux itself would not allow access to the file(s) anymore, are
-we done yet? Of course not. In the end, the keys are stored on the file
-system, which is located on partitions or disks, accessible by
-privileged users. Someone with direct read access to the block devices
-can still obtain the file directly, so even that should be properly
-governed.&lt;/p&gt;
-&lt;p&gt;This even extends towards memory access, because the private key might
-be cached in buffers (by the kernel) or even mapped in memory (even for
-a short while) and made accessible through direct memory access.&lt;/p&gt;
-&lt;p&gt;Such accesses might not be available to many users, but don't forget
-that on the system other applications are running as well. Some daemons
-might have the necessary privileges to access file systems directly, or
-the memory. Some users might have the rights to execute commands that
-have direct file system access (or memory). Making sure that &lt;em&gt;all&lt;/em&gt;
-domains that have these accesses are properly audited (including the
-access to those domains) will already be quite a challenge.&lt;/p&gt;
-&lt;p&gt;For a system that acts as a certificate handling system, it makes sense
-to limit exposure to a bare minimum as that makes the above auditing a
-bit less daunting.&lt;/p&gt;
-&lt;p&gt;&lt;/p&gt;
-Ok ok, let's assume the security administrator has thought of all those
-things and SELinux policy-wise properly prevents any access. That's
-enough, right?&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Fifth risk: authentication and authorization access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Of course not. Some processes or users might have access to the
-authentication files on the system (and I'm not only talking about the
-&lt;code&gt;/etc/shadow&lt;/code&gt; and &lt;code&gt;/etc/passwd&lt;/code&gt; files, but also the &lt;code&gt;/etc/pam.d/*&lt;/code&gt;
-files, or the libraries used by the PAM modules in &lt;code&gt;/lib/security&lt;/code&gt;, or
-modify rights on binaries likely executed by administrators who do have
-rights we want - there might always be a "recovery user" enabled just in
-case things really go wrong, but such "recovery users" imply that rights
-are still granted somewhere.&lt;/p&gt;
-&lt;p&gt;When modify access is granted to any of the authentication or
-authorization services, then users can grant them privileges you don't
-want to give them. So not only should access to &lt;code&gt;ca_private_key_t&lt;/code&gt;,
-&lt;code&gt;memory_device_t&lt;/code&gt;, &lt;code&gt;device_node&lt;/code&gt; and &lt;code&gt;fixed_disk_device_t&lt;/code&gt; be properly
-governed - also &lt;code&gt;etc_t&lt;/code&gt; (as this is the default for PAM files - this
-really should be worked on) and &lt;code&gt;lib_t&lt;/code&gt; are important types, and these
-are very, very open (many domains have write access to those by
-default).&lt;/p&gt;
-&lt;p&gt;Fine. Let's "hypothetically" consider that the security engineer has
-thought about all SELinux accesses and made a perfect policy. Happy now?&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Sixth risk: system boot privileges&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Actually no... first of all, some users might be able to reboot the
-system with updated boot parameters, or even with a different kernel.
-With this at hand, they can disable SELinux and still access the file.
-So make sure that rebooting the system still happens securely (you can
-use secure boot, signed kernels, ... or at least focus on boot loader
-password protection and console access). The
-&lt;a href="https://wiki.gentoo.org/wiki/Project:Integrity"&gt;Integrity&lt;/a&gt; subproject
-of the &lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;Gentoo Hardened&lt;/a&gt;
-project will focus on these matters more (just waiting for an
-EFI-enabled system to properly start documenting things). In the mean
-time, make sure that the Linux system itself is properly secured.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Seventh risk: direct system access&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Yet having a secured boot also doesn't protect us completely. If there
-is access to the system physically, users can still mount the disk on
-their system and access the files. So one might want to consider
-encrypting the partition on which the keys are stored. But the
-encryption key for the partition should still be available somewhere,
-because regular administration might need to reboot the system.&lt;/p&gt;
-&lt;p&gt;A reasonably secure system would keep the encryption key in a HSM device
-(which we don't have - see beginning of this post) or only have it
-decrypted in a secure environment (like a TPM chip on more modern
-systems). Handling TPM and securing keys is definitely also something to
-focus on further in the Integrity subproject.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Eighth risk: backups&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;And if you take backups (which we of course all do) then those backups
-should be properly protected as well. We might want to create encrypted
-backups (meaning that the CA script should allow for encrypting and
-decrypting the private key) and &lt;em&gt;not store the encryption key with the
-backup&lt;/em&gt;. And before asking me why I've emphasized this - I've seen it
-before, and I'll probably see it again in the future. Don't laugh.&lt;/p&gt;
-&lt;p&gt;Almost starts sounding like a nightmare, right? There might even be more
-risks that I haven't covered here (and I haven't even discussed
-potential vulnerabilities in the CA management script itself, or even in
-OpenSSL or other tools like the &lt;a href="http://it.slashdot.org/story/13/12/18/2122226/scientists-extract-rsa-key-from-gnupg-using-sound-of-cpu"&gt;let's hear the encryption
-key&lt;/a&gt;
-attack). Welcome to the world of security ;-)&lt;/p&gt;
-&lt;p&gt;In any case, in the next post I'll focus on the SELinux policy I wrote
-up for the simple script I created. But all the above is just to show
-that SELinux is not the answer - it is merely a part in an entire
-security architecture. A flexible, powerful part... but still a part.&lt;/p&gt;</content><category term="SELinux"></category><category term="access"></category><category term="acl"></category><category term="file access"></category><category term="Gentoo"></category><category term="selinux"></category></entry><entry><title>The weird "audit_access" permission</title><link href="https://blog.siphos.be/2013/05/the-weird-audit_access-permission/" rel="alternate"></link><published>2013-05-19T03:50:00+02:00</published><updated>2013-05-19T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-19:/2013/05/the-weird-audit_access-permission/</id><summary type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - access</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/access/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2013-05-19T03:50:00+02:00</updated><entry><title>The weird "audit_access" permission</title><link href="https://blog.siphos.be/2013/05/the-weird-audit_access-permission/" rel="alternate"></link><published>2013-05-19T03:50:00+02:00</published><updated>2013-05-19T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-19:/2013/05/the-weird-audit_access-permission/</id><summary type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
 was to give some additional information on frequently occurring denials,
 such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
@@ -187,7 +12,6 @@ real need for them. So in the majority of cases, the policy developer
 wants to disable auditing of this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dontaudit &amp;lt;somedomain&amp;gt; self:capability { dac_read_search dac_override };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;When applications wants to search through directories not owned by the
 user as which the application runs, &lt;em&gt;both&lt;/em&gt; capabilities will be checked
@@ -220,7 +44,6 @@ $ tail -1 /var/log/audit.log
 ...
 type=AVC msg=audit(1367400559.273:5224): avc:  denied  { read } for  pid=12270 comm=&amp;quot;test&amp;quot; name=&amp;quot;logrotate.status&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=2849 scontext=staff_u:staff_r:staff_t tcontext=system_u:object_r:logrotate_var_lib_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This gives the impression that the application is doing nasty stuff,
 even when it is merely checking permissions. One way would be to

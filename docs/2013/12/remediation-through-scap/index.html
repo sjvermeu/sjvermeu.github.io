@@ -163,14 +163,12 @@ Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  fixed
 </code></pre></div>
 
-
 <p>And indeed, the file has been changed and now complies with the rules
 again.</p>
 <p>We can also generate the remediation scripts offline:</p>
 <div class="highlight"><pre><span></span><code>~$ oscap xccdf eval --profile ${PROFILE} --results results-test-xccdf.xml --cpe gentoo-cpe.xml test-xccdf.xml
 ~$ oscap xccdf generate fix --output remediate.sh results-test-xccdf.xml
 </code></pre></div>
-
 
 <p>The resulting <code>remediate.sh</code> script then contains the steps to remediate
 the failures reported in the <code>results-test-xccdf.xml</code> file.</p>

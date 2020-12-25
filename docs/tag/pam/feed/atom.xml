@@ -35,13 +35,11 @@ the &lt;code&gt;pam\_u2f&lt;/code&gt; package, as the necessary dependencies wil
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge pam_u2f
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Next, for each user, a registration has to be made. This registration is needed for the
 U2F components to be able to correctly authenticate the use of a U2F key for a particular
 user. This is done with &lt;code&gt;pamu2fcfg&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ pamu2fcfg -u&amp;lt;username&amp;gt; &amp;gt; ~/.config/Yubico/u2f_keys
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The U2F USB key must be plugged in when the command is executed, as a succesful keypress (on the
 U2F device) is needed to complete the operation.&lt;/p&gt;
@@ -50,7 +48,6 @@ through the &lt;code&gt;/etc/pam.d/system-local-login&lt;/code&gt; PAM configura
 local logon services.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auth     required     pam_u2f.so
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Consider the problems you might face&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;When fiddling with PAM, it is important to keep in mind what could fail. During the setup, it
@@ -75,7 +72,6 @@ udev_read_db(...)
 dev_rw_generic_usb_dev(...)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The first two rules are needed because the operation to trigger the USB key uses the udev tables
 to find out where the key is located/attached, before it interacts with it. This interaction is then
 controlled through the first rule.&lt;/p&gt;
@@ -88,83 +84,7 @@ my password (or extracting it from memory) won't suffice to perform a successful
 &lt;p&gt;If you want to use a different two-factor authentication, check out the use of the &lt;a href="https://wiki.gentoo.org/wiki/Google_Authenticator"&gt;Google
 authenticator&lt;/a&gt;, another nice article on the Gentoo wiki. It is also possible to use Yubico keys
 for remote authentication, but that uses the OTP (One Time Password) functionality which isn't active
-on the Yubico keys that I own.&lt;/p&gt;</content><category term="Security"></category><category term="gentoo"></category><category term="security"></category><category term="yubico"></category><category term="u2f"></category><category term="pam"></category></entry><entry><title>Why does it access /etc/shadow?</title><link href="https://blog.siphos.be/2014/12/why-does-it-access-etcshadow/" rel="alternate"></link><published>2014-12-30T22:48:00+01:00</published><updated>2014-12-30T22:48:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-30:/2014/12/why-does-it-access-etcshadow/</id><summary type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
-that it (well, the authdaemon that is part of Courier) wanted to access
-&lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
-know that this is through the PAM support (more specifically,
-&lt;code&gt;pam_unix …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
-that it (well, the authdaemon that is part of Courier) wanted to access
-&lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
-know that this is through the PAM support (more specifically,
-&lt;code&gt;pam_unix.so&lt;/code&gt;). But why? After all, &lt;code&gt;pam_unix.so&lt;/code&gt; should try to execute
-&lt;code&gt;unix_chkpwd&lt;/code&gt; to verify a password and not read in the shadow file
-directly (which would require all PAM-aware applications to be granted
-access to the shadow file).&lt;/p&gt;
-&lt;p&gt;So I dived into the PAM-Linux sources (yay free software).&lt;/p&gt;
-&lt;p&gt;In &lt;code&gt;pam_unix_passwd.c&lt;/code&gt;, the &lt;em&gt;_unix_run_verify_binary()&lt;/em&gt; method is
-called but only if the &lt;em&gt;get_account_info()&lt;/em&gt; method returns
-&lt;code&gt;PAM_UNIX_RUN_HELPER&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;``` {lang="c"}
-static int _unix_verify_shadow(pam_handle_t &lt;em&gt;pamh, const char &lt;/em&gt;user, unsigned int ctrl)
-{
-...
-        retval = get_account_info(pamh, user, &amp;amp;pwent, &amp;amp;spent);
-...
-        if (retval == PAM_UNIX_RUN_HELPER) {
-                retval = _unix_run_verify_binary(pamh, ctrl, user, &amp;amp;daysleft);
-                if (retval == PAM_AUTH_ERR || retval == PAM_USER_UNKNOWN)
-                        return retval;
-        }&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;In `passverify.c` this method will check the password entry file and, if
-the entry is a shadow file, will return `PAM_UNIX_RUN_HELPER` if the
-current user id is not root, or if SELinux is enabled:
-
-``` {lang=&amp;quot;c&amp;quot;}
-PAMH_ARG_DECL(int get_account_info,
-        const char *name, struct passwd **pwd, struct spwd **spwdent)
-{
-        /* UNIX passwords area */
-        *pwd = pam_modutil_getpwnam(pamh, name);        /* Get password file entry... */
-        *spwdent = NULL;
-
-        if (*pwd != NULL) {
-...
-                } else if (is_pwd_shadowed(*pwd)) {
-                        /*
-                         * ...and shadow password file entry for this user,
-                         * if shadowing is enabled
-                         */
-#ifndef HELPER_COMPILE
-                        if (geteuid() || SELINUX_ENABLED)
-                                return PAM_UNIX_RUN_HELPER;
-#endif
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;The &lt;code&gt;SELINUX_ENABLED&lt;/code&gt; is a C macro defined in the same file:&lt;/p&gt;
-&lt;p&gt;``` {lang="c"}&lt;/p&gt;
-&lt;h1&gt;ifdef WITH_SELINUX&lt;/h1&gt;
-&lt;h1&gt;include&lt;/h1&gt;
-&lt;h1&gt;define SELINUX_ENABLED is_selinux_enabled()&amp;gt;0&lt;/h1&gt;
-&lt;h1&gt;else&lt;/h1&gt;
-&lt;h1&gt;define SELINUX_ENABLED 0&lt;/h1&gt;
-&lt;h1&gt;endif&lt;/h1&gt;
-&lt;p&gt;```&lt;/p&gt;
-&lt;p&gt;And this is where my "aha" moment came forth: the Courier authdaemon
-runs as root, so its user id is 0. The &lt;em&gt;geteuid()&lt;/em&gt; method will return 0,
-so the &lt;code&gt;SELINUX_ENABLED&lt;/code&gt; macro must return non-zero for the proper path
-to be followed. A quick check in the audit logs, after disabling
-&lt;em&gt;dontaudit&lt;/em&gt; lines, showed that the Courier IMAPd daemon wants to get the
-attribute(s) of the &lt;code&gt;security_t&lt;/code&gt; file system (on which the SELinux
-information is exposed). As this was denied, the call to
-&lt;em&gt;is_selinux_enabled()&lt;/em&gt; returns -1 (error) which, through the macro,
-becomes 0.&lt;/p&gt;
-&lt;p&gt;So granting &lt;em&gt;selinux_getattr_fs(courier_authdaemon_t)&lt;/em&gt; was enough to
-get it to use the &lt;code&gt;unix_chkpwd&lt;/code&gt; binary again.&lt;/p&gt;
-&lt;p&gt;To fix this properly, we need to grant this to all PAM using
-applications. There is an interface called &lt;em&gt;auth_use_pam()&lt;/em&gt; in the
-policies, but that isn't used by the Courier policy. Until now, that is
-;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="chkpwd"></category><category term="pam"></category><category term="selinux"></category><category term="shadow"></category><category term="unix_chkpwd"></category></entry><entry><title>Not needing run_init for password-less service management</title><link href="https://blog.siphos.be/2013/04/not-needing-run_init-for-password-less-service-management/" rel="alternate"></link><published>2013-04-09T22:14:00+02:00</published><updated>2013-04-09T22:14:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-09:/2013/04/not-needing-run_init-for-password-less-service-management/</id><summary type="html">&lt;p&gt;One of the things that has been bugging me was why, even with having
+on the Yubico keys that I own.&lt;/p&gt;</content><category term="Security"></category><category term="gentoo"></category><category term="security"></category><category term="yubico"></category><category term="u2f"></category><category term="pam"></category></entry><entry><title>Not needing run_init for password-less service management</title><link href="https://blog.siphos.be/2013/04/not-needing-run_init-for-password-less-service-management/" rel="alternate"></link><published>2013-04-09T22:14:00+02:00</published><updated>2013-04-09T22:14:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-09:/2013/04/not-needing-run_init-for-password-less-service-management/</id><summary type="html">&lt;p&gt;One of the things that has been bugging me was why, even with having
 &lt;code&gt;pam_rootok.so&lt;/code&gt; set in &lt;code&gt;/etc/pam.d/run_init&lt;/code&gt;, I cannot enjoy
 passwordless service management without using &lt;strong&gt;run_init&lt;/strong&gt; directly:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# rc-service postgresql-9.2 status
@@ -175,7 +95,6 @@ Password:
 Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the things that has been bugging me was why, even with having
 &lt;code&gt;pam_rootok.so&lt;/code&gt; set in &lt;code&gt;/etc/pam.d/run_init&lt;/code&gt;, I cannot enjoy
@@ -188,7 +107,6 @@ Password:
 Authenticating root.
  * status: started
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So I decided to &lt;strong&gt;strace&lt;/strong&gt; the two commands and look for the
 differences. I found out that there is even a SELinux permission for
@@ -212,7 +130,6 @@ the trace I found that the previous context was also &lt;em&gt;run_init_t&lt;/em
 20451 close(3)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Because there already is a transition to &lt;em&gt;run_init_t&lt;/em&gt; upon calling the
 scripts, the underlying call to &lt;strong&gt;runscripts&lt;/strong&gt; causes the "previous"
 attribute to be set to &lt;em&gt;run_init_t&lt;/em&gt; as well, and only then is
@@ -230,6 +147,5 @@ gen_require(`
 
 allow run_init_t self:passwd rootok;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I'll probably add this in Gentoo's policy.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="pam"></category><category term="rootok"></category><category term="run_init"></category><category term="selinux"></category></entry></feed>

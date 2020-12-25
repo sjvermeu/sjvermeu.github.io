@@ -31,7 +31,6 @@ package:&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Here, the developer warns the administrator that, if an upgrade of the
 package from version 0.4 or older occurred, an additional action needs
 to be taken. For others, he informs the administrators how to mark the
@@ -43,7 +42,6 @@ as separate files for each deployment:&lt;/p&gt;
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-131631.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-200851.log
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If &lt;code&gt;FEATURES="split-elog"&lt;/code&gt; is set in your &lt;code&gt;make.conf&lt;/code&gt; file, then the
 elog files will be stored in separate category subdirectories. Below is
@@ -67,7 +65,6 @@ You should set your desired PostgreSQL slot:
     eselect postgresql set &amp;lt;slot&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the file, package information is provided, and each set of logging
 paragraphs is accompanied with information where in the build process
 the logging came up. For instance, &lt;code&gt;WARN: postinst&lt;/code&gt; sais that the
@@ -89,7 +86,6 @@ PORT_LOGDIR=&amp;quot;/var/log/portage&amp;quot;
 ~$ ls -ldZ /var/log/portage/
 drwxrwsr-x. 3 portage portage system_u:object_r:portage_log_t 679936 Sep 24 13:12 /var/log/portage/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With the variable set, build logs will be provided for each emerge (and
 unmerge) operation of the package. These logs contain everything shown

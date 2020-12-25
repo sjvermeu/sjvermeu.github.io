@@ -164,7 +164,6 @@ CFLAGS=&quot;-march=x86-64 -O2 -pipe&quot;
         -fstack-protector-all&quot;
 </code></pre></div>
 
-
 <p>I am aware that the CFLAGS between the two are not the same (duh), and I
 know as well that the expansion given above isn't entirely accurate. But
 still, it gives some idea on the differences.</p>
@@ -199,7 +198,6 @@ that I did was a single-thread run for CPU performance testing.</p>
 <div class="highlight"><pre><span></span><code>$ sysbench --test=cpu --cpu-max-prime=20000 run
 </code></pre></div>
 
-
 <p>This test verifies prime numbers by dividing the number with
 sequentially increasing numbers and verifying that the remainder (modulo
 calculation) is zero. If it is, then the number is not prime and the
@@ -224,7 +222,6 @@ med    total   35,3334   36,4266
      e.total   35,3314   36,2640
 </code></pre></div>
 
-
 <p>On average (I did three runs on each system), the guest took 3,55% more
 time to finish the test than the host (<code>total</code>). If we look at the pure
 calculation (so not the remaining overhead of the inner workings -
@@ -245,7 +242,6 @@ avg    total   17,5185   18,0965
 med    total   17,8084   18,0921
      e.total   35,6131   36,0194
 </code></pre></div>
-
 
 <p>With these figures, we notice that the guest average total run time
 takes 1,67% more time to complete, and the event time only 1,23%. I was
@@ -279,19 +275,16 @@ $ sysbench --test=fileio --file-total-size=6G --file-test-mode=rndrw --max-time=
 $ sysbench --test=fileio --file-total-size=6G cleanup
 </code></pre></div>
 
-
 <p>In the output, the throughput seems to be most important:</p>
 <div class="highlight"><pre><span></span><code>Operations performed:  4348 Read, 2898 Write, 9216 Other = 16462 Total
 Read 67.938Mb  Written 45.281Mb  Total transferred 113.22Mb  (1.8869Mb/sec)
 </code></pre></div>
-
 
 <p>In the above case, the throughput is 1,8869 Mbps. So let's look at the
 (averaged) results:</p>
 <div class="highlight"><pre><span></span><code>Host:  1,8424 Mbps
 Guest: 1,5591 Mbps
 </code></pre></div>
-
 
 <p>The above figures (which are an average of 3 runs) tell us that the
 guest has a throughput of about 84,75% (so we take about 15% performance
@@ -304,7 +297,6 @@ instance, let's look at the impact of <code>data=ordered</code> versus
 6G, data=journal, barrier=1: 599,85 Kbps
 6G, data=journal, barrier=0: 767,93 Kbps
 </code></pre></div>
-
 
 <p>From the figures, we can see that the <code>data=journal</code> option slows down
 the throughput to a final figure about 30% of the original throughput

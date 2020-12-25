@@ -139,12 +139,10 @@ completed:</p>
 <div class="highlight"><pre><span></span><code>~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
 </code></pre></div>
 
-
 <p>Then I tell Portage to install the (built) files into the <code>images/</code>
 directory:</p>
 <div class="highlight"><pre><span></span><code>~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
 </code></pre></div>
-
 
 <p>The installation phase fails again (with the same error as during the
 build, which is logical as the <code>Makefile</code> can't install files that
@@ -154,7 +152,6 @@ continuing with the merging of the files to the life file system:</p>
 <div class="highlight"><pre><span></span><code>~# touch /var/portage/portage/sys-process/fcron-9999/.installed
 ~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild qmerge
 </code></pre></div>
-
 
 <p>Et voila, <code>fcron-9999</code> is now installed on the system, ready to validate
 the patch I had to check.</p>

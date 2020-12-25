@@ -43,7 +43,6 @@ The option -d requires that a line number, as shown by the --list, is given, lik
   selocal -d 12
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Let's say that you need to launch a small script you written as a
 daemon, but you want this to run while you are still in the &lt;em&gt;staff_t&lt;/em&gt;
 domain (it is a user-sided daemon you use personally). As regular
@@ -56,7 +55,6 @@ do so as follows:&lt;/p&gt;
 (some output on building the policy module)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;When finished, the local policy is enhanced with the two mentioned
 rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --list
@@ -64,11 +62,9 @@ rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
 13: corenet_tcp_bind_generic_port(staff_t) # Launch local webserv.py daemon
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If you need to delete a rule, just pass the line number:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --delete 13
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Having this tool around also makes it easier to test out changes
 suggested through bugreports. When I test such changes, I add in the bug

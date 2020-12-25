@@ -48,7 +48,6 @@ locally defined. Consider the following command:&lt;/p&gt;
   -j SECMARK --selctx system_u:object_r:myauth_packet_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With this command, packets that originate from the &lt;em&gt;192.168.1.2&lt;/em&gt; host
 and arrive on port 443 (typically used for HTTPS traffic) are marked as
 &lt;code&gt;myauth_packet_t&lt;/code&gt;. SELinux policy writers can then allow domains to
@@ -57,13 +56,11 @@ receive this type of packets (or send) through the &lt;em&gt;packet&lt;/em&gt; c
 allow mydomain_t myauth_packet_t:packet recv;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The SELinux policy modules enable this through the
 &lt;em&gt;corenet_sendrecv_&amp;lt;type&amp;gt;_{client,server}_packets&lt;/em&gt; interfaces:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_sendrecv_http_client_packets(mybrowser_t)
 # allow mybrowser_t http_client_packet_t:packet { send recv };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As a common rule, packets are marked as client packets or server
 packets, depending on the role of the &lt;em&gt;domain&lt;/em&gt;. In the above example,

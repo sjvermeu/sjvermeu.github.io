@@ -139,7 +139,6 @@ type etc_private_t;
 fs_associate(etc_private_t)
 </code></pre></div>
 
-
 <p>This simple policy introduces a type (<code>etc_private_t</code>) which is allowed
 to be used for files (it associates with a file system). <em>Do not</em> use
 the <code>files_type()</code> interface as this would assign a set of attributes
@@ -153,12 +152,10 @@ account, it would fail:</p>
 chcon: failed to change context of &#39;/etc/private&#39; to &#39;system_u:object_r:etc_private_t:s0&#39;: Permission denied
 </code></pre></div>
 
-
 <p>With the following rule, the <code>sysadm_t</code> domain (which I use for system
 administration) is allowed to change the context to <code>etc_private_t</code>:</p>
 <div class="highlight"><pre><span></span><code>allow sysadm_t etc_private_t:{dir file} relabelto;
 </code></pre></div>
-
 
 <p>With this in place, the administrator can label resources as
 <code>etc_private_t</code> without having read access to these resources
@@ -176,11 +173,9 @@ cat: /etc/private/README: Permission denied
 Hello World!
 </code></pre></div>
 
-
 <p>To prevent this, enable the <em>secure_mode_policyload</em> SELinux boolean:</p>
 <div class="highlight"><pre><span></span><code>~# setsebool secure_mode_policyload on
 </code></pre></div>
-
 
 <p>This will prevent any policy and SELinux state manipulation... including
 permissive mode, but also including loading additional SELinux policies

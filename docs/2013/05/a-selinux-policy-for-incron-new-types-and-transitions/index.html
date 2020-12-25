@@ -133,7 +133,6 @@ type=AVC msg=audit(1368709633.285:28212): avc:  denied  { setuid } for  pid=8159
 type=AVC msg=audit(1368709633.287:28213): avc:  denied  { search } for  pid=8159 comm=&quot;incrontab&quot; name=&quot;/&quot; dev=&quot;tmpfs&quot; ino=3927 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:tmp_t tclass=dir
 </code></pre></div>
 
-
 <p>The requests for the setuid and setgid capabilities are needed for the
 application to safely handle the user incrontabs. Note that SELinux does
 not "remove" the setuid bit on the binary itself, but does govern the
@@ -145,12 +144,10 @@ in the <code>/tmp</code> location.</p>
 files_search_tmp(incrontab_t)
 </code></pre></div>
 
-
 <p>In the next round of iteration, we notice the same error message with
 the following denial:</p>
 <div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368728433.521:28215): avc:  denied  { write } for  pid=8913 comm=&quot;incrontab&quot; name=&quot;/&quot; dev=&quot;tmpfs&quot; ino=3927 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:tmp_t tclass=dir
 </code></pre></div>
-
 
 <p>It is safe to assume here that the process wants to create a temporary
 file (if it is a directory, we will find out later and can adapt). But
@@ -160,14 +157,12 @@ type, like <code>incrontab_tmp_t</code>. So we define that on top of the policy:
 files_tmp_file(incrontab_tmp_t)
 </code></pre></div>
 
-
 <p>Also, we need to allow the <code>incrontab_t</code> domain write privileges into
 the <code>tmp_t</code> labeled directory, but with an automatic file transition
 towards <code>incrontab_tmp_t</code> for every file written. This is done through
 the <em>files_tmp_filetrans</em> method:</p>
 <div class="highlight"><pre><span></span><code>files_tmp_filetrans(incrontab_t, incrontab_tmp_t, file)
 </code></pre></div>
-
 
 <p>What this sais is that, if a domain <code>incrontab_t</code> wants to create a
 <code>file</code> inside <code>tmp_t</code>, then this file is automatically labeled
@@ -179,7 +174,6 @@ rests us is to allow <strong>incrontab</strong> to actually manage those files:<
 <div class="highlight"><pre><span></span><code>allow incrontab_t incrontab_tmp_t:file manage_file_perms;
 </code></pre></div>
 
-
 <p>With those in place, let's look at the outcome:</p>
 <div class="highlight"><pre><span></span><code>$ incrontab -e
 editor finished with error: No such file or directory
@@ -187,7 +181,6 @@ editor finished with error: No such file or directory
 # tail audit.log
 type=AVC msg=audit(1368729268.465:28217): avc:  denied  { search } for  pid=8981 comm=&quot;incrontab&quot; name=&quot;bin&quot; dev=&quot;dm-3&quot; ino=524289 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:bin_t tclass=dir
 </code></pre></div>
-
 
 <p>Considering that here, <strong>incrontab</strong> is going to launch the users
 <code>$EDITOR</code> application to allow him (or her) to create an incrontab, we
@@ -219,7 +212,6 @@ type=AVC msg=audit(1368729825.673:28237): avc:  denied  { dac_read_search } for 
 type=AVC msg=audit(1368729825.673:28237): avc:  denied  { dac_override } for  pid=9030 comm=&quot;incrontab&quot; capability=1  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
 </code></pre></div>
 
-
 <p>From a quick look through <strong>ps</strong>, I notice that the application runs as
 the user (luckily, otherwise I could use the editor to escape and get a
 root shell) after which it tries to do something. Of course, it makes
@@ -230,7 +222,6 @@ before</a>):</p>
 <div class="highlight"><pre><span></span><code>allow incrontab_t self:capability { dac_read_search setuid setgid };
 </code></pre></div>
 
-
 <p>On to the next failure:</p>
 <div class="highlight"><pre><span></span><code>$ incrontab -e 
 cannot move temporary table: Permission denied
@@ -238,7 +229,6 @@ cannot move temporary table: Permission denied
 # tail audit.log
 type=AVC msg=audit(1368730155.706:28296): avc:  denied  { write } for  pid=9088 comm=&quot;incrontab&quot; name=&quot;incron&quot; dev=&quot;dm-4&quot; ino=19725 scontext=user_u:user_r:incrontab_t tcontext=root:object_r:incron_spool_t tclass=dir
 </code></pre></div>
-
 
 <p>Now the application wants to write this file there. Now remember we
 already have <code>search_dir_perms</code> permissions into <code>incron_spool_t</code>? We
@@ -253,7 +243,6 @@ $ incrontab -e
 ...
 table updated
 </code></pre></div>
-
 
 <p>Finally! And looking at the other options in <strong>incrontab</strong>, it seems
 that the policy for <code>incrontab_t</code> is finally complete, and looks like
@@ -281,7 +270,6 @@ auth_use_nsswitch(incrontab_t)
 
 userdom_use_user_terminals(incrontab_t)
 </code></pre></div>
-
 
 <p>Next on the agenda: the <code>incrond_t</code> domain.</p>
             </div>

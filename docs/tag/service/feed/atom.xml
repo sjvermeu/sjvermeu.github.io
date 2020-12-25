@@ -17,7 +17,6 @@ following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;All I have to do is make sure that the /mnt/puppet location is a shared
 resource (in my case, an NFSv4 read-only mount) which I can just mount
 on a fresh image.&lt;/p&gt;
@@ -36,7 +35,6 @@ unattended calls towards rc-service).&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;As mentioned, I still manually patch the openrc provider (located in
 /usr/lib64/ruby/site_ruby/1.9.1/puppet/provider/service) so that the
 run_init command is known as well, and that all invocations of the
@@ -47,7 +45,6 @@ rc-service is prepended with run_init:&lt;/p&gt;
 ...
  [command(:runinit), command(:rcservice), @resource[:name], :start ]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And the same for the stop and status definitions. I might use Portage'
 postinst hook to automatically apply the patch so I don't need to do

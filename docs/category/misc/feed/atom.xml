@@ -153,14 +153,12 @@ trying to umount the share, it said that it couldn't find the mount in
 /mnt/nfs/portage was not found in /proc/mounts
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
 trying to umount the share, it said that it couldn't find the mount in
 &lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and the umount works
 correctly again.&lt;/p&gt;</content><category term="Misc"></category><category term="ip6"></category><category term="ipv6"></category><category term="linux"></category><category term="nfs4"></category><category term="nfsv4"></category><category term="umount"></category></entry><entry><title>Today was a productive day</title><link href="https://blog.siphos.be/2013/08/today-was-a-productive-day/" rel="alternate"></link><published>2013-08-15T20:58:00+02:00</published><updated>2013-08-15T20:58:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-15:/2013/08/today-was-a-productive-day/</id><summary type="html">&lt;p&gt;Fixed 14 bugs today, with a few more pending (those for packages only
@@ -205,7 +203,6 @@ code and find the logical error. Below is a snippet of it:&lt;/p&gt;
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;It doesn't matter what the code is supposed to do, but from what I can
 remember, I shouldn't be adding &lt;code&gt;maxRange&lt;/code&gt; to the &lt;code&gt;i&lt;/code&gt; variable (yet - as
 I do that later in the code). But instead of setting up the java
@@ -225,7 +222,6 @@ the method, which gives me:&lt;/p&gt;
    21:  iload   5
    23:  if_icmpge       106
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I know lines 11 and 12 is about pushing the 2nd and 3rd arguments of the
 function (which are &lt;code&gt;startValue&lt;/code&gt; and &lt;code&gt;maxRange&lt;/code&gt;) to the stack to add

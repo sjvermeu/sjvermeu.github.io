@@ -11,14 +11,12 @@ to the file system, with an error that looks like so:&lt;/p&gt;
  *   Failed to set SELinux security labels.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This has been &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=516608"&gt;reported as bug
 516608&lt;/a&gt; and, after some
 investigation, the cause is found. First the quick workaround:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# cd /etc/selinux/strict/contexts/files
 ~# rm *.bin
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;And do the same for the other SELinux policy stores on the system
 (targeted, mcs, mls, ...).&lt;/p&gt;
@@ -66,7 +64,6 @@ context files:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cd /etc/selinux/strict/contexts/files
 # for n in *.bin; do sefcontext_compile ${n%%.bin}; done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The &lt;strong&gt;sefcontext_compile&lt;/strong&gt; command will rebuild the SELinux context
 files. When that has been done, &lt;strong&gt;matchpathcon&lt;/strong&gt; should show the right

@@ -17,7 +17,6 @@ course also made available in the CIL code. For instance the
 (typeattribute user_home_content_type)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Interfaces provided by the module are also applied. You won't find the
 interface CIL code in &lt;code&gt;/var/lib/selinux/mcs/active/modules&lt;/code&gt; though; the
 code at that location is already "expanded" and filled in. So for the
@@ -37,13 +36,11 @@ code at that location is already "expanded" and filled in. So for the
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;However, when checking which domains use the &lt;code&gt;admindomain&lt;/code&gt; attribute,
 notice the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# seinfo -aadmindomain -x
 ERROR: Provided attribute (admindomain) is not a valid attribute name.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;But don't panic - this has a reason: as long as there is no SELinux rule
 applied towards the &lt;code&gt;admindomain&lt;/code&gt; attribute, then the SELinux policy
@@ -55,7 +52,6 @@ confirmed by adding a single, cosmetic rule, like so:&lt;/p&gt;
    admindomain
       sysadm_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So there you go. That does mean that if something previously used the
 attribute assignation for any decisions (like "for each domain assigned
@@ -89,7 +85,6 @@ allow incrond_t incron_notify_type:file read_file_perms;
 allow incrond_t incron_notify_type:lnk_file read_lnk_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That's it. For now, this won't do much as there are no types associated
 with the &lt;code&gt;incron_notify_type&lt;/code&gt; attribute, so let's change that by
 introducing the interface:&lt;/p&gt;
@@ -113,14 +108,12 @@ interface(`incron_notify_file&amp;#39;,`
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That's it! If you want &lt;strong&gt;incrond&lt;/strong&gt; to watch user content, one can now do
 something like:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;incron_notify_file(home_root_t)
 incron_notify_file(user_home_dir_t)
 incron_notify_file(user_home_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Moreover, we can now also easily check what additional types have been
 marked as such:&lt;/p&gt;
@@ -130,7 +123,6 @@ marked as such:&lt;/p&gt;
       user_home_t
       home_root_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This attribute approach is commonly used for such setups and is becoming
 more and more a "standard" approach.&lt;/p&gt;

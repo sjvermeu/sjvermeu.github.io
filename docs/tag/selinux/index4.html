@@ -75,48 +75,6 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
-                <h2><a href="https://blog.siphos.be/2014/06/d-bus-and-selinux/">D-Bus and SELinux</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2014-06-30T20:07:00+02:00"> Mon 30 June 2014</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/busconfig/">busconfig</a>
-        /
-	<a href="https://blog.siphos.be/tag/d-bus/">d-bus</a>
-        /
-	<a href="https://blog.siphos.be/tag/dbus/">dbus</a>
-        /
-	<a href="https://blog.siphos.be/tag/linux/">linux</a>
-        /
-	<a href="https://blog.siphos.be/tag/policy/">policy</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>After a <a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/">post about
-D-Bus</a> comes the
-inevitable related post about SELinux with D-Bus.</p>
-<p>Some users might not know that D-Bus is an SELinux-aware application.
-That means it has SELinux-specific code in it, which has the D-Bus
-behavior based on the SELinux policy (and might not necessarily honor
-the "permissive …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/06/d-bus-and-selinux/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
                 <h2><a href="https://blog.siphos.be/2014/06/chroots-for-selinux-enabled-applications/">Chroots for SELinux enabled applications</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -380,7 +338,6 @@ human readable, like so:</p>
 <div class="highlight"><pre><span></span><code>type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&quot;emerge&quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&quot;dm-3&quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
 </code></pre></div>
 
-
 <p>To know what this …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/">more ...</a>
                 </div>
@@ -465,6 +422,45 @@ then a set of features provided by SELinux. The talk is directed …</p>
                 </div>
             </article>
             <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/">Switching context depending on user code-wise</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-01-12T22:43:00+01:00"> Sun 12 January 2014</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/default_context/">default_context</a>
+        /
+	<a href="https://blog.siphos.be/tag/domain/">domain</a>
+        /
+	<a href="https://blog.siphos.be/tag/libselinux/">libselinux</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux-aware/">selinux-aware</a>
+        /
+	<a href="https://blog.siphos.be/tag/transition/">transition</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>I blogged about how SELinux decides what the context should be for a
+particular Linux user; how it checks the default context(s) and tells
+the SELinux-aware application on what the new context should be. Let's
+look into the C code that does so, and how an application should behave …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/">more ...</a>
+                </div>
+            </article>
+            <hr/>
 
         <ul class="pagination">
                 <li class="prev"><a href="https://blog.siphos.be/tag/selinux/index3.html">&laquo;</a>
@@ -487,8 +483,6 @@ then a set of features provided by SELinux. The talk is directed …</p>
                             href="https://blog.siphos.be/tag/selinux/8.html">8</a></li>
                     <li class=""><a
                             href="https://blog.siphos.be/tag/selinux/9.html">9</a></li>
-                    <li class=""><a
-                            href="https://blog.siphos.be/tag/selinux/10.html">10</a></li>
                 <li class="next"><a
                         href="https://blog.siphos.be/tag/selinux/index5.html">&raquo;</a></li>
         </ul>

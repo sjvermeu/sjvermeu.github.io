@@ -141,7 +141,6 @@ follows:</p>
 gen_tunable(incron_notify_non_security_files, false)
 </code></pre></div>
 
-
 <p>With this boolean in place, the policy can be enhanced with code like
 the following:</p>
 <div class="highlight"><pre><span></span><code>tunable_policy(`incron_notify_non_security_files&#39;,`
@@ -149,7 +148,6 @@ the following:</p>
         files_read_all_dirs_except(incrond_t)
 &#39;)
 </code></pre></div>
-
 
 <p>This code tells SELinux that, <em>if</em> the
 <em>incron_notify_non_security_files</em> boolean is set (which by default
@@ -166,11 +164,9 @@ May 17 10:01:15 test incrond[11704]: access denied on /var/log/aide - events wil
 incron_notify_non_security_files --&gt; off
 </code></pre></div>
 
-
 <p>Let's enable the boolean and try again:</p>
 <div class="highlight"><pre><span></span><code># setsebool incron_notify_non_security_files on
 </code></pre></div>
-
 
 <p>Reloading the incrontab tables now works, and the notifications work as
 well.</p>

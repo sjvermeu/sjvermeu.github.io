@@ -147,7 +147,6 @@ example):</p>
 <div class="highlight"><pre><span></span><code>allow sysadm_t mozilla_t:process { noatsecure };
 </code></pre></div>
 
-
 <p>if every domain transition for which this permission isn't allowed would
 log its denial, our audit logs would be filled with noise. That is why
 the reference policy by default hides (<code>dontaudit</code>) these calls. But
@@ -157,7 +156,6 @@ into contact with it, like I did:</p>
 &gt;&gt;&gt; Setting SELinux security labels
 ERROR: ld.so: object &#39;libsandbox.so&#39; from LD_PRELOAD cannot be preloaded: ignored.
 </code></pre></div>
-
 
 <p>This error message is when Portage (running in <code>portage_t</code>) wants to
 relabel the files that it just placed on the system through setfiles

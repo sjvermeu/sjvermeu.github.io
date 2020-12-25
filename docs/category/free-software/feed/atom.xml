@@ -16,7 +16,6 @@ known, so it did not take them up to the database. As a result, systems would ne
 ~# rm /var/lib/cvechecker/cache/nvdcve-2.0-modified.*
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This will make sure that the next run of &lt;code&gt;pullcves pull&lt;/code&gt; will re-download those files, and attempt to load
 the resulting CVEs back in the database.&lt;/p&gt;
 &lt;p&gt;Sorry for this issue :-(&lt;/p&gt;</content><category term="Free Software"></category><category term="cvechecker"></category></entry><entry><title>cvechecker 3.7 released</title><link href="https://blog.siphos.be/2017/03/cvechecker-3.7-released/" rel="alternate"></link><published>2017-03-02T10:00:00+01:00</published><updated>2017-03-02T10:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-03-02:/2017/03/cvechecker-3.7-released/</id><summary type="html">&lt;p&gt;After a long time of getting too little attention from me, I decided to make a 
@@ -75,7 +74,6 @@ not load one of the GnuPG keys I passed it on.&lt;/p&gt;
  * Known gpg key: 0x22899E947878B0CE
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I did not modify my key store at all, so what happened?&lt;/p&gt;
 
 
@@ -132,14 +130,12 @@ into raw images:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ qemu-img convert root.qcow2 root.raw
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With the image now available in raw format, I can use the loop devices to mount
 the image(s) on my system:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# losetup /dev/loop0 root.raw
 ~# kpartx -a /dev/loop0
 ~# mount /dev/mapper/loop0p1 /mnt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The &lt;code&gt;kpartx&lt;/code&gt; command will detect the partitions and ensure that those are
 available: the first partition becomes available at &lt;code&gt;/dev/loop0p1&lt;/code&gt;, the
@@ -152,12 +148,10 @@ a shadow-compatible hash for a password:&lt;/p&gt;
 $1$BHbMVz9i$qYHmULtXIY3dqZkyfW/oO.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The challenge wasn't to find the hash though, but to edit it:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# vim /mnt/etc/shadow
 vim: Permission denied
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The image that I downloaded used SELinux (of course), which meant that the &lt;code&gt;shadow&lt;/code&gt;
 file was labeled with &lt;code&gt;shadow_t&lt;/code&gt; which I am not allowed to access. And I didn't
@@ -166,7 +160,6 @@ time left, apparently).&lt;/p&gt;
 &lt;p&gt;So I remounted the image, but now with the &lt;code&gt;context=&lt;/code&gt; mount option, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o context=&amp;quot;system_u:object_r:var_t:s0: /dev/loop0p1 /mnt
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now all files are labeled with &lt;code&gt;var_t&lt;/code&gt; which I do have permissions to edit. But
 I also need to take care that the files that I edited get the proper label again.
@@ -179,7 +172,6 @@ and force a file system relabeling operation.&lt;/p&gt;
 ~# kpart -d /dev/loop0
 ~# losetup -d /dev/loop0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With that done, I had root access to the image and could start testing out
 my own set of commands.&lt;/p&gt;
@@ -202,7 +194,6 @@ looking for top files in the other environments.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Enabling some debugging on the command gave me a slight pointer why this occurred:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv &amp;#39;testing&amp;#39;, u&amp;#39;salt://top.sls&amp;#39;
 [DEBUG   ] No contents loaded for env: testing
@@ -210,13 +201,11 @@ looking for top files in the other environments.&lt;/p&gt;
 [ERROR   ] Template was specified incorrectly: False
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I was using a single top file as recommended by Salt, but apparently it was still
 looking for top files in the other environments.&lt;/p&gt;
 &lt;p&gt;Yet, if I split the top files across the environments, I got the following warning:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[WARNING ] Top file merge strategy set to &amp;#39;merge&amp;#39; and multiple top files found. Top file merging order is undefined; for better results use &amp;#39;same&amp;#39; option
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So what's all this about?&lt;/p&gt;
 
@@ -232,7 +221,6 @@ caused by my environments not having a fall-back definition.&lt;/p&gt;
     - /srv/salt/testing
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The problem is that Salt expects ''a'' top file through the environment. What I had to do was to
 set the fallback directory to the base directory again, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;file_roots:
@@ -242,7 +230,6 @@ set the fallback directory to the base directory again, like so:&lt;/p&gt;
     - /srv/salt/testing
     - /srv/salt/base
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With this set, the error disappeared and both salt and myself were happy again.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;When multiple top files are preferred&lt;/strong&gt;&lt;/p&gt;
@@ -261,7 +248,6 @@ only the top file of the affected environment should be used. This is done using
 setting in &lt;code&gt;/etc/salt/master&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;top_file_merging_strategy: same
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If this is used, then the &lt;code&gt;env_order&lt;/code&gt; setting is used to define in which order the environments
 are processed. &lt;/p&gt;
@@ -307,7 +293,6 @@ set to &lt;code&gt;agent-forwarding&lt;/code&gt;:&lt;/p&gt;
   priv: agent-forwarding
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;It will use the &lt;code&gt;known_hosts&lt;/code&gt; file of the currently logged on user (the one executing
 the &lt;code&gt;salt-ssh&lt;/code&gt; command) so make sure that the system's key is already known.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ salt-ssh myminion test.ping
@@ -346,7 +331,6 @@ sides.&lt;/p&gt;
   --host2 dst-host --user2 dst-user --password2 dst-pw --authmech2 LOGIN --ssl2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The use of the &lt;code&gt;--ssl1&lt;/code&gt; and &lt;code&gt;--ssl2&lt;/code&gt; is not to enable an older or newer version of
 the SSL/TLS protocol. It just enables the use of SSL/TLS for the source host (&lt;code&gt;--ssl1&lt;/code&gt;)
 and destination host (&lt;code&gt;--ssl2&lt;/code&gt;).&lt;/p&gt;
@@ -356,13 +340,11 @@ can be used:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync ... --exclude &amp;quot;Trash|Spam|Drafts&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;It is also possible to transform some mailbox names. For instance, if the source host
 uses &lt;code&gt;Sent&lt;/code&gt; as the mailbox for sent mail, while the target has &lt;code&gt;Sent Items&lt;/code&gt;, then the
 following would enable migrating mails between the right folders:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync ... --folder &amp;quot;Sent&amp;quot; --regextrans2 &amp;#39;s/Sent/Sent Items/&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Conclusions and interesting resources&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Using the application was a breeze. I do recommend to create a test account on both sides
@@ -445,7 +427,6 @@ second step such as &lt;a href="https://wiki.archlinux.org/index.php/Google_Auth
 PasswordAuthentication yes
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I don't use the Google Authenticator, but the &lt;a href="https://developers.yubico.com/yubico-pam/"&gt;Yubico PAM module&lt;/a&gt;
 to require additional authentication through my U2F dongle (so ssh key, password
 and u2f key). Don't consider this three-factor authentication: one thing I know
@@ -478,7 +459,6 @@ rsa 2048 bits 0.000959s 0.000029s   1042.9  33956.0
 dsa 1024 bits 0.000098s 0.000103s  10213.9   9702.8
 dsa 2048 bits 0.000293s 0.000339s   3407.9   2947.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As you can see, RSA verification outperforms DSA in verification, while signing
 with DSA is better than RSA. But for what OpenSSH is concerned, this speed
@@ -533,7 +513,6 @@ The key&amp;#39;s randomart image is:
 +----[SHA256]-----+
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Then, make sure that the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; file contains the public key
 (as generated as &lt;code&gt;id_ed25519.pub&lt;/code&gt;). Don't remove the other keys yet until the
 communication is validated. For me, all I had to do was to update the file in
@@ -543,7 +522,6 @@ with non-production first of course).&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -i ~/.ssh/id_ed25519 testuser@testserver
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Make sure that your SSH agent is not running as it might still try to revert
 back to another key if the Ed25519 one does not work. You can validate if the
 connection was using Ed25519 through the &lt;code&gt;auth.log&lt;/code&gt; file:&lt;/p&gt;
@@ -552,13 +530,11 @@ connection was using Ed25519 through the &lt;code&gt;auth.log&lt;/code&gt; file:
 &lt;span class="go"&gt;  192.168.100.1 port 43152 ssh2: ED25519 SHA256:-------redacted----------------&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If this communication succeeds, then you can remove the old key from the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; files.&lt;/p&gt;
 &lt;p&gt;On the client level, you might want to hide &lt;code&gt;~/.ssh/id_dsa&lt;/code&gt; from the SSH agent:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Obsolete - keychain ~/.ssh/id_dsa&lt;/span&gt;
 keychain ~/.ssh/id_ed25519
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If a server update was forgotten, then the authentication will fail and, depending
 on the configuration, either fall back to the regular authentication or fail
@@ -584,7 +560,6 @@ plugin.&lt;/p&gt;
 folder, and enable it in &lt;code&gt;pelicanconf.py&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;PLUGINS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;summary&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With this plug-in, articles can use inline comments to tell the system at which
 point the summary of the article stops. Usually, the summary (which is displayed
@@ -628,7 +603,6 @@ Enabling is was a matter of:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="n"&gt;PLUGINS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="n"&gt;tipue_search&lt;/span&gt;&lt;span class="err"&gt;`&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="n"&gt;DIRECT_TEMPLATES&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;search&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;&lt;strong&gt;Tags and categories&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;WordPress supports multiple categories, but Pelican does not. So I went through
@@ -690,7 +664,6 @@ obnam to backup ISO files as those have been downloaded anyway.&lt;/p&gt;
 &lt;span class="na"&gt;keep&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;8h,14d,10w,12m,10y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The &lt;code&gt;root&lt;/code&gt; parameter tells obnam which directories (and subdirectories) to
 back up. With &lt;code&gt;exclude&lt;/code&gt; a particular set of files or directories can be
 excluded, for instance because these contain downloaded resources (and as such
@@ -728,11 +701,9 @@ backup generation than the last one).&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# obnam restore --to=/var/restore /home/swift/Images/Processing/*.NCF
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Or I can restore immediately to the directory again:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# obnam restore --to=/home/swift/Images/Processing /home/swift/Images/Processing/*.NCF
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;To support multiple clients, obnam by default identifies each client through
 the hostname. It is possible to use different names, but hostnames tend to be
@@ -780,7 +751,6 @@ little problems finding the right settings:&lt;/p&gt;
 &lt;span class="n"&gt;TAG_SAVE_AS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="sa"&gt;u&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;tag/&lt;/span&gt;&lt;span class="si"&gt;{slug}&lt;/span&gt;&lt;span class="s1"&gt;/index.html&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The next challenges were (and still are, I will have to check if this is working
 or not soon by checking the blog aggregation sites I am usually aggregated on)
 the RSS and Atom feeds. From the access logs of my previous blog, I believe that
@@ -805,7 +775,6 @@ right XML file.&lt;/p&gt;
 &lt;span class="n"&gt;AUTHOR_FEED_ATOM&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
 &lt;span class="n"&gt;AUTHOR_FEED_RSS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;None&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Hopefully, the existing aggregations still work, and I can then start asking
 the planets to move to the XML URL itself. Some tracking on the access logs
@@ -872,7 +841,6 @@ authentication and authorization. When a &lt;code&gt;CREATE ROLE&lt;/code&gt; (o
  postgres       | md5c127bc9fc185daf0e06e785876e38484
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;this cannot be moved outside):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;postgres# \l db_hadoop
                                    List of databases
@@ -882,7 +850,6 @@ authentication and authorization. When a &lt;code&gt;CREATE ROLE&lt;/code&gt; (o
            |           |          |            |            | hdc_reader=c/hdc_owner   +
            |           |          |            |            | hdc_readwrite=c/hdc_owner
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Furthermore, PostgreSQL has some additional access controls through its
 &lt;code&gt;pg_hba.conf&lt;/code&gt; file, in which the access towards the PostgreSQL service
@@ -916,7 +883,6 @@ local   all             all                     md5
 host    all             all     all             pam             pamservice=postgresql
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This will have PostgreSQL use the &lt;code&gt;postgresql&lt;/code&gt; PAM service for
 authentication. The PAM configuration is thus in
 &lt;code&gt;/etc/pam.d/postgresql&lt;/code&gt;. In it, we can either directly use the LDAP PAM
@@ -932,7 +898,6 @@ PostgreSQL services:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# getent group gpgsqladmin
 gpgsqladmin:x:413843:swift,dmvsl
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;A local batch job (ran through cron) queries this group (which I call
 the &lt;em&gt;masterlist&lt;/em&gt;, as well as queries which users in PostgreSQL are
@@ -953,7 +918,6 @@ for member in $(membersToRemove ${masterlist} ${slavelist}) ; do
 done
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The &lt;code&gt;postgres_admin&lt;/code&gt; role is created whenever I create a PostgreSQL
 instance. Likewise, for databases, a number of roles are added as well.
 For instance, for the &lt;code&gt;db_hadoop&lt;/code&gt; database, the &lt;code&gt;hdc_owner&lt;/code&gt;,
@@ -963,7 +927,6 @@ group in the LDAP. For instance:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# getent group gpgsqlhdc_own
 gpgsqlhdc_own:x:413850:hadoop,johan,christov,sean
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With this simple approach, granting users access to a database is a
 matter of adding the user to the right group (like &lt;code&gt;gpgsqlhdc_ro&lt;/code&gt; for
@@ -979,7 +942,6 @@ audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
 &lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
@@ -989,7 +951,6 @@ following:&lt;/p&gt;
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
@@ -1002,7 +963,6 @@ limitations, which can lead to output similar to the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;__ratelimit: 53 callbacks suppressed
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In this post, I want to give some pointers in configuring the audit
 subsystem as well as understand these messages...&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;There is auditd and kauditd&lt;/strong&gt;&lt;/p&gt;
@@ -1013,7 +973,6 @@ are running:&lt;/p&gt;
 root      1483     1  0 10:11 ?        00:00:00 /sbin/auditd
 root      1486     2  0 10:11 ?        00:00:00 [kauditd]
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The &lt;code&gt;/sbin/auditd&lt;/code&gt; daemon is the user-space audit daemon. It &lt;a href="http://man7.org/linux/man-pages/man3/audit_open.3.html"&gt;registers
 itself&lt;/a&gt; with the
@@ -1059,7 +1018,6 @@ queue. It queries the audit subsystem for its current status:&lt;/p&gt;
 AUDIT_STATUS: enabled=1 flag=1 pid=1483 rate_limit=0 backlog_limit=8192 lost=3 backlog=0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The command displays not only the audit state (enabled or not) but also
 the settings for rate limits (on the audit backlog) and backlog limit.
 It also shows how many events are currently still waiting in the backlog
@@ -1079,7 +1037,6 @@ audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In this case, the backlog queue was set to contain at most 320 entries
 (which is low for a production system) and more messages were being
 added (the Linux kernel in certain cases allows to have a few more
@@ -1096,14 +1053,12 @@ kernel.printk_ratelimit = 5
 kernel.printk_ratelimit_burst = 10
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the above example, this system allows one message every 5 seconds,
 but does allow a burst of up to 10 messages at once. When the rate
 limitation kicks in, then the kernel will log (at most one per second)
 the number of suppressed events:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Although this limit is kernel-wide, not all kernel log events are
 governed through it. It is the caller subsystem (in our case, the audit
@@ -1152,7 +1107,6 @@ service/application at &lt;code&gt;org.freedesktop.ConsoleKit&lt;/code&gt;:&lt;/
   org.freedesktop.ConsoleKit.Manager.Stop
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;What I found most interesting however was to query the busses. You can
 do this with &lt;strong&gt;dbus-send&lt;/strong&gt; although it is much easier to use tools such
 as &lt;strong&gt;d-feet&lt;/strong&gt; or &lt;strong&gt;qdbus&lt;/strong&gt;.&lt;/p&gt;
@@ -1178,7 +1132,6 @@ as &lt;strong&gt;d-feet&lt;/strong&gt; or &lt;strong&gt;qdbus&lt;/strong&gt;.&lt
 org.freedesktop.DBus
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The numbers are generated by D-Bus itself, the namespace-like strings
 are taken by the objects. To see what is provided by a particular
 service:&lt;/p&gt;
@@ -1189,7 +1142,6 @@ service:&lt;/p&gt;
 /org/freedesktop/PolicyKit1
 /org/freedesktop/PolicyKit1/Authority
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The methods made available through one of these:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1 /org/freedesktop/PolicyKit1/Authority
@@ -1204,7 +1156,6 @@ method void org.freedesktop.PolicyKit1.Authority.CancelCheckAuthorization(QStrin
 signal void org.freedesktop.PolicyKit1.Authority.Changed()
 ...
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Access to methods and interfaces is governed through XML files in
 &lt;code&gt;/etc/dbus-1/system.d&lt;/code&gt; (or &lt;code&gt;session.d&lt;/code&gt; depending on the bus). Let's look
@@ -1224,7 +1175,6 @@ at &lt;code&gt;/etc/dbus-1/system.d/dnsmasq.conf&lt;/code&gt; as an example:&lt;
         &amp;lt;/policy&amp;gt;
 &amp;lt;/busconfig&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The configuration mentions that only the root Linux user can 'assign' a
 service/application to the &lt;code&gt;uk.org.thekelleys.dnsmasq&lt;/code&gt; name, and root
@@ -1256,7 +1206,6 @@ what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
 #define AF_PHONET       35      /* Phonet sockets               */
 #define AF_IEEE802154   36      /* IEEE802154 sockets           */
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So next time you get such a weird module load request, check &lt;code&gt;socket.h&lt;/code&gt;
 for more information.&lt;/p&gt;</content><category term="Free Software"></category><category term="linux"></category><category term="module_request"></category><category term="net-pf"></category></entry><entry><title>Managing Inter-Process Communication (IPC)</title><link href="https://blog.siphos.be/2014/03/managing-inter-process-communication-ipc/" rel="alternate"></link><published>2014-03-30T12:50:00+02:00</published><updated>2014-03-30T12:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-30:/2014/03/managing-inter-process-communication-ipc/</id><summary type="html">&lt;p&gt;As a Linux administrator, you'll eventually need to concern you about
@@ -1291,7 +1240,6 @@ key        semid      owner      perms      nsems
 0x0056a4d5 32768      swift      660        1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;More information about a particular semaphore can be obtained using
 &lt;strong&gt;ipcs -s -i SEMID&lt;/strong&gt; where &lt;code&gt;SEMID&lt;/code&gt; is the value in the &lt;em&gt;semid&lt;/em&gt; column:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -s -i 32768
@@ -1304,7 +1252,6 @@ ctime = Sun Mar 30 12:33:38 2014
 semnum     value      ncount     zcount     pid       
 0          0          0          0          32061
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As with all IPC resources, we have information about the owner of the
 semaphore (&lt;code&gt;uid&lt;/code&gt; and &lt;code&gt;gid&lt;/code&gt;), the creator of the semaphore (&lt;code&gt;cuid&lt;/code&gt; and
@@ -1328,7 +1275,6 @@ key        shmid      owner      perms      bytes      nattch     status
 0x00000000 655370     swift      600        393216     2          dest
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Again, more information can be obtained through &lt;strong&gt;-i SHMID&lt;/strong&gt;. An
 interesting value to look at as well is the creator PID (just in case
 the process still runs, or through the audit logs) and the last PID used
@@ -1343,7 +1289,6 @@ shmid      owner      cpid       lpid
 root      6017  6016  0 09:49 tty1     00:01:30 /usr/bin/X -nolisten tcp :0 -auth /home/swift/.serverauth.6000
 swift     6147     1  2 09:50 tty1     00:05:10 firefox
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In this case, the shared memory is most likely used to handle the UI of
 firefox towards the X server.&lt;/p&gt;
@@ -1372,29 +1317,7 @@ resource is created. Unlike the key, which can be used for multiple IPC
 resources, the identifier is unique. This is why the identifier is used
 in the &lt;strong&gt;ipcs -i&lt;/strong&gt; command rather than the key. Also, that means that if
 applications would properly document their IPC usage then we would
-easily know what an IPC resource is used for.&lt;/p&gt;</content><category term="Free Software"></category><category term="ipc"></category><category term="ipcrm"></category><category term="ipcs"></category><category term="linux"></category><category term="msg"></category><category term="sem"></category><category term="shmem"></category></entry><entry><title>Linux protip: environment for a process</title><link href="https://blog.siphos.be/2014/01/linux-protip-environment-for-a-process/" rel="alternate"></link><published>2014-01-07T04:31:00+01:00</published><updated>2014-01-07T04:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-07:/2014/01/linux-protip-environment-for-a-process/</id><summary type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
-a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
-file. The file however shows the environment variables on one line, with
-a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
-a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
-file. The file however shows the environment variables on one line, with
-a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it
-with newlines instead:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;{lang="bash"}
-~$ sed -e "s:\x0:\n:g" /proc/144320/environ
-TERM=xterm
-SHELL=/bin/bash
-OLDPWD=/home/swift/docs
-USER=root
-SUDO_USER=swift
-SUDO_UID=1001
-USERNAME=root
-MAIL=/var/mail/root
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin
-PWD=/var/db/pkg/eix
-...&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;The trick is to use &lt;code&gt;\x0&lt;/code&gt; (hexcode 0) for the null character, which the
-&lt;strong&gt;sed&lt;/strong&gt; command then replaces with a newline.&lt;/p&gt;</content><category term="Free Software"></category><category term="environ"></category><category term="linux"></category><category term="protip"></category></entry><entry><title>Creating a poor man central SCAP system</title><link href="https://blog.siphos.be/2013/09/creating-a-poor-man-central-scap-system/" rel="alternate"></link><published>2013-09-24T13:35:00+02:00</published><updated>2013-09-24T13:35:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-09-24:/2013/09/creating-a-poor-man-central-scap-system/</id><summary type="html">&lt;p&gt;A few weeks ago, I was asked to give some explanation about how SCAP
+easily know what an IPC resource is used for.&lt;/p&gt;</content><category term="Free Software"></category><category term="ipc"></category><category term="ipcrm"></category><category term="ipcs"></category><category term="linux"></category><category term="msg"></category><category term="sem"></category><category term="shmem"></category></entry><entry><title>Creating a poor man central SCAP system</title><link href="https://blog.siphos.be/2013/09/creating-a-poor-man-central-scap-system/" rel="alternate"></link><published>2013-09-24T13:35:00+02:00</published><updated>2013-09-24T13:35:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-09-24:/2013/09/creating-a-poor-man-central-scap-system/</id><summary type="html">&lt;p&gt;A few weeks ago, I was asked to give some explanation about how SCAP
 content can be used in companies to improve their infrastructure
 knowledge. The focus back then was to look at benchmarks (secure states)
 and violations, but other functionality should not be ignored. I'm not
@@ -1631,7 +1554,6 @@ mgltellhowto           mgltellwhynot     mglgenmodoverview     mglgenoval    mgl
 mglcertcli             mglcleannode      mglwaitforfile
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With the proper basic template, I can keep the scripts sane and well
 documented. None of the scripts execute something without arguments, and
 "-h" and "--help" are always mapped to the help information. Those that
@@ -1767,7 +1689,6 @@ immediately set an expiration date to it:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ strace -o strace.log ...
 $ expdate +7d strace.log
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This would set an extended attribute named &lt;code&gt;user.expiration&lt;/code&gt; with the
 value being the number of seconds since epoch (which you can obtain
@@ -1925,7 +1846,6 @@ When I consult KSM, I get the following information:&lt;/p&gt;
 /sys/kernel/mm/ksm/pages_volatile:1035
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The &lt;code&gt;pages_shared&lt;/code&gt; tells me that 48911 pages are shared (which means
 about 191 Mb) through 90090 references (&lt;code&gt;pages_sharing&lt;/code&gt; - meaning the
 various processes have in total 90090 references to pages that are being
@@ -1961,7 +1881,6 @@ available "dot-d" directories on a system:&lt;/p&gt;
 /etc/env.d              /etc/makedev.d     /etc/sandbox.d      /etc/cron.d
 /etc/init.d             /etc/modprobe.d    /etc/sudoers.d
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;An application can place its configuration files in these directories,
 automatically "plugging" it in into the operating system and the
@@ -1999,7 +1918,6 @@ the file such as the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# This file is managed by Puppet through the org-pgsl-def module
 # Please do not modify manually
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This informs the administrator how the file is put there; you might even
 want to include version information.&lt;/p&gt;
@@ -2078,7 +1996,6 @@ Server:
 Client: none
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Similarly, if you need to enable remote debugging, you can use the
 &lt;strong&gt;gdbserver&lt;/strong&gt; option.&lt;/p&gt;
 &lt;p&gt;Getting information using &lt;strong&gt;info&lt;/strong&gt; is dead-easy, and supports a wide
@@ -2095,7 +2012,6 @@ floppy0: removable=1 locked=0 tray-open=0 [not inserted]
 sd0: removable=1 locked=0 tray-open=0 [not inserted]
 (qemu) change ide1-cd0 /srv/virt/media/systemrescuecd-x86-2.2.0.iso
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;To powerdown the system, use &lt;strong&gt;system_powerdown&lt;/strong&gt;. If that fails, you
 can use &lt;strong&gt;quit&lt;/strong&gt; to immediately shut down (terminate) the VM. To reset
@@ -2148,12 +2064,10 @@ pdf: 83 recovered
 others: 451 recovered
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In Gentoo, you can find the package as part of &lt;code&gt;app-admin/testdisk&lt;/code&gt;. To
 recover the files, I ran the following command:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ photorec /log /d /path/to/recovery/dest /dev/sdc1
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;While skimming through the recovered files, I found a few ones that I
 deleted a long time ago but apparently never got overwritten (the data,
@@ -2194,7 +2108,6 @@ Guest:
   32.00 MB transferred (2856.77 MB/sec)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;From looking at the code (gotta love Gentoo for making this obvious ;-)
 we know that the memory workload, with a single thread, does something
 like the following:&lt;/p&gt;
@@ -2212,7 +2125,6 @@ repeat until total_bytes &amp;gt;= memory-total-size:
   (stop event timer)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Given that the regression is most noticeable when the memory-block-size
 is very small, the part of the code whose execution count is much
 different between the two runs is the mutex locking, global memory
@@ -2225,7 +2137,6 @@ any effect:&lt;/p&gt;
 Host:      total time:        0.0275s
 Guest:     total time:        0.0286s
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The code for the mutex workload, knowing that we run with one thread,
 looks like this:&lt;/p&gt;
@@ -2241,7 +2152,6 @@ until mutex_locks = 0;
 (stop event timer)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;To check if the timer might be the culprit, let's look for a benchmark
 that mainly does timer checks. The &lt;em&gt;cpu&lt;/em&gt; workload can be used, when we
 tell sysbench that the prime to check is 3 (as its internal loop runs
@@ -2251,7 +2161,6 @@ the loop completely) and we ask for 524288 executions.&lt;/p&gt;
 Host:  total time:  0.1640s
 Guest: total time: 21.0306s
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Gotcha! Now, the event timer (again from looking at the code) contains
 two parts: getting the current time (using &lt;code&gt;clock_gettime()&lt;/code&gt;) and
@@ -2276,7 +2185,6 @@ Host:  0m0.019s
 Guest: 0m5.030s
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;So given that the &lt;code&gt;clock_gettime()&lt;/code&gt; is ran twice in the sysbench, we
 already have 10 seconds of overhead on the guest (and only 0,04s on the
 host). When such time-related functions are slow, it is wise to take a
@@ -2289,12 +2197,10 @@ kvm-clock
 kvm-clock tsc hpet acpi_pm
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Although kvm-clock is supposed to be the best clock source, let's switch
 to the tsc clock:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# echo tsc &amp;gt; current_clocksource
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If we rerun our test application, we get a much more appreciative
 result:&lt;/p&gt;
@@ -2302,7 +2208,6 @@ result:&lt;/p&gt;
 Host:  0m0.019s
 Guest: 0m0.024s
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So, what does that mean for our previous benchmark results?&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=cpu --cpu-max-prime=20000 run
@@ -2325,7 +2230,6 @@ Host:            9765 executions
 Guest (before):   512 executions
 Guest (now):      529 executions
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So we notice that this small change has nice effects on some of the
 tests. The CPU benchmark improves from 3,55% overhead to 0,95%; fileio
@@ -2362,7 +2266,6 @@ Host throughput, 1M:  3959,78 MB/sec
 Guest throughput, 1M: 3079,29 MB/sec
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The guest has a lower throughput (about 77% of the host), which is lower
 than what most online posts provide on KVM performance. We'll get back
 to that later. Let's look at the default block size of 1k (meaning that
@@ -2372,7 +2275,6 @@ memory (in load):&lt;/p&gt;
 Host throughput, 1k:  1702,59 MB/sec
 Guest throughput, 1k:   23,67 MB/sec
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This is a lot worse: the guest' throughput is only 1,4% of the host
 throughput! The &lt;code&gt;qemu-kvm&lt;/code&gt; process on the host is also taking up a lot
@@ -2398,7 +2300,6 @@ Host runtime:    0,3267 s  (event:    0,2278)
 Guest runtime:  40,7672 s  (event:   30,6084)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This means that the guest "throughput" problems from the memory
 identified above seem to be related to this rather than memory-specific
 regressions. To verify if the scheduler itself also shows regressions,
@@ -2408,7 +2309,6 @@ simultaneously, using the otherwise default settings, during 10 seconds:&lt;/p&g
 Host:   9765 executions (events)
 Guest:   512 executions (events)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Here we get only 5% throughput.&lt;/p&gt;
 &lt;p&gt;Let's focus on the mutex again, as sysbench has an additional mutex
@@ -2425,7 +2325,6 @@ single mutex.&lt;/p&gt;
 Host (duration):   2600,57 ms
 Guest (duration):  2571,44 ms
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In this example, we see that the mutex operations are almost at the same
 speed (99%) of the host, so pure mutex operations are not likely to be
@@ -2472,7 +2371,6 @@ CFLAGS=&amp;quot;-march=x86-64 -O2 -pipe&amp;quot;
         -fstack-protector-all&amp;quot;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I am aware that the CFLAGS between the two are not the same (duh), and I
 know as well that the expansion given above isn't entirely accurate. But
 still, it gives some idea on the differences.&lt;/p&gt;
@@ -2507,7 +2405,6 @@ that I did was a single-thread run for CPU performance testing.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=cpu --cpu-max-prime=20000 run
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;This test verifies prime numbers by dividing the number with
 sequentially increasing numbers and verifying that the remainder (modulo
 calculation) is zero. If it is, then the number is not prime and the
@@ -2532,7 +2429,6 @@ med    total   35,3334   36,4266
      e.total   35,3314   36,2640
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;On average (I did three runs on each system), the guest took 3,55% more
 time to finish the test than the host (&lt;code&gt;total&lt;/code&gt;). If we look at the pure
 calculation (so not the remaining overhead of the inner workings -
@@ -2553,7 +2449,6 @@ avg    total   17,5185   18,0965
 med    total   17,8084   18,0921
      e.total   35,6131   36,0194
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With these figures, we notice that the guest average total run time
 takes 1,67% more time to complete, and the event time only 1,23%. I was
@@ -2587,19 +2482,16 @@ $ sysbench --test=fileio --file-total-size=6G --file-test-mode=rndrw --max-time=
 $ sysbench --test=fileio --file-total-size=6G cleanup
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the output, the throughput seems to be most important:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Operations performed:  4348 Read, 2898 Write, 9216 Other = 16462 Total
 Read 67.938Mb  Written 45.281Mb  Total transferred 113.22Mb  (1.8869Mb/sec)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In the above case, the throughput is 1,8869 Mbps. So let's look at the
 (averaged) results:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Host:  1,8424 Mbps
 Guest: 1,5591 Mbps
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The above figures (which are an average of 3 runs) tell us that the
 guest has a throughput of about 84,75% (so we take about 15% performance
@@ -2612,7 +2504,6 @@ instance, let's look at the impact of &lt;code&gt;data=ordered&lt;/code&gt; vers
 6G, data=journal, barrier=1: 599,85 Kbps
 6G, data=journal, barrier=0: 767,93 Kbps
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;From the figures, we can see that the &lt;code&gt;data=journal&lt;/code&gt; option slows down
 the throughput to a final figure about 30% of the original throughput
@@ -2729,7 +2620,6 @@ mail {
         }
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If you first look at the &lt;em&gt;mail&lt;/em&gt; setting, you notice that I include an
 &lt;em&gt;auth_http&lt;/em&gt; directive. This is needed by Nginx as it will consult this
@@ -2886,7 +2776,6 @@ MAC address of your (default) gateway is unique.&lt;/p&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;With this script, you can then run &lt;code&gt;athome.sh &amp;amp;&amp;amp; fetchmail&lt;/code&gt;. If you
 aren't home, &lt;code&gt;athome.sh&lt;/code&gt; will return 1 and the fetchmail command will
 never be executed. When you are, the command returns 0 and fetchmail is
@@ -2914,7 +2803,6 @@ forums.gentoo.org, user bleh, password helbfgo
 www.sourceforge.net, user mynick, password kcinymwsn
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I'm sure you can find the password for other sites I would show you, so
 this kind of passwords are not that secure.&lt;/p&gt;
 &lt;p&gt;Enter &lt;a href="http://dev.gentoo.org/~swift/tools-hex2passwd.html"&gt;hex2passwd&lt;/a&gt;,
@@ -2933,7 +2821,6 @@ For www.sourceforge.net, user mynick
 $ echo kcinymwsn | sha1sum | hex2passwd -n 8
 70z4Bu3k
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Of course, the tool offers some more flexibility, such as choosing your
 own character maps or scrambling the maps before you use them. In any

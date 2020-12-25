@@ -220,44 +220,6 @@ messaging infrastructure, ...) and more. All components that are …</p>
             </article>
             <hr/>
             <article>
-                <h2><a href="https://blog.siphos.be/2014/12/why-does-it-access-etcshadow/">Why does it access /etc/shadow?</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2014-12-30T22:48:00+01:00"> Tue 30 December 2014</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/chkpwd/">chkpwd</a>
-        /
-	<a href="https://blog.siphos.be/tag/pam/">pam</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-        /
-	<a href="https://blog.siphos.be/tag/shadow/">shadow</a>
-        /
-	<a href="https://blog.siphos.be/tag/unix_chkpwd/">unix_chkpwd</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>While updating the SELinux policy for the Courier IMAP daemon, I noticed
-that it (well, the authdaemon that is part of Courier) wanted to access
-<code>/etc/shadow</code>, which is of course a big no-no. It doesn't take long to
-know that this is through the PAM support (more specifically,
-<code>pam_unix …</code></p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/12/why-does-it-access-etcshadow/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
                 <h2><a href="https://blog.siphos.be/2014/12/sometimes-i-forget-how-important-communication-is/">Sometimes I forget how important communication is</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -328,7 +290,6 @@ But they often don't take the time to …</p>
 following from the ebuilds:</p>
 <div class="highlight"><pre><span></span><code>DEPEND=&quot;selinux? ( sec-policy/selinux-${packagename} )&quot;
 </code></pre></div>
-
 
 <p>In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
@@ -455,6 +416,48 @@ is now stable, 2.20130411-r5 is \~arch). These have a few updates
                 </div>
             </article>
             <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2014/06/d-bus-and-selinux/">D-Bus and SELinux</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-06-30T20:07:00+02:00"> Mon 30 June 2014</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/busconfig/">busconfig</a>
+        /
+	<a href="https://blog.siphos.be/tag/d-bus/">d-bus</a>
+        /
+	<a href="https://blog.siphos.be/tag/dbus/">dbus</a>
+        /
+	<a href="https://blog.siphos.be/tag/linux/">linux</a>
+        /
+	<a href="https://blog.siphos.be/tag/policy/">policy</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>After a <a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/">post about
+D-Bus</a> comes the
+inevitable related post about SELinux with D-Bus.</p>
+<p>Some users might not know that D-Bus is an SELinux-aware application.
+That means it has SELinux-specific code in it, which has the D-Bus
+behavior based on the SELinux policy (and might not necessarily honor
+the "permissive …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/06/d-bus-and-selinux/">more ...</a>
+                </div>
+            </article>
+            <hr/>
 
         <ul class="pagination">
                 <li class="prev"><a href="https://blog.siphos.be/tag/selinux/index2.html">&laquo;</a>
@@ -477,8 +480,6 @@ is now stable, 2.20130411-r5 is \~arch). These have a few updates
                             href="https://blog.siphos.be/tag/selinux/8.html">8</a></li>
                     <li class=""><a
                             href="https://blog.siphos.be/tag/selinux/9.html">9</a></li>
-                    <li class=""><a
-                            href="https://blog.siphos.be/tag/selinux/10.html">10</a></li>
                 <li class="next"><a
                         href="https://blog.siphos.be/tag/selinux/index4.html">&raquo;</a></li>
         </ul>

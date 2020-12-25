@@ -152,13 +152,11 @@ the <code>pam\_u2f</code> package, as the necessary dependencies will be pulled 
 <div class="highlight"><pre><span></span><code>~# emerge pam_u2f
 </code></pre></div>
 
-
 <p>Next, for each user, a registration has to be made. This registration is needed for the
 U2F components to be able to correctly authenticate the use of a U2F key for a particular
 user. This is done with <code>pamu2fcfg</code>:</p>
 <div class="highlight"><pre><span></span><code>~$ pamu2fcfg -u&lt;username&gt; &gt; ~/.config/Yubico/u2f_keys
 </code></pre></div>
-
 
 <p>The U2F USB key must be plugged in when the command is executed, as a succesful keypress (on the
 U2F device) is needed to complete the operation.</p>
@@ -167,7 +165,6 @@ through the <code>/etc/pam.d/system-local-login</code> PAM configuration file us
 local logon services.</p>
 <div class="highlight"><pre><span></span><code>auth     required     pam_u2f.so
 </code></pre></div>
-
 
 <p><strong>Consider the problems you might face</strong></p>
 <p>When fiddling with PAM, it is important to keep in mind what could fail. During the setup, it
@@ -191,7 +188,6 @@ investigation revealed the following necessary policy rules (refpolicy-style);</
 udev_read_db(...)
 dev_rw_generic_usb_dev(...)
 </code></pre></div>
-
 
 <p>The first two rules are needed because the operation to trigger the USB key uses the udev tables
 to find out where the key is located/attached, before it interacts with it. This interaction is then

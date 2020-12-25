@@ -142,7 +142,6 @@ just got it to build, I still need to see if things still work):</p>
 }
 </code></pre></div>
 
-
 <p>Without this, I got "Illegal destructor" errors (not related to the
 illegal destructor fix made to swig itself) and "Method apol_ip_t
 requires a return type" (because it doesn't see them as constructors).</p>
@@ -165,7 +164,6 @@ apol_vector_get_size" followed by a "previous declaration was here:".</p>
 - size_t get_capacity() {
 + size_t wrap_get_capacity() {
 </code></pre></div>
-
 
 <p>The patch that I had to add to finally get it to build again is 7019
 lines (229 Kbyte). Too much manual labour. Now let's hope this really

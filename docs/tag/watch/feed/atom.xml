@@ -28,7 +28,6 @@ allow incrond_t incron_notify_type:file read_file_perms;
 allow incrond_t incron_notify_type:lnk_file read_lnk_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That's it. For now, this won't do much as there are no types associated
 with the &lt;code&gt;incron_notify_type&lt;/code&gt; attribute, so let's change that by
 introducing the interface:&lt;/p&gt;
@@ -52,14 +51,12 @@ interface(`incron_notify_file&amp;#39;,`
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That's it! If you want &lt;strong&gt;incrond&lt;/strong&gt; to watch user content, one can now do
 something like:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;incron_notify_file(home_root_t)
 incron_notify_file(user_home_dir_t)
 incron_notify_file(user_home_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Moreover, we can now also easily check what additional types have been
 marked as such:&lt;/p&gt;
@@ -69,7 +66,6 @@ marked as such:&lt;/p&gt;
       user_home_t
       home_root_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This attribute approach is commonly used for such setups and is becoming
 more and more a "standard" approach.&lt;/p&gt;

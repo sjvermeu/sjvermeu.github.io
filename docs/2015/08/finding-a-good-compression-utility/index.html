@@ -135,7 +135,6 @@ app-arch/xar            app-arch/xz-utils       app-arch/zopfli
 app-arch/zpaq
 </code></pre></div>
 
-
 <p>The script should keep the best compression information: duration, compression
 ratio, compression command, as well as the compressed file itself.</p>
 <p><strong>Finding the "best" compression</strong></p>
@@ -218,12 +217,10 @@ The compression delta obtained was 0.11643 within 10.58 seconds.
 This file is now available as test.nef.7z.
 </code></pre></div>
 
-
 <p>In the above example, the test file was around 20 MByte. The best compression
 compression command that the script found was:</p>
 <div class="highlight"><pre><span></span><code>~$ 7za -t7z -m0=PPMd:mem=28 a test.nef.7z test.nef
 </code></pre></div>
-
 
 <p>The resulting file (<code>test.nef.7z</code>) is 18 MByte, a reduction of 11,64%. The
 compression command took almost 11 seconds to do its thing, which gave an
@@ -232,7 +229,6 @@ efficiency rating of 0,011, which is definitely not a fast one.</p>
 instance:</p>
 <div class="highlight"><pre><span></span><code>   app-arch/pbzip2                                                  pbzip2           0.6               19287402 0.07973 0.13071
 </code></pre></div>
-
 
 <p>In this case, the <code>pbzip2</code> command got almost 8% reduction in less than a
 second, which is considerably more efficient than the 11-seconds long <code>7za</code>
@@ -259,7 +255,6 @@ The output shows
 When the command supports multithreading, we use the number of available cores on the system (as told by /proc/cpuinfo).
 </code></pre></div>
 
-
 <p>For instance, to try it out against a PDF file:</p>
 <div class="highlight"><pre><span></span><code>~$ sw_comprbest -i MEA6-Sven_Vermeulen-Research_Summary.pdf
 Original file (MEA6-Sven_Vermeulen-Research_Summary.pdf) size 117763 bytes
@@ -268,7 +263,6 @@ The best compression was found with zopfli --deflate.
 The compression delta obtained was 0.00982 within 0.19 seconds.
 This file is now available as MEA6-Sven_Vermeulen-Research_Summary.pdf.deflate.
 </code></pre></div>
-
 
 <p>So in this case, the resulting file is hardly better compressed - the PDF
 itself is already compressed. Let's try it against the uncompressed PDF:</p>
@@ -281,7 +275,6 @@ The compression delta obtained was 0.27739 within 0.18 seconds.
 This file is now available as test.pdf.lrz.
 </code></pre></div>
 
-
 <p>This is somewhat better:</p>
 <div class="highlight"><pre><span></span><code>~$ ls -l MEA6-Sven_Vermeulen-Research_Summary.pdf* test.pdf*
 -rw-r--r--. 1 swift swift 117763 Aug  7 14:32 MEA6-Sven_Vermeulen-Research_Summary.pdf
@@ -289,7 +282,6 @@ This file is now available as test.pdf.lrz.
 -rw-r--r--. 1 swift swift 144670 Aug  7 14:34 test.pdf
 -rw-r--r--. 1 swift swift 104540 Aug  7 14:35 test.pdf.lrz
 </code></pre></div>
-
 
 <p>The resulting file is 11,22% reduced from the original one.</p>
             </div>

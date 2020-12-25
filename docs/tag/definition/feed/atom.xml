@@ -16,7 +16,6 @@ contrib/postfix.if: interface(`postfix_config_filetrans&amp;#39;,`
 contrib/postfix.if:     filetrans_pattern($1, postfix_etc_t, $2, $3, $4)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Or to show the content of the &lt;em&gt;corenet_tcp_bind_http_port&lt;/em&gt;
 interface:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ seshowif corenet_tcp_bind_http_port
@@ -29,7 +28,6 @@ interface(`corenet_tcp_bind_http_port&amp;#39;,`
         allow $1 self:capability net_bind_service;
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;For the definitions, this is quite similar:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefinddef socket.*create
@@ -47,7 +45,6 @@ define(`manage_files_pattern&amp;#39;,`
         allow $1 $3:file manage_file_perms;
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;I have these defined in my &lt;code&gt;~/.bashrc&lt;/code&gt; (they are simple
 &lt;a href="http://dev.gentoo.org/~swift/blog/01/selinux-funcs.txt"&gt;functions&lt;/a&gt;) and

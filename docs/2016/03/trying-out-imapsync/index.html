@@ -141,7 +141,6 @@ sides.</p>
   --host2 dst-host --user2 dst-user --password2 dst-pw --authmech2 LOGIN --ssl2
 </code></pre></div>
 
-
 <p>The use of the <code>--ssl1</code> and <code>--ssl2</code> is not to enable an older or newer version of
 the SSL/TLS protocol. It just enables the use of SSL/TLS for the source host (<code>--ssl1</code>)
 and destination host (<code>--ssl2</code>).</p>
@@ -151,13 +150,11 @@ can be used:</p>
 <div class="highlight"><pre><span></span><code>~$ imapsync ... --exclude &quot;Trash|Spam|Drafts&quot;
 </code></pre></div>
 
-
 <p>It is also possible to transform some mailbox names. For instance, if the source host
 uses <code>Sent</code> as the mailbox for sent mail, while the target has <code>Sent Items</code>, then the
 following would enable migrating mails between the right folders:</p>
 <div class="highlight"><pre><span></span><code>~$ imapsync ... --folder &quot;Sent&quot; --regextrans2 &#39;s/Sent/Sent Items/&#39;
 </code></pre></div>
-
 
 <p><strong>Conclusions and interesting resources</strong></p>
 <p>Using the application was a breeze. I do recommend to create a test account on both sides

@@ -305,39 +305,6 @@ play a role …</p>
             </article>
             <hr/>
             <article>
-                <h2><a href="https://blog.siphos.be/2014/01/linux-protip-environment-for-a-process/">Linux protip: environment for a process</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2014-01-07T04:31:00+01:00"> Tue 07 January 2014</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/free-software.html">Free Software</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/environ/">environ</a>
-        /
-	<a href="https://blog.siphos.be/tag/linux/">linux</a>
-        /
-	<a href="https://blog.siphos.be/tag/protip/">protip</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>Just a quick pro-tip: if you need to know the environment variables for
-a process, you can see them in that process' <code>/proc/${PID}/environ</code>
-file. The file however shows the environment variables on one line, with
-a null character as separator. With a simple <strong>sed</strong> you can show it …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2014/01/linux-protip-environment-for-a-process/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
                 <h2><a href="https://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/">Umounting IPv6 NFS(v4) mounts</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -374,7 +341,6 @@ trying to umount the share, it said that it couldn't find the mount in
 <div class="highlight"><pre><span></span><code>~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
 </code></pre></div>
-
 
 <p>The solution: copy <code>/proc/mounts</code> to <code>/etc/mtab</code>, and …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/">more ...</a>
@@ -466,6 +432,44 @@ definitely want to point readers to the
 that Brad Spengler made on the vulnerability.</p>
 <p>In …</p>
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
+                <h2><a href="https://blog.siphos.be/2013/05/enabling-kernel-samepage-merging-ksm/">Enabling Kernel Samepage Merging (KSM)</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-05-09T03:50:00+02:00"> Thu 09 May 2013</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/free-software.html">Free Software</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/cow/">cow</a>
+        /
+	<a href="https://blog.siphos.be/tag/ksm/">ksm</a>
+        /
+	<a href="https://blog.siphos.be/tag/kvm/">kvm</a>
+        /
+	<a href="https://blog.siphos.be/tag/linux/">linux</a>
+        /
+	<a href="https://blog.siphos.be/tag/virtualization/">virtualization</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>When using virtualization extensively, you will pretty soon hit the
+limits of your system (at least, the resources on it). When the
+virtualization is used primarily for testing (such as in my case), the
+limit is memory. So it makes sense to seek memory optimization
+strategies on such systems. The …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2013/05/enabling-kernel-samepage-merging-ksm/">more ...</a>
                 </div>
             </article>
             <hr/>

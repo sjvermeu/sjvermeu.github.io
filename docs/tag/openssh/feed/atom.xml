@@ -34,7 +34,6 @@ Host key verification failed.
 
 
 
-
 &lt;p&gt;I checked if the host was changed recently, or the alias through
 which I connected switched host, or the SSH key changed. But that
 wasn't the case. Or at least, it wasn't the case recently, and I
@@ -51,7 +50,6 @@ post which told me to connect to the host using the
 &lt;code&gt;FingerprintHash md5&lt;/code&gt; option:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -o FingerprintHash=md5 192.168.56.11
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The result is SSH displaying the MD5 hashed fingerprint which I
 can now validate against the documented one. Once I validated that
@@ -122,7 +120,6 @@ second step such as &lt;a href="https://wiki.archlinux.org/index.php/Google_Auth
 PasswordAuthentication yes
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;I don't use the Google Authenticator, but the &lt;a href="https://developers.yubico.com/yubico-pam/"&gt;Yubico PAM module&lt;/a&gt;
 to require additional authentication through my U2F dongle (so ssh key, password
 and u2f key). Don't consider this three-factor authentication: one thing I know
@@ -155,7 +152,6 @@ rsa 2048 bits 0.000959s 0.000029s   1042.9  33956.0
 dsa 1024 bits 0.000098s 0.000103s  10213.9   9702.8
 dsa 2048 bits 0.000293s 0.000339s   3407.9   2947.0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As you can see, RSA verification outperforms DSA in verification, while signing
 with DSA is better than RSA. But for what OpenSSH is concerned, this speed
@@ -210,7 +206,6 @@ The key&amp;#39;s randomart image is:
 +----[SHA256]-----+
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Then, make sure that the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; file contains the public key
 (as generated as &lt;code&gt;id_ed25519.pub&lt;/code&gt;). Don't remove the other keys yet until the
 communication is validated. For me, all I had to do was to update the file in
@@ -220,7 +215,6 @@ with non-production first of course).&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -i ~/.ssh/id_ed25519 testuser@testserver
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Make sure that your SSH agent is not running as it might still try to revert
 back to another key if the Ed25519 one does not work. You can validate if the
 connection was using Ed25519 through the &lt;code&gt;auth.log&lt;/code&gt; file:&lt;/p&gt;
@@ -229,13 +223,11 @@ connection was using Ed25519 through the &lt;code&gt;auth.log&lt;/code&gt; file:
 &lt;span class="go"&gt;  192.168.100.1 port 43152 ssh2: ED25519 SHA256:-------redacted----------------&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;If this communication succeeds, then you can remove the old key from the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; files.&lt;/p&gt;
 &lt;p&gt;On the client level, you might want to hide &lt;code&gt;~/.ssh/id_dsa&lt;/code&gt; from the SSH agent:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Obsolete - keychain ~/.ssh/id_dsa&lt;/span&gt;
 keychain ~/.ssh/id_ed25519
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;If a server update was forgotten, then the authentication will fail and, depending
 on the configuration, either fall back to the regular authentication or fail

@@ -130,7 +130,6 @@ latter also displays the description of the boolean:</p>
 user_ping                      (on   ,   on)  Control users use of ping and traceroute
 </code></pre></div>
 
-
 <p>You can easily query the SELinux policy to see what this boolean
 triggers:</p>
 <div class="highlight"><pre><span></span><code>~# sesearch -b user_ping -A -C
@@ -143,7 +142,6 @@ ET allow ping_t user_t : fd use ; [ user_ping ]
 ...
 </code></pre></div>
 
-
 <p>However, often you want to know if a particular access is allowed and,
 if it is conditionally allowed, which boolean enables it. In the case of
 user ping, we want to know if (and when) a user domain (<code>user_t</code>) is
@@ -152,7 +150,6 @@ allowed to transition to the ping domain (<code>ping_t</code>):</p>
 Found 1 semantic av rules:
 ET allow user_t ping_t : process transition ; [ user_ping ]
 </code></pre></div>
-
 
 <p>So there you go - it is allowed if the <code>user_ping</code> SELinux boolean is
 enabled.</p>

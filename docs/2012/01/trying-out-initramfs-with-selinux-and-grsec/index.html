@@ -159,14 +159,12 @@ initramfs:</p>
 <div class="highlight"><pre><span></span><code># dracut -f &quot;&quot; 3.1.6-hardened
 </code></pre></div>
 
-
 <p>My grub then has an additional set of lines like so:</p>
 <div class="highlight"><pre><span></span><code>title Gentoo Linux Hardened (initramfs)
 root (hd0,0)
 kernel /boot/vmlinuz-3.1.6-hardened root=/dev/vda1 console=ttyS0 console=tty0
 initrd /boot/initramfs-3.1.6-hardened.img
 </code></pre></div>
-
 
 <p>Sadly, the bugger didn't boot. The first problem I hit was that the
 Linux kernel I boot has chroot restrictions in it (grSecurity). These

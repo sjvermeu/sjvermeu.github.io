@@ -15,7 +15,6 @@ helped me quickly identify what the problem is.&lt;/p&gt;
 segmentation fault
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The abbreviation "libffi" comes from &lt;em&gt;Foreign Function Interface&lt;/em&gt;, and
 is a library that allows developers to dynamically call code from
 another application or library. But the method how it approaches this
@@ -25,7 +24,6 @@ concerns me a bit. Let's look at some &lt;strong&gt;strace&lt;/strong&gt; output
 8560  ftruncate(11, 4096)               = 0
 8560  mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_SHARED, 11, 0) = -1 EACCES (Permission denied)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Generally, what libffi does, is to create a file somewhere where it can
 write files (it checks the various mounts on a system to get a list of
@@ -42,7 +40,6 @@ pid=8560 comm=&amp;quot;emerge&amp;quot; path=2F7661722F66666962713154465A202864
 dev=&amp;quot;dm-3&amp;quot; ino=6912 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t
 tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;When you notice something like this (an execute on an unnamed file),
 then this is because the file descriptor points to a file already
@@ -77,7 +74,6 @@ more secure manner than allowing exec on world-writeable locations.&lt;/p&gt;
 drwxr-x---. 4 portage root system_u:object_r:tmp_t 4096 Apr 22 21:45 /var/portage/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;And libffi? Well, allowing applications to create their own executables
 and executing it is something that should be carefully governed. I'm not
 aware of any existing or past vulnerabilities, but I can imagine that
@@ -95,7 +91,6 @@ execute files:&lt;/p&gt;
  | grep execute | awk &amp;#39;{print $1}&amp;#39; | sort | uniq | wc -l
 32
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Okay, 32 target domains. Not that bad, and certainly doable to verify
 manually (hell, even in a scripted manner). You can now check which of
@@ -135,7 +130,6 @@ had with the policy not that long ago:&lt;/p&gt;
 # strace -o strace.log -f -s 256 tmux
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The resulting log file (strace.log) might seem daunting at first to look
 at. What you see are the system calls that the process is performing,
 together with their options but also the return code of each call. This
@@ -151,7 +145,6 @@ returns something like EACCESS (Permission Denied).&lt;/p&gt;
 7313  statfs(&amp;quot;/home/swift/.pki/nssdb&amp;quot;, 0x3c3cab6fa50) = -1 EACCES (Permission denied)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Most (if not all) of the methods shown in a strace log are documented
 through manpages, so you can quickly find out that &lt;code&gt;futex()&lt;/code&gt; is about
 fast user-space locking, &lt;code&gt;stat()&lt;/code&gt; (&lt;strong&gt;man 2 stat&lt;/strong&gt; to see the information
@@ -161,7 +154,6 @@ status and &lt;code&gt;statfs()&lt;/code&gt; is for getting file system statisti
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;7313  open(&amp;quot;/proc/filesystems&amp;quot;, O_RDONLY) = -1 EACCES (Permission denied)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;In the above case, you notice that the application is trying to open the
 &lt;code&gt;/proc/filesystems&lt;/code&gt; file read-only. In the SELinux logs, this might be
 displayed as follows:&lt;/p&gt;
@@ -169,7 +161,6 @@ displayed as follows:&lt;/p&gt;
 pid=860 comm=&amp;quot;nacl_helper_boo&amp;quot; name=&amp;quot;filesystems&amp;quot; dev=&amp;quot;proc&amp;quot; ino=4026532034 
 scontext=staff_u:staff_r:chromium_naclhelper_t tcontext=system_u:object_r:proc_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now the case of &lt;strong&gt;tmux&lt;/strong&gt; before was not an obvious one. In the end, I
 compared the strace output's of two runs (one in enforcing and one in
@@ -185,7 +176,6 @@ Permissive:
 10905 fcntl(9, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;You notice the difference? In enforcing-mode, one of the flags on the
 file descriptor has &lt;code&gt;O_RDONLY&lt;/code&gt; whereas the one in permissive mode as
 &lt;code&gt;O_RDWR&lt;/code&gt;. This means that the file descriptor in enforcing mode is
@@ -196,7 +186,6 @@ from:&lt;/p&gt;
 10905 dup(1)     = 10
 10905 dup(2)     = 11
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;As the man-pages sais, &lt;code&gt;dup()&lt;/code&gt; duplicates a file descriptor. And
 because, by convention, the first three file descriptors of an
@@ -233,7 +222,6 @@ if (ttyn) {
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp;amp; ~O_NONBLOCK);
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Such obscure problems are much easier to detect and troubleshoot thanks
 to tools like &lt;strong&gt;strace&lt;/strong&gt;.&lt;/p&gt;</content><category term="SELinux"></category><category term="debug"></category><category term="selinux"></category><category term="strace"></category></entry></feed>

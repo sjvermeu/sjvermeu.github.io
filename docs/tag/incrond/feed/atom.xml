@@ -28,7 +28,6 @@ allow incrond_t incron_notify_type:file read_file_perms;
 allow incrond_t incron_notify_type:lnk_file read_lnk_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That's it. For now, this won't do much as there are no types associated
 with the &lt;code&gt;incron_notify_type&lt;/code&gt; attribute, so let's change that by
 introducing the interface:&lt;/p&gt;
@@ -52,14 +51,12 @@ interface(`incron_notify_file&amp;#39;,`
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;That's it! If you want &lt;strong&gt;incrond&lt;/strong&gt; to watch user content, one can now do
 something like:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;incron_notify_file(home_root_t)
 incron_notify_file(user_home_dir_t)
 incron_notify_file(user_home_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Moreover, we can now also easily check what additional types have been
 marked as such:&lt;/p&gt;
@@ -69,7 +66,6 @@ marked as such:&lt;/p&gt;
       user_home_t
       home_root_t
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;This attribute approach is commonly used for such setups and is becoming
 more and more a "standard" approach.&lt;/p&gt;
@@ -85,7 +81,6 @@ that needed to be resolved; here they are again for your convenience:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;/home/user/test2&amp;quot; dev=&amp;quot;dm-0&amp;quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
 type=AVC msg=audit(1368734110.913:28354): avc:  denied  { read } for  pid=9716 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;test2&amp;quot; dev=&amp;quot;dm-0&amp;quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The permission we are looking for here is
 &lt;em&gt;userdom_list_user_home_content&lt;/em&gt;, but this is only for when we want
@@ -115,7 +110,6 @@ not be the same as reading).&lt;/p&gt;
 allow incrond_t public_content_t:dir { read getattr };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;After editing the incrontab to watch a directory labeled with
 &lt;code&gt;public_content_t&lt;/code&gt;, we now get the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail cron.log
@@ -129,7 +123,6 @@ type=AVC msg=audit(1368773172.314:28387): avc:  denied  { read } for  pid=9716 c
 type=AVC msg=audit(1368773172.315:28388): avc:  denied  { write } for  pid=9716 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;pipe:[14027]&amp;quot; dev=&amp;quot;pipefs&amp;quot; ino=14027 scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=fifo_file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;As the incrontab is a user incrontab, we can expect &lt;code&gt;incrond_t&lt;/code&gt; to
 require setuid and setgid privileges. Also, the &lt;em&gt;fifo_file&lt;/em&gt; access is
 after forking (notice the difference in PID values) and most likely to
@@ -137,7 +130,6 @@ communicate to the master process. So let's allow those:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrond_t self:capability { setuid setgid };
 allow incrond_t self:fifo_file { read write };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With that set, we get the following upon triggering a file write:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail cron.log
@@ -148,7 +140,6 @@ May 17 08:52:46 test incrond[11338]: cannot exec process: Permission denied
 type=AVC msg=audit(1368773566.606:28394): avc:  denied  { read } for  pid=11338 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;ngroups_max&amp;quot; dev=&amp;quot;proc&amp;quot; ino=5711 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:sysctl_kernel_t tclass=file
 type=AVC msg=audit(1368773566.607:28395): avc:  denied  { search } for  pid=11338 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;bin&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=1048578 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:bin_t tclass=dir
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The &lt;code&gt;ngroups_max&lt;/code&gt; pseudo-file (in &lt;code&gt;/proc/sys/kernel&lt;/code&gt;) returns the
 maximum number of supplementary group IDs per process, and is consulted
@@ -167,7 +158,6 @@ May 17 09:02:55 test incrond[11427]: cannot exec process: Permission denied
 type=AVC msg=audit(1368774175.646:28441): avc:  denied  { read } for  pid=11427 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;sh&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=131454 scontext=system_u:system_r:incrond_t tcontext=root:object_r:bin_t tclass=lnk_file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Still not there yet apparently. The &lt;strong&gt;incrond&lt;/strong&gt; forked process wants to
 execute the script, but to do so it has to follow a symbolic link
 labeled &lt;code&gt;bin_t&lt;/code&gt;. This is because the script points to &lt;code&gt;#!/bin/sh&lt;/code&gt; which
@@ -176,7 +166,6 @@ execution can occur; only after execution will the transition from
 &lt;code&gt;incrond_t&lt;/code&gt; to &lt;code&gt;system_cronjob_t&lt;/code&gt; be done.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corecmd_read_bin_symlinks(incrond_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With that set in the policy, the watch works, &lt;strong&gt;incrond&lt;/strong&gt; properly
 launches the command and the command properly transitions into
@@ -193,7 +182,6 @@ read_files_pattern($1, { public_content_t public_content_rw_t }, { public_conten
 read_lnk_files_pattern($1, { public_content_t public_content_rw_t }, { public_content_t public_content_rw_t })
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The rights here seem to bemore than what we need. Playing around a bit
 with the directories reveals that &lt;strong&gt;incrond&lt;/strong&gt; requires a bit more. For
 instance, when you create additional directories (subdirectories) and
@@ -207,12 +195,10 @@ type=AVC msg=audit(1368774968.416:28504): avc:  denied  { search } for  pid=1170
 type=AVC msg=audit(1368774968.416:28505): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;test&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=1488 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=dir
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Similarly if you want to watch on a particular file:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368775274.655:28552): avc:  denied  { getattr } for  pid=11704 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;/var/www/test/testfile&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=1709 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=file
 type=AVC msg=audit(1368775274.655:28553): avc:  denied  { read } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;testfile&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=1709 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So it looks like &lt;em&gt;miscfiles_read_public_files&lt;/em&gt; isn't that bad after
 all.&lt;/p&gt;
@@ -258,7 +244,6 @@ auth_use_nsswitch(incrond_t)
 miscfiles_read_localization(incrond_t)
 miscfiles_read_public_files(incrond_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Next on the agenda is another interface to make other types
 "watch-worthy".&lt;/p&gt;</content><category term="SELinux"></category><category term="booleans"></category><category term="incrond"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: the incrond daemon</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/" rel="alternate"></link><published>2013-05-27T03:50:00+02:00</published><updated>2013-05-27T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-27:/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/</id><summary type="html">&lt;p&gt;With &lt;code&gt;incrontab_t&lt;/code&gt; (hopefully) complete, let's look at the &lt;code&gt;incrond_t&lt;/code&gt;
@@ -310,7 +295,6 @@ interface(`incron_entry&amp;#39;,`
 &amp;#39;)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;With this in place, the &lt;em&gt;foo&lt;/em&gt; SELinux module can call
 &lt;em&gt;incron_entry(foo_t, foo_exec_t)&lt;/em&gt; so that, the moment &lt;code&gt;incrond_t&lt;/code&gt;
 executes a file with label &lt;code&gt;foo_exec_t&lt;/code&gt;, the resulting process will run
@@ -332,7 +316,6 @@ type=AVC msg=audit(1368732494.276:28322): avc:  denied  { create } for  pid=9282
 type=AVC msg=audit(1368732494.276:28323): avc:  denied  { create } for  pid=9282 comm=&amp;quot;incrond&amp;quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Ignoring the &lt;em&gt;unix_dgram_socket&lt;/em&gt; for now, we need to allow &lt;code&gt;incrond_t&lt;/code&gt;
 to read locale information, and to read the files in the
 &lt;code&gt;/var/spool/incron&lt;/code&gt; location (this goes in &lt;code&gt;incron.te&lt;/code&gt; again):&lt;/p&gt;
@@ -348,14 +331,12 @@ files_search_spool(incrond_t)
 miscfiles_read_localization(incrond_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The next run fails again, with the following denials:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368732806.757:28328): avc:  denied  { create } for  pid=9419 comm=&amp;quot;incrond&amp;quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 type=AVC msg=audit(1368732806.757:28329): avc:  denied  { read } for  pid=9419 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;incron.d&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=394140 scontext=system_u:system_r:incrond_t tcontext=root:object_r:incron_spool_t tclass=dir
 type=AVC msg=audit(1368732806.757:28330): avc:  denied  { create } for  pid=9419 comm=&amp;quot;incrond&amp;quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 type=AVC msg=audit(1368732806.757:28331): avc:  denied  { create } for  pid=9419 comm=&amp;quot;incrond&amp;quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;So although &lt;code&gt;incrond_t&lt;/code&gt; has search rights on the &lt;code&gt;incron_spool_t&lt;/code&gt;
 directories (through the &lt;code&gt;read_files_pattern&lt;/code&gt;), we need to grant it
@@ -365,7 +346,6 @@ with:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrond_t incron_spool_t:dir list_dir_perms;
 allow incrond_t incron_spool_t:file read_file_perms;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;Now the startup seems to work, but we still get denials:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# run_init rc-service incrond start
@@ -382,7 +362,6 @@ type=AVC msg=audit(1368733443.806:28342): avc:  denied  { create } for  pid=9552
 type=AVC msg=audit(1368733443.806:28343): avc:  denied  { create } for  pid=9552 comm=&amp;quot;incrond&amp;quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Those &lt;em&gt;unix_dgram_sockets&lt;/em&gt; are here again. But seeing that &lt;code&gt;cron.log&lt;/code&gt;
 is empty, and &lt;em&gt;logging_send_syslog_msg&lt;/em&gt; is one of the interfaces that
 would enable it, we might want to do just that so that we get more
@@ -397,7 +376,6 @@ files_pid_filetrans(incrond_t, incrond_var_run_t, file)
 ...
 logging_send_syslog_msg(incrond_t)
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;With that in place:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# run_init rc-service incrond start
@@ -418,7 +396,6 @@ type=AVC msg=audit(1368733894.641:28347): avc:  denied  { read } for  pid=9648 c
 type=AVC msg=audit(1368733894.645:28349): avc:  denied  { read } for  pid=9648 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;passwd&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=394223 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:etc_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;It looks like we're getting there. Similar as with &lt;strong&gt;incrontab&lt;/strong&gt; we
 allow &lt;em&gt;auth_use_nsswitch&lt;/em&gt; as well, and then get:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail cron.log
@@ -434,7 +411,6 @@ May 16 21:55:10 test incrond[9716]: ready to process filesystem events
 type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;/home/user/test2&amp;quot; dev=&amp;quot;dm-0&amp;quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
 type=AVC msg=audit(1368734110.913:28354): avc:  denied  { read } for  pid=9716 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;test2&amp;quot; dev=&amp;quot;dm-0&amp;quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;What happens is that &lt;strong&gt;incrond&lt;/strong&gt; read the (user) crontab, found that it
 had to "watch" &lt;code&gt;/home/user/test2&lt;/code&gt; but fails because SELinux doesn't

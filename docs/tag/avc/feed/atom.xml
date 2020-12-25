@@ -4,12 +4,10 @@ human readable, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;To know what this …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
 human readable, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;To know what this file is (or actually was, because such encoded paths
 mean that the file ~~wasn't accessible anymore at the time that the
@@ -18,7 +16,6 @@ For instance, with python:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ python -c &amp;quot;import base64; print(base64.b16decode(\&amp;quot;2F7661722F666669737A69596157202864656C6574656429\&amp;quot;));&amp;quot;;
 b&amp;#39;/var/ffisziYaW (deleted)&amp;#39;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;In the above example, &lt;code&gt;/var/ffisziYaW&lt;/code&gt; was the path of the file (note
 that, as it starts with ffi, it is caused by libffi which I've blogged
