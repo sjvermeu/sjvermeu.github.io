@@ -1,9 +1,8 @@
 Title: Abstracting infrastructure complexity
-Date: 2020-12-25 13:20
+Date: 2020-12-25 23:00
 Category: Architecture
-Tags: 
+Tags: infrastructure,archimate
 Slug: abstracting-infrastructure-complexity
-Status: draft
 
 IT is complex. Some even consider it to be more magic than reality. And with
 the ongoing evolutions and inventions, the complexity is not really going
