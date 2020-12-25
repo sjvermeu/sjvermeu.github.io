@@ -72,6 +72,225 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/">Abstracting infrastructure complexity</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2020-12-25T23:00:00+01:00"> Fri 25 December 2020</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/architecture.html">Architecture</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/infrastructure/">infrastructure</a>
+        /
+	<a href="https://blog.siphos.be/tag/archimate/">archimate</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>IT is complex. Some even consider it to be more magic than reality. And with
+the ongoing evolutions and inventions, the complexity is not really going
+away. Sure, some IT areas are becoming easier to understand, but that is often
+offset with new areas being explored.</p>
+<p>Companies and organizations that have a sizeable IT footprint generally see an
+increase in their infrastructure, regardless of how many rationalization
+initiatives that are started. Personally, I find it challenging, in a fun
+way, to keep up with the onslaught of new technologies and services that are
+onboarded in the infrastructure landscape that I'm responsible for.</p>
+<p>But just understanding a technology isn't enough to deal with its position in
+the larger environment.</p>
+<p><strong>Complexity is a challenging beast</strong></p>
+<p>If someone were to attempt drawing out how the IT infrastructure of a larger
+IT environment looks like in reality, it would soon become very, very large and
+challenging to explain. Perhaps not chaotic, but definitely complicated.</p>
+<p>One of the challenges is the amount of "something" that is out there. That can
+be the amount of devices you have, the amount of servers in the network, the
+amount of flows going through firewalls or gateways, the amount of processes
+running on a server, the amount of workstations and end user devices in use,
+the amount of containers running in the container platform, the amount of cloud
+platform instances that are active... </p>
+<p>The "something" can even be less tangible than the previous examples such as
+the amount of projects that are being worked on in parallel or the amount of
+changes that are being prepared. However, that complexity is not one I'll deal
+with in this post.</p>
+<p>Another challenge is the virtualized nature of IT infrastructure, which has
+a huge benefit for the organization and simplifies infrastructure services
+for its own consumers, but does make it more, well, complicated to deal with.</p>
+<p>Virtual networks (vlans), virtual systems (hypervisors), virtual firewalls,
+virtual applications (with support for streaming desktop applications to the
+end user device without having the applications installed on that device),
+virtual storage environments, etc. are all wonderful technologies which allow
+for much more optimized resource usage, but does introduce a higher complexity
+of the infastructure at large.</p>
+<p>To make sense of such larger structures, we start making abstractions of what
+we see, structuring it in a way that we can more easily explain, assess or analyze
+the environment and support changes properly. These abstract views do reflect
+reality, but only to a certain extend. Not every question that can be asked can
+be answered satisfactory with the same abstract view, but when it can, it is very
+effective.</p>
+<p><strong>Abstracting service complexity</strong></p>
+<p>In my day-to-day job, I'm responsible for the infrastructure of a reasonably
+large environment. With "responsible" I don't want to imply that I'm the one
+and only party involved of course - responsibilities are across a range of
+people and roles. I am accountable for the long-term strategy on
+infrastructure and the high-level infrastructure architecture and its offerings,
+but how that plays out is a collaborative aspect.</p>
+<p>Because of this role, I do want to keep a close eye on all the services that
+we offer from infrastructure side of things. And hence, I am often confronted
+with the complexity mentioned earlier. To resolve this, I try to look at all
+infastructure services in an abstract way, and document it in the same way so
+that services are more easily explained.</p>
+<p><img alt="An Archimate based view on the abstractions listed" src="https://blog.siphos.be/images/202012/abstracting-infrastructure-complexity-kvm.png"/></p>
+<p><em>Figure 1 - A possible visualization of the abstraction model, here in Archimate</em></p>
+<p>The abstraction I apply is the following:</p>
+<ul>
+<li>We start with <em>components</em>, building blocks that are used and which refer
+  to a single product or technology out there. A specific Java product can
+  be considered such a component, because by itself it hardly has any value.</li>
+<li>Components are put together to create a <em>solution</em>. This is something that
+  is intended to provide value to the organization at large, and is the level
+  at which something is documented, has an organizational entity responsible
+  for it, etc. Solutions are not yet instantiated though. An example of a
+  solution could be a Kafka-based pub/sub solution, or an OpenLDAP-based
+  directory solution.</li>
+<li>Solutions are used to create <em>services</em>. A service is something that has
+  an SLA attached to it. In most cases, the same solution is used to create
+  multiple services. We can think of the Kafka-based pub/sub solution that
+  has three services in the organization: a regular non-production one,
+  a regular production one, and a highly available production service.</li>
+<li>Services are supported through one or more <em>clusters</em>. These are a
+  way for teams to organize resources in support of a service. Some services
+  might be supported by multiple clusters, for instance spread across
+  different data centers. An OpenLDAP-based service might be supported by
+  a single OpenLDAP cluster with native synchronization support spread across
+  two data centers, or by two OpenLDAP clusters with a different
+  synchronization mechanism between the two clusters.</li>
+<li>Clusters exist out of one or more <em>instances</em>. These are the actual deployed
+  technology processes that enable the cluster. In an OpenLDAP cluster, you
+  could have two master processes (<code>slapd</code> processes) running, which are the
+  instances within the cluster.</li>
+<li>On top of the clusters, we enable <em>containers</em> (I call those containers, but
+  they don't have anything to do with container technology like Docker containers).
+  The containers are what the consumers are actually interested in. That could
+  be an organization unit in an LDAP structure, a database within an RDBMS, 
+  a set of topics within a Kafka cluster, etc.</li>
+</ul>
+<p>These are the basic abstractions I apply for most of the technologies, allowing
+me to easily make a good view on the environment. Let's look at a few examples
+here.</p>
+<p><strong>Example: Virtualization of Wintel systems</strong></p>
+<p>In a large, virtualized environment, you generally have a specific hypervisor
+software being used: be it RHV (Red Hat Virtualization) based upon
+KVM, Microsoft HyperV, VMWare vSphere or something else - the technology used
+is generally well known. That's one of the components being used, but that is
+far from the only component.</p>
+<p>To better manage the virtualized environment the administration teams might
+use an orchestration engine like Ansible, Puppet or Saltstack. They might also
+have a component in use for automatically managing certificates and what not.</p>
+<p>All these components are needed to build a full virtualization solution. For
+me, as an architect, knowing which components are used is useful for things
+like lifecycle management (which components are EOL, which components can be
+easily replaced with a different one versus components that are more lock-in
+oriented, etc.) or inventory management (which component is deployed where,
+which version is used), which supports things like vulnerability management
+(if we can map components to their Common Platform Enumeration (CPE) then
+we can easily see which vulnerabilities are reported through the Common
+Vulnerabilities and Exposure (CVE) reports).</p>
+<p>The interaction between all these components creates a sensible solution,
+which is the virtualization solution. At this level, I'm mostly interested
+in the solution roadmap, the responsibilities and documentation associated
+with it, the costs, maturity of the offering within the organization, etc.
+It is also on the solution level that most architectural designs are made,
+and the best practices (and malpractices) are documented.</p>
+<p>The virtualization solution itself is then instantiated within the
+organization to create one or more services. These could be different
+services based on the environment (a lab/sandbox virtualization service
+with low to no SLA, a non-production one with standard SLA, a non-production
+one with specific disaster recovery requirements, a production one with
+standard SLA (and standard disaster recovery requirements), a high-performance
+production one, etc.</p>
+<p>These services are mostly important for other architects, project leads
+or other stakeholders that are going to make active use of the virtualization
+services - the different services (which one could document as "service
+plans") make it more obvious on what the offering is, and what differentiation
+is supported.</p>
+<p>Let's consider a production, standard SLA virtualization service. The
+system administrators of the virtualization environment might enable this
+service across multiple clusters. This could be for several reasons: this
+could be due to limits (maximum number of hosts per cluster), or because
+of particular resource requirements (different CPU architecture requirements
+- yes even with virtualization this is still a thing), or to make
+things manageable for the administrators in general.</p>
+<p>While knowing which cluster an application is on is, in general, not
+that important, it can be very important when there are problems, or when
+limits are being reached. As an architect, I'm definitely interested in
+knowing why multiple clusters are made (what is the reasoning behind it) as
+it gives a good view on what the administrators are generally dealing with.</p>
+<p>Within a cluster (to support the virtualization) you'll find multiple hosts.
+Often, a cluster is sized to be able to deal with one or two host fall-outs
+so that the virtual machines (which are hosted on the cluster - these are
+the "containers" that I spoke of) can be migrated to another host with only
+a short downtime as a consequence (if their main host crashed) or no downtime
+at all (if it is scheduled maintenance of the host). These hosts are the
+instances of the cluster.</p>
+<p>By using this abstraction, I can "map" the virtualization environment in
+a way that I have a good enough view, without proclaiming to be anything
+more than an informed architect, on this setup to support my own work,
+and to be able to advice management on major investment requirements,
+challenges, strategic evolutions and more.</p>
+<p><strong>More than just documentation</strong></p>
+<p>While the above method is used for documenting the environment in which
+I work (and which works well for the size of the environment I have to deal
+with), it can be used for simplifying management of the technologies as
+well. This level of abstraction can easily be used in environments that
+push self-servicing forward.</p>
+<p>Let's take the <a href="https://www.openservicebrokerapi.org/">Open Service Broker API</a>
+as an example. This is an API that defines how to expose (infrastructure)
+services to consumers that can easily create (provision) and destroy 
+(deprovision) their own services. Brokers that support the API will
+then automatically handle the service management. This model can easily
+be put in to support the previous abstraction.</p>
+<p>Take the virtualization environment again. If we want to enable self-servicing
+on a virtualized environment, we can think of an offering where internal customers
+can create new virtual machines (provision) either based on a company-vetted
+template, or through an image (like with virtual appliances). The team that
+manages the virtualization environment has a number of services, which they
+describe in the service plans exposed by the API. An internal customer, when
+privisioning a virtual machine, is thus creating a "container" for the right
+service (based on their selected service plan) and on the right cluster
+(based upon the parameters that the internal customer passes along with the
+creation of its machine).</p>
+<p>We can do the same with databases: a certain database solution (say PostgreSQL)
+has its own offerings (exposed through service plans linked to the service), and
+internal customers can create their own database ("container") on the right
+cluster through this API.</p>
+<p>I personally have a few scripts that I use at home myself to quickly set
+up a certain technology, using the above abstraction level as the foundation.
+Rather than having to try and remember how to set up a multi-master OpenLDAP
+service, or a replicated Kafka setup, I have scripts that create this based
+upon this abstraction: the script parameters always use the service, cluster,
+instance and container terminology and underlyingly map this to the
+technology-specific approach.</p>
+<p>It is my intention to also promote this abstraction usage within my
+work environment, as I believe it allows us to more easily explain what
+all the infrastructure is used for, but also to more easily get new employees
+known to our environment. But even if that isn't reached, the abstraction is
+a huge help for me to assess and understand the multitude of technologies
+that are out there, be it our mainframe setup, the SAN offerings, the
+network switching setup, the databases, messaging services, cloud
+landing zones, firewall setups, container platforms and more.</p>
+
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.siphos.be/2020/10/working-on-infra-strategy/">Working on infra strategy</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -97,169 +316,6 @@ of releasing a new edition of the SELinux System Administration book, so I'll
 probably discuss that more later.</p>
 <p>Today, I want to write about a task I had to do this year as brand new domain
 architect for infrastructure.</p>
-<p><strong>Transitioning to domain architect</strong></p>
-<p>While I have been an infrastructure architect for quite some time already, my
-focus then was always on specific areas within infrastructure (databases,
-scheduling, big data), or on general infrastructure projects or challenges
-(infrastructure zoning concept, region-wide disaster recovery analysis and
-design). As one of my ex-colleagues and mentors put it, as infrastructure
-architects you are allowed to piss on each other's area: you can (and perhaps
-should) challenge the vision and projects of others, of course in a
-professional way.</p>
-<p>I heeded the advice of this person, and was able to get a much better grip on
-all our infrastructure services, their designs and challenges. I mentioned
-earlier on that my day job became more intensive: it was not just the direct
-responsibilities that I had that became more challenging, my principle to learn
-and keep track of all infrastructure evolutions were a large part of it as
-well. This pays off, as feedback and advice within the architecture review
-boards is more to the point, more tied to the situation.</p>
-<p>Furthermore, as an architect, I still try to get my hands dirty on everything
-bouncing around. When I was focusing on big data, I learned Spark and
-pySpark, I revisited my Python knowledge, and used this for specific cases
-(like using Python to create reports rather than Excel) to make sure I get a
-general feel of what engineers and developers have to work with. When my focus
-was on databases, I tried to get acquainted with DBA tasks. When we were
-launching our container initiative, I set up and used Kubernetes myself (back
-then this was also to see if SELinux is working properly with Kubernetes and
-during the installation).</p>
-<p>While this does not make me anything near what our engineers and experts are
-doing, I feel it gives me enough knowledge to be able to talk and discuss
-topics with these colleagues without being that "ivory tower" architect,
-and better understand (to a certain level) what they are going through when
-new initiatives or solutions are thrown at them.</p>
-<p>End of 2019, the company decided that a reorganization was due, not only on
-department and directorate level, but also on the IT and Enterprise
-Architecture level. One of the areas that improved was to make sure the
-infrastructure in general was also covered and supported by the EA team.
-Part of that move, two of my infrastructure architect colleagues and
-myself joined the EA team. One colleague is appointed to tackle a strategic
-theme, another is now domain architect for workplace/workforce,
-and I got the task of covering the infrastructure domain. Well, it is called
-infrastructure, but focus on the infrastructure related to hosting of
-applications and services: cloud hosting, data center, network, compute,
-private cloud, container platform, mainframe, integration services,
-middleware, etc. Another large part of what I consider "infrastructure" is
-part of the workplace domain, which my colleague is pushing forward.</p>
-<p>While I was still handing over my previous workload, coaching the new colleague
-that got thrown in to make sure both him and the teams involved are not left
-with a gap, the various domain enterprise architects got a first task: draft
-up the strategy for the domain… and don't wait too long ;-)</p>
-<p><strong>Tackling a domain strategy</strong></p>
-<p>Now, I've drafted infrastructural strategies quite a few times already,
-although those have most focus on the technology side. The domain view
-goes beyond just the technological means: to be able to have a well-founded
-strategy, I also have to tackle the resources and human side of things, the
-ability of the organization to deal with (yet another?) transformation, the
-processes involved, etc.</p>
-<p>Unlike the more specific area focus I had in the past, where the number of
-direct stakeholders is limited, the infrastructure domain I now support has
-many more direct stakeholders involved. If I count the product managers, system
-architects, product owners (yes we are trying the Scaled Agile approach in our
-organization) and the managerial roles within the domain, I have 148 people to
-involve, spread across 7 Agile Release Trains with different directorate
-steering. The consumers of the infrastructure services (which are more part of
-business delivery services rather than on IT level) are even much larger than
-that, and are the most important ones (but also more difficult) to get in touch
-with.</p>
-<p>Rather than just asking what the main evolutions are in the several areas of
-the domains, I approached this more according to practices I read in books like
-"Good Strategy, Bad Strategy" by Richard Rumelt. I started with interviews of
-all the stakeholders to get to learn what their challenges and problems are.
-I wanted our strategy to tackle the issues at hand, not focus on technological
-choices. Based on these interviews, I grouped the issues and challenges to see
-what are the primary causes of these issues.</p>
-<p>Then I devised what action domains I need to focus on in the strategy. An
-action domain was an area that more clearly describes the challenges ahead:
-while I had close to 200 challenges observed from the interviews, I can assign
-the huge majority of them to one of two action domains: if we tackle these
-domains then we are helping the organization in most of their challenges.
-After validating that these action domains are indeed covering the needs of
-the organization, I started working on the principles how to tackle these
-issues.</p>
-<p>Within the principles I want to steer the evolution within the infrastructure
-domain, without already focusing on the tangible projects to accomplish that.
-The principles should map to both larger projects (which I wanted to describe
-in the strategy as well) as well as smaller or more continuity-related
-projects. I eventually settled with four principles:
-  - one principle covering how to transform the environment,
-  - one principle covering what we offer (and thus also what we won't be
-    offering anymore),
-  - one principle which extends our scope with a major area that our internal
-    customers are demanding, and
-  - one principle describing how we will design our services</p>
-<p>Four principles are easy enough to remember for all involved, and if they are
-described well, they are steering enough for the organization to take up in
-their solutions. But with principles alone the strategy is not tangible enough
-for everyone, and many choices to be made are not codified within those
-principles. The next step was to draw out the vision for  infrastructure, based
-upon current knowledge and the principles above, and show the major areas of
-work that lays ahead, as well as give guidance on what these areas should
-evolve to.</p>
-<p>I settled for eight vision statements, each worked out further with high level
-guidance, as well as impact information: how will this impact the organization?
-Do we need specific knowledge or other profiles that we miss? Is this a vision
-that instills a cultural change (which often implies a slower adoption and the
-need for more support)? What are the financial consequences? What will happen
-if we do not pursue this vision?</p>
-<p>Within each vision, I collaborated with the various system architects and other
-stakeholders to draft out epics, changes that support the vision and are ready
-to be taken up in the Scaled Agile approach of the organization. The epics that
-would be due soon were fully expanded, with a lean business case (attempt) and
-phasing. Epics that are scheduled later (the strategy is a 5-year plan) are
-mainly paraphrased as expanding those right now provides little value.</p>
-<p>While the epics themselves are not fully described in the strategy (the visions
-give the rough approach), drafting these out is a way to verify if the vision
-statements are feasible and correct, and is a way to check if the organization
-understands and supports the vision.</p>
-<p>From the moment I got the request to the final draft of the strategy note,
-around 2 months have passed. The first draft was slideware and showed the
-intentions towards management (who wanted feedback within a few weeks after
-the request), after which the strategy was codified in a large document, and
-brought for approval on the appropriate boards.</p>
-<p>That was only the first hurdle though. Next was to communicate this strategy
-further…</p>
-<p><strong>Communication and involvement are key</strong></p>
-<p>The strategic document was almost finalized when COVID-19 struck. The company
-moved to working at home, and the way of working changed a lot. This also
-impacted how to approach the communication of the strategy and trying to get
-involvement of people. Rather than physically explaining the strategy, watching
-the body language of the people to see if they understand and support it or
-not, I was facing digital meetings where we did not yet have video.
-Furthermore, the organization was moving towards a more distributed approach
-with smaller teams (higher agility) with fewer means of bringing out
-information to larger groups.</p>
-<p>I selected a few larger meetings (such as those where all product managers and
-system architects are present) to present and discuss the strategy, but also
-started making webinars on this so that interested people could get informed
-about it. I even decided to have two webinars: a very short one (3 minutes)
-which focuses on the principles alone (and quickly summarizes the vision
-statements), and an average one (20-ish minutes) which covers the principles
-and vision statements.</p>
-<p>I also made recordings of the full explanations (e.g. those to management
-team), which take 1 hour, but did not move those towards a webinar (due to
-time pressure). Of course, I also published the strategy document itself for
-everyone, as well as the slides that accompany it.</p>
-<p>One of the next steps is to translate the strategy further towards the
-specific agile release trains, drafting up specific roadmaps, etc. This will
-also allow me to communicate and explain the strategy further. Right now, this
-is where we are at - and while I am happy with the strategy content, I do feel
-that the communication part received too little attention from myself, and is
-something I need to continue to put focus on.</p>
-<p>If a strategy is not absorbed by the organization, it fails as a strategy. And
-if you do not have sufficient collaboration on the strategy after it was
-'finalized' (not just communication but collaboration) then the organization
-cannot absorb it. I also understand that the infrastructure strategy isn't
-the only one guiding the organization: each domain has a strategy, and
-while the domain architects do try to get the strategies aligned (or at least
-not contradictory to each other), it is still not a single, company-wide
-strategy.</p>
-<p>Right now, colleagues are working on consolidating the various strategies on
-architectural level, while the agile organization is using the strategies to
-formulate their specific solution visions (and for a handful of solutions I'm
-also directly involved).</p>
-<p>We'll see how it pans out.</p>
-<p>So, do you think this is a sensible approach I took? How did you tackle
-communication and collaboration of such initiatives during COVID-19 measures? </p>
 
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2020/10/working-on-infra-strategy/">more ...</a>
                 </div>
@@ -535,43 +591,6 @@ about the <code>pam_u2f</code> setup are indeed correct that it is fairly simple
 sake, I've documented what I know on the Gentoo Wiki, as the <a href="https://wiki.gentoo.org/wiki/Pam_u2f">pam_u2f article</a>.</p>
 
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/09/authenticating-with-u2f/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2017/08/using-nvidia-with-selinux/">Using nVidia with SELinux</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2017-08-23T19:04:00+02:00"> Wed 23 August 2017</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-        /
-	<a href="https://blog.siphos.be/tag/nvidia/">nvidia</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>Yesterday I've <a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/">switched to the gentoo-sources kernel package</a> on Gentoo Linux.
-And with that, I also attempted (succesfully) to use the propriatary nvidia drivers
-so that I can enjoy both a smoother 3D experience while playing minecraft, as well
-as use the CUDA support so I don't need to use cloud-based services for small
-exercises.</p>
-<p>The move to nvidia was quite simple, as the <a href="https://wiki.gentoo.org/wiki/NVidia/nvidia-drivers">nvidia-drivers wiki article</a> on
-the Gentoo wiki was quite easy to follow.</p>
-
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2017/08/using-nvidia-with-selinux/">more ...</a>
                 </div>
             </article>
             <hr/>

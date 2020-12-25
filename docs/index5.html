@@ -72,6 +72,60 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">Why we do confine Firefox</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-08-11T19:18:00+02:00"> Tue 11 August 2015</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+        /
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+        /
+	<a href="https://blog.siphos.be/tag/policy/">policy</a>
+        /
+	<a href="https://blog.siphos.be/tag/firefox/">firefox</a>
+        /
+	<a href="https://blog.siphos.be/tag/cve/">cve</a>
+        /
+	<a href="https://blog.siphos.be/tag/vulnerability/">vulnerability</a>
+        /
+	<a href="https://blog.siphos.be/tag/xdg/">xdg</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>If you're a bit following the SELinux development community you will know
+<a href="http://danwalsh.livejournal.com">Dan Walsh</a>, a <a href="http://people.redhat.com/dwalsh/">Red Hat</a>
+security engineer. Today he <a href="http://danwalsh.livejournal.com/72697.html">blogged</a> 
+about <em>CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox</em>. He 
+should've asked why the <em>reference policy</em> or <em>Red Hat/Fedora policy</em> does not
+confine Firefox, because SELinux is, as I've
+<a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">mentioned before</a>,
+not the same as its policy.</p>
+<p>In effect, Gentoo's SELinux policy <em>does</em> confine Firefox by default. One of the
+principles we focus on in Gentoo Hardened is to
+<a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies">develop desktop policies</a>
+in order to reduce exposure and information leakage of user documents. We might
+not have the manpower to confine all desktop applications, but I do think it is
+worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
+is also correct: desktops are notoriously difficult to use a mandatory access
+control system on.</p>
+
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.siphos.be/2015/08/can-selinux-substitute-dac/">Can SELinux substitute DAC?</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -431,45 +485,6 @@ are then transformed to an active policy. But this is not a single-step
 approach.</p>
 
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/">Live SELinux userspace ebuilds</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-06-10T20:07:00+02:00"> Wed 10 June 2015</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/gentoo.html">Gentoo</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/cil/">cil</a>
-        /
-	<a href="https://blog.siphos.be/tag/gentoo/">Gentoo</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-        /
-	<a href="https://blog.siphos.be/tag/userspace/">userspace</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>In between courses, I pushed out live ebuilds for the SELinux userspace
-applications: libselinux, policycoreutils, libsemanage, libsepol,
-sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
-version 9999) pull in the current development code of the <a href="https://github.com/SELinuxProject/selinux">SELinux
-userspace</a> so that developers
-and contributors can already work with in-progress code developments as
-well as see how they work on a Gentoo platform.</p>
-
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/">more ...</a>
                 </div>
             </article>
             <hr/>

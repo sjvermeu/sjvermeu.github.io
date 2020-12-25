@@ -72,6 +72,42 @@ Simplicity is a form of art...            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.siphos.be/2015/09/getting-su-to-work-in-init-scripts/">Getting su to work in init scripts</a></h2>
+                    <div class="well well-sm">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-09-14T16:37:00+02:00"> Mon 14 September 2015</time>
+    </span>
+
+
+            <span class="label label-default">By</span>
+            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
+
+        <span class="label label-default">Category</span>
+        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
+        /
+	<a href="https://blog.siphos.be/tag/initrc/">initrc</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                <div class="summary"><p>While developing an init script which has to switch user, I got a couple of
+errors from SELinux and the system itself:</p>
+<div class="highlight"><pre><span></span><code><span class="go">~# rc-service hadoop-namenode format</span>
+<span class="go">Authenticating root.</span>
+<span class="go"> * Formatting HDFS ...</span>
+<span class="go">su: Authentication service cannot retrieve authentication info</span>
+<span class="gp gp-VirtualEnv">(Ignored)</span>
+</code></pre></div>
+
+                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/09/getting-su-to-work-in-init-scripts/">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">Custom CIL SELinux policies in Gentoo</a></h2>
                     <div class="well well-sm">
 <footer class="post-info">
@@ -406,60 +442,6 @@ category), with also a number of options (in case multiple options are
 possible).</p>
 
                     <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/finding-a-good-compression-utility/">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">Why we do confine Firefox</a></h2>
-                    <div class="well well-sm">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-08-11T19:18:00+02:00"> Tue 11 August 2015</time>
-    </span>
-
-
-            <span class="label label-default">By</span>
-            <a href="https://blog.siphos.be/pages/about.html"><i class="fa fa-user"></i> Sven Vermeulen</a>
-
-        <span class="label label-default">Category</span>
-        <a href="https://blog.siphos.be/category/selinux.html">SELinux</a>
-
-
-<span class="label label-default">Tags</span>
-	<a href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-        /
-	<a href="https://blog.siphos.be/tag/selinux/">selinux</a>
-        /
-	<a href="https://blog.siphos.be/tag/policy/">policy</a>
-        /
-	<a href="https://blog.siphos.be/tag/firefox/">firefox</a>
-        /
-	<a href="https://blog.siphos.be/tag/cve/">cve</a>
-        /
-	<a href="https://blog.siphos.be/tag/vulnerability/">vulnerability</a>
-        /
-	<a href="https://blog.siphos.be/tag/xdg/">xdg</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                <div class="summary"><p>If you're a bit following the SELinux development community you will know
-<a href="http://danwalsh.livejournal.com">Dan Walsh</a>, a <a href="http://people.redhat.com/dwalsh/">Red Hat</a>
-security engineer. Today he <a href="http://danwalsh.livejournal.com/72697.html">blogged</a> 
-about <em>CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox</em>. He 
-should've asked why the <em>reference policy</em> or <em>Red Hat/Fedora policy</em> does not
-confine Firefox, because SELinux is, as I've
-<a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">mentioned before</a>,
-not the same as its policy.</p>
-<p>In effect, Gentoo's SELinux policy <em>does</em> confine Firefox by default. One of the
-principles we focus on in Gentoo Hardened is to
-<a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies">develop desktop policies</a>
-in order to reduce exposure and information leakage of user documents. We might
-not have the manpower to confine all desktop applications, but I do think it is
-worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
-is also correct: desktops are notoriously difficult to use a mandatory access
-control system on.</p>
-
-                    <a class="btn btn-default btn-xs" href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">more ...</a>
                 </div>
             </article>
             <hr/>
