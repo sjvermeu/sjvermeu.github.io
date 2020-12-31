@@ -1,5 +1,5 @@
 Title: About
-Date: 2020-10-04 11:20
+Date: 2020-12-31 11:20
 Slug: about
 
 Personalia
@@ -35,7 +35,7 @@ Year | Activity
 2015 - 2019 | IT Architect at [KBC Group](http://www.kbc.com) where I am working on the design of an analytics and data discovery environment, meant to strive in a big data environment with high flexibility demands and modern technological approaches.
 2010 - 2015 | ICT Architect at [KBC Group](http://www.kbc.com) where I maintain the strategy on database & scheduling technologies, watch over the information system & infrastructure enterprise architectures and help in programs and projects that want to integrate one or more database technologies into their own architecture.
 2005 - 2009 | WebSphere System Engineer at the [KBC Group](http://www.kbc.com) where I develop and maintain a framework for automated deployment and maintenance of JEE applications on WebSphere systems and, of course, work in projects to represent the WebSphere group.
-2001 - 2006, 2007 - 2008, 2011 - present | Active in the [Gentoo](http://www.gentoo.org) project, first as a documentation translator (English - Dutch), later as author (English), project lead (documentation, public relations), council member and foundation trustee. Now active as a SELinux policy developer, SELinux userspace package maintainer and documentation developer.
+2001 - 2006, 2007 - 2008, 2011 - 2018 | Active in the [Gentoo](http://www.gentoo.org) project, first as a documentation translator (English - Dutch), later as author (English), project lead (documentation, public relations), council member and foundation trustee. Now active as a SELinux policy developer, SELinux userspace package maintainer and documentation developer.
 2000 - 2005 | Graduated from the [University of Ghent](http://www.ugent.be) as Master of Science in Engineering: Computer Science, major in Software Engineering (in Dutch 'Burgerlijk Ingenieur in de Computerwetenschappen - major Softwareontwikkeling'). My thesis was about making software tamperproof by embedding control regions, checksum algorithms and more.
 1992 - 2005 | Board member of the ACCB, a computerclub located in Bruges
 2004 | Summerjob at [Philips](http://www.philips.com): Search and repair faults in television sets
