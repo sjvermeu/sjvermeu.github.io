@@ -12,6 +12,8 @@ from pelicanconf import *
 
 RELATIVE_URLS = False
 
+SITEURL = 'https://blog.siphos.be'
+
 # My blog seems to be aggregated as follows:
 # /feed/                    Complete RSS feed
 # /category/gentoo/feed/    Gentoo category feed (planet.gentoo.org)

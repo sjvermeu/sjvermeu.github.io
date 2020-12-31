@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'Sven Vermeulen'
 SITENAME = u'Simplicity is a form of art...'
-SITEURL = 'https://blog.siphos.be'
+SITEURL = 'http://192.168.1.71:8000'
 
 PATH = 'content'
 
@@ -13,8 +13,11 @@ TIMEZONE = 'Europe/Brussels'
 DEFAULT_LANG = u'en'
 
 # Social widget
-SOCIAL = (('GitHub', 'https://github.com/sjvermeu'),
-          ('Twitter', 'https://twitter.com/sjvermeu'),)
+SOCIAL = (
+  ('github', 'https://github.com/sjvermeu'),
+  ('twitter', 'https://twitter.com/sjvermeu'),
+  ('linkedin', 'https://www.linkedin.com/in/svenvermeulen')
+)
 
 DEFAULT_PAGINATION = 10
 
@@ -38,7 +41,7 @@ NEWEST_FIRST_ARCHIVES = True
 
 # Specify theme
 
-THEME = "themes/pelican-bootstrap3"
+THEME = "themes/simplify-theme"
 DISPLAY_CATEGORIES_ON_MENU = False
 SHOW_ARTICLE_CATEGORY = True
 DISPLAY_ARTICLE_INFO_ON_INDEX = True
