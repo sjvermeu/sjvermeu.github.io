@@ -13,20 +13,30 @@
 
         <!-- Default metadata -->
     <meta name="author" content="Sven Vermeulen" />
-    <meta name="description" content="" />
+    <meta name="description" content="selinux-system-administration-3rd-edition" />
+    <meta name="keywords" content="selinux, packt, book">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
-<meta property="og:type" content="blog" />
-<meta property="og:title" content="Simplicity is a form of art..." />
-<meta property="og:description" content="" />
+<meta property="og:title" content="SELinux System Administration 3rd Edition" />
+<meta property="og:description" content="As I mentioned previously, recently my latest installment of &#34;SELinux System Administration&#34; has been released by Packt Publishing. This is already the third edition of the book, after the first (2013) and second (2016) editions have gotten reasonable success given the technical and often hard nature of full SELinux administration. Like with the previous editions, this book remains true to the public of system administrators, rather than SELinux policy developers. Of course, SELinux policy development is not ignored in the book. What has changed First and foremost, it of course updates the content of the previous edition to be up to date with the latest evolutions within SELinux. There are no earth shattering changes, so the second edition isn&#39;t suddenly deprecated. The examples are brought up to date with a recent distribution setup, for which I used Gentoo Linux and CentOS. The latter is, given the recent announcement of CentOS stopping support for CentOS version 8 in general, a bit confrontational, although it doesn&#39;t really matter that much for the scope of the book. I hope that Rocky Linux will get the focus and support it deserves. Anyway, I digress. A significant part of the updates on the existing content is on SELinux-enabled applications, applications that act as a so-called object manager themselves. While quite a few were already covered in the past, these applications continue to enhance their SELinux support, and in the third edition a few of these receive a full dedicated chapter. There are also a small set of SELinux behavioral changes, like SELinux&#39; NNP support, as well as SELinux userspace changes like specific extended attributes for restorecon. Most of the book though isn&#39;t about changes, but about new content. What has been added As administrators face SELinux-aware applications more and more, the book goes into much more detail on how to tune SELinux with those SELinux-aware applications. If we look at the book&#39;s structure, you&#39;ll find that it has roughly three parts: Using SELinux, which covers the fundamentals of using SELinux and understanding what SELinux is. SELinux-aware platforms, which dives into the SELinux-aware application suites that administrators might come in contact with Policy management, which focuses on managing, analyzing and even developing SELinux policies. By including additional content on SEPostgreSQL, libvirt, container platforms like Kubernetes, and even Xen Security Modules (which is not SELinux itself, but strongly influenced and aligned to it to the level that it even uses the SELinux userspace utilities) the book is showing how wide SELinux is being used. Even on policy development, the book now includes more support than before. While another book of mine, SELinux Cookbook, is more applicable to policy development, I did not want to keep administrators out of the loop on how to develop SELinux policies at all. Especially not since there are more tools available nowadays that support policy creation, like udica. SELinux CIL One of the changes I also introduced in the book is to include SELinux Common Intermediate Language (CIL) information and support. When we need to add in a small SELinux policy change, the book will suggest CIL based changes as well. SELinux CIL is not commonly used in large-scale policy development. Or at least, not directly. The most significant policy development out there, the SELinux Reference Policy, does not use CIL directly itself, and the level of support you find for the current development approach is very much the default way of working. So I do not ignore this more traditional approach. The reason I did include more CIL focus is because CIL has a few advantages up its sleeve that is harder to get with the traditional language. Nothing major perhaps, but enough that I feel it should be more actively promoted anyway. And this book is hopefully a nice start to it. I hope the book is a good read for administrators or even architects that would like to know more about the technology." />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://blog.siphos.be" />
-<meta property="og:image" content="https://blog.siphos.be/">
+<meta property="og:url" content="https://blog.siphos.be/2021/01/selinux-system-administration-3rd-edition/" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-06 20:00:00+01:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/author/sven-vermeulen.html">
+<meta property="article:section" content="SELinux" />
+	<meta property="article:tag" content="selinux" />
+	<meta property="article:tag" content="packt" />
+	<meta property="article:tag" content="book" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
         <!-- Site Claim -->
 
 
         <!-- Title -->
         <title>
-Simplicity is a form of art... - packt tag        </title>
+    SELinux System Administration 3rd Edition &ndash; Simplicity is a form of art...
+        </title>
         
         <!-- Icon -->
         <link rel="shortcut icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
@@ -44,11 +54,11 @@ Simplicity is a form of art... - packt tag        </title>
 
             <link href="https://blog.siphos.be/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... RSS Feed" />
 
+            <link href="https://blog.siphos.be/category/selinux/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Categories Atom Feed" />
+
+            <link href="https://blog.siphos.be/category/selinux/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Categories RSS Feed" />
 
 
-            <link href="https://blog.siphos.be/tag/packt/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Tags Atom Feed" />
-
-            <link href="https://blog.siphos.be/tag/packt/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Tags RSS Feed" />
 
         <!-- Styles -->
         <!--
@@ -183,10 +193,27 @@ Simplicity is a form of art... - packt tag        </title>
 
         <!-- Header -->
         <header class="bg-dark text-light shadow-sm pt-3 pb-2">
-    <div class="container">
-        <h1 id="Simplicity is a form of art...">Simplicity is a form of art...</h1>
-        <p style="font-size: larger; color: orange;"></p>
-    </div>
+	<div class="container">
+		<h3 id="selinux-system-administration-3rd-edition">SELinux System Administration 3rd Edition</h3>
+		<p style="font-size:larger;">selinux-system-administration-3rd-edition</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/author/sven-vermeulen.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Wed 06 January 2021</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Wed 06 January 2021
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/packt/">packt</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/book/">book</a>
+            </div>
+        </div>
+	</div>
         </header>
 
         <!-- Main -->
@@ -195,14 +222,15 @@ Simplicity is a form of art... - packt tag        </title>
                     <!-- Sharing -->
 
                     <!-- Content -->
-    <!-- List of article -->
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/01/selinux-system-administration-3rd-edition/">SELinux System Administration 3rd Edition</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 06 January 2021</span></span>
-                <p><p>As I mentioned previously, recently my latest installment of "SELinux System
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>As I mentioned previously, recently my latest installment of "SELinux System
 Administration" has been released by Packt Publishing. This is already the
 third edition of the book, after the first (2013) and second (2016) editions
 have gotten reasonable success given the technical and often hard nature of
@@ -269,88 +297,27 @@ major perhaps, but enough that I feel it should be more actively promoted
 anyway. And this book is hopefully a nice start to it.</p>
 <p>I hope the book is a good read for administrators or even architects that
 would like to know more about the technology.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/01/selinux-system-administration-3rd-edition/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/packt/">packt</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/book/">book</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/">SELinux System Administration, 2nd Edition</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 22 December 2016</span></span>
-                <p><p>While still working on a few other projects, one of the time consumers of the
-past half year (haven't you noticed? my blog was quite silent) has come to an
-end: the <a href="https://www.packtpub.com/networking-and-servers/selinux-system-administration-second-edition">SELinux System Administration - Second Edition</a>
-book is now available. With almost double the amount of pages and a serious
-update of the content, the book can now be bought either through Packt Publishing
-itself, or the various online bookstores such as <a href="https://www.amazon.com/SELinux-System-Administration-Sven-Vermeulen-ebook/dp/B01LWM02WI">Amazon</a>.</p>
-<p>With the holidays now approaching, I hope to be able to execute a few tasks
-within the Gentoo community (and of the Gentoo Foundation) and get back on track.
-Luckily, my absence was not jeopardizing the state of <a href="https://wiki.gentoo.org/wiki/SELinux">SELinux</a>
-in Gentoo thanks to the efforts of Jason Zaman.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2016/12/selinux-system-administration-2nd-edition/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/rhel/">rhel</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/redhat/">redhat</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/packt/">packt</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/book/">book</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/publishing/">publishing</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/09/it-has-finally-arrived-selinux-system-administration/">It has finally arrived: SELinux System Administration</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 27 September 2013</span></span>
-                <p><p>Almost everyone has it - either physical or in their heads: a list of
-things you want to do or achieve before you... well, stop existing. Mine
-still has numerous things on it (I should get on it, I know) but one of
-the items on that list has recently been …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/09/it-has-finally-arrived-selinux-system-administration/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/administration/">administration</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/book/">book</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/fedora/">fedora</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/packt/">packt</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/packtpub/">packtpub</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/system/">system</a>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
-    <!-- Pagination -->
-<div class="pagination px-2">
-</div>
-    <!-- Google Adsense -->
-                </div>
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
+        <hr>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'simplicityisaformofart';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>                </div>
         </main>
 
     </div>
@@ -384,14 +351,22 @@ the items on that list has recently been …</p></p>
 <script type="application/ld+json">
 {
     "@context": "http://schema.org",
-    "@type": "Blog",
-    "name": " Simplicity is a form of art... ",
-    "url": "https://blog.siphos.be",
-    "image": "https://blog.siphos.be/",
-    "description": ""
+    "@type": "BlogPosting",
+    "name": "SELinux System Administration 3rd Edition",
+    "headline": "SELinux System Administration 3rd Edition",
+    "datePublished": "2021-01-06 20:00:00+01:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/author/sven-vermeulen.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/2021/01/selinux-system-administration-3rd-edition/",
+    "description": "As I mentioned previously, recently my latest installment of "SELinux System Administration" has been released by Packt Publishing. This is already the third edition of the book, after the first (2013) and second (2016) editions have gotten reasonable success given the technical and often hard nature of full SELinux administration. Like with the previous editions, this book remains true to the public of system administrators, rather than SELinux policy developers. Of course, SELinux policy development is not ignored in the book. What has changed First and foremost, it of course updates the content of the previous edition to be up to date with the latest evolutions within SELinux. There are no earth shattering changes, so the second edition isn't suddenly deprecated. The examples are brought up to date with a recent distribution setup, for which I used Gentoo Linux and CentOS. The latter is, given the recent announcement of CentOS stopping support for CentOS version 8 in general, a bit confrontational, although it doesn't really matter that much for the scope of the book. I hope that Rocky Linux will get the focus and support it deserves. Anyway, I digress. A significant part of the updates on the existing content is on SELinux-enabled applications, applications that act as a so-called object manager themselves. While quite a few were already covered in the past, these applications continue to enhance their SELinux support, and in the third edition a few of these receive a full dedicated chapter. There are also a small set of SELinux behavioral changes, like SELinux' NNP support, as well as SELinux userspace changes like specific extended attributes for restorecon. Most of the book though isn't about changes, but about new content. What has been added As administrators face SELinux-aware applications more and more, the book goes into much more detail on how to tune SELinux with those SELinux-aware applications. If we look at the book's structure, you'll find that it has roughly three parts: Using SELinux, which covers the fundamentals of using SELinux and understanding what SELinux is. SELinux-aware platforms, which dives into the SELinux-aware application suites that administrators might come in contact with Policy management, which focuses on managing, analyzing and even developing SELinux policies. By including additional content on SEPostgreSQL, libvirt, container platforms like Kubernetes, and even Xen Security Modules (which is not SELinux itself, but strongly influenced and aligned to it to the level that it even uses the SELinux userspace utilities) the book is showing how wide SELinux is being used. Even on policy development, the book now includes more support than before. While another book of mine, SELinux Cookbook, is more applicable to policy development, I did not want to keep administrators out of the loop on how to develop SELinux policies at all. Especially not since there are more tools available nowadays that support policy creation, like udica. SELinux CIL One of the changes I also introduced in the book is to include SELinux Common Intermediate Language (CIL) information and support. When we need to add in a small SELinux policy change, the book will suggest CIL based changes as well. SELinux CIL is not commonly used in large-scale policy development. Or at least, not directly. The most significant policy development out there, the SELinux Reference Policy, does not use CIL directly itself, and the level of support you find for the current development approach is very much the default way of working. So I do not ignore this more traditional approach. The reason I did include more CIL focus is because CIL has a few advantages up its sleeve that is harder to get with the traditional language. Nothing major perhaps, but enough that I feel it should be more actively promoted anyway. And this book is hopefully a nice start to it. I hope the book is a good read for administrators or even architects that would like to know more about the technology."
 }
 </script>
     <!-- Disqus count -->
-<script id="dsq-count-scr" src="//simplicityisaformofart.disqus.com/count.js" async="async"></script></body>
+</body>
 
 </html>

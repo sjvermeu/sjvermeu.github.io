@@ -198,6 +198,93 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2021/01/selinux-system-administration-3rd-edition/">SELinux System Administration 3rd Edition</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 06 January 2021</span></span>
+                <p><p>As I mentioned previously, recently my latest installment of "SELinux System
+Administration" has been released by Packt Publishing. This is already the
+third edition of the book, after the first (2013) and second (2016) editions
+have gotten reasonable success given the technical and often hard nature of
+full SELinux administration.</p>
+<p>Like with the previous editions, this book remains true to the public of
+system administrators, rather than SELinux policy developers. Of course,
+SELinux policy development is not ignored in the book.</p>
+<p><strong>What has changed</strong></p>
+<p>First and foremost, it of course updates the content of the previous edition
+to be up to date with the latest evolutions within SELinux. There are no earth
+shattering changes, so the second edition isn't suddenly deprecated. The examples
+are brought up to date with a recent distribution setup, for which I used
+Gentoo Linux and CentOS.</p>
+<p>The latter is, given the recent announcement of CentOS stopping support for
+CentOS version 8 in general, a bit confrontational, although it doesn't
+really matter that much for the scope of the book. I hope that <a href="https://rockylinux.org/">Rocky
+Linux</a> will get the focus and support it deserves.</p>
+<p>Anyway, I digress. A significant part of the updates on the existing content
+is on SELinux-enabled applications, applications that act as a so-called object
+manager themselves. While quite a few were already covered in the past, these
+applications continue to enhance their SELinux support, and in the third edition
+a few of these receive a full dedicated chapter.</p>
+<p>There are also a small set of SELinux behavioral changes, like SELinux' NNP
+support, as well as SELinux userspace changes like specific extended attributes
+for restorecon.</p>
+<p>Most of the book though isn't about changes, but about new content.</p>
+<p><strong>What has been added</strong></p>
+<p>As administrators face SELinux-aware applications more and more, the book
+goes into much more detail on how to tune SELinux with those SELinux-aware
+applications. If we look at the book's structure, you'll find that it has
+roughly three parts:</p>
+<ol>
+<li>Using SELinux, which covers the fundamentals of using SELinux and
+   understanding what SELinux is.</li>
+<li>SELinux-aware platforms, which dives into the SELinux-aware application
+   suites that administrators might come in contact with</li>
+<li>Policy management, which focuses on managing, analyzing and even
+   developing SELinux policies.</li>
+</ol>
+<p>By including additional content on SEPostgreSQL, libvirt, container
+platforms like Kubernetes, and even Xen Security Modules (which is not
+SELinux itself, but strongly influenced and aligned to it to the level
+that it even uses the SELinux userspace utilities) the book is showing how
+wide SELinux is being used.</p>
+<p>Even on policy development, the book now includes more support than before.
+While another book of mine, SELinux Cookbook, is more applicable to policy
+development, I did not want to keep administrators out of the loop on how
+to develop SELinux policies at all. Especially not since there are more
+tools available nowadays that support policy creation, like udica.</p>
+<p><strong>SELinux CIL</strong></p>
+<p>One of the changes I also introduced in the book is to include SELinux
+Common Intermediate Language (CIL) information and support. When we need
+to add in a small SELinux policy change, the book will suggest CIL based
+changes as well.</p>
+<p>SELinux CIL is not commonly used in large-scale policy development. Or at
+least, not directly. The most significant policy development out there,
+the <a href="https://github.com/SELinuxProject/refpolicy/wiki">SELinux Reference Policy</a>,
+does not use CIL directly itself, and the level of support you find for
+the current development approach is very much the default way of working. So
+I do not ignore this more traditional approach.</p>
+<p>The reason I did include more CIL focus is because CIL has a few advantages
+up its sleeve that is harder to get with the traditional language. Nothing
+major perhaps, but enough that I feel it should be more actively promoted
+anyway. And this book is hopefully a nice start to it.</p>
+<p>I hope the book is a good read for administrators or even architects that
+would like to know more about the technology.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2021/01/selinux-system-administration-3rd-edition/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/packt/">packt</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/book/">book</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/">Abstracting infrastructure complexity</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 25 December 2020</span></span>
@@ -212,186 +299,6 @@ way, to keep up with the onslaught of new technologies and services that are
 onboarded in the infrastructure landscape that I'm responsible for.</p>
 <p>But just understanding a technology isn't enough to deal with its position in
 the larger environment.</p>
-<p><strong>Complexity is a challenging beast</strong></p>
-<p>If someone were to attempt drawing out how the IT infrastructure of a larger
-IT environment looks like in reality, it would soon become very, very large and
-challenging to explain. Perhaps not chaotic, but definitely complicated.</p>
-<p>One of the challenges is the amount of "something" that is out there. That can
-be the amount of devices you have, the amount of servers in the network, the
-amount of flows going through firewalls or gateways, the amount of processes
-running on a server, the amount of workstations and end user devices in use,
-the amount of containers running in the container platform, the amount of cloud
-platform instances that are active... </p>
-<p>The "something" can even be less tangible than the previous examples such as
-the amount of projects that are being worked on in parallel or the amount of
-changes that are being prepared. However, that complexity is not one I'll deal
-with in this post.</p>
-<p>Another challenge is the virtualized nature of IT infrastructure, which has
-a huge benefit for the organization and simplifies infrastructure services
-for its own consumers, but does make it more, well, complicated to deal with.</p>
-<p>Virtual networks (vlans), virtual systems (hypervisors), virtual firewalls,
-virtual applications (with support for streaming desktop applications to the
-end user device without having the applications installed on that device),
-virtual storage environments, etc. are all wonderful technologies which allow
-for much more optimized resource usage, but does introduce a higher complexity
-of the infastructure at large.</p>
-<p>To make sense of such larger structures, we start making abstractions of what
-we see, structuring it in a way that we can more easily explain, assess or analyze
-the environment and support changes properly. These abstract views do reflect
-reality, but only to a certain extend. Not every question that can be asked can
-be answered satisfactory with the same abstract view, but when it can, it is very
-effective.</p>
-<p><strong>Abstracting service complexity</strong></p>
-<p>In my day-to-day job, I'm responsible for the infrastructure of a reasonably
-large environment. With "responsible" I don't want to imply that I'm the one
-and only party involved of course - responsibilities are across a range of
-people and roles. I am accountable for the long-term strategy on
-infrastructure and the high-level infrastructure architecture and its offerings,
-but how that plays out is a collaborative aspect.</p>
-<p>Because of this role, I do want to keep a close eye on all the services that
-we offer from infrastructure side of things. And hence, I am often confronted
-with the complexity mentioned earlier. To resolve this, I try to look at all
-infastructure services in an abstract way, and document it in the same way so
-that services are more easily explained.</p>
-<p><img alt="An Archimate based view on the abstractions listed" src="https://blog.siphos.be/images/202012/abstracting-infrastructure-complexity-kvm.png"/></p>
-<p><em>Figure 1 - A possible visualization of the abstraction model, here in Archimate</em></p>
-<p>The abstraction I apply is the following:</p>
-<ul>
-<li>We start with <em>components</em>, building blocks that are used and which refer
-  to a single product or technology out there. A specific Java product can
-  be considered such a component, because by itself it hardly has any value.</li>
-<li>Components are put together to create a <em>solution</em>. This is something that
-  is intended to provide value to the organization at large, and is the level
-  at which something is documented, has an organizational entity responsible
-  for it, etc. Solutions are not yet instantiated though. An example of a
-  solution could be a Kafka-based pub/sub solution, or an OpenLDAP-based
-  directory solution.</li>
-<li>Solutions are used to create <em>services</em>. A service is something that has
-  an SLA attached to it. In most cases, the same solution is used to create
-  multiple services. We can think of the Kafka-based pub/sub solution that
-  has three services in the organization: a regular non-production one,
-  a regular production one, and a highly available production service.</li>
-<li>Services are supported through one or more <em>clusters</em>. These are a
-  way for teams to organize resources in support of a service. Some services
-  might be supported by multiple clusters, for instance spread across
-  different data centers. An OpenLDAP-based service might be supported by
-  a single OpenLDAP cluster with native synchronization support spread across
-  two data centers, or by two OpenLDAP clusters with a different
-  synchronization mechanism between the two clusters.</li>
-<li>Clusters exist out of one or more <em>instances</em>. These are the actual deployed
-  technology processes that enable the cluster. In an OpenLDAP cluster, you
-  could have two master processes (<code>slapd</code> processes) running, which are the
-  instances within the cluster.</li>
-<li>On top of the clusters, we enable <em>containers</em> (I call those containers, but
-  they don't have anything to do with container technology like Docker containers).
-  The containers are what the consumers are actually interested in. That could
-  be an organization unit in an LDAP structure, a database within an RDBMS, 
-  a set of topics within a Kafka cluster, etc.</li>
-</ul>
-<p>These are the basic abstractions I apply for most of the technologies, allowing
-me to easily make a good view on the environment. Let's look at a few examples
-here.</p>
-<p><strong>Example: Virtualization of Wintel systems</strong></p>
-<p>In a large, virtualized environment, you generally have a specific hypervisor
-software being used: be it RHV (Red Hat Virtualization) based upon
-KVM, Microsoft HyperV, VMWare vSphere or something else - the technology used
-is generally well known. That's one of the components being used, but that is
-far from the only component.</p>
-<p>To better manage the virtualized environment the administration teams might
-use an orchestration engine like Ansible, Puppet or Saltstack. They might also
-have a component in use for automatically managing certificates and what not.</p>
-<p>All these components are needed to build a full virtualization solution. For
-me, as an architect, knowing which components are used is useful for things
-like lifecycle management (which components are EOL, which components can be
-easily replaced with a different one versus components that are more lock-in
-oriented, etc.) or inventory management (which component is deployed where,
-which version is used), which supports things like vulnerability management
-(if we can map components to their Common Platform Enumeration (CPE) then
-we can easily see which vulnerabilities are reported through the Common
-Vulnerabilities and Exposure (CVE) reports).</p>
-<p>The interaction between all these components creates a sensible solution,
-which is the virtualization solution. At this level, I'm mostly interested
-in the solution roadmap, the responsibilities and documentation associated
-with it, the costs, maturity of the offering within the organization, etc.
-It is also on the solution level that most architectural designs are made,
-and the best practices (and malpractices) are documented.</p>
-<p>The virtualization solution itself is then instantiated within the
-organization to create one or more services. These could be different
-services based on the environment (a lab/sandbox virtualization service
-with low to no SLA, a non-production one with standard SLA, a non-production
-one with specific disaster recovery requirements, a production one with
-standard SLA (and standard disaster recovery requirements), a high-performance
-production one, etc.</p>
-<p>These services are mostly important for other architects, project leads
-or other stakeholders that are going to make active use of the virtualization
-services - the different services (which one could document as "service
-plans") make it more obvious on what the offering is, and what differentiation
-is supported.</p>
-<p>Let's consider a production, standard SLA virtualization service. The
-system administrators of the virtualization environment might enable this
-service across multiple clusters. This could be for several reasons: this
-could be due to limits (maximum number of hosts per cluster), or because
-of particular resource requirements (different CPU architecture requirements
-- yes even with virtualization this is still a thing), or to make
-things manageable for the administrators in general.</p>
-<p>While knowing which cluster an application is on is, in general, not
-that important, it can be very important when there are problems, or when
-limits are being reached. As an architect, I'm definitely interested in
-knowing why multiple clusters are made (what is the reasoning behind it) as
-it gives a good view on what the administrators are generally dealing with.</p>
-<p>Within a cluster (to support the virtualization) you'll find multiple hosts.
-Often, a cluster is sized to be able to deal with one or two host fall-outs
-so that the virtual machines (which are hosted on the cluster - these are
-the "containers" that I spoke of) can be migrated to another host with only
-a short downtime as a consequence (if their main host crashed) or no downtime
-at all (if it is scheduled maintenance of the host). These hosts are the
-instances of the cluster.</p>
-<p>By using this abstraction, I can "map" the virtualization environment in
-a way that I have a good enough view, without proclaiming to be anything
-more than an informed architect, on this setup to support my own work,
-and to be able to advice management on major investment requirements,
-challenges, strategic evolutions and more.</p>
-<p><strong>More than just documentation</strong></p>
-<p>While the above method is used for documenting the environment in which
-I work (and which works well for the size of the environment I have to deal
-with), it can be used for simplifying management of the technologies as
-well. This level of abstraction can easily be used in environments that
-push self-servicing forward.</p>
-<p>Let's take the <a href="https://www.openservicebrokerapi.org/">Open Service Broker API</a>
-as an example. This is an API that defines how to expose (infrastructure)
-services to consumers that can easily create (provision) and destroy 
-(deprovision) their own services. Brokers that support the API will
-then automatically handle the service management. This model can easily
-be put in to support the previous abstraction.</p>
-<p>Take the virtualization environment again. If we want to enable self-servicing
-on a virtualized environment, we can think of an offering where internal customers
-can create new virtual machines (provision) either based on a company-vetted
-template, or through an image (like with virtual appliances). The team that
-manages the virtualization environment has a number of services, which they
-describe in the service plans exposed by the API. An internal customer, when
-privisioning a virtual machine, is thus creating a "container" for the right
-service (based on their selected service plan) and on the right cluster
-(based upon the parameters that the internal customer passes along with the
-creation of its machine).</p>
-<p>We can do the same with databases: a certain database solution (say PostgreSQL)
-has its own offerings (exposed through service plans linked to the service), and
-internal customers can create their own database ("container") on the right
-cluster through this API.</p>
-<p>I personally have a few scripts that I use at home myself to quickly set
-up a certain technology, using the above abstraction level as the foundation.
-Rather than having to try and remember how to set up a multi-master OpenLDAP
-service, or a replicated Kafka setup, I have scripts that create this based
-upon this abstraction: the script parameters always use the service, cluster,
-instance and container terminology and underlyingly map this to the
-technology-specific approach.</p>
-<p>It is my intention to also promote this abstraction usage within my
-work environment, as I believe it allows us to more easily explain what
-all the infrastructure is used for, but also to more easily get new employees
-known to our environment. But even if that isn't reached, the abstraction is
-a huge help for me to assess and understand the multitude of technologies
-that are out there, be it our mainframe setup, the SAN offerings, the
-network switching setup, the databases, messaging services, cloud
-landing zones, firewall setups, container platforms and more.</p>
 </p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
@@ -588,36 +495,6 @@ different USE flags can trigger different package deployments).</p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/userspace/">userspace</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2017/09/authenticating-with-u2f/">Authenticating with U2F</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 11 September 2017</span></span>
-                <p><p>In order to further secure access to my workstation, after the <a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/">switch to Gentoo
-sources</a>, I now enabled two-factor authentication through my Yubico U2F
-USB device. Well, at least for local access - remote access through SSH requires
-both userid/password as well as the correct SSH key, by <a href="https://lwn.net/Articles/544640/">chaining authentication
-methods in OpenSSH</a>.</p>
-<p>Enabling U2F on (Gentoo) Linux is fairly easy. The various guides online which talk
-about the <code>pam_u2f</code> setup are indeed correct that it is fairly simple. For completeness
-sake, I've documented what I know on the Gentoo Wiki, as the <a href="https://wiki.gentoo.org/wiki/Pam_u2f">pam_u2f article</a>.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2017/09/authenticating-with-u2f/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/security.html">security</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/security/">security</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/yubico/">yubico</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/u2f/">u2f</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pam/">pam</a>
                     </div>
                 </div>
             </div>

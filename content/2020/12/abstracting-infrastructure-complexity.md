@@ -18,6 +18,8 @@ onboarded in the infrastructure landscape that I'm responsible for.
 But just understanding a technology isn't enough to deal with its position in
 the larger environment.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Complexity is a challenging beast**
 
 If someone were to attempt drawing out how the IT infrastructure of a larger
@@ -229,5 +231,4 @@ that are out there, be it our mainframe setup, the SAN offerings, the
 network switching setup, the databases, messaging services, cloud
 landing zones, firewall setups, container platforms and more.
 
-<!-- PELICAN_END_SUMMARY -->
 
