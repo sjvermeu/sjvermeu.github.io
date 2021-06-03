@@ -64,7 +64,7 @@ with the kernel offering only those services to the containers that it can
 keep isolated.
 
 ![Container runtime abstraction]({static}/images/202106/container-runtimes.jpg)
-*Source: https://merlijn.sebrechts.be/blog/2020-01-docker-podman-kata-cri-o/*
+*Source: [https://merlijn.sebrechts.be/blog/2020-01-docker-podman-kata-cri-o/](https://merlijn.sebrechts.be/blog/2020-01-docker-podman-kata-cri-o/)*
 
 Now, while Docker can be easily attributed to bringing this to the wider
 public, other initiatives quickly followed suit. Multiple container
@@ -168,7 +168,7 @@ to manage the virtualized resources, and keep track of how these resources
 map to the actual underlying resources.
 
 ![vSphere services]({static}/images/202106/vsphere.png)
-*Source: https://virtualgyaan.com/vmkernel-components-and-functionality/*
+*Source: [https://virtualgyaan.com/vmkernel-components-and-functionality/](https://virtualgyaan.com/vmkernel-components-and-functionality/)*
 
 Let's look at virtualized hardware for servers. On top of it, you have to
 run and maintain the hypervisor, which represents the virtual hardware to
