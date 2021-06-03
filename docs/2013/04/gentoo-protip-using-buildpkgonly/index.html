@@ -258,29 +258,29 @@ create a binary package but will not be merged on the system. When you
 later update your system, including binary packages, those packages that
 have been build during the night will be merged quickly, reducing the
 build load on your system while you are working on it.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
 <span class="nv">LIST</span><span class="o">=</span><span class="k">$(</span>mktemp<span class="k">)</span><span class="p">;</span>
 
 emerge -puDN --color<span class="o">=</span>n --columns --quiet<span class="o">=</span>y world <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> &gt; <span class="si">${</span><span class="nv">LIST</span><span class="si">}</span><span class="p">;</span>
 
-<span class="k">for</span> PACKAGE in <span class="k">$(</span>cat <span class="si">${</span><span class="nv">LIST</span><span class="si">}</span><span class="k">)</span><span class="p">;</span>
+<span class="k">for</span> PACKAGE <span class="k">in</span> <span class="k">$(</span>cat <span class="si">${</span><span class="nv">LIST</span><span class="si">}</span><span class="k">)</span><span class="p">;</span>
 <span class="k">do</span>
   <span class="nb">printf</span> <span class="s2">&quot;Building binary package for </span><span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span><span class="s2">... &quot;</span>
   emerge -uN --quiet-build --quiet<span class="o">=</span>y --buildpkgonly <span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span><span class="p">;</span>

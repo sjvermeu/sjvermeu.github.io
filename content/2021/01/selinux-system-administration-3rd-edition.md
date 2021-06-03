@@ -14,6 +14,8 @@ Like with the previous editions, this book remains true to the public of
 system administrators, rather than SELinux policy developers. Of course,
 SELinux policy development is not ignored in the book.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **What has changed**
 
 First and foremost, it of course updates the content of the previous edition
@@ -87,5 +89,4 @@ anyway. And this book is hopefully a nice start to it.
 I hope the book is a good read for administrators or even architects that
 would like to know more about the technology.
 
-<!-- PELICAN_END_SUMMARY -->
 

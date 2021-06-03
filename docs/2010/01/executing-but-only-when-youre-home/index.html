@@ -231,17 +231,17 @@ to the Internet through GPRS...</p>
 <p>My idea here would be to create a script (say "athome.sh") which returns
 0 if you're at home, and 1 otherwise. The key of the script is that the
 MAC address of your (default) gateway is unique.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
 <span class="nv">GW</span><span class="o">=</span><span class="k">$(</span>/sbin/ip route <span class="p">|</span> awk <span class="s1">&#39;/default/ {print $3}&#39;</span><span class="k">)</span><span class="p">;</span>
 <span class="nv">MGW</span><span class="o">=</span><span class="k">$(</span>/sbin/arp -e <span class="p">|</span> grep <span class="si">${</span><span class="nv">GW</span><span class="si">}</span> <span class="p">|</span> awk <span class="s1">&#39;{print $3}&#39;</span><span class="k">)</span><span class="p">;</span>

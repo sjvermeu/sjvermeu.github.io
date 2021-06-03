@@ -1,0 +1,518 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head -->
+<head>
+
+        <!-- Required metadata tags -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <!-- Default metadata -->
+    <meta name="author" content="Sven Vermeulen" />
+    <meta name="description" content="virtualization-vs-abstraction" />
+    <meta name="keywords" content="architecture, virtualization, abstraction">
+<meta property="og:site_name" content="Simplicity is a form of art..." />
+<meta property="og:title" content="Virtualization vs abstraction" />
+<meta property="og:description" content="When an organization has an extensively large, and heterogeneous infrastructure, infrastructure architects will attempt to make itless complex and chaotic by introducing and maintaining a certain degree of standardization. While many might consider standardization as a rationalization (standardizing on a single database technology, single vendor for hardware, etc.), rationalization is only one of the many ways in which standards can simplify such a degree of complexity. In this post, I&#39;d like to point out two other, very common ways to standardize the IT environment, without really considering a rationalization: abstraction and virtualization. Abstraction: common and simplified interfaces The term &#34;abstraction&#34; has slightly different connotations based on the context in which the term is used. Generally speaking, an abstraction provides a less detailed view on an object and shows the intrinsic qualities upon which one looks at that object. Let&#39;s say we have a PostgreSQL database and a MariaDB database. An abstract view on it could find that it has a lot of commonalities, such as tabular representation of data, a network-facing interface through which their database clients can interact with the database, etc. We then further generalize this abstraction to come to the generalized &#34;relational database management system&#34; concept. Furthermore, rather than focusing on the database-specific languages of the PostgreSQL database and the MariaDB database (i.e. the commands that database clients send to the database), we abstract the details that are not shared across the two, and create a more common set of commands that both databases support. Once you standardize on this common set of commands, you get more freedom in exchanging one database technology for the other. This is exactly what happened several dozen years ago, and resulted in the SQL standard (ISO/IEC 9075). This standard is a language that, if all your relational database technologies support it, allows you - as an organization - to work with a multitude of database technologies while still having a more efficient and standardized way of dealing with it. Now, the SQL language standard is one example. IT is filled with many other examples, some more formally defined as standards than others. Let&#39;s look at a more recent example, within the area of application containerization. CRI and OCI are abstraction implementations When the Docker project, now supported through the Docker company, started with enabling application containerization in a more efficient way, it leaned upon the capabilities that the Linux kernel offered on hiding information and isolating resources (namespaces and control groups) and expanded on it to make it user friendly. It was an immediate hit, and has since then resulted in a very competitive market. With Docker, applications could be put in more isolated environments and run in parallel on the same system, without these applications seeing the other ones. Each application has its own, private view on the system. With these containers, the most important service that is still shared is the kernel, with the kernel offering only those services to the containers that it can keep isolated. Source: https://merlijn.sebrechts.be/blog/2020-01-docker-podman-kata-cri-o/ Now, while Docker can be easily attributed to bringing this to the wider public, other initiatives quickly followed suit. Multiple container technologies were coming to life, and started to bid for a place in the containerization market. To be able to compete here, many of these attempted to use the same interfaces (be it system calls, commands or other) as Docker used, so the users can more easily switch. But while trying to copy and implement the same interfaces is a possible venue, it is still strongly controlled by the evolution that Docker is taking. Since then, larger projects like Kubernetes have started introducing an abstraction between the container runtime (which implements the actual containerization) and the container definitions and management (which uses the containerization). Within Kubernetes for instance, this is through the Common Runtime Interface (CRI), and the Open Container Interface (OCI) is used to link the container runtime management with the underlying container technologies. Introducing such an abstraction is a common way to establish a bit more foothold in the market. Rather than trying to copy the market leader verbatim, you create an intermediate layer, with immediate implementation for the market leader as well, but with the promise that anyone that uses the intermediate layer will be less tied to a single vendor or project: it abstracts that vendor or project specifics away and shows mainly the intrinsic qualities needed. If that abstraction is successful, other implementations for this abstraction layer can easily come in and replace the previous technology. Abstraction is not virtualization The introduction of abstraction layers, abstract technologies or abstract languages should not be misunderstood for virtualization. Abstraction does not hide or differently represent the resources beneath. It does not represent itself as something else, but merely leaves out details that might make interactions with the different technologies more complex. Virtualization on the other hand takes a different view. Rather than removing the specific details, it represents a resource as something that it isn&#39;t (or isn&#39;t completely). Hypervisors like KVM create a virtual hardware view, and translates whatever calls towards the virtual hardware into calls to the actual hardware - sometimes to the same type of hardware, but often towards the CPU or resources that simulate the virtualized hardware further. Abstraction is a bit like classification, and defining how to work with a resource through the agreed upon interfaces for that class. If you plug in a USB device like a USB stick or USB keyboard or mouse, operating systems will be able to interact with it regardless of its vendor and product, because it uses the abstraction offered by the device classes: the USB mass storage device class for the USB stick, or the USB human interface device class for the keyboard and mouse. It abstracts away the complexity of dealing with multiple implementations, but the devices themselves still need to be classified as such. On hypervisors, you can create a virtual USB stick which in reality is just a file on the hypervisor host or on a network file share. The hypervisor virtualizes the view towards this file as if it is a USB stick, but in reality there is no USB involved at all. Again, this doesn&#39;t have to be the case, the hypervisor might as well enable virtualization of the USB device and still eventually interact with an actual USB device. VLANs are virtualized networks Another example of a virtualization is network virtualization through the use of VLANs. In a virtual local area network (VLAN), all systems that interact with this VLAN will see each other on the network as if they are part of the same broadcast domain. Well, they are part of the same broadcast domain. But if you look at the physical network implementation, this does not imply that all these systems are attached to the same switch, and that no routers are put in between to facilitate the communication. In larger enterprises, the use of VLANs is ubiquitous. Network virtualization enables the telco teams and departments to optimize the actual physical network without continuously impacting the configurations and deployments of the services that use the network. Teams can create hundreds or thousands of such VLANs while keeping the actual hardware investments under control, and even be able to change and manage the network without impacting services. This benefit is strongly tied to virtualization, as we see the same in hardware virtualization for server and workstation resources. By offering virtualized systems, the underlying hardware can be changed, replaced or switched without impact on the actual software that is running within the virtualized environment. Well, mostly without impact, because not all virtualization technologies or implementations are creating a full virtualized view - sometimes shortcuts are created to improve efficiency and performance. But in general, it works Just Fine (tm). Resource optimization and consolidation is easily accomplished when using virtualization. You need far fewer switches in a virtualized network, and you need far fewer servers for a virtualized server farm. But, it does come at a cost. Virtualization introduces different complexity When you introduce a virtualization layer, be it for network, storage, hardware or application runtimes, you introduce a layer that needs to be actively managed. Abstraction is often much less resource intensive, as it is a way to simplify the view on the actual resources while still being 100% aligned with those underlying resources. Virtualization means that you need to manage the virtualized resources, and keep track of how these resources map to the actual underlying resources. Source: https://virtualgyaan.com/vmkernel-components-and-functionality/ Let&#39;s look at virtualized hardware for servers. On top of it, you have to run and maintain the hypervisor, which represents the virtual hardware to the operating systems. Within those (virtually running) operating systems, you have a virtual view on resources: CPU, memory, etc. The sum of all (virtual) CPUs is often not the same as the sum of all (actual) CPUs (depending on configuration of course), and in larger environments the virtual operating systems might not even be running on the same hardware as they did a few hours ago, even though the system has not been restarted. Doing performance analysis implies looking at the resources within (virtual) as well as mapped on the actual resources, which might not be of the same type. A virtual GPU representation might be mapped to an actual GPU (and if you want performance, I hope it is) but doesn&#39;t have to be. I&#39;ve done investigations on a virtual Trusted Platform Module (TPM) within a virtual system running on a server that didn&#39;t have a TPM. Assessing which standardization to approach When I&#39;m confronted with an increase in IT complexity, I will often be looking at a certain degree of standardization to facilitate this in the organization. But what type of standardization to approach depends strongly on the situation. Standardization by rationalization is often triggered by cost optimization or knowledge optimization. An organization that has ten different relational database technologies in use could benefit of a rationalization in the number of technologies to support. However, unless there is also sufficient abstraction put in place, this rationalization can be intensive. Another rationalization example could be on public cloud, where an organization chooses to only focus on a single or two cloud providers but not more. While rationalization is easy to understand and explain, it does have adverse consequences: you miss the benefits of whatever you&#39;re rationalized away, and unless another type of standardization is put in place, it will be hard to switch later on if the rationalization was ill-advised or picked the wrong targets to rationalize towards. Standardization by abstraction focuses more on simplification. You are introducing technologies that might have better interoperability through this abstraction, but this can only be successful if the abstraction is comprehensive enough to still use the underlying resources in an optimal manner. My own observation on abstraction is that it is not commonly accepted by engineers and developers at face value. It requires much more communication and explanation than rationalization, which is often easy to put under &#34;cost pressure&#34;. Abstraction focuses on efficiency in a different way, and thus requires different communication. At the company I currently work for, we&#39;ve introduced the Open Service Broker (OSB) API as an abstraction for service instantiation and service catalogs, and after even more than a year, including management support, it is still a common endeavor to explain and motivate why we chose this. Virtualization creates a highly efficient environment and supports resource optimizations that aren&#39;t possible in other ways. Its benefits are much easier to explain to the organization (and to management), but has a downside that is often neglected: it introduces complexity. Hence, virtualization should only be pursued if you can manage the complexity, and that it isn&#39;t much worse than the complexity you want to remove. Virtualization requires organizational support which is more platform-oriented (and thus might be further away from the immediate &#39;business value&#39; IT often has to explain), in effect creating a new type of technology within the ever increasing catalog of IT services. Software-defined infrastructure While virtualization has been going around in IT for quite some time (before I was born), a new kid on the block is becoming very popular: software-defined infrastructure. The likes of Software Defined Network (SDN), Compute (SDC) and Storage (SDS) are already common or becoming common. Other implementations, like the Software Defined Perimeter, are getting jabbed by vendors as well. Now, SDI is not its own type of standardization. It is a way of managing resources through code, and thus is a way of abstracting the infrastructure. But unlike using a technology-agnostic abstraction, it pulls you into a vendor-defined abstraction. That has its pros and cons, and as an architect it is important to consider how to approach infrastructure-as-code, as SDI implementations are not the only way to accomplish this. Furthermore, SDI does not imply virtualization. Certainly, if a technology is virtualized, then SDI will also easily interact with it, and help you define and manage the virtualized infrastructure as well as its underlay infrastructure. But virtualization isn&#39;t a prerequisite for SDI. Conclusion When you&#39;re confronted with chaos and complexity, don&#39;t immediately start removing technologies under the purview of &#34;rationalization&#34;. Consider your options on abstraction and virtualization, but be aware of the pros and cons of each." />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://blog.siphos.be/2021/06/virtualization-vs-abstraction/" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-06-03 10:10:00+02:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/author/sven-vermeulen.html">
+<meta property="article:section" content="Architecture" />
+	<meta property="article:tag" content="architecture" />
+	<meta property="article:tag" content="virtualization" />
+	<meta property="article:tag" content="abstraction" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
+        <!-- Site Claim -->
+
+
+        <!-- Title -->
+        <title>
+    Virtualization vs abstraction &ndash; Simplicity is a form of art...
+        </title>
+        
+        <!-- Icon -->
+        <link rel="shortcut icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+
+        <!-- Search engine -->
+            <meta name="robots" content="" />
+
+        <!-- Feeds -->
+            <link href="https://blog.siphos.be/feed/all.atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Full Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/all.rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Full RSS Feed" />
+
+            <link href="https://blog.siphos.be/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... RSS Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Categories Atom Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Categories RSS Feed" />
+
+
+
+        <!-- Styles -->
+        <!--
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/bootstrap/bootstrap.min.css">
+        <!--
+        <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/pygment/friendly.min.css">
+        <!--
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/extra/admonition.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/style.css">
+
+        <!-- Google Analytics -->
+
+        <!-- Google Global Site Tag -->
+
+        <!-- Google Tag Manager -->
+
+        <!-- Google Adsense -->
+
+        <!-- Heap Analytic -->
+
+        <!-- Piwik Tracking -->
+
+        <!-- Matomo Tracking -->
+
+</head>
+
+<!-- Body -->
+<body class="d-flex flex-column" data-spy="scroll" data-target="#toc" data-offset="0" style="position: relative;">
+    <!-- Top anchor -->
+    <a href="#" id="backToTop" style="display: none; z-index: 1;" title="Back to top"><span></span></a>
+
+    <!-- Google tag manager -->
+
+    <!-- Navigation -->
+    <nav class="flex-shrink-0 navbar navbar-expand-md navbar-expand-lg navbar-dark bg-dark text-light shadow-sm">
+        <!-- Logo -->
+        <a class="navbar-brand" href="https://blog.siphos.be"></a>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon small"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <!-- Page links -->
+            <ul class="navbar-nav mr-auto text-center">
+                <li class="nav-item ">                           
+                    <a class="nav-link" href="https://blog.siphos.be">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z" fill="currentColor"></path>
+                        </svg>
+                        Home <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/categories.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M16 6h-8v-6h8v6zm-8 12h-8v6h8v-6zm16 0h-8v6h8v-6zm-11-7v-3h-2v3h-8v5h2v-3h14v3h2v-5h-8z" fill="currentColor"></path>
+                        </svg>
+                        Categories
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/tags.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M10.605 0h-10.605v10.609l13.391 13.391 10.609-10.604-13.395-13.396zm-4.191 6.414c-.781.781-2.046.781-2.829.001-.781-.783-.781-2.048 0-2.829.782-.782 2.048-.781 2.829-.001.782.782.781 2.047 0 2.829z" fill="currentColor"></path>
+                        </svg>
+                        Tags
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/archives.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M1.8 9l-.8-4h22l-.8 4h-2.029l.39-2h-17.122l.414 2h-2.053zm18.575-6l.604-2h-17.979l.688 2h16.687zm3.625 8l-2 13h-20l-2-13h24zm-8 4c0-.552-.447-1-1-1h-6c-.553 0-1 .448-1 1s.447 1 1 1h6c.553 0 1-.448 1-1z" fill="currentColor"></path>
+                        </svg>
+                        Archives
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/pages/about.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z" fill="currentColor"></path>
+                        </svg>
+                        About
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search form -->
+            <form class="form-inline text-center" action="https://blog.siphos.be/search.html">
+                <input class="form-control w-100 bg-dark text-light text-center border-0 p-2" type="text" name="q" pattern=".{3,}" title="At least 3 characters" required="" placeholder="Type here to search" aria-label="Search">
+            </form>
+
+            <!-- Social links -->
+            <ul class="navbar-nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/sjvermeu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Github</title>
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://twitter.com/sjvermeu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Twitter</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.825 0 1.572.349 2.096.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.linkedin.com/in/svenvermeulen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Linkedin</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Full page -->
+    <div class="flex-shrink-0 flex-grow-1">
+
+        <!-- Header -->
+        <header class="bg-dark text-light shadow-sm pt-3 pb-2">
+	<div class="container">
+		<h3 id="virtualization-vs-abstraction">Virtualization vs abstraction</h3>
+		<p style="font-size:larger;">virtualization-vs-abstraction</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/author/sven-vermeulen.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Thu 03 June 2021</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Thu 03 June 2021
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/virtualization/">virtualization</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/abstraction/">abstraction</a>
+            </div>
+        </div>
+	</div>
+        </header>
+
+        <!-- Main -->
+        <main class="py-3">
+                <div class="container">
+                    <!-- Sharing -->
+
+                    <!-- Content -->
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>When an organization has an extensively large, and heterogeneous
+infrastructure, infrastructure architects will attempt to make itless
+complex and chaotic by introducing and maintaining a certain degree of
+standardization. While many might consider standardization as a
+rationalization (standardizing on a single database technology, single
+vendor for hardware, etc.), rationalization is only one of the many ways
+in which standards can simplify such a degree of complexity.</p>
+<p>In this post, I'd like to point out two other, very common ways to
+standardize the IT environment, without really considering a
+rationalization: abstraction and virtualization.</p>
+<p><strong>Abstraction: common and simplified interfaces</strong></p>
+<p>The term "abstraction" has slightly different connotations based on the
+context in which the term is used. Generally speaking, an abstraction
+provides a less detailed view on an object and shows the intrinsic qualities
+upon which one looks at that object. Let's say we have a PostgreSQL database
+and a MariaDB database. An abstract view on it could find that it has a lot
+of commonalities, such as tabular representation of data, a network-facing
+interface through which their database clients can interact with the
+database, etc.</p>
+<p>We then further generalize this abstraction to come to the generalized
+"relational database management system" concept. Furthermore, rather than
+focusing on the database-specific languages of the PostgreSQL database and
+the MariaDB database (i.e. the commands that database clients send to the
+database), we abstract the details that are not shared across the two, and
+create a more common set of commands that both databases support.</p>
+<p>Once you standardize on this common set of commands, you get more freedom in
+exchanging one database technology for the other. This is exactly what
+happened several dozen years ago, and resulted in the SQL standard
+(ISO/IEC 9075). This standard is a language that, if all your relational
+database technologies support it, allows you - as an organization - to work
+with a multitude of database technologies while still having a more efficient
+and standardized way of dealing with it.</p>
+<p>Now, the SQL language standard is one example. IT is filled with many other
+examples, some more formally defined as standards than others. Let's look at
+a more recent example, within the area of application containerization.</p>
+<p><strong>CRI and OCI are abstraction implementations</strong></p>
+<p>When the Docker project, now supported through the Docker company, started
+with enabling application containerization in a more efficient way, it leaned
+upon the capabilities that the Linux kernel offered on hiding information and
+isolating resources (namespaces and control groups) and expanded on it to
+make it user friendly. It was an immediate hit, and has since then resulted
+in a very competitive market.</p>
+<p>With Docker, applications could be put in more isolated environments and run
+in parallel on the same system, without these applications seeing the other
+ones. Each application has its own, private view on the system. With these
+containers, the most important service that is still shared is the kernel,
+with the kernel offering only those services to the containers that it can
+keep isolated.</p>
+<p><img alt="Container runtime abstraction" src="https://blog.siphos.be/images/202106/container-runtimes.jpg">
+<em>Source: https://merlijn.sebrechts.be/blog/2020-01-docker-podman-kata-cri-o/</em></p>
+<p>Now, while Docker can be easily attributed to bringing this to the wider
+public, other initiatives quickly followed suit. Multiple container
+technologies were coming to life, and started to bid for a place in the
+containerization market. To be able to compete here, many of these attempted
+to use the same interfaces (be it system calls, commands or other) as Docker
+used, so the users can more easily switch. But while trying to copy and
+implement the same interfaces is a possible venue, it is still strongly
+controlled by the evolution that Docker is taking.</p>
+<p>Since then, larger projects like Kubernetes have started introducing an
+abstraction between the container runtime (which implements the actual
+containerization) and the container definitions and management (which uses
+the containerization). Within Kubernetes for instance, this is through the
+Common Runtime Interface (CRI), and the Open Container Interface (OCI) is
+used to link the container runtime management with the underlying container
+technologies.</p>
+<p>Introducing such an abstraction is a common way to establish a bit more
+foothold in the market. Rather than trying to copy the market leader
+verbatim, you create an intermediate layer, with immediate implementation
+for the market leader as well, but with the promise that anyone that uses
+the intermediate layer will be less tied to a single vendor or project: it
+abstracts that vendor or project specifics away and shows mainly the
+intrinsic qualities needed.</p>
+<p>If that abstraction is successful, other implementations for this abstraction
+layer can easily come in and replace the previous technology.</p>
+<p><strong>Abstraction is not virtualization</strong></p>
+<p>The introduction of abstraction layers, abstract technologies or abstract
+languages should not be misunderstood for virtualization. Abstraction does
+not hide or differently represent the resources beneath. It does not represent
+itself as something else, but merely leaves out details that might make
+interactions with the different technologies more complex.</p>
+<p>Virtualization on the other hand takes a different view. Rather than removing
+the specific details, it represents a resource as something that it isn't
+(or isn't completely). Hypervisors like KVM create a virtual hardware view,
+and translates whatever calls towards the virtual hardware into calls to the
+actual hardware - sometimes to the same type of hardware, but often towards
+the CPU or resources that simulate the virtualized hardware further.</p>
+<p>Abstraction is a bit like classification, and defining how to work with a
+resource through the agreed upon interfaces for that class. If you plug in
+a USB device like a USB stick or USB keyboard or mouse, operating systems
+will be able to interact with it regardless of its vendor and product,
+because it uses the abstraction offered by the device classes: the USB mass
+storage device class for the USB stick, or the USB human interface device
+class for the keyboard and mouse. It abstracts away the complexity of
+dealing with multiple implementations, but the devices themselves still
+need to be classified as such.</p>
+<p>On hypervisors, you can create a virtual USB stick which in reality is just
+a file on the hypervisor host or on a network file share. The hypervisor
+virtualizes the view towards this file as if it is a USB stick, but in reality
+there is no USB involved at all. Again, this doesn't have to be the case,
+the hypervisor might as well enable virtualization of the USB device and
+still eventually interact with an actual USB device.</p>
+<p><strong>VLANs are virtualized networks</strong></p>
+<p>Another example of a virtualization is network virtualization through the
+use of VLANs. In a virtual local area network (VLAN), all systems that
+interact with this VLAN will see each other on the network as if they are
+part of the same broadcast domain. Well, they are part of the same broadcast
+domain. But if you look at the physical network implementation, this does not
+imply that all these systems are attached to the same switch, and that no
+routers are put in between to facilitate the communication.</p>
+<p>In larger enterprises, the use of VLANs is ubiquitous. Network virtualization
+enables the telco teams and departments to optimize the actual physical
+network without continuously impacting the configurations and deployments of
+the services that use the network. Teams can create hundreds or thousands of
+such VLANs while keeping the actual hardware investments under control, and
+even be able to change and manage the network without impacting services.</p>
+<p>This benefit is strongly tied to virtualization, as we see the same in
+hardware virtualization for server and workstation resources. By offering
+virtualized systems, the underlying hardware can be changed, replaced or
+switched without impact on the actual software that is running within the
+virtualized environment. Well, mostly without impact, because not all
+virtualization technologies or implementations are creating a full
+virtualized view - sometimes shortcuts are created to improve efficiency
+and performance. But in general, it works Just Fine (tm).</p>
+<p>Resource optimization and consolidation is easily accomplished when using
+virtualization. You need far fewer switches in a virtualized network, and
+you need far fewer servers for a virtualized server farm. But, it does come
+at a cost.</p>
+<p><strong>Virtualization introduces different complexity</strong></p>
+<p>When you introduce a virtualization layer, be it for network, storage,
+hardware or application runtimes, you introduce a layer that needs to be
+actively managed. Abstraction is often much less resource intensive, as it
+is a way to simplify the view on the actual resources while still being 100%
+aligned with those underlying resources. Virtualization means that you need
+to manage the virtualized resources, and keep track of how these resources
+map to the actual underlying resources.</p>
+<p><img alt="vSphere services" src="https://blog.siphos.be/images/202106/vsphere.png">
+<em>Source: https://virtualgyaan.com/vmkernel-components-and-functionality/</em></p>
+<p>Let's look at virtualized hardware for servers. On top of it, you have to
+run and maintain the hypervisor, which represents the virtual hardware to
+the operating systems. Within those (virtually running) operating systems,
+you have a virtual view on resources: CPU, memory, etc. The sum of all
+(virtual) CPUs is often not the same as the sum of all (actual) CPUs
+(depending on configuration of course), and in larger environments the
+virtual operating systems might not even be running on the same hardware
+as they did a few hours ago, even though the system has not been restarted.</p>
+<p>Doing performance analysis implies looking at the resources within (virtual)
+as well as mapped on the actual resources, which might not be of the same
+type. A virtual GPU representation might be mapped to an actual GPU (and if
+you want performance, I hope it is) but doesn't have to be. I've done
+investigations on a virtual Trusted Platform Module (TPM) within a virtual
+system running on a server that didn't have a TPM.</p>
+<p><strong>Assessing which standardization to approach</strong></p>
+<p>When I'm confronted with an increase in IT complexity, I will often be
+looking at a certain degree of standardization to facilitate this in the
+organization. But what type of standardization to approach depends strongly
+on the situation.</p>
+<p>Standardization by rationalization is often triggered by cost optimization
+or knowledge optimization. An organization that has ten different relational
+database technologies in use could benefit of a rationalization in the number
+of technologies to support. However, unless there is also sufficient
+abstraction put in place, this rationalization can be intensive. Another
+rationalization example could be on public cloud, where an organization
+chooses to only focus on a single or two cloud providers but not more.</p>
+<p>While rationalization is easy to understand and explain, it does have adverse
+consequences: you miss the benefits of whatever you're rationalized away,
+and unless another type of standardization is put in place, it will be hard
+to switch later on if the rationalization was ill-advised or picked the
+wrong targets to rationalize towards.</p>
+<p>Standardization by abstraction focuses more on simplification. You are
+introducing technologies that might have better interoperability through
+this abstraction, but this can only be successful if the abstraction is
+comprehensive enough to still use the underlying resources in an optimal
+manner.</p>
+<p>My own observation on abstraction is that it is not commonly accepted by
+engineers and developers at face value. It requires much more communication
+and explanation than rationalization, which is often easy to put under "cost
+pressure". Abstraction focuses on efficiency in a different way, and thus
+requires different communication. At the company I currently work for,
+we've introduced the Open Service Broker (OSB) API as an abstraction for
+service instantiation and service catalogs, and after even more than a
+year, including management support, it is still a common endeavor to
+explain and motivate why we chose this.</p>
+<p>Virtualization creates a highly efficient environment and supports resource
+optimizations that aren't possible in other ways. Its benefits are much easier
+to explain to the organization (and to management), but has a downside that
+is often neglected: it introduces complexity. Hence, virtualization should
+only be pursued if you can manage the complexity, and that it isn't much
+worse than the complexity you want to remove. Virtualization requires
+organizational support which is more platform-oriented (and thus might be
+further away from the immediate 'business value' IT often has to explain),
+in effect creating a new type of technology within the ever increasing
+catalog of IT services.</p>
+<p><strong>Software-defined infrastructure</strong></p>
+<p>While virtualization has been going around in IT for quite some time (before
+I was born), a new kid on the block is becoming very popular: software-defined
+infrastructure. The likes of Software Defined Network (SDN), Compute (SDC) and
+Storage (SDS) are already common or becoming common. Other implementations,
+like the Software Defined Perimeter, are getting jabbed by vendors as well.</p>
+<p>Now, SDI is not its own type of standardization. It is a way of managing
+resources through code, and thus is a way of abstracting the infrastructure.
+But unlike using a technology-agnostic abstraction, it pulls you into a
+vendor-defined abstraction. That has its pros and cons, and as an architect
+it is important to consider how to approach infrastructure-as-code, as SDI
+implementations are not the only way to accomplish this.</p>
+<p>Furthermore, SDI does not imply virtualization. Certainly, if a technology
+is virtualized, then SDI will also easily interact with it, and help you
+define and manage the virtualized infrastructure as well as its underlay
+infrastructure. But virtualization isn't a prerequisite for SDI.</p>
+<p><strong>Conclusion</strong></p>
+<p>When you're confronted with chaos and complexity, don't immediately start
+removing technologies under the purview of "rationalization". Consider your
+options on abstraction and virtualization, but be aware of the pros and cons
+of each.</p>
+
+        </div>
+
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
+        <hr>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'simplicityisaformofart';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>                </div>
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="flex-shrink-0 bg-dark text-light small py-1">
+        <div class="container text-center">
+            &copy;  <a href="https://blog.siphos.be">Simplicity is a form of art...</a> by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>. Powered by <a href="http://getpelican.com">Pelican</a>, <a href="http://python.org">Python</a>, <a href="https://getbootstrap.com">Bootstrap 4</a><br>
+            <!-- Do not remove below license sentence -->
+            License: <a href="https://spdx.org/licenses/CC-BY-4.0.html">CC-BY-4.0</a>, based on <a href="https://github.com/vuquangtrong/simplify-theme">Simplify Bootstrap Theme</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/jquery/jquery-3.4.1.min.js"></script>
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/bootstrap/bootstrap.min.js"></script>
+    <!--
+    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/style.js"></script>
+
+    <!-- Sharing -->
+
+    <!-- JSON LD -->
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Virtualization vs abstraction",
+    "headline": "Virtualization vs abstraction",
+    "datePublished": "2021-06-03 10:10:00+02:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/author/sven-vermeulen.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/2021/06/virtualization-vs-abstraction/",
+    "description": "When an organization has an extensively large, and heterogeneous infrastructure, infrastructure architects will attempt to make itless complex and chaotic by introducing and maintaining a certain degree of standardization. While many might consider standardization as a rationalization (standardizing on a single database technology, single vendor for hardware, etc.), rationalization is only one of the many ways in which standards can simplify such a degree of complexity. In this post, I'd like to point out two other, very common ways to standardize the IT environment, without really considering a rationalization: abstraction and virtualization. Abstraction: common and simplified interfaces The term "abstraction" has slightly different connotations based on the context in which the term is used. Generally speaking, an abstraction provides a less detailed view on an object and shows the intrinsic qualities upon which one looks at that object. Let's say we have a PostgreSQL database and a MariaDB database. An abstract view on it could find that it has a lot of commonalities, such as tabular representation of data, a network-facing interface through which their database clients can interact with the database, etc. We then further generalize this abstraction to come to the generalized "relational database management system" concept. Furthermore, rather than focusing on the database-specific languages of the PostgreSQL database and the MariaDB database (i.e. the commands that database clients send to the database), we abstract the details that are not shared across the two, and create a more common set of commands that both databases support. Once you standardize on this common set of commands, you get more freedom in exchanging one database technology for the other. This is exactly what happened several dozen years ago, and resulted in the SQL standard (ISO/IEC 9075). This standard is a language that, if all your relational database technologies support it, allows you - as an organization - to work with a multitude of database technologies while still having a more efficient and standardized way of dealing with it. Now, the SQL language standard is one example. IT is filled with many other examples, some more formally defined as standards than others. Let's look at a more recent example, within the area of application containerization. CRI and OCI are abstraction implementations When the Docker project, now supported through the Docker company, started with enabling application containerization in a more efficient way, it leaned upon the capabilities that the Linux kernel offered on hiding information and isolating resources (namespaces and control groups) and expanded on it to make it user friendly. It was an immediate hit, and has since then resulted in a very competitive market. With Docker, applications could be put in more isolated environments and run in parallel on the same system, without these applications seeing the other ones. Each application has its own, private view on the system. With these containers, the most important service that is still shared is the kernel, with the kernel offering only those services to the containers that it can keep isolated. Source: https://merlijn.sebrechts.be/blog/2020-01-docker-podman-kata-cri-o/ Now, while Docker can be easily attributed to bringing this to the wider public, other initiatives quickly followed suit. Multiple container technologies were coming to life, and started to bid for a place in the containerization market. To be able to compete here, many of these attempted to use the same interfaces (be it system calls, commands or other) as Docker used, so the users can more easily switch. But while trying to copy and implement the same interfaces is a possible venue, it is still strongly controlled by the evolution that Docker is taking. Since then, larger projects like Kubernetes have started introducing an abstraction between the container runtime (which implements the actual containerization) and the container definitions and management (which uses the containerization). Within Kubernetes for instance, this is through the Common Runtime Interface (CRI), and the Open Container Interface (OCI) is used to link the container runtime management with the underlying container technologies. Introducing such an abstraction is a common way to establish a bit more foothold in the market. Rather than trying to copy the market leader verbatim, you create an intermediate layer, with immediate implementation for the market leader as well, but with the promise that anyone that uses the intermediate layer will be less tied to a single vendor or project: it abstracts that vendor or project specifics away and shows mainly the intrinsic qualities needed. If that abstraction is successful, other implementations for this abstraction layer can easily come in and replace the previous technology. Abstraction is not virtualization The introduction of abstraction layers, abstract technologies or abstract languages should not be misunderstood for virtualization. Abstraction does not hide or differently represent the resources beneath. It does not represent itself as something else, but merely leaves out details that might make interactions with the different technologies more complex. Virtualization on the other hand takes a different view. Rather than removing the specific details, it represents a resource as something that it isn't (or isn't completely). Hypervisors like KVM create a virtual hardware view, and translates whatever calls towards the virtual hardware into calls to the actual hardware - sometimes to the same type of hardware, but often towards the CPU or resources that simulate the virtualized hardware further. Abstraction is a bit like classification, and defining how to work with a resource through the agreed upon interfaces for that class. If you plug in a USB device like a USB stick or USB keyboard or mouse, operating systems will be able to interact with it regardless of its vendor and product, because it uses the abstraction offered by the device classes: the USB mass storage device class for the USB stick, or the USB human interface device class for the keyboard and mouse. It abstracts away the complexity of dealing with multiple implementations, but the devices themselves still need to be classified as such. On hypervisors, you can create a virtual USB stick which in reality is just a file on the hypervisor host or on a network file share. The hypervisor virtualizes the view towards this file as if it is a USB stick, but in reality there is no USB involved at all. Again, this doesn't have to be the case, the hypervisor might as well enable virtualization of the USB device and still eventually interact with an actual USB device. VLANs are virtualized networks Another example of a virtualization is network virtualization through the use of VLANs. In a virtual local area network (VLAN), all systems that interact with this VLAN will see each other on the network as if they are part of the same broadcast domain. Well, they are part of the same broadcast domain. But if you look at the physical network implementation, this does not imply that all these systems are attached to the same switch, and that no routers are put in between to facilitate the communication. In larger enterprises, the use of VLANs is ubiquitous. Network virtualization enables the telco teams and departments to optimize the actual physical network without continuously impacting the configurations and deployments of the services that use the network. Teams can create hundreds or thousands of such VLANs while keeping the actual hardware investments under control, and even be able to change and manage the network without impacting services. This benefit is strongly tied to virtualization, as we see the same in hardware virtualization for server and workstation resources. By offering virtualized systems, the underlying hardware can be changed, replaced or switched without impact on the actual software that is running within the virtualized environment. Well, mostly without impact, because not all virtualization technologies or implementations are creating a full virtualized view - sometimes shortcuts are created to improve efficiency and performance. But in general, it works Just Fine (tm). Resource optimization and consolidation is easily accomplished when using virtualization. You need far fewer switches in a virtualized network, and you need far fewer servers for a virtualized server farm. But, it does come at a cost. Virtualization introduces different complexity When you introduce a virtualization layer, be it for network, storage, hardware or application runtimes, you introduce a layer that needs to be actively managed. Abstraction is often much less resource intensive, as it is a way to simplify the view on the actual resources while still being 100% aligned with those underlying resources. Virtualization means that you need to manage the virtualized resources, and keep track of how these resources map to the actual underlying resources. Source: https://virtualgyaan.com/vmkernel-components-and-functionality/ Let's look at virtualized hardware for servers. On top of it, you have to run and maintain the hypervisor, which represents the virtual hardware to the operating systems. Within those (virtually running) operating systems, you have a virtual view on resources: CPU, memory, etc. The sum of all (virtual) CPUs is often not the same as the sum of all (actual) CPUs (depending on configuration of course), and in larger environments the virtual operating systems might not even be running on the same hardware as they did a few hours ago, even though the system has not been restarted. Doing performance analysis implies looking at the resources within (virtual) as well as mapped on the actual resources, which might not be of the same type. A virtual GPU representation might be mapped to an actual GPU (and if you want performance, I hope it is) but doesn't have to be. I've done investigations on a virtual Trusted Platform Module (TPM) within a virtual system running on a server that didn't have a TPM. Assessing which standardization to approach When I'm confronted with an increase in IT complexity, I will often be looking at a certain degree of standardization to facilitate this in the organization. But what type of standardization to approach depends strongly on the situation. Standardization by rationalization is often triggered by cost optimization or knowledge optimization. An organization that has ten different relational database technologies in use could benefit of a rationalization in the number of technologies to support. However, unless there is also sufficient abstraction put in place, this rationalization can be intensive. Another rationalization example could be on public cloud, where an organization chooses to only focus on a single or two cloud providers but not more. While rationalization is easy to understand and explain, it does have adverse consequences: you miss the benefits of whatever you're rationalized away, and unless another type of standardization is put in place, it will be hard to switch later on if the rationalization was ill-advised or picked the wrong targets to rationalize towards. Standardization by abstraction focuses more on simplification. You are introducing technologies that might have better interoperability through this abstraction, but this can only be successful if the abstraction is comprehensive enough to still use the underlying resources in an optimal manner. My own observation on abstraction is that it is not commonly accepted by engineers and developers at face value. It requires much more communication and explanation than rationalization, which is often easy to put under "cost pressure". Abstraction focuses on efficiency in a different way, and thus requires different communication. At the company I currently work for, we've introduced the Open Service Broker (OSB) API as an abstraction for service instantiation and service catalogs, and after even more than a year, including management support, it is still a common endeavor to explain and motivate why we chose this. Virtualization creates a highly efficient environment and supports resource optimizations that aren't possible in other ways. Its benefits are much easier to explain to the organization (and to management), but has a downside that is often neglected: it introduces complexity. Hence, virtualization should only be pursued if you can manage the complexity, and that it isn't much worse than the complexity you want to remove. Virtualization requires organizational support which is more platform-oriented (and thus might be further away from the immediate 'business value' IT often has to explain), in effect creating a new type of technology within the ever increasing catalog of IT services. Software-defined infrastructure While virtualization has been going around in IT for quite some time (before I was born), a new kid on the block is becoming very popular: software-defined infrastructure. The likes of Software Defined Network (SDN), Compute (SDC) and Storage (SDS) are already common or becoming common. Other implementations, like the Software Defined Perimeter, are getting jabbed by vendors as well. Now, SDI is not its own type of standardization. It is a way of managing resources through code, and thus is a way of abstracting the infrastructure. But unlike using a technology-agnostic abstraction, it pulls you into a vendor-defined abstraction. That has its pros and cons, and as an architect it is important to consider how to approach infrastructure-as-code, as SDI implementations are not the only way to accomplish this. Furthermore, SDI does not imply virtualization. Certainly, if a technology is virtualized, then SDI will also easily interact with it, and help you define and manage the virtualized infrastructure as well as its underlay infrastructure. But virtualization isn't a prerequisite for SDI. Conclusion When you're confronted with chaos and complexity, don't immediately start removing technologies under the purview of "rationalization". Consider your options on abstraction and virtualization, but be aware of the pros and cons of each."
+}
+</script>
+    <!-- Disqus count -->
+</body>
+
+</html>
