@@ -1,5 +1,5 @@
 Title: About
-Date: 2020-12-31 11:20
+Date: 2021-06-07 11:20
 Slug: about
 
 Personalia
@@ -48,6 +48,7 @@ Year | Activity
 
 Year | Description
 ---- | -----------
+2020 | SAFe for Architects
 2014 - 2016 | Master in Enterprise Architecture
 2009 | IVPV Courses on Software Engineering
 2008 | IVPV Courses on Networking and Security
