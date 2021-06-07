@@ -22,7 +22,7 @@ Inside the function, I obtain the return code of the last command (`$?`)
 and then add it to the PS1 variable. This results in the following code
 snippet inside my `~/.bashrc`:
 
-``` {lang="bash"}
+```
 export PROMPT_COMMAND=__gen_ps1
 
 function __gen_ps1() {

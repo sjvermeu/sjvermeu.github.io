@@ -14,7 +14,7 @@ previously created key (for subkeys), create certificates (such as user
 certificates or device certificates) and sign them, sign certificate
 requests, and revoke certificates.
 
-``` {lang="bash"}
+```
 export KEYLOC="/var/db/ca"
 # Create a root CA key for "genfic"
 # (openssl questions and other output not shown)
@@ -50,7 +50,7 @@ types also are declared:
 
 So let's start with this.
 
-``` {lang="perl"}
+```
 policy_module(ca, 1.0.0)
 
 # CA management script and domain
@@ -69,7 +69,7 @@ Which interface you use depends on the privileges you want to grant on
 the domain, but also which existing privileges should also be applicable
 to the domain. Make sure you review the interfaces. For instance:
 
-``` {lang="bash"}
+```
 # seshowif application_domain
 interface(`application_type',`
         gen_require(`
@@ -96,7 +96,7 @@ to allow the type `ca_cli_exec_t` to be associated on a file system.
 
 Similarly, I define the remainder of file types:
 
-``` {lang="perl"}
+```
 type ca_private_key_t;
 fs_associate(ca_private_key_t)
 
@@ -111,7 +111,7 @@ fs_associate(ca_misc_t)
 Next, grant the CA handling script (which will run as `ca_cli_t`) the
 proper access to these types.
 
-``` {lang="perl"}
+```
 allow ca_cli_t ca_misc_t:dir create_dir_perms;
 manage_files_pattern(ca_cli_t, ca_misc_t, ca_misc_t)
 
@@ -128,14 +128,14 @@ will automatically assign the `ca_private_key_t` type to a directory,
 created in a directory with label `ca_misc_t`, if created by the
 `ca_cli_t` domain:
 
-``` {lang="perl"}
+```
 filetrans_pattern(ca_cli_t, ca_misc_t, ca_private_key_t, dir, "private")
 ```
 
 Now, `ca_cli_t` is a domain used for a shell script, which in my case
 also requires the following permissions:
 
-``` {lang="perl"}
+```
 # Handling pipes between commands
 allow ca_cli_t self:fifo_file rw_fifo_file_perms;
 # Shell script...
@@ -152,7 +152,7 @@ Now I still need to mark `ca_cli_exec_t` as an entrypoint for
 (transitioned to) through the execution of a file with label
 `ca_cli_exec_t`:
 
-``` {lang="perl"}
+```
 allow ca_cli_t ca_cli_exec_t:file entrypoint;
 allow ca_cli_t ca_cli_exec_t:file { mmap_file_perms ioctl lock };
 ```
@@ -166,7 +166,7 @@ Next, the `openssl` application, which the script uses extensively, also
 requires additional permissions. As the `openssl` command just runs in
 the `ca_cli_t` domain, I extend the privileges for this domain more:
 
-``` {lang="perl"}
+```
 # Read access on /proc files
 kernel_read_system_state(ca_cli_t)
 # Access to random devices
@@ -183,7 +183,7 @@ Also, the following file transition is created: when OpenSSL creates a
 temporary file in `/tmp`, this file should immediately be assigned the
 `ca_misc_tmp_t` type:
 
-``` {lang="perl"}
+```
 # File transition in /tmp to ca_misc_tmp_t
 files_tmp_filetrans(ca_cli_t, ca_misc_tmp_t, file)
 ```
@@ -198,14 +198,14 @@ handled by the `ca_role()` interface. In order to support such an
 interface, let's first create the `ca_roles` role attribute in the `.te`
 file:
 
-``` {lang="perl"}
+```
 attribute_role ca_roles;
 role ca_roles types ca_cli_t;
 ```
 
 Now I can define the `ca_role()` interface:
 
-``` {lang="bash"}
+```
 interface(`ca_role',`
   gen_require(`
     attribute_role ca_roles;
@@ -237,7 +237,7 @@ which is granted to *regular* system administrators (as the `ca_role()`
 might be granted to non-admins as well, who can invoke the script
 through `sudo`).
 
-``` {lang="bash"}
+```
 interface(`ca_sysadmin',`
   gen_require(`
     type ca_misc_t;
@@ -269,7 +269,7 @@ relabel *from* rights (so any domain granted this interface will be able
 *only* be assigned to a rescue user (if any). Also, this interface is
 allowed to label CA management scripts.
 
-``` {lang="bash"}
+```
 interface(`ca_admin',`
   gen_require(`
     type ca_misc_t, ca_private_key_t;
@@ -288,7 +288,7 @@ interface as well as the `setfiles_t` domain; CA handling roles would be
 granted the `ca_role()` interface. The `ca_admin()` interface would only
 be granted on the rescue (or super-admin).
 
-``` {lang="perl"}
+```
 # Regular system administrators
 ca_sysadmin(sysadm_t)
 ca_sysadmin(setfiles_t)

@@ -19,7 +19,7 @@ In `pam_unix_passwd.c`, the *\_unix\_run\_verify\_binary()* method is
 called but only if the *get\_account\_info()* method returns
 `PAM_UNIX_RUN_HELPER`.
 
-``` {lang="c"}
+```
 static int _unix_verify_shadow(pam_handle_t *pamh, const char *user, unsigned int ctrl)
 {
 ...
@@ -36,7 +36,7 @@ In `passverify.c` this method will check the password entry file and, if
 the entry is a shadow file, will return `PAM_UNIX_RUN_HELPER` if the
 current user id is not root, or if SELinux is enabled:
 
-``` {lang="c"}
+```
 PAMH_ARG_DECL(int get_account_info,
         const char *name, struct passwd **pwd, struct spwd **spwdent)
 {
@@ -59,7 +59,7 @@ PAMH_ARG_DECL(int get_account_info,
 
 The `SELINUX_ENABLED` is a C macro defined in the same file:
 
-``` {lang="c"}
+```
 #ifdef WITH_SELINUX
 #include 
 #define SELINUX_ENABLED is_selinux_enabled()>0

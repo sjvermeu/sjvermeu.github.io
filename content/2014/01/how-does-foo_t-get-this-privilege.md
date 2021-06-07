@@ -17,14 +17,14 @@ such questions. If you're interested, the script is also available on my
 small.coding](https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowtree)
 project.
 
-``` {lang="bash"}
+```
 ~# seshowtree user roles/unprivuser.te > output.txt
 ```
 
 In the resulting output, I search for the `cgroup_t` and work my way up,
 which gives:
 
-``` {lang="bash"}
+``` 
 userdom_unpriv_user_template(user)
 . userdom_common_user_template($1)
 . . fs_rw_cgroup_files($1_t)
@@ -40,7 +40,7 @@ the first place. As the policy file itself does not contain the
 necessary comments to deduce this, I had to ask the git repository for
 more information:
 
-``` {lang="bash"}
+```
 ~$ git annotate userdomain.if
 ```
 

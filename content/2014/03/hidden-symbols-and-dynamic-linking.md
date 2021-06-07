@@ -33,7 +33,7 @@ I looked at the `audit2why.c` code and see if/where
 to see where it is defined. And yes, the call is (of course) needed, but
 the definition made me wonder if this wasn't a bug:
 
-``` {lang="c"}
+```
 int hidden sepol_set_policydb(policydb_t * p)
 {
         policydb = p;

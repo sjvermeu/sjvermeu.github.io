@@ -27,7 +27,7 @@ stuff.
 
 The code looks as follows:
 
-``` {lang="c"}
+```
 #ifdef SYSFCRONTAB
     if(!strcmp(cf->cf_user, SYSFCRONTAB))
         user_name = "system_u";

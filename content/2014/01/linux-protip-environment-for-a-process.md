@@ -10,7 +10,7 @@ file. The file however shows the environment variables on one line, with
 a null character as separator. With a simple **sed** you can show it
 with newlines instead:
 
-``` {lang="bash"}
+```
 ~$ sed -e "s:\x0:\n:g" /proc/144320/environ
 TERM=xterm
 SHELL=/bin/bash

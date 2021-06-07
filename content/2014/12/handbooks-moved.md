@@ -30,8 +30,8 @@ improvements where needed.
 I did make a (probably more - but this one is fresh in my memory)
 mistake in the move though. I had to do a lot of the following:
 
-``` {lang="xml"}
-
+```
+Content went missing when switching blog technology :-(
 ...
 ```
 

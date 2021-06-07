@@ -71,7 +71,7 @@ mode) if the Linux kernel has this enabled. By allowing users to load a
 new policy, they can basically create a SELinux policy module that
 grants them the necessary accesses towards the file:
 
-``` {lang="bash"}
+```
 allow sysadm_t ca_misc_file_t:file manage_file_perms;
 allow sysadm_t ca_misc_file_t:dir manage_dir_perms;
 ```
@@ -94,7 +94,7 @@ declared properly, then the type might be assigned an attribute that
 domains have privileges against. Consider the `file_type` attribute,
 granted to file types (at least the name makes sense ;-)
 
-``` {lang="bash"}
+```
 # seinfo -tca_private_key_t -x
   ca_private_key_t
     file_type
