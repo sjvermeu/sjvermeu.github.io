@@ -198,6 +198,237 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/securely-handling-libffi/">Securely handling libffi</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 28 April 2013</span></span>
+                <p><p>I've recently came across <a href="http://sourceware.org/libffi/">libffi</a> again.
+No, not because it was mentioned during the <a href="http://www.gentoo.org/proj/en/hardened">Gentoo
+Hardened</a> online meeting, but
+because my <code>/var/tmp</code> wasn't mounted correctly, and <strong>emerge</strong> (actually
+python) uses libffi. Most users won't notice this, because libffi works
+behind the scenes. But when it fails, it fails bad …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/securely-handling-libffi/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/security.html">security</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/libffi/">libffi</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/strace/">strace</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/how-logins-get-their-selinux-user-context/">How logins get their SELinux user context</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 27 April 2013</span></span>
+                <p><p>Sometimes, especially when users are converting their systems to be
+SELinux-enabled, their user context is wrong. An example would be when,
+after logon (in permissive mode), the user is in the
+<code>system_u:system_r:local_login_t</code> domain instead of a user domain like
+<code>staff_u:staff_r:staff_t</code>.<br>
+So, how does a login get …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/how-logins-get-their-selinux-user-context/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/context/">context</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/user/">user</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/new-selinux-userspace-release/">New SELinux userspace release</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 26 April 2013</span></span>
+                <p><p>A new <a href="http://userspace.selinuxproject.org/trac/wiki/Releases">release</a>
+of the SELinux userspace utilities was recently announced. I have made
+the packages for Gentoo available and they should now be in the main
+tree (\~arch of course). During the testing of the packages however, I
+made a stupid mistake of running the tests on the wrong …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/new-selinux-userspace-release/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/automation/">automation</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/regression/">regression</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/release/">release</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/test/">test</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/testing/">testing</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/userspace/">userspace</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/gentoo-protip-using-buildpkgonly/">Gentoo protip: using buildpkgonly</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 25 April 2013</span></span>
+                <p><p>If you don't want to have the majority of builds run in the background
+while you are busy on the system, but you don't want to automatically
+install software in the background when you are not behind your desk,
+then perhaps you can settle for using <a href="https://wiki.gentoo.org/wiki/Binary_package_guide">binary
+packages</a>. I'm not …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/gentoo-protip-using-buildpkgonly/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/binpkg/">binpkg</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/emerge/">emerge</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/protip/">protip</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/using-strace-to-troubleshoot-selinux-problems/">Using strace to troubleshoot SELinux problems</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 24 April 2013</span></span>
+                <p><p>When SELinux is playing tricks on you, you can just "allow" whatever it
+wants to do, but that is not always an option: sometimes, there is no
+denial in sight because the problem lays within SELinux-aware
+applications (applications that might change their behavior based on
+what the policy sais or …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/using-strace-to-troubleshoot-selinux-problems/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/debug/">debug</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/strace/">strace</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/sloting-the-old-swig-1/">SLOT'ing the old swig-1</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 23 April 2013</span></span>
+                <p><p>The <a href="http://www.swig.org">SWIG</a> tool helps developers in building
+interfaces/libraries that can be accessed from many other languages than
+the ones the library is initially written in or for. The SELinux
+userland utility <a href="http://oss.tresys.com/projects/setools">setools</a> uses
+it to provide Python and Ruby interfaces even though the application
+itself is written in C …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/sloting-the-old-swig-1/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/setools/">setools</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/slot/">slot</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/swig/">swig</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/mitigating-ddos-attacks/">Mitigating DDoS attacks</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 22 April 2013</span></span>
+                <p><p>Lately, DDoS attacks have been in the news more than I was hoping for.
+It seems that the botnets or other methods that are used to generate
+high-volume traffic to a legitimate service are becoming more and more
+easy to get and direct. At the time that I'm writing this …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/mitigating-ddos-attacks/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/security.html">security</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ddos/">ddos</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/dns/">dns</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/mitigation/">mitigation</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/security/">security</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/introducing-selocal-for-small-selinux-policy-enhancements/">Introducing selocal for small SELinux policy enhancements</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 21 April 2013</span></span>
+                <p><p>When working with a SELinux-enabled system, administrators will
+eventually need to make small updates to the existing policy. Instead of
+building their own full policy (always an option, but most likely not
+maintainable in the long term) one or more SELinux policy modules are
+created (most distributions use a modular …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/introducing-selocal-for-small-selinux-policy-enhancements/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selocal/">selocal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/transforming-guidexml-to-docbook/">Transforming GuideXML to DocBook</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 20 April 2013</span></span>
+                <p><p>I recently
+<a href="http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/docbook.xsl?sortby=date&amp;view=log">committed</a>
+an XSL stylesheet that allows us to transform the GuideXML documents
+(both guides and handbooks) to DocBook. This isn't part of a more
+elaborate move to try and push DocBook instead of GuideXML for the
+Gentoo Documentation though (I'd rather direct documentation development
+more to the Gentoo …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/transforming-guidexml-to-docbook/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/docbook/">docbook</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/guidexml/">guidexml</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pdf/">pdf</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/xsl/">xsl</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench-part-3/">Comparing performance with sysbench: performance analysis</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 19 April 2013</span></span>
@@ -213,255 +444,6 @@ and host on my main laptop, and saw a major performance regression with …</p><
                         <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free software</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/performance/">performance</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/sysbench/">sysbench</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench-part-2/">Comparing performance with sysbench: memory, threads and mutexes</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 19 April 2013</span></span>
-                <p><p>In the previous post, I gave some feedback on the cpu and fileio
-workload tests that <a href="http://sysbench.sf.net">sysbench</a> can handle. Next
-on the agenda are the <em>memory</em>, <em>threads</em> and <em>mutex</em> workloads.</p>
-<p>When using the <em>memory</em> workload, <strong>sysbench</strong> will allocate a buffer
-(provided through the <em>--memory-block-size</em> parameter, defaults to
-1kbyte) and each …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench-part-2/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free software</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/memory/">memory</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/mutex/">mutex</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/performance/">performance</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/sysbench/">sysbench</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/threading/">threading</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/threads/">threads</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/another-gentoo-hardened-month-has-passed/">Another Gentoo Hardened month has passed</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 18 April 2013</span></span>
-                <p><p>Another month has passed, so time to mention again what we have all been
-doing lately ;-)</p>
-<p><em>Toolchain</em></p>
-<p>Version 4.8 of GCC is available in the tree, but currently masked. The
-package contains a fix needed to build hardened-sources, and a fix for
-the asan (address sanitizer).
-<a href="http://www.internetnews.com/blog/skerner/open-source-gcc-4.8-compiler-including-address-sanitizer-security.html">asan</a>
-support in …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/another-gentoo-hardened-month-has-passed/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/asan/">asan</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gcc/">gcc</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/grsecurity/">grsecurity</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/hardened/">hardened</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/integrity/">integrity</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/irc/">irc</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/meeting/">meeting</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pax/">pax</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/uderef/">uderef</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench/">Comparing performance with sysbench: cpu and fileio</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 18 April 2013</span></span>
-                <p><p>Being busy with virtualization and additional security measures, I
-frequently come in contact with people asking me what the performance
-impact is. Now, you won't find the performance impact of SELinux here as
-I have no guests nor hosts that run without SELinux. But I did want to
-find out …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free software</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cpu/">cpu</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/hypervisor/">hypervisor</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/io/">io</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/kvm/">kvm</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/performance/">performance</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/sysbench/">sysbench</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/simple-drawing-for-io-positionin/">Simple drawing for I/O positioning</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 18 April 2013</span></span>
-                <p><p>Instead of repeatedly trying to create an overview of the various layers
-involved with I/O operations within Linux on whatever white-board is in
-the vicinity, I decided to draw one up in <a href="http://www.draw.io">Draw.io</a>
-that I can then update as I learn more from this fascinating world. The
-drawing's …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/simple-drawing-for-io-positionin/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/documentation.html">documentation</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/io/">io</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/linux/">linux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/what-could-selinux-have-done-to-mitigate-the-postgresql-vulnerability/">What could SELinux have done to mitigate the postgresql vulnerability?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 16 April 2013</span></span>
-                <p><p><a href="http://www.gentoo.org">Gentoo</a> is one of the various distributions
-which supports <a href="http://www.gentoo.org/proj/en/hardened/selinux">SELinux</a>
-as a <em>Mandatory Access Control</em> system to, amongst other things,
-mitigate the results of a succesfull exploit against software. So what
-about the recent <a href="http://www.postgresql.org/support/security/faq/2013-04-04/">PostgreSQL
-vulnerability</a>?</p>
-<p>When correctly configured, the PostgreSQL daemon will run in the
-<code>postgresql_t</code> domain. In SELinux-speak …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/what-could-selinux-have-done-to-mitigate-the-postgresql-vulnerability/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/security.html">security</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/postgresql/">postgresql</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/vulnerability/">vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/integrity-checking-with-aide/">Integrity checking with AIDE</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 11 April 2013</span></span>
-                <p><p>As to at least do some progress in the integrity part of Gentoo Hardened
-(a subproject I'd like to extend towards greater heights), I dediced to
-write up a <a href="https://wiki.gentoo.org/wiki/AIDE">small guide</a> on how to
-work with <a href="http://aide.sourceforge.net">AIDE</a>. The tool is simple enough
-(and it allowed me to test its SELinux …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/integrity-checking-with-aide/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/documentation.html">documentation</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/aide/">aide</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/integrity/">integrity</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/not-needing-run_init-for-password-less-service-management/">Not needing run_init for password-less service management</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 09 April 2013</span></span>
-                <p><p>One of the things that has been bugging me was why, even with having
-<code>pam_rootok.so</code> set in <code>/etc/pam.d/run_init</code>, I cannot enjoy
-passwordless service management without using <strong>run_init</strong> directly:</p>
-<div class="highlight"><pre><span></span><code># rc-service postgresql-9.2 status
-Authenticating root.
-Password:
-
-# run_init rc-service postgresql-9.2 status
-Authenticating root.
- * status: started
-</code></pre></div>
-
-<p>So I …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/not-needing-run_init-for-password-less-service-management/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/hardened/">hardened</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pam/">pam</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/rootok/">rootok</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/run_init/">run_init</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/">How far reaching vulnerabilities can go</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 09 April 2013</span></span>
-                <p><p>If you follow the news a bit, you know that PostgreSQL has had a
-significant security vulnerability. The PostgreSQL team announced it up
-front and communicated how they would deal with the vulnerability (which
-basically comes down to saying that it is severe, that the public
-repositories will be temporarily …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/security.html">security</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/firewall/">firewall</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/patching/">patching</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/postgresql/">postgresql</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/security/">security</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/04/separate-puppet-provider-for-gentooselinux/">Separate puppet provider for Gentoo/SELinux?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 07 April 2013</span></span>
-                <p><p>While slowly transitioning my playground infrastructure towards Puppet,
-I already am in process of creating a custom provider for things such as
-services. Puppet uses providers as "implementations" for the functions
-Puppet needs. For instance, for the <em>service</em> type (which handles init
-script services), there are providers for RedHat, Debian …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/04/separate-puppet-provider-for-gentooselinux/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/openrc/">openrc</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/provider/">provider</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/puppet/">puppet</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                     </div>
                 </div>
             </div>

@@ -621,7 +621,306 @@ need to keep this in mind when using package-local USE flag definitions.&lt;/p&g
 SELinux policy for Gentoo (as upstream will not use this setup, and as
 such patches from upstream might need a few manual corrections before
 they apply to our tree). However, I gladly take that up if it means my
-system will have somewhat better confinement.&lt;/p&gt;</content><category term="Gentoo"></category><category term="alsa"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Gentoo SELinux policy release script</title><link href="https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/" rel="alternate"></link><published>2013-12-11T18:37:00+01:00</published><updated>2013-12-11T18:37:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-11:/2013/12/gentoo-selinux-policy-release-script/</id><summary type="html">&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
+system will have somewhat better confinement.&lt;/p&gt;</content><category term="Gentoo"></category><category term="alsa"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>How does foo_t get this privilege?</title><link href="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/" rel="alternate"></link><published>2014-01-05T04:14:00+01:00</published><updated>2014-01-05T04:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-05:/2014/01/how-does-foo_t-get-this-privilege/</id><summary type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
+that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
+&lt;p&gt;I used a simple script (which I've been using for a while already)
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
+that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
+&lt;p&gt;I used a simple script (which I've been using for a while already)
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents the SELinux rules for a particular
+domain in a tree-like structure, expanding the interfaces as it finds
+them. The script is far from perfect, but does enough to help me answer
+such questions. If you're interested, the script is also available on my
+&lt;a href="https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowtree"&gt;github
+small.coding&lt;/a&gt;
+project.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# seshowtree user roles/unprivuser.te &amp;gt; output.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the resulting output, I search for the &lt;code&gt;cgroup_t&lt;/code&gt; and work my way up,
+which gives:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;userdom_unpriv_user_template(user)
+. userdom_common_user_template($1)
+. . fs_rw_cgroup_files($1_t)
+. . . rw_files_pattern($1, cgroup_t, cgroup_t)
+. . . . allow $1 $3:file rw_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So in this case, the user forgot to look into
+&lt;code&gt;userdom_common_user_template&lt;/code&gt;, which is called by
+&lt;code&gt;userdom_unpriv_user_template&lt;/code&gt; to find the path to this privilege. Of
+course, that still doesn't explain why the privileges are assigned in
+the first place. As the policy file itself does not contain the
+necessary comments to deduce this, I had to ask the git repository for
+more information:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ git annotate userdomain.if
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the end, it was a commit from 2010, informing me that "Common users
+can read and write cgroup files (access governed by dac)". So the
+privilege is by design, referring to the regular DAC permissions to
+properly govern access to the files.&lt;/p&gt;</content><category term="SELinux"></category><category term="policy"></category><category term="selinux"></category><category term="seshowtree"></category></entry><entry><title>Private key handling and SELinux protection</title><link href="https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/" rel="alternate"></link><published>2014-01-02T04:00:00+01:00</published><updated>2014-01-02T04:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-02:/2014/01/private-key-handling-and-selinux-protection/</id><summary type="html">&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
+script I wrote.&lt;/p&gt;
+&lt;p&gt;The script is a certificate authority handling script, in which I can
+generate a private key (and certificate assigned to it), sign the
+certificate either by itself (for the root CA key) or …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
+script I wrote.&lt;/p&gt;
+&lt;p&gt;The script is a certificate authority handling script, in which I can
+generate a private key (and certificate assigned to it), sign the
+certificate either by itself (for the root CA key) or by another
+previously created key (for subkeys), create certificates (such as user
+certificates or device certificates) and sign them, sign certificate
+requests, and revoke certificates.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;export KEYLOC=&amp;quot;/var/db/ca&amp;quot;
+# Create a root CA key for &amp;quot;genfic&amp;quot;
+# (openssl questions and other output not shown)
+certcli.sh -r genfic
+# Create a subkey, signed by the &amp;quot;genfic&amp;quot; key, for users
+certcli.sh -p genfic -c genfic-user
+# Create a user certificate
+certcli.sh -p genfic-user -R /var/db/ca/myUserId
+# Sign a certificate
+certcli.sh -p genfic-user -s /var/db/ca/requests/someUser.csr
+# Revoke a certificate
+certcli.sh -p genfic-user -x myuser@genfic.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;From a security point of view, I currently focus on two types:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ca_private_key_t&lt;/code&gt; is for the private key and should not be
+    accessible by anyone, anywhere, anytime, except through the
+    management script itself (which will run as &lt;code&gt;ca_cli_t&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ca_misc_t&lt;/code&gt; is for the other related files, such as certificates,
+    revocation lists, serial information, etc. If this would be "for
+    real" I'd probably make a bit more types for this depending on the
+    accesses, but for this post this suffices.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In order to provide the necessary support policy-wise, the following
+types also are declared:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ca_cli_exec_t&lt;/code&gt; as the entrypoint for the script&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ca_misc_tmp_t&lt;/code&gt; as the temporary file type used by OpenSSL when
+    handling certificates (it is not used for the private key afaics,
+    but it should still be sufficiently - and perhaps even equally
+    well - protected like the private key&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So let's start with this.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(ca, 1.0.0)
+
+# CA management script and domain
+type ca_cli_t;
+type ca_cli_exec_t;
+domain_base_type(ca_cli_t)
+fs_associate(ca_cli_exec_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Above, I declared the two types &lt;code&gt;ca_cli_t&lt;/code&gt; and &lt;code&gt;ca_cli_exec_t&lt;/code&gt;. Then,
+two non-standard approaches were followed.&lt;/p&gt;
+&lt;p&gt;Normally, application domains are granted through &lt;code&gt;application_type()&lt;/code&gt;,
+&lt;code&gt;application_domain()&lt;/code&gt; or even &lt;code&gt;userdom_user_application_domain()&lt;/code&gt;.
+Which interface you use depends on the privileges you want to grant on
+the domain, but also which existing privileges should also be applicable
+to the domain. Make sure you review the interfaces. For instance:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seshowif application_domain
+interface(`application_type&amp;#39;,`
+        gen_require(`
+                attribute application_domain_type;
+        &amp;#39;)
+
+        typeattribute $1 application_domain_type;
+
+        # start with basic domain
+        domain_type($1)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This means that the assigned domain (&lt;code&gt;ca_cli_t&lt;/code&gt; in our example) would be
+assigned the &lt;code&gt;application_domain_type&lt;/code&gt; attribute, as well as the
+&lt;code&gt;domain&lt;/code&gt; attribute and other privileges. If we really want to prevent
+any access to the &lt;code&gt;ca_cli_t&lt;/code&gt; domain for handling the certificates, we
+need to make sure that the lowest possible privileges are assigned.&lt;/p&gt;
+&lt;p&gt;The same is true for the file type &lt;code&gt;ca_cli_exec_t&lt;/code&gt;. Making it through
+&lt;code&gt;files_type()&lt;/code&gt; interface would assign the &lt;code&gt;file_type&lt;/code&gt; attribute to it,
+and other domains might have access to &lt;code&gt;file_type&lt;/code&gt;. So all I do here is
+to allow the type &lt;code&gt;ca_cli_exec_t&lt;/code&gt; to be associated on a file system.&lt;/p&gt;
+&lt;p&gt;Similarly, I define the remainder of file types:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type ca_private_key_t;
+fs_associate(ca_private_key_t)
+
+type ca_misc_tmp_t;
+fs_associate(ca_misc_tmp_t)
+fs_associate_tmpfs(ca_misc_tmp_t)
+
+type ca_misc_t;
+fs_associate(ca_misc_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Next, grant the CA handling script (which will run as &lt;code&gt;ca_cli_t&lt;/code&gt;) the
+proper access to these types.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ca_cli_t ca_misc_t:dir create_dir_perms;
+manage_files_pattern(ca_cli_t, ca_misc_t, ca_misc_t)
+
+allow ca_cli_t ca_private_key_t:dir create_dir_perms;
+manage_files_pattern(ca_cli_t, ca_private_key_t, ca_private_key_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This of course heavily depends on the script itself. Mine creates a
+directory "private", so needs the proper rights on the
+&lt;code&gt;ca_private_key_t&lt;/code&gt; type for directories as well. The "private" directory
+is created in a generic directory (which is labeled as &lt;code&gt;ca_misc_t&lt;/code&gt;) so I
+can also create a file transition. This means that the SELinux policy
+will automatically assign the &lt;code&gt;ca_private_key_t&lt;/code&gt; type to a directory,
+created in a directory with label &lt;code&gt;ca_misc_t&lt;/code&gt;, if created by the
+&lt;code&gt;ca_cli_t&lt;/code&gt; domain:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;filetrans_pattern(ca_cli_t, ca_misc_t, ca_private_key_t, dir, &amp;quot;private&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, &lt;code&gt;ca_cli_t&lt;/code&gt; is a domain used for a shell script, which in my case
+also requires the following permissions:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Handling pipes between commands
+allow ca_cli_t self:fifo_file rw_fifo_file_perms;
+# Shell script...
+corecmd_exec_shell(ca_cli_t)
+# ...which invokes regular binaries
+corecmd_exec_bin(ca_cli_t)
+# Allow output on the screen
+getty_use_fds(ca_cli_t)
+userdom_use_user_terminals(ca_cli_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now I still need to mark &lt;code&gt;ca_cli_exec_t&lt;/code&gt; as an entrypoint for
+&lt;code&gt;ca_cli_t&lt;/code&gt;, meaning that the &lt;code&gt;ca_cli_t&lt;/code&gt; domain can only be accessed
+(transitioned to) through the execution of a file with label
+&lt;code&gt;ca_cli_exec_t&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ca_cli_t ca_cli_exec_t:file entrypoint;
+allow ca_cli_t ca_cli_exec_t:file { mmap_file_perms ioctl lock };
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Normally, the above is granted through the invocation of the
+&lt;code&gt;application_domain(ca_cli_t, ca_cli_exec_t)&lt;/code&gt; but as mentioned before,
+this would also assign attributes that I explicitly want to prevent in
+this example.&lt;/p&gt;
+&lt;p&gt;Next, the &lt;code&gt;openssl&lt;/code&gt; application, which the script uses extensively, also
+requires additional permissions. As the &lt;code&gt;openssl&lt;/code&gt; command just runs in
+the &lt;code&gt;ca_cli_t&lt;/code&gt; domain, I extend the privileges for this domain more:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Read access on /proc files
+kernel_read_system_state(ca_cli_t)
+# Access to random devices
+dev_read_rand(ca_cli_t)
+dev_read_urand(ca_cli_t)
+# Regular files
+files_read_etc_files(ca_cli_t)
+miscfiles_read_localization(ca_cli_t)
+# /tmp access
+fs_getattr_tmpfs(ca_cli_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Also, the following file transition is created: when OpenSSL creates a
+temporary file in &lt;code&gt;/tmp&lt;/code&gt;, this file should immediately be assigned the
+&lt;code&gt;ca_misc_tmp_t&lt;/code&gt; type:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# File transition in /tmp to ca_misc_tmp_t
+files_tmp_filetrans(ca_cli_t, ca_misc_tmp_t, file)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;With this in place, the application works just fine - all I need to do
+is have an initial location marked as &lt;code&gt;ca_misc_t&lt;/code&gt;. For now, none of the
+users have the rights to do so, so I create three additional interfaces
+to be used against other user domains.&lt;/p&gt;
+&lt;p&gt;The first one is to allow user domains to use the CA script. This is
+handled by the &lt;code&gt;ca_role()&lt;/code&gt; interface. In order to support such an
+interface, let's first create the &lt;code&gt;ca_roles&lt;/code&gt; role attribute in the &lt;code&gt;.te&lt;/code&gt;
+file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;attribute_role ca_roles;
+role ca_roles types ca_cli_t;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now I can define the &lt;code&gt;ca_role()&lt;/code&gt; interface:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_role&amp;#39;,`
+  gen_require(`
+    attribute_role ca_roles;
+    type ca_cli_t, ca_cli_exec_t;
+    type ca_misc_t;
+  &amp;#39;)
+
+  # Allow the user role (like sysadm_r) the types granted to ca_roles
+  roleattribute $1 ca_roles;
+
+  # Read the non-private key files and directories
+  allow $2 ca_misc_t:dir list_dir_perms;
+  allow $2 ca_misc_t:file read_file_perms;
+
+  # Allow to transition to ca_cli_t by executing a ca_cli_exec_t file
+  domtrans_pattern($2, ca_cli_exec_t, ca_cli_t)
+
+  # Look at the process info
+  ps_process_pattern($2, ca_cli_t)
+
+  # Output (and redirect) handling
+  allow ca_cli_t $2:fd use;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This role allows to run the command, but we still don't have the rights
+to create a &lt;code&gt;ca_misc_t&lt;/code&gt; directory. So another interface is created,
+which is granted to &lt;em&gt;regular&lt;/em&gt; system administrators (as the &lt;code&gt;ca_role()&lt;/code&gt;
+might be granted to non-admins as well, who can invoke the script
+through &lt;code&gt;sudo&lt;/code&gt;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_sysadmin&amp;#39;,`
+  gen_require(`
+    type ca_misc_t;
+    type ca_private_key_t;
+  &amp;#39;)
+
+  # Allow the user relabel rights on ca_misc_t
+  allow $1 ca_misc_t:dir relabel_dir_perms;
+  allow $1 ca_misc_t:file relabel_file_perms;
+
+  # Allow the user to label /to/ ca_private_key_t (but not vice versa)
+  allow $1 ca_private_key_t:dir relabelto_dir_perms;
+  allow $1 ca_private_key_t:file relabelto_file_perms;
+
+  # Look at regular file/dir info
+  allow $1 ca_misc_t:dir list_dir_perms;
+  allow $1 ca_misc_t:file read_file_perms;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code&gt;ca_sysadmin()&lt;/code&gt; interface can also be assigned to the &lt;code&gt;setfiles_t&lt;/code&gt;
+command so that relabel operations (and file system relabeling) works
+correctly.&lt;/p&gt;
+&lt;p&gt;Finally, a real administrative interface is created that also has
+relabel &lt;em&gt;from&lt;/em&gt; rights (so any domain granted this interface will be able
+- if Linux allows it and the type the operation goes to/from is allowed
+- to change the type of private keys to a regular file). This one should
+&lt;em&gt;only&lt;/em&gt; be assigned to a rescue user (if any). Also, this interface is
+allowed to label CA management scripts.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_admin&amp;#39;,`
+  gen_require(`
+    type ca_misc_t, ca_private_key_t;
+    type ca_cli_exec_t;
+  &amp;#39;)
+
+  allow $1 { ca_misc_t ca_private_key_t }:dir relabel_dir_perms;
+  allow $1 { ca_misc_t ca_private_key_t }:file relabel_file_perms;
+
+  allow $1 ca_cli_exec_t:file relabel_file_perms;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So regular system administrators would be assigned the &lt;code&gt;ca_sysadmin()&lt;/code&gt;
+interface as well as the &lt;code&gt;setfiles_t&lt;/code&gt; domain; CA handling roles would be
+granted the &lt;code&gt;ca_role()&lt;/code&gt; interface. The &lt;code&gt;ca_admin()&lt;/code&gt; interface would only
+be granted on the rescue (or super-admin).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Regular system administrators
+ca_sysadmin(sysadm_t)
+ca_sysadmin(setfiles_t)
+# Certificate administrator
+ca_role(certadmin_r, certadmin_t)
+# Security administrator
+ca_admin(secadm_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="ca"></category><category term="certcli"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Gentoo SELinux policy release script</title><link href="https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/" rel="alternate"></link><published>2013-12-11T18:37:00+01:00</published><updated>2013-12-11T18:37:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-11:/2013/12/gentoo-selinux-policy-release-script/</id><summary type="html">&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
 new SELinux policy packages. The script is on the
 &lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;repository&lt;/a&gt;
 itself, in the &lt;code&gt;gentoo/&lt;/code&gt; subdirectory, and is called

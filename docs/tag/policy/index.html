@@ -401,6 +401,55 @@ make a "least privilege" policy that …</p></p>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/">How does foo_t get this privilege?</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 05 January 2014</span></span>
+                <p><p>Today a question was raised how the unprivileged user domain <code>user_t</code>
+was allowed to write to <code>cgroup_t</code> files. There is nothing obvious about
+that in the <code>roles/unprivuser.te</code> file, so what gives?</p>
+<p>I used a simple script (which I've been using for a while already)
+called <strong>seshowtree</strong> which presents …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/seshowtree/">seshowtree</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/">Private key handling and SELinux protection</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 02 January 2014</span></span>
+                <p><p>In this post I'll give some insight in a <em>possible</em> SELinux policy for a
+script I wrote.</p>
+<p>The script is a certificate authority handling script, in which I can
+generate a private key (and certificate assigned to it), sign the
+certificate either by itself (for the root CA key) or …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ca/">ca</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/certcli/">certcli</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/">Gentoo SELinux policy release script</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 11 December 2013</span></span>
@@ -421,61 +470,6 @@ perform …</p></p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/hardened/">hardened</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/release/">release</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/">Using CUSTOM_BUILDOPT in refpolicy for USE flag-alike functionality?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 16 August 2013</span></span>
-                <p><p>As you are probably aware, Gentoo uses the <a href="http://oss.tresys.com/projects/refpolicy/">reference
-policy</a> as its base for
-SELinux policies. Yes, we do customize it and not everything is already
-pushed upstream (for instance, our approach to use <code>xdg_*_home_t</code>
-customizable types to further restrict user application access has been
-sent up for comments …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/boolean/">boolean</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/use/">use</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/useflag/">useflag</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-finishing-up/">A SELinux policy for incron: finishing up</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 31 May 2013</span></span>
-                <p><p>After 9 posts, it's time to wrap things up. You can review the final
-results online
-(<a href="http://dev.gentoo.org/~swift/blog/01/incron.te.txt">incron.te</a>,
-<a href="http://dev.gentoo.org/~swift/blog/01/incron.if.txt">incron.if</a> and
-<a href="http://dev.gentoo.org/~swift/blog/01/incron.fc.txt">incron.fc</a>) and
-adapt to your own needs if you want. But we should also review what we
-have accomplished so far...</p>
-<p>We built the start of an entire …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-finishing-up/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/incron/">incron</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                     </div>
                 </div>

@@ -2191,7 +2191,81 @@ protections for such "one-time deployments" where a company cannot
 invest in resources to provide engineering services on those
 deployments. The SELinux security controls do not require engineering on
 the application side, making investments in SELinux engineering very
-much reusable.&lt;/p&gt;</content><category term="SELinux"></category><category term="companies"></category><category term="configuration"></category><category term="engineering"></category><category term="enterprise"></category><category term="selinux"></category></entry><entry><title>Sometimes I forget how important communication is</title><link href="https://blog.siphos.be/2014/12/sometimes-i-forget-how-important-communication-is/" rel="alternate"></link><published>2014-12-10T20:38:00+01:00</published><updated>2014-12-10T20:38:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-10:/2014/12/sometimes-i-forget-how-important-communication-is/</id><summary type="html">&lt;p&gt;Free software (and documentation) developers don't always have all the
+much reusable.&lt;/p&gt;</content><category term="SELinux"></category><category term="companies"></category><category term="configuration"></category><category term="engineering"></category><category term="enterprise"></category><category term="selinux"></category></entry><entry><title>Why does it access /etc/shadow?</title><link href="https://blog.siphos.be/2014/12/why-does-it-access-etcshadow/" rel="alternate"></link><published>2014-12-30T22:48:00+01:00</published><updated>2014-12-30T22:48:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-30:/2014/12/why-does-it-access-etcshadow/</id><summary type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
+that it (well, the authdaemon that is part of Courier) wanted to access
+&lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
+know that this is through the PAM support (more specifically,
+&lt;code&gt;pam_unix …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
+that it (well, the authdaemon that is part of Courier) wanted to access
+&lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
+know that this is through the PAM support (more specifically,
+&lt;code&gt;pam_unix.so&lt;/code&gt;). But why? After all, &lt;code&gt;pam_unix.so&lt;/code&gt; should try to execute
+&lt;code&gt;unix_chkpwd&lt;/code&gt; to verify a password and not read in the shadow file
+directly (which would require all PAM-aware applications to be granted
+access to the shadow file).&lt;/p&gt;
+&lt;p&gt;So I dived into the PAM-Linux sources (yay free software).&lt;/p&gt;
+&lt;p&gt;In &lt;code&gt;pam_unix_passwd.c&lt;/code&gt;, the &lt;em&gt;_unix_run_verify_binary()&lt;/em&gt; method is
+called but only if the &lt;em&gt;get_account_info()&lt;/em&gt; method returns
+&lt;code&gt;PAM_UNIX_RUN_HELPER&lt;/code&gt;.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;static int _unix_verify_shadow(pam_handle_t *pamh, const char *user, unsigned int ctrl)
+{
+...
+        retval = get_account_info(pamh, user, &amp;amp;pwent, &amp;amp;spent);
+...
+        if (retval == PAM_UNIX_RUN_HELPER) {
+                retval = _unix_run_verify_binary(pamh, ctrl, user, &amp;amp;daysleft);
+                if (retval == PAM_AUTH_ERR || retval == PAM_USER_UNKNOWN)
+                        return retval;
+        }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In &lt;code&gt;passverify.c&lt;/code&gt; this method will check the password entry file and, if
+the entry is a shadow file, will return &lt;code&gt;PAM_UNIX_RUN_HELPER&lt;/code&gt; if the
+current user id is not root, or if SELinux is enabled:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;PAMH_ARG_DECL(int get_account_info,
+        const char *name, struct passwd **pwd, struct spwd **spwdent)
+{
+        /* UNIX passwords area */
+        *pwd = pam_modutil_getpwnam(pamh, name);        /* Get password file entry... */
+        *spwdent = NULL;
+
+        if (*pwd != NULL) {
+...
+                } else if (is_pwd_shadowed(*pwd)) {
+                        /*
+                         * ...and shadow password file entry for this user,
+                         * if shadowing is enabled
+                         */
+#ifndef HELPER_COMPILE
+                        if (geteuid() || SELINUX_ENABLED)
+                                return PAM_UNIX_RUN_HELPER;
+#endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code&gt;SELINUX_ENABLED&lt;/code&gt; is a C macro defined in the same file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#ifdef WITH_SELINUX
+#include 
+#define SELINUX_ENABLED is_selinux_enabled()&amp;gt;0
+#else
+#define SELINUX_ENABLED 0
+#endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And this is where my "aha" moment came forth: the Courier authdaemon
+runs as root, so its user id is 0. The &lt;em&gt;geteuid()&lt;/em&gt; method will return 0,
+so the &lt;code&gt;SELINUX_ENABLED&lt;/code&gt; macro must return non-zero for the proper path
+to be followed. A quick check in the audit logs, after disabling
+&lt;em&gt;dontaudit&lt;/em&gt; lines, showed that the Courier IMAPd daemon wants to get the
+attribute(s) of the &lt;code&gt;security_t&lt;/code&gt; file system (on which the SELinux
+information is exposed). As this was denied, the call to
+&lt;em&gt;is_selinux_enabled()&lt;/em&gt; returns -1 (error) which, through the macro,
+becomes 0.&lt;/p&gt;
+&lt;p&gt;So granting &lt;em&gt;selinux_getattr_fs(courier_authdaemon_t)&lt;/em&gt; was enough to
+get it to use the &lt;code&gt;unix_chkpwd&lt;/code&gt; binary again.&lt;/p&gt;
+&lt;p&gt;To fix this properly, we need to grant this to all PAM using
+applications. There is an interface called &lt;em&gt;auth_use_pam()&lt;/em&gt; in the
+policies, but that isn't used by the Courier policy. Until now, that is
+;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="chkpwd"></category><category term="pam"></category><category term="selinux"></category><category term="shadow"></category><category term="unix_chkpwd"></category></entry><entry><title>Sometimes I forget how important communication is</title><link href="https://blog.siphos.be/2014/12/sometimes-i-forget-how-important-communication-is/" rel="alternate"></link><published>2014-12-10T20:38:00+01:00</published><updated>2014-12-10T20:38:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-12-10:/2014/12/sometimes-i-forget-how-important-communication-is/</id><summary type="html">&lt;p&gt;Free software (and documentation) developers don't always have all the
 time they want. Instead, they grab whatever time they have to do what
 they believe is the most productive - be it documentation editing,
 programming, updating ebuilds, SELinux policy improvements and what not.
@@ -2991,7 +3065,61 @@ well, you can guess which technology is also one of the many sources of
 logging. Right. SELinux ;-)&lt;/p&gt;
 &lt;p&gt;Anyway, if your company is interested in such GSE events, make sure to
 follow the &lt;a href="http://www.gsebelux.com"&gt;gsebelux.com&lt;/a&gt; site for updates.
-It's a great way for networking as well as sharing experiences.&lt;/p&gt;</content><category term="Security"></category><category term="gse"></category><category term="mainframe"></category><category term="s390x"></category><category term="security"></category><category term="selinux"></category><category term="zenterprise"></category></entry><entry><title>Switching context depending on user code-wise</title><link href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/" rel="alternate"></link><published>2014-01-12T22:43:00+01:00</published><updated>2014-01-12T22:43:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-12:/2014/01/switching-context-depending-on-user-code-wise/</id><summary type="html">&lt;p&gt;I blogged about how SELinux decides what the context should be for a
+It's a great way for networking as well as sharing experiences.&lt;/p&gt;</content><category term="Security"></category><category term="gse"></category><category term="mainframe"></category><category term="s390x"></category><category term="security"></category><category term="selinux"></category><category term="zenterprise"></category></entry><entry><title>Hidden symbols and dynamic linking</title><link href="https://blog.siphos.be/2014/03/hidden-symbols-and-dynamic-linking/" rel="alternate"></link><published>2014-03-24T21:14:00+01:00</published><updated>2014-03-24T21:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-24:/2014/03/hidden-symbols-and-dynamic-linking/</id><summary type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+ebuild which caused the following stacktrace to occur every time the
+&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+Traceback (most recent call last):
+  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
+    import seobject
+  File &amp;quot;/usr/lib64/python2.7 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+ebuild which caused the following stacktrace to occur every time the
+&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+Traceback (most recent call last):
+  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
+    import seobject
+  File &amp;quot;/usr/lib64/python2.7/site-packages/seobject.py&amp;quot;, line 27, in 
+    import sepolicy
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolicy/__init__.py&amp;quot;, line 11, in 
+    import sepolgen.interfaces as interfaces
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/interfaces.py&amp;quot;, line 24, in 
+    import access
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/access.py&amp;quot;, line 35, in 
+    from selinux import audit2why
+ImportError: /usr/lib64/python2.7/site-packages/selinux/audit2why.so: undefined symbol: sepol_set_policydb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Usually this error means that a needed library (a &lt;code&gt;.so&lt;/code&gt; file) is
+missing, or is not part of the &lt;code&gt;/etc/ld.so.conf&lt;/code&gt; list of directories to
+scan. And when SELinux is enabled, you might want to check the
+permissions of that file as well (who knows). But that wasn't the case
+here. After trying to figure things out (which includes switching Python
+versions, grepping for &lt;em&gt;sepol_set_policydb&lt;/em&gt; in &lt;code&gt;libsepol.so&lt;/code&gt; and more)
+I looked at the &lt;code&gt;audit2why.c&lt;/code&gt; code and see if/where
+&lt;em&gt;sepol_set_policydb&lt;/em&gt; is needed, as well as at the &lt;code&gt;libsepol&lt;/code&gt; sources
+to see where it is defined. And yes, the call is (of course) needed, but
+the definition made me wonder if this wasn't a bug:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;int hidden sepol_set_policydb(policydb_t * p)
+{
+        policydb = p;
+        return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Hidden? But, that means that the function symbol is not available for
+dynamic linking... So if that is the case, shouldn't &lt;code&gt;audit2why.c&lt;/code&gt; not
+call it? Turns out, this was due to a fix we introduced earlier on,
+where &lt;code&gt;libsepol&lt;/code&gt; got linked dynamically instead of statically (i.e.
+using &lt;code&gt;libsepol.a&lt;/code&gt;). Static linking of libraries still allows for the
+(hidden) symbols to be used, whereas dynamic linking doesn't.&lt;/p&gt;
+&lt;p&gt;So that part of the fix got reverted (and should fix the bug we
+introduced), and I learned a bit more about symbols (and the &lt;em&gt;hidden&lt;/em&gt;
+statement).&lt;/p&gt;
+&lt;p&gt;Bonus: if you need to check what symbols are available in a binary /
+shared library, use &lt;strong&gt;nm&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ nm -D /path/to/binary
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Gentoo"></category><category term="elf"></category><category term="hidden"></category><category term="selinux"></category><category term="symbols"></category></entry><entry><title>Switching context depending on user code-wise</title><link href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/" rel="alternate"></link><published>2014-01-12T22:43:00+01:00</published><updated>2014-01-12T22:43:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-12:/2014/01/switching-context-depending-on-user-code-wise/</id><summary type="html">&lt;p&gt;I blogged about how SELinux decides what the context should be for a
 particular Linux user; how it checks the default context(s) and tells
 the SELinux-aware application on what the new context should be. Let's
 look into the C code that does so, and how an application should behave …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I blogged about how SELinux decides what the context should be for a
@@ -3377,7 +3505,575 @@ of the process to the new context (i.e. a domain transition):&lt;/p&gt;
 continue (taking into account the return code of this function). As
 mentioned before, a positive return code (0 or higher) means the logic
 should continue; a strictly negative return code means that the
-application should gracefully fail.&lt;/p&gt;</content><category term="SELinux"></category><category term="default_context"></category><category term="domain"></category><category term="libselinux"></category><category term="selinux"></category><category term="selinux-aware"></category><category term="transition"></category></entry><entry><title>Gentoo SELinux policy release script</title><link href="https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/" rel="alternate"></link><published>2013-12-11T18:37:00+01:00</published><updated>2013-12-11T18:37:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-11:/2013/12/gentoo-selinux-policy-release-script/</id><summary type="html">&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
+application should gracefully fail.&lt;/p&gt;</content><category term="SELinux"></category><category term="default_context"></category><category term="domain"></category><category term="libselinux"></category><category term="selinux"></category><category term="selinux-aware"></category><category term="transition"></category></entry><entry><title>How does foo_t get this privilege?</title><link href="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/" rel="alternate"></link><published>2014-01-05T04:14:00+01:00</published><updated>2014-01-05T04:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-05:/2014/01/how-does-foo_t-get-this-privilege/</id><summary type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
+that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
+&lt;p&gt;I used a simple script (which I've been using for a while already)
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
+that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
+&lt;p&gt;I used a simple script (which I've been using for a while already)
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents the SELinux rules for a particular
+domain in a tree-like structure, expanding the interfaces as it finds
+them. The script is far from perfect, but does enough to help me answer
+such questions. If you're interested, the script is also available on my
+&lt;a href="https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowtree"&gt;github
+small.coding&lt;/a&gt;
+project.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# seshowtree user roles/unprivuser.te &amp;gt; output.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the resulting output, I search for the &lt;code&gt;cgroup_t&lt;/code&gt; and work my way up,
+which gives:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;userdom_unpriv_user_template(user)
+. userdom_common_user_template($1)
+. . fs_rw_cgroup_files($1_t)
+. . . rw_files_pattern($1, cgroup_t, cgroup_t)
+. . . . allow $1 $3:file rw_file_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So in this case, the user forgot to look into
+&lt;code&gt;userdom_common_user_template&lt;/code&gt;, which is called by
+&lt;code&gt;userdom_unpriv_user_template&lt;/code&gt; to find the path to this privilege. Of
+course, that still doesn't explain why the privileges are assigned in
+the first place. As the policy file itself does not contain the
+necessary comments to deduce this, I had to ask the git repository for
+more information:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ git annotate userdomain.if
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In the end, it was a commit from 2010, informing me that "Common users
+can read and write cgroup files (access governed by dac)". So the
+privilege is by design, referring to the regular DAC permissions to
+properly govern access to the files.&lt;/p&gt;</content><category term="SELinux"></category><category term="policy"></category><category term="selinux"></category><category term="seshowtree"></category></entry><entry><title>Oh it is cron again...</title><link href="https://blog.siphos.be/2014/01/oh-it-is-cron-again/" rel="alternate"></link><published>2014-01-03T21:05:00+01:00</published><updated>2014-01-03T21:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-03:/2014/01/oh-it-is-cron-again/</id><summary type="html">&lt;p&gt;Today I was pointed to the following error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test fcron[6722]: fcron[6722] 3.1.2 started
+test fcron[6722]: Cannot bind socket to &amp;#39;/var/run/fcron.fifo&amp;#39;: Permission denied
+test fcron[6722]:  &amp;quot;at&amp;quot; reboot jobs will only be run at computer&amp;#39;s startup.
+test fcron[6722]: updating configuration from …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Today I was pointed to the following error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test fcron[6722]: fcron[6722] 3.1.2 started
+test fcron[6722]: Cannot bind socket to &amp;#39;/var/run/fcron.fifo&amp;#39;: Permission denied
+test fcron[6722]:  &amp;quot;at&amp;quot; reboot jobs will only be run at computer&amp;#39;s startup.
+test fcron[6722]: updating configuration from /var/spool/fcron
+test fcron[6722]: adding file systab Jan  3 17:51:19 test fcron[6722]: adding new file user
+test fcron[6722]: NO CONTEXT for user &amp;quot;(null)&amp;quot;: Invalid argument
+test fcron[6722]: ENTRYPOINT FAILED for user &amp;quot;user&amp;quot; (CONTEXT (null)) for file CONTEXT user_u:object_r:user_cron_spool_t:s0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;First of all, the moment I notice that it is cron, I know I'm up for a
+few hours at it. Cron has been notoriously difficult to integrate with
+SELinux, because it doesn't use the simpler "fork-execute" method (where
+we can put in transitions). Instead, it often has to call
+SELinux-specific methods to get the job done. Same was true here.&lt;/p&gt;
+&lt;p&gt;Anyway, on to the issues. First of all, the &lt;em&gt;Cannot bind socket&lt;/em&gt; is a
+simple SELinux policy thingie that one can easily ignore for now (I'll
+patch and upstream that in a minute). The problem is the &lt;em&gt;NO CONTEXT&lt;/em&gt;
+stuff.&lt;/p&gt;
+&lt;p&gt;The code looks as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#ifdef SYSFCRONTAB
+    if(!strcmp(cf-&amp;gt;cf_user, SYSFCRONTAB))
+        user_name = &amp;quot;system_u&amp;quot;;
+    else
+#endif /* def SYSFCRONTAB */
+        user_name = cf-&amp;gt;cf_user;
+    if(flask_enabled)
+    {
+        if(get_default_context(user_name, NULL, &amp;amp;cf-&amp;gt;cf_user_context))
+            error_e(&amp;quot;NO CONTEXT for user \&amp;quot;%s\&amp;quot;&amp;quot;, cf-&amp;gt;cf_user_context);
+        retval = security_compute_av(cf-&amp;gt;cf_user_context, cf-&amp;gt;cf_file_context
+                , SECCLASS_FILE, FILE__ENTRYPOINT, &amp;amp;avd);
+
+        if(retval || ((FILE__ENTRYPOINT &amp;amp; avd.allowed) != FILE__ENTRYPOINT))
+        {
+            syslog(LOG_ERR, &amp;quot;ENTRYPOINT FAILED for user \&amp;quot;%s\&amp;quot; &amp;quot;
+                   &amp;quot;(CONTEXT %s) for file CONTEXT %s&amp;quot;
+                   , cf-&amp;gt;cf_user, cf-&amp;gt;cf_user_context, cf-&amp;gt;cf_file_context);
+            goto err;
+        }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;It wasn't obvious to me either, but from a quick look through the
+&lt;a href="http://userspace.selinuxproject.org/trac/browser/libselinux/include/selinux/selinux.h"&gt;selinux.h&lt;/a&gt;
+code I found out that &lt;em&gt;get_default_context()&lt;/em&gt; requires the SELinux
+user rather than Linux user.&lt;/p&gt;
+&lt;p&gt;The purpose of the &lt;em&gt;get_default_context()&lt;/em&gt; method is to return the
+SELinux context in which newly started tasks, originating from the
+current context (if second argument is &lt;em&gt;NULL&lt;/em&gt;) or given context (second
+argument), owned by the given user (first argument) should start in. In
+case of cron, the code is asking SELinux what the context should be for
+the cronjob itself, considering that it has to be executed for a given
+user.&lt;/p&gt;
+&lt;p&gt;Now the code currently passes on the owner (Linux user) of the crontab
+file. As this owner usually is not a SELinux user (only when there is a
+SELinux user named after the Linux user will this succeed), the method
+returns &lt;em&gt;NULL&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;The right call here would be to first look up the correct SELinux user
+for the given Linux user, and then call the &lt;em&gt;get_default_context()&lt;/em&gt;
+method. This will return a context to transition to.&lt;/p&gt;
+&lt;p&gt;Now, cron systems usually do a second check - they see if the file in
+which the cronjobs are mentioned is an &lt;em&gt;entrypoint&lt;/em&gt; for the context that
+it should transition to. Even though the file itself will not be
+directly executed, by checking if the &lt;em&gt;entrypoint&lt;/em&gt; permission is set
+cron can be reasonably certain that it should proceed. So for cron, this
+is like saying "Yes, the file with context &lt;code&gt;cron_spool_t&lt;/code&gt; is allowed to
+contain job definitions for cron to execute".&lt;/p&gt;
+&lt;p&gt;I've sent the
+&lt;a href="http://thread.gmane.org/gmane.comp.sysutils.fcron.devel/89"&gt;patch&lt;/a&gt; for
+this upstream and hopefully it gets added in - if I'm correct in the
+deduction, that is.&lt;/p&gt;
+&lt;p&gt;So when you get issues with cron, do the following checks:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Is the cron daemon running in the right domain? It should run in a
+    &lt;code&gt;crond_t&lt;/code&gt; domain, otherwise it will not be able to get a proper
+    default context.&lt;/li&gt;
+&lt;li&gt;Assuming that cron uses the right arguments, make sure that a
+    default context is set for the given SELinux user (check the
+    &lt;code&gt;contexts/default_contexts&lt;/code&gt; and &lt;code&gt;contexts/users/*&lt;/code&gt; files) and that
+    this context is valid&lt;/li&gt;
+&lt;li&gt;Check the context of the file in which the definitions are stored
+    and make sure it is mentioned as an entrypoint for the job domain&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Or, in some code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# ps -efZ | grep fcron | awk &amp;#39;{print $1}&amp;#39;
+system_u:system_r:crond_t
+# getseuser swift system_u:system_r:crond_t
+seuser: user_u
+Context 0     user_u:user_r:cronjob_t
+# ls -lZ /var/spool/fcron/new.user
+... user_u:object_r:user_cron_spool_t
+# sesearch -s cronjob_t -t user_cron_spool_t -c file -p entrypoint -A
+Found 1 semantic av rules:
+  allow cronjob_t user_cron_spool_t : file entrypoint ;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="cron"></category><category term="selinux"></category></entry><entry><title>Private key handling and SELinux protection</title><link href="https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/" rel="alternate"></link><published>2014-01-02T04:00:00+01:00</published><updated>2014-01-02T04:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-02:/2014/01/private-key-handling-and-selinux-protection/</id><summary type="html">&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
+script I wrote.&lt;/p&gt;
+&lt;p&gt;The script is a certificate authority handling script, in which I can
+generate a private key (and certificate assigned to it), sign the
+certificate either by itself (for the root CA key) or …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
+script I wrote.&lt;/p&gt;
+&lt;p&gt;The script is a certificate authority handling script, in which I can
+generate a private key (and certificate assigned to it), sign the
+certificate either by itself (for the root CA key) or by another
+previously created key (for subkeys), create certificates (such as user
+certificates or device certificates) and sign them, sign certificate
+requests, and revoke certificates.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;export KEYLOC=&amp;quot;/var/db/ca&amp;quot;
+# Create a root CA key for &amp;quot;genfic&amp;quot;
+# (openssl questions and other output not shown)
+certcli.sh -r genfic
+# Create a subkey, signed by the &amp;quot;genfic&amp;quot; key, for users
+certcli.sh -p genfic -c genfic-user
+# Create a user certificate
+certcli.sh -p genfic-user -R /var/db/ca/myUserId
+# Sign a certificate
+certcli.sh -p genfic-user -s /var/db/ca/requests/someUser.csr
+# Revoke a certificate
+certcli.sh -p genfic-user -x myuser@genfic.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;From a security point of view, I currently focus on two types:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ca_private_key_t&lt;/code&gt; is for the private key and should not be
+    accessible by anyone, anywhere, anytime, except through the
+    management script itself (which will run as &lt;code&gt;ca_cli_t&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ca_misc_t&lt;/code&gt; is for the other related files, such as certificates,
+    revocation lists, serial information, etc. If this would be "for
+    real" I'd probably make a bit more types for this depending on the
+    accesses, but for this post this suffices.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In order to provide the necessary support policy-wise, the following
+types also are declared:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ca_cli_exec_t&lt;/code&gt; as the entrypoint for the script&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ca_misc_tmp_t&lt;/code&gt; as the temporary file type used by OpenSSL when
+    handling certificates (it is not used for the private key afaics,
+    but it should still be sufficiently - and perhaps even equally
+    well - protected like the private key&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So let's start with this.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(ca, 1.0.0)
+
+# CA management script and domain
+type ca_cli_t;
+type ca_cli_exec_t;
+domain_base_type(ca_cli_t)
+fs_associate(ca_cli_exec_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Above, I declared the two types &lt;code&gt;ca_cli_t&lt;/code&gt; and &lt;code&gt;ca_cli_exec_t&lt;/code&gt;. Then,
+two non-standard approaches were followed.&lt;/p&gt;
+&lt;p&gt;Normally, application domains are granted through &lt;code&gt;application_type()&lt;/code&gt;,
+&lt;code&gt;application_domain()&lt;/code&gt; or even &lt;code&gt;userdom_user_application_domain()&lt;/code&gt;.
+Which interface you use depends on the privileges you want to grant on
+the domain, but also which existing privileges should also be applicable
+to the domain. Make sure you review the interfaces. For instance:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seshowif application_domain
+interface(`application_type&amp;#39;,`
+        gen_require(`
+                attribute application_domain_type;
+        &amp;#39;)
+
+        typeattribute $1 application_domain_type;
+
+        # start with basic domain
+        domain_type($1)
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This means that the assigned domain (&lt;code&gt;ca_cli_t&lt;/code&gt; in our example) would be
+assigned the &lt;code&gt;application_domain_type&lt;/code&gt; attribute, as well as the
+&lt;code&gt;domain&lt;/code&gt; attribute and other privileges. If we really want to prevent
+any access to the &lt;code&gt;ca_cli_t&lt;/code&gt; domain for handling the certificates, we
+need to make sure that the lowest possible privileges are assigned.&lt;/p&gt;
+&lt;p&gt;The same is true for the file type &lt;code&gt;ca_cli_exec_t&lt;/code&gt;. Making it through
+&lt;code&gt;files_type()&lt;/code&gt; interface would assign the &lt;code&gt;file_type&lt;/code&gt; attribute to it,
+and other domains might have access to &lt;code&gt;file_type&lt;/code&gt;. So all I do here is
+to allow the type &lt;code&gt;ca_cli_exec_t&lt;/code&gt; to be associated on a file system.&lt;/p&gt;
+&lt;p&gt;Similarly, I define the remainder of file types:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type ca_private_key_t;
+fs_associate(ca_private_key_t)
+
+type ca_misc_tmp_t;
+fs_associate(ca_misc_tmp_t)
+fs_associate_tmpfs(ca_misc_tmp_t)
+
+type ca_misc_t;
+fs_associate(ca_misc_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Next, grant the CA handling script (which will run as &lt;code&gt;ca_cli_t&lt;/code&gt;) the
+proper access to these types.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ca_cli_t ca_misc_t:dir create_dir_perms;
+manage_files_pattern(ca_cli_t, ca_misc_t, ca_misc_t)
+
+allow ca_cli_t ca_private_key_t:dir create_dir_perms;
+manage_files_pattern(ca_cli_t, ca_private_key_t, ca_private_key_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This of course heavily depends on the script itself. Mine creates a
+directory "private", so needs the proper rights on the
+&lt;code&gt;ca_private_key_t&lt;/code&gt; type for directories as well. The "private" directory
+is created in a generic directory (which is labeled as &lt;code&gt;ca_misc_t&lt;/code&gt;) so I
+can also create a file transition. This means that the SELinux policy
+will automatically assign the &lt;code&gt;ca_private_key_t&lt;/code&gt; type to a directory,
+created in a directory with label &lt;code&gt;ca_misc_t&lt;/code&gt;, if created by the
+&lt;code&gt;ca_cli_t&lt;/code&gt; domain:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;filetrans_pattern(ca_cli_t, ca_misc_t, ca_private_key_t, dir, &amp;quot;private&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, &lt;code&gt;ca_cli_t&lt;/code&gt; is a domain used for a shell script, which in my case
+also requires the following permissions:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Handling pipes between commands
+allow ca_cli_t self:fifo_file rw_fifo_file_perms;
+# Shell script...
+corecmd_exec_shell(ca_cli_t)
+# ...which invokes regular binaries
+corecmd_exec_bin(ca_cli_t)
+# Allow output on the screen
+getty_use_fds(ca_cli_t)
+userdom_use_user_terminals(ca_cli_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now I still need to mark &lt;code&gt;ca_cli_exec_t&lt;/code&gt; as an entrypoint for
+&lt;code&gt;ca_cli_t&lt;/code&gt;, meaning that the &lt;code&gt;ca_cli_t&lt;/code&gt; domain can only be accessed
+(transitioned to) through the execution of a file with label
+&lt;code&gt;ca_cli_exec_t&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ca_cli_t ca_cli_exec_t:file entrypoint;
+allow ca_cli_t ca_cli_exec_t:file { mmap_file_perms ioctl lock };
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Normally, the above is granted through the invocation of the
+&lt;code&gt;application_domain(ca_cli_t, ca_cli_exec_t)&lt;/code&gt; but as mentioned before,
+this would also assign attributes that I explicitly want to prevent in
+this example.&lt;/p&gt;
+&lt;p&gt;Next, the &lt;code&gt;openssl&lt;/code&gt; application, which the script uses extensively, also
+requires additional permissions. As the &lt;code&gt;openssl&lt;/code&gt; command just runs in
+the &lt;code&gt;ca_cli_t&lt;/code&gt; domain, I extend the privileges for this domain more:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Read access on /proc files
+kernel_read_system_state(ca_cli_t)
+# Access to random devices
+dev_read_rand(ca_cli_t)
+dev_read_urand(ca_cli_t)
+# Regular files
+files_read_etc_files(ca_cli_t)
+miscfiles_read_localization(ca_cli_t)
+# /tmp access
+fs_getattr_tmpfs(ca_cli_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Also, the following file transition is created: when OpenSSL creates a
+temporary file in &lt;code&gt;/tmp&lt;/code&gt;, this file should immediately be assigned the
+&lt;code&gt;ca_misc_tmp_t&lt;/code&gt; type:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# File transition in /tmp to ca_misc_tmp_t
+files_tmp_filetrans(ca_cli_t, ca_misc_tmp_t, file)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;With this in place, the application works just fine - all I need to do
+is have an initial location marked as &lt;code&gt;ca_misc_t&lt;/code&gt;. For now, none of the
+users have the rights to do so, so I create three additional interfaces
+to be used against other user domains.&lt;/p&gt;
+&lt;p&gt;The first one is to allow user domains to use the CA script. This is
+handled by the &lt;code&gt;ca_role()&lt;/code&gt; interface. In order to support such an
+interface, let's first create the &lt;code&gt;ca_roles&lt;/code&gt; role attribute in the &lt;code&gt;.te&lt;/code&gt;
+file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;attribute_role ca_roles;
+role ca_roles types ca_cli_t;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now I can define the &lt;code&gt;ca_role()&lt;/code&gt; interface:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_role&amp;#39;,`
+  gen_require(`
+    attribute_role ca_roles;
+    type ca_cli_t, ca_cli_exec_t;
+    type ca_misc_t;
+  &amp;#39;)
+
+  # Allow the user role (like sysadm_r) the types granted to ca_roles
+  roleattribute $1 ca_roles;
+
+  # Read the non-private key files and directories
+  allow $2 ca_misc_t:dir list_dir_perms;
+  allow $2 ca_misc_t:file read_file_perms;
+
+  # Allow to transition to ca_cli_t by executing a ca_cli_exec_t file
+  domtrans_pattern($2, ca_cli_exec_t, ca_cli_t)
+
+  # Look at the process info
+  ps_process_pattern($2, ca_cli_t)
+
+  # Output (and redirect) handling
+  allow ca_cli_t $2:fd use;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This role allows to run the command, but we still don't have the rights
+to create a &lt;code&gt;ca_misc_t&lt;/code&gt; directory. So another interface is created,
+which is granted to &lt;em&gt;regular&lt;/em&gt; system administrators (as the &lt;code&gt;ca_role()&lt;/code&gt;
+might be granted to non-admins as well, who can invoke the script
+through &lt;code&gt;sudo&lt;/code&gt;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_sysadmin&amp;#39;,`
+  gen_require(`
+    type ca_misc_t;
+    type ca_private_key_t;
+  &amp;#39;)
+
+  # Allow the user relabel rights on ca_misc_t
+  allow $1 ca_misc_t:dir relabel_dir_perms;
+  allow $1 ca_misc_t:file relabel_file_perms;
+
+  # Allow the user to label /to/ ca_private_key_t (but not vice versa)
+  allow $1 ca_private_key_t:dir relabelto_dir_perms;
+  allow $1 ca_private_key_t:file relabelto_file_perms;
+
+  # Look at regular file/dir info
+  allow $1 ca_misc_t:dir list_dir_perms;
+  allow $1 ca_misc_t:file read_file_perms;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code&gt;ca_sysadmin()&lt;/code&gt; interface can also be assigned to the &lt;code&gt;setfiles_t&lt;/code&gt;
+command so that relabel operations (and file system relabeling) works
+correctly.&lt;/p&gt;
+&lt;p&gt;Finally, a real administrative interface is created that also has
+relabel &lt;em&gt;from&lt;/em&gt; rights (so any domain granted this interface will be able
+- if Linux allows it and the type the operation goes to/from is allowed
+- to change the type of private keys to a regular file). This one should
+&lt;em&gt;only&lt;/em&gt; be assigned to a rescue user (if any). Also, this interface is
+allowed to label CA management scripts.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_admin&amp;#39;,`
+  gen_require(`
+    type ca_misc_t, ca_private_key_t;
+    type ca_cli_exec_t;
+  &amp;#39;)
+
+  allow $1 { ca_misc_t ca_private_key_t }:dir relabel_dir_perms;
+  allow $1 { ca_misc_t ca_private_key_t }:file relabel_file_perms;
+
+  allow $1 ca_cli_exec_t:file relabel_file_perms;
+&amp;#39;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So regular system administrators would be assigned the &lt;code&gt;ca_sysadmin()&lt;/code&gt;
+interface as well as the &lt;code&gt;setfiles_t&lt;/code&gt; domain; CA handling roles would be
+granted the &lt;code&gt;ca_role()&lt;/code&gt; interface. The &lt;code&gt;ca_admin()&lt;/code&gt; interface would only
+be granted on the rescue (or super-admin).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Regular system administrators
+ca_sysadmin(sysadm_t)
+ca_sysadmin(setfiles_t)
+# Certificate administrator
+ca_role(certadmin_r, certadmin_t)
+# Security administrator
+ca_admin(secadm_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="ca"></category><category term="certcli"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Limiting file access with SELinux alone?</title><link href="https://blog.siphos.be/2013/12/limiting-file-access-with-selinux-alone/" rel="alternate"></link><published>2013-12-31T21:18:00+01:00</published><updated>2013-12-31T21:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-31:/2013/12/limiting-file-access-with-selinux-alone/</id><summary type="html">&lt;p&gt;While writing a small script to handle simple certificate authority
+activities using OpenSSL, I considered how to properly protect the files
+that OpenSSL uses for these activities. As you are probably aware, a
+system that hosts the necessary files for CA activities (like signing
+certificate requests) should be very secure …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing a small script to handle simple certificate authority
+activities using OpenSSL, I considered how to properly protect the files
+that OpenSSL uses for these activities. As you are probably aware, a
+system that hosts the necessary files for CA activities (like signing
+certificate requests) should be very secure, and the private key used to
+sign (and the private subkeys) should be very well protected.&lt;/p&gt;
+&lt;p&gt;Without the help of an &lt;a href="https://en.wikipedia.org/wiki/Hardware_security_module"&gt;Hardware Security Module
+(HSM)&lt;/a&gt; these
+private keys are just plain text files on the file system. Access to
+this file system should therefor be very well audited and protected.&lt;/p&gt;
+&lt;p&gt;It of course starts with proper Discretionary Access Control (DAC)
+protections on Linux. The private key should only be accessible by the
+(technical) user used to operate the CA activities. Next, access to this
+user should also be properly protected - if the CA activities are not
+done through the root account, make sure that all users who can get root
+access on the system and to the (technical) user used to perform the CA
+activities are trusted.&lt;/p&gt;
+&lt;p&gt;Sometimes however this isn't sufficient, or you want to protect it even
+more. With SELinux, we can implement a Mandatory Access Control (MAC)
+policy to further restrict access to the private key. The idea is to
+only allow the application (in my case the script) that performs the CA
+activities access to the private key, and nothing more. Even users who
+can get root access, but do not have the privileges SELinux-wise to
+execute the CA management script (with the proper domain transition)
+should not have any access to the private key.&lt;/p&gt;
+&lt;p&gt;I'll discuss a sample policy for that later, but for now I want to focus
+on what that would mean - not allowing other users access.&lt;/p&gt;
+&lt;p&gt;When users log on on a SELinux-enabled system, they (well, the process
+that starts the user session) get assigned a security context. This
+security context defines what the user is allowed to do on the system.
+And although it is "easy" to disallow a domain read access to a
+particular file, we must consider all other activities that the user can
+perform.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;First risk: direct file access&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Assume that a user is logged on with the &lt;code&gt;unconfined_t&lt;/code&gt; domain (an
+entire context is more than just the domain, but let's stick to this for
+now). The &lt;code&gt;unconfined_t&lt;/code&gt; domain is an extremely powerful domain -
+basically, SELinux will not prevent much. That doesn't mean that SELinux
+is disabled, but rather that the &lt;code&gt;unconfined_t&lt;/code&gt; domain is granted many
+privileges. So if a user is in the &lt;code&gt;unconfined_t&lt;/code&gt; domain &lt;em&gt;and&lt;/em&gt; is not
+prevented by the standard Linux access controls (for instance because he
+is root), he can do basically everything.&lt;/p&gt;
+&lt;p&gt;SELinux-wise, we can still create a new type that &lt;code&gt;unconfined_t&lt;/code&gt; has no
+immediate access to. By creating a new type (say &lt;code&gt;ca_private_key_t&lt;/code&gt;) and
+not assign it any attributes that the &lt;code&gt;unconfined_t&lt;/code&gt; domain has
+privileges towards, the user would still not be able to access the file
+directly. The same is true for the &lt;code&gt;sysadm_t&lt;/code&gt; domain (a still
+privileged, yet slightly more restricted user domain designed for system
+administrators). However, such users could still access the file
+indirectly.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Second risk: indirect access through new SELinux policies&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;An important privilege that these users have is that they can load a new
+SELinux policy, or disable SELinux (actually switch it to permissive
+mode) if the Linux kernel has this enabled. By allowing users to load a
+new policy, they can basically create a SELinux policy module that
+grants them the necessary accesses towards the file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow sysadm_t ca_misc_file_t:file manage_file_perms;
+allow sysadm_t ca_misc_file_t:dir manage_dir_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So in order to prevent this, we have to make sure that these users can
+either not manipulate the SELinux policy - or make sure users on the
+system do not get access to these domains to begin with. Preventing
+loading new policies can be handled by the Linux kernel itself
+(&lt;code&gt;CONFIG_SECURITY_SELINUX_DEVELOP&lt;/code&gt; should not be set then) and through
+SELinux booleans (&lt;code&gt;secure_mode_policyload&lt;/code&gt; should be set to &lt;code&gt;on&lt;/code&gt; and
+toggling the boolean off again should be prohibited). Still, it makes
+more sense to restrict people with access to these roles - something
+I'll definitely come back to at a later point.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Third risk: indirect access through attributes&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Another privilege that needs to be watched for is the ability to change
+the context of a file. If the &lt;code&gt;ca_private_key_t&lt;/code&gt; type would not be
+declared properly, then the type might be assigned an attribute that
+domains have privileges against. Consider the &lt;code&gt;file_type&lt;/code&gt; attribute,
+granted to file types (at least the name makes sense ;-)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -tca_private_key_t -x
+  ca_private_key_t
+    file_type
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The moment a domain has been granted read access to the &lt;code&gt;file_type&lt;/code&gt;
+files, then it has read access to the &lt;code&gt;ca_private_key_t&lt;/code&gt; type. In other
+words, while designing the policy, make sure that all granted
+permissions are accounted for.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Fourth risk: "raw" file system (or memory) access&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;So if SELinux itself would not allow access to the file(s) anymore, are
+we done yet? Of course not. In the end, the keys are stored on the file
+system, which is located on partitions or disks, accessible by
+privileged users. Someone with direct read access to the block devices
+can still obtain the file directly, so even that should be properly
+governed.&lt;/p&gt;
+&lt;p&gt;This even extends towards memory access, because the private key might
+be cached in buffers (by the kernel) or even mapped in memory (even for
+a short while) and made accessible through direct memory access.&lt;/p&gt;
+&lt;p&gt;Such accesses might not be available to many users, but don't forget
+that on the system other applications are running as well. Some daemons
+might have the necessary privileges to access file systems directly, or
+the memory. Some users might have the rights to execute commands that
+have direct file system access (or memory). Making sure that &lt;em&gt;all&lt;/em&gt;
+domains that have these accesses are properly audited (including the
+access to those domains) will already be quite a challenge.&lt;/p&gt;
+&lt;p&gt;For a system that acts as a certificate handling system, it makes sense
+to limit exposure to a bare minimum as that makes the above auditing a
+bit less daunting.&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+Ok ok, let's assume the security administrator has thought of all those
+things and SELinux policy-wise properly prevents any access. That's
+enough, right?&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Fifth risk: authentication and authorization access&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Of course not. Some processes or users might have access to the
+authentication files on the system (and I'm not only talking about the
+&lt;code&gt;/etc/shadow&lt;/code&gt; and &lt;code&gt;/etc/passwd&lt;/code&gt; files, but also the &lt;code&gt;/etc/pam.d/*&lt;/code&gt;
+files, or the libraries used by the PAM modules in &lt;code&gt;/lib/security&lt;/code&gt;, or
+modify rights on binaries likely executed by administrators who do have
+rights we want - there might always be a "recovery user" enabled just in
+case things really go wrong, but such "recovery users" imply that rights
+are still granted somewhere.&lt;/p&gt;
+&lt;p&gt;When modify access is granted to any of the authentication or
+authorization services, then users can grant them privileges you don't
+want to give them. So not only should access to &lt;code&gt;ca_private_key_t&lt;/code&gt;,
+&lt;code&gt;memory_device_t&lt;/code&gt;, &lt;code&gt;device_node&lt;/code&gt; and &lt;code&gt;fixed_disk_device_t&lt;/code&gt; be properly
+governed - also &lt;code&gt;etc_t&lt;/code&gt; (as this is the default for PAM files - this
+really should be worked on) and &lt;code&gt;lib_t&lt;/code&gt; are important types, and these
+are very, very open (many domains have write access to those by
+default).&lt;/p&gt;
+&lt;p&gt;Fine. Let's "hypothetically" consider that the security engineer has
+thought about all SELinux accesses and made a perfect policy. Happy now?&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Sixth risk: system boot privileges&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Actually no... first of all, some users might be able to reboot the
+system with updated boot parameters, or even with a different kernel.
+With this at hand, they can disable SELinux and still access the file.
+So make sure that rebooting the system still happens securely (you can
+use secure boot, signed kernels, ... or at least focus on boot loader
+password protection and console access). The
+&lt;a href="https://wiki.gentoo.org/wiki/Project:Integrity"&gt;Integrity&lt;/a&gt; subproject
+of the &lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;Gentoo Hardened&lt;/a&gt;
+project will focus on these matters more (just waiting for an
+EFI-enabled system to properly start documenting things). In the mean
+time, make sure that the Linux system itself is properly secured.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Seventh risk: direct system access&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Yet having a secured boot also doesn't protect us completely. If there
+is access to the system physically, users can still mount the disk on
+their system and access the files. So one might want to consider
+encrypting the partition on which the keys are stored. But the
+encryption key for the partition should still be available somewhere,
+because regular administration might need to reboot the system.&lt;/p&gt;
+&lt;p&gt;A reasonably secure system would keep the encryption key in a HSM device
+(which we don't have - see beginning of this post) or only have it
+decrypted in a secure environment (like a TPM chip on more modern
+systems). Handling TPM and securing keys is definitely also something to
+focus on further in the Integrity subproject.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Eighth risk: backups&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;And if you take backups (which we of course all do) then those backups
+should be properly protected as well. We might want to create encrypted
+backups (meaning that the CA script should allow for encrypting and
+decrypting the private key) and &lt;em&gt;not store the encryption key with the
+backup&lt;/em&gt;. And before asking me why I've emphasized this - I've seen it
+before, and I'll probably see it again in the future. Don't laugh.&lt;/p&gt;
+&lt;p&gt;Almost starts sounding like a nightmare, right? There might even be more
+risks that I haven't covered here (and I haven't even discussed
+potential vulnerabilities in the CA management script itself, or even in
+OpenSSL or other tools like the &lt;a href="http://it.slashdot.org/story/13/12/18/2122226/scientists-extract-rsa-key-from-gnupg-using-sound-of-cpu"&gt;let's hear the encryption
+key&lt;/a&gt;
+attack). Welcome to the world of security ;-)&lt;/p&gt;
+&lt;p&gt;In any case, in the next post I'll focus on the SELinux policy I wrote
+up for the simple script I created. But all the above is just to show
+that SELinux is not the answer - it is merely a part in an entire
+security architecture. A flexible, powerful part... but still a part.&lt;/p&gt;</content><category term="SELinux"></category><category term="access"></category><category term="acl"></category><category term="file access"></category><category term="Gentoo"></category><category term="selinux"></category></entry><entry><title>Gentoo SELinux policy release script</title><link href="https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/" rel="alternate"></link><published>2013-12-11T18:37:00+01:00</published><updated>2013-12-11T18:37:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-11:/2013/12/gentoo-selinux-policy-release-script/</id><summary type="html">&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
 new SELinux policy packages. The script is on the
 &lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;repository&lt;/a&gt;
 itself, in the &lt;code&gt;gentoo/&lt;/code&gt; subdirectory, and is called

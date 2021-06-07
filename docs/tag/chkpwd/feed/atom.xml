@@ -15,8 +15,7 @@ access to the shadow file).&lt;/p&gt;
 &lt;p&gt;In &lt;code&gt;pam_unix_passwd.c&lt;/code&gt;, the &lt;em&gt;_unix_run_verify_binary()&lt;/em&gt; method is
 called but only if the &lt;em&gt;get_account_info()&lt;/em&gt; method returns
 &lt;code&gt;PAM_UNIX_RUN_HELPER&lt;/code&gt;.&lt;/p&gt;
-&lt;p&gt;``` {lang="c"}
-static int _unix_verify_shadow(pam_handle_t &lt;em&gt;pamh, const char &lt;/em&gt;user, unsigned int ctrl)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;static int _unix_verify_shadow(pam_handle_t *pamh, const char *user, unsigned int ctrl)
 {
 ...
         retval = get_account_info(pamh, user, &amp;amp;pwent, &amp;amp;spent);
@@ -25,13 +24,13 @@ static int _unix_verify_shadow(pam_handle_t &lt;em&gt;pamh, const char &lt;/em&g
                 retval = _unix_run_verify_binary(pamh, ctrl, user, &amp;amp;daysleft);
                 if (retval == PAM_AUTH_ERR || retval == PAM_USER_UNKNOWN)
                         return retval;
-        }&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;In `passverify.c` this method will check the password entry file and, if
-the entry is a shadow file, will return `PAM_UNIX_RUN_HELPER` if the
-current user id is not root, or if SELinux is enabled:
+        }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-``` {lang=&amp;quot;c&amp;quot;}
-PAMH_ARG_DECL(int get_account_info,
+&lt;p&gt;In &lt;code&gt;passverify.c&lt;/code&gt; this method will check the password entry file and, if
+the entry is a shadow file, will return &lt;code&gt;PAM_UNIX_RUN_HELPER&lt;/code&gt; if the
+current user id is not root, or if SELinux is enabled:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;PAMH_ARG_DECL(int get_account_info,
         const char *name, struct passwd **pwd, struct spwd **spwdent)
 {
         /* UNIX passwords area */
@@ -51,16 +50,15 @@ PAMH_ARG_DECL(int get_account_info,
 #endif
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;The &lt;code&gt;SELINUX_ENABLED&lt;/code&gt; is a C macro defined in the same file:&lt;/p&gt;
-&lt;p&gt;``` {lang="c"}&lt;/p&gt;
-&lt;h1&gt;ifdef WITH_SELINUX&lt;/h1&gt;
-&lt;h1&gt;include&lt;/h1&gt;
-&lt;h1&gt;define SELINUX_ENABLED is_selinux_enabled()&amp;gt;0&lt;/h1&gt;
-&lt;h1&gt;else&lt;/h1&gt;
-&lt;h1&gt;define SELINUX_ENABLED 0&lt;/h1&gt;
-&lt;h1&gt;endif&lt;/h1&gt;
-&lt;p&gt;```&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#ifdef WITH_SELINUX
+#include 
+#define SELINUX_ENABLED is_selinux_enabled()&amp;gt;0
+#else
+#define SELINUX_ENABLED 0
+#endif
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
 &lt;p&gt;And this is where my "aha" moment came forth: the Courier authdaemon
 runs as root, so its user id is 0. The &lt;em&gt;geteuid()&lt;/em&gt; method will return 0,
 so the &lt;code&gt;SELINUX_ENABLED&lt;/code&gt; macro must return non-zero for the proper path

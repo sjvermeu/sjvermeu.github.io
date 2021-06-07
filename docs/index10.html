@@ -198,6 +198,81 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/04/what-is-that-net-pf-thingie/">What is that net-pf-## thingie?</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 01 April 2014</span></span>
+                <p><p>When checking audit logs, you might come across applications that
+request loading of a <code>net-pf-##</code> module, with <code>##</code> being an integer.
+Having requests for <code>net-pf-10</code> is a more known cause (enable IPv6) but
+what about <code>net-pf-34</code>?</p>
+<p>The answer can be found in <code>/usr/src/linux/include/linux/socket.h</code>:</p>
+<div class="highlight"><pre><span></span><code>#define AF_ATMPVC …</code></pre></div></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/04/what-is-that-net-pf-thingie/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free software</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/linux/">linux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/module_request/">module_request</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/net-pf/">net-pf</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/03/proof-of-concept-for-use-enabled-policies/">Proof of concept for USE enabled policies</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 31 March 2014</span></span>
+                <p><p><em>tl;dr:</em> Some (<code>-9999</code>) policy ebuilds now have <code>USE</code> support for
+building in (or leaving out) SELinux policy statements.</p>
+<p>One of the "problems" I have been facing since I took on the maintenance
+of SELinux policies within Gentoo Hardened is the (seeming) inability to
+make a "least privilege" policy that …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/03/proof-of-concept-for-use-enabled-policies/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/alsa/">alsa</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/">Decoding the hex-coded path information in AVC denials</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 30 March 2014</span></span>
+                <p><p>When investigating AVC denials, some denials show a path that isn't
+human readable, like so:</p>
+<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&quot;emerge&quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&quot;dm-3&quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
+</code></pre></div>
+
+<p>To know what this …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/avc/">avc</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/decode/">decode</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/path/">path</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2014/03/managing-inter-process-communication-ipc/">Managing Inter-Process Communication (IPC)</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 30 March 2014</span></span>
@@ -362,98 +437,27 @@ there, having a way to do this …</p></p>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2014/03/closing-week-no-starting-week/">Closing week? No, starting week...</a>
+                    <a href="https://blog.siphos.be/2014/03/hidden-symbols-and-dynamic-linking/">Hidden symbols and dynamic linking</a>
                 </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 16 March 2014</span></span>
-                <p><p>I've been away for a while, and this week will (hopefully) be the last
-week of all the effort that is causing this. And that means I'll get
-back to blogging, documentation development, SELinux integration,
-SELinux policy development and more. To be honest, I'm eagerly awaiting
-this moment of getting …</p></p>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 24 March 2014</span></span>
+                <p><p>A few weeks ago, we introduced an error in the (\~arch) <code>libselinux</code>
+ebuild which caused the following stacktrace to occur every time the
+<strong>semanage</strong> command was invoked:</p>
+<div class="highlight"><pre><span></span><code>~ # semanage
+Traceback (most recent call last):
+  File &quot;/usr/lib/python-exec/python2.7/semanage&quot;, line 27, in 
+    import seobject
+  File &quot;/usr/lib64/python2.7 …</code></pre></div></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2014/03/closing-week-no-starting-week/#disqus_thread"></a></span>
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/03/hidden-symbols-and-dynamic-linking/#disqus_thread"></a></span>
                     </div>
                     <div class=" float-right">
                         <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/">Switching context depending on user code-wise</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 12 January 2014</span></span>
-                <p><p>I blogged about how SELinux decides what the context should be for a
-particular Linux user; how it checks the default context(s) and tells
-the SELinux-aware application on what the new context should be. Let's
-look into the C code that does so, and how an application should behave …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/default_context/">default_context</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/domain/">domain</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/libselinux/">libselinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/elf/">elf</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/hidden/">hidden</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux-aware/">selinux-aware</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/transition/">transition</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/">Can Gentoo play a role in a RHEL-only environment?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 09 January 2014</span></span>
-                <p><p>Sounds like a stupid question, as the answer is already in the title. If
-a company has only RedHat Enterprise Linux as allowed / supported Linux
-platform (be it for a support model requirement, ISV certification,
-management tooling support or what not) how could or would Gentoo still
-play a role …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/linux/">linux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/vappliance/">vappliance</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/virtual-appliance/">virtual appliance</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/">Upgrading old Gentoo installations</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 29 December 2013</span></span>
-                <p><p>Today I got "pinged" on <a href="https://bugs.gentoo.org/show_bug.cgi?id=463240">bug
-#463240</a> about the
-difficulty of upgrading a Gentoo Linux deployment after a long time of
-inactivity on the system. We already have an <a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo">Upgrading
-Gentoo</a> article on the
-Gentoo wiki that describes in great detail how upgrades can be
-accomplished. But one of the …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/portage/">portage</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/snapshot/">snapshot</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/upgrade/">upgrade</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/symbols/">symbols</a>
                     </div>
                 </div>
             </div>

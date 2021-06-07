@@ -86,7 +86,11 @@ relabel files after the policy package is deployed …&lt;/p&gt;</description><d
 (either globally or for the SELinux utilities in particular) will notice
 that the SELinux userspace will upgrade to version 2.4 (release
 candidate 5 for now). This upgrade comes with a manual step that needs
-to be performed …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 30 Oct 2014 19:44:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</guid><category>Gentoo</category><category>cil</category><category>Gentoo</category><category>migrate</category><category>selinux</category><category>semanage</category><category>upgrade</category><category>userspace</category></item><item><title>Gentoo Hardened august meeting</title><link>https://blog.siphos.be/2014/08/gentoo-hardened-august-meeting/</link><description>&lt;p&gt;Another month has passed, so we had another online meeting to discuss
+to be performed …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 30 Oct 2014 19:44:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</guid><category>Gentoo</category><category>cil</category><category>Gentoo</category><category>migrate</category><category>selinux</category><category>semanage</category><category>upgrade</category><category>userspace</category></item><item><title>Showing return code in PS1</title><link>https://blog.siphos.be/2014/08/showing-return-code-in-ps1/</link><description>&lt;p&gt;If you do daily management on Unix/Linux systems, then checking the
+return code of a command is something you'll do often. If you do SELinux
+development, you might not even notice that a command has failed without
+checking its return code, as policies might prevent the application from
+showing …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 31 Aug 2014 01:14:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-08-31:/2014/08/showing-return-code-in-ps1/</guid><category>Gentoo</category><category>bash</category><category>ps1</category><category>rc</category><category>shell</category></item><item><title>Gentoo Hardened august meeting</title><link>https://blog.siphos.be/2014/08/gentoo-hardened-august-meeting/</link><description>&lt;p&gt;Another month has passed, so we had another online meeting to discuss
 the progress within Gentoo Hardened.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Lead elections&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;The yearly lead elections within Gentoo Hardened were up again. Zorry
@@ -153,7 +157,14 @@ separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt
 &lt;p&gt;A month or so ago we got the question how to enable SELinux on a Gentoo
 profile that doesn't have a &lt;code&gt;&amp;lt;some profilename&amp;gt;/selinux&lt;/code&gt; equivalent.
 Because we don't create SELinux profiles for all possible profiles out
-there, having a way to do this …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 24 Mar 2014 21:51:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-24:/2014/03/create-your-own-selinux-gentoo-profile/</guid><category>Gentoo</category><category>Gentoo</category><category>profile</category></item><item><title>Closing week? No, starting week...</title><link>https://blog.siphos.be/2014/03/closing-week-no-starting-week/</link><description>&lt;p&gt;I've been away for a while, and this week will (hopefully) be the last
+there, having a way to do this …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 24 Mar 2014 21:51:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-24:/2014/03/create-your-own-selinux-gentoo-profile/</guid><category>Gentoo</category><category>Gentoo</category><category>profile</category></item><item><title>Hidden symbols and dynamic linking</title><link>https://blog.siphos.be/2014/03/hidden-symbols-and-dynamic-linking/</link><description>&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+ebuild which caused the following stacktrace to occur every time the
+&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+Traceback (most recent call last):
+  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
+    import seobject
+  File &amp;quot;/usr/lib64/python2.7 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 24 Mar 2014 21:14:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2014-03-24:/2014/03/hidden-symbols-and-dynamic-linking/</guid><category>Gentoo</category><category>elf</category><category>hidden</category><category>selinux</category><category>symbols</category></item><item><title>Closing week? No, starting week...</title><link>https://blog.siphos.be/2014/03/closing-week-no-starting-week/</link><description>&lt;p&gt;I've been away for a while, and this week will (hopefully) be the last
 week of all the effort that is causing this. And that means I'll get
 back to blogging, documentation development, SELinux integration,
 SELinux policy development and more. To be honest, I'm eagerly awaiting

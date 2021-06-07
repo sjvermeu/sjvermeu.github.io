@@ -24,7 +24,6 @@ Traceback (most recent call last):
 ImportError: /usr/lib64/python2.7/site-packages/selinux/audit2why.so: undefined symbol: sepol_set_policydb
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;Usually this error means that a needed library (a &lt;code&gt;.so&lt;/code&gt; file) is
 missing, or is not part of the &lt;code&gt;/etc/ld.so.conf&lt;/code&gt; list of directories to
 scan. And when SELinux is enabled, you might want to check the
@@ -35,12 +34,13 @@ I looked at the &lt;code&gt;audit2why.c&lt;/code&gt; code and see if/where
 &lt;em&gt;sepol_set_policydb&lt;/em&gt; is needed, as well as at the &lt;code&gt;libsepol&lt;/code&gt; sources
 to see where it is defined. And yes, the call is (of course) needed, but
 the definition made me wonder if this wasn't a bug:&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;{lang="c"}
-int hidden sepol_set_policydb(policydb_t * p)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;int hidden sepol_set_policydb(policydb_t * p)
 {
         policydb = p;
         return 0;
-}&lt;/code&gt;&lt;/p&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
 &lt;p&gt;Hidden? But, that means that the function symbol is not available for
 dynamic linking... So if that is the case, shouldn't &lt;code&gt;audit2why.c&lt;/code&gt; not
 call it? Turns out, this was due to a fix we introduced earlier on,

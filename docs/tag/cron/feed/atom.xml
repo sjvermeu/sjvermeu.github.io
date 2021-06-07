@@ -13,7 +13,6 @@ test fcron[6722]: NO CONTEXT for user &amp;quot;(null)&amp;quot;: Invalid argume
 test fcron[6722]: ENTRYPOINT FAILED for user &amp;quot;user&amp;quot; (CONTEXT (null)) for file CONTEXT user_u:object_r:user_cron_spool_t:s0
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
 &lt;p&gt;First of all, the moment I notice that it is cron, I know I'm up for a
 few hours at it. Cron has been notoriously difficult to integrate with
 SELinux, because it doesn't use the simpler "fork-execute" method (where
@@ -24,34 +23,28 @@ simple SELinux policy thingie that one can easily ignore for now (I'll
 patch and upstream that in a minute). The problem is the &lt;em&gt;NO CONTEXT&lt;/em&gt;
 stuff.&lt;/p&gt;
 &lt;p&gt;The code looks as follows:&lt;/p&gt;
-&lt;p&gt;``` {lang="c"}&lt;/p&gt;
-&lt;h1&gt;ifdef SYSFCRONTAB&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;if(!strcmp(cf-&amp;gt;cf_user, SYSFCRONTAB))
-    user_name = &amp;quot;system_u&amp;quot;;
-else
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h1&gt;endif /&lt;em&gt; def SYSFCRONTAB &lt;/em&gt;/&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;    user_name = cf-&amp;gt;cf_user;
-if(flask_enabled)
-{
-    if(get_default_context(user_name, NULL, &amp;amp;cf-&amp;gt;cf_user_context))
-        error_e(&amp;quot;NO CONTEXT for user \&amp;quot;%s\&amp;quot;&amp;quot;, cf-&amp;gt;cf_user_context);
-    retval = security_compute_av(cf-&amp;gt;cf_user_context, cf-&amp;gt;cf_file_context
-            , SECCLASS_FILE, FILE__ENTRYPOINT, &amp;amp;avd);
-
-    if(retval || ((FILE__ENTRYPOINT &amp;amp; avd.allowed) != FILE__ENTRYPOINT))
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#ifdef SYSFCRONTAB
+    if(!strcmp(cf-&amp;gt;cf_user, SYSFCRONTAB))
+        user_name = &amp;quot;system_u&amp;quot;;
+    else
+#endif /* def SYSFCRONTAB */
+        user_name = cf-&amp;gt;cf_user;
+    if(flask_enabled)
     {
-        syslog(LOG_ERR, &amp;quot;ENTRYPOINT FAILED for user \&amp;quot;%s\&amp;quot; &amp;quot;
-               &amp;quot;(CONTEXT %s) for file CONTEXT %s&amp;quot;
-               , cf-&amp;gt;cf_user, cf-&amp;gt;cf_user_context, cf-&amp;gt;cf_file_context);
-        goto err;
-    }
+        if(get_default_context(user_name, NULL, &amp;amp;cf-&amp;gt;cf_user_context))
+            error_e(&amp;quot;NO CONTEXT for user \&amp;quot;%s\&amp;quot;&amp;quot;, cf-&amp;gt;cf_user_context);
+        retval = security_compute_av(cf-&amp;gt;cf_user_context, cf-&amp;gt;cf_file_context
+                , SECCLASS_FILE, FILE__ENTRYPOINT, &amp;amp;avd);
+
+        if(retval || ((FILE__ENTRYPOINT &amp;amp; avd.allowed) != FILE__ENTRYPOINT))
+        {
+            syslog(LOG_ERR, &amp;quot;ENTRYPOINT FAILED for user \&amp;quot;%s\&amp;quot; &amp;quot;
+                   &amp;quot;(CONTEXT %s) for file CONTEXT %s&amp;quot;
+                   , cf-&amp;gt;cf_user, cf-&amp;gt;cf_user_context, cf-&amp;gt;cf_file_context);
+            goto err;
+        }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
-&lt;p&gt;```&lt;/p&gt;
 &lt;p&gt;It wasn't obvious to me either, but from a quick look through the
 &lt;a href="http://userspace.selinuxproject.org/trac/browser/libselinux/include/selinux/selinux.h"&gt;selinux.h&lt;/a&gt;
 code I found out that &lt;em&gt;get_default_context()&lt;/em&gt; requires the SELinux

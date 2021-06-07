@@ -199,6 +199,133 @@ Simplicity is a form of art... - SELinux category        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/05/the-weird-audit_access-permission/">The weird "audit_access" permission</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 19 May 2013</span></span>
+                <p><p>While writing up the posts on capabilities, one thing I had in my mind
+was to give some additional information on frequently occurring denials,
+such as the <em>dac_override</em> and <em>dac_read_search</em> capabilities, and
+when they are triggered. For the DAC-related capabilities, policy
+developers often notice that these capabilities are triggered without …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/the-weird-audit_access-permission/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/access/">access</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/audit/">audit</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/audit_access/">audit_access</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/">Commandline SELinux policy helper functions</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 18 May 2013</span></span>
+                <p><p>To work on SELinux policies, I use a couple of functions that I can call
+on the shell (command line): <strong>seshowif</strong>, <strong>sefindif</strong>, <strong>seshowdef</strong>
+and <strong>sefinddef</strong>. The idea behind the methods is that I want to search
+(<em>find</em>) for an interface (<em>if</em>) or definition (<em>def</em>) that contains a
+particular method or …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/bash/">bash</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/definition/">definition</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/functions/">functions</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/interface/">interface</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/support/">support</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/05/secmark-and-selinux/">SECMARK and SELinux</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 13 May 2013</span></span>
+                <p><p>When using SECMARK, the administrator configures the <strong>iptables</strong> or
+<strong>netfilter</strong> rules to add a label to the packet data structure (on the
+host itself) that can be governed through SELinux policies. Unlike peer
+labeling, here the labels assigned to the network traffic is completely
+locally defined. Consider the following command …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/secmark-and-selinux/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/secmark/">secmark</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/05/peer-labeling-in-selinux-policy/">Peer labeling in SELinux policy</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 12 May 2013</span></span>
+                <p><p>Allow me to start with an important warning: I don't have much hands-on
+experience with the remainder of this post. Its based on the few
+resources I found on the Internet and a few tests done locally which
+I've investigated in my attempt to understand SELinux policy writing for
+networking …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/peer-labeling-in-selinux-policy/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cipso/">cipso</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ipsec/">ipsec</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/peer/">peer</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/">SELinux policy and network controls</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 11 May 2013</span></span>
+                <p><p>Let's talk about how SELinux governs network streams (and how it
+reflects this into the policy).</p>
+<p>When you don't do fancy stuff like SECMARK or netlabeling, then the
+classes that you should keep an eye on are <em>tcp_socket</em> and
+<em>udp_socket</em> (depending on the protocol). There used to be <em>node</em> and …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/networking/">networking</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2013/05/selinux-mount-options/">SELinux mount options</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 01 May 2013</span></span>
@@ -315,117 +442,6 @@ are "out there" and start a series of …</p></p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/tutorials/">tutorials</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/wiki/">wiki</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2012/12/using-pam_selinux-to-switch-contexts/">Using pam_selinux to switch contexts</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 10 December 2012</span></span>
-                <p><p>With SELinux managing the access controls of applications towards the
-resources on the system, a not-to-be forgotten important component on
-any Unix/Linux system is the authentication part. Most systems use or
-support PAM, the <em>Pluggable Authentication Modules</em>, and for SELinux
-this plays an important role.</p>
-<p>Applications that are PAM-enabled …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2012/12/using-pam_selinux-to-switch-contexts/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2012/11/local-policy-management-script/">Local policy management script</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 11 November 2012</span></span>
-                <p><p>I've written a small script that I call <strong>selocal</strong> which manages
-locally needed SELinux rules. It allows me to add or remove SELinux
-rules from the command line and have them loaded up without needing to
-edit a .te file and building the .pp file manually. If you are
-interested …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2012/11/local-policy-management-script/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2012/08/lots-of-work-on-supporting-swig-2/">Lots of work on supporting swig-2</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 20 August 2012</span></span>
-                <p><p>The SELinux <a href="http://oss.tresys.com/projects/setools/">setools</a>
-<a href="http://packages.gentoo.org/package/app-admin/setools">package</a> provides
-a few of the commands I used the most when working with SELinux:
-<strong>sesearch</strong> for looking through the policy and <strong>seinfo</strong> to get
-information on type/attribute/role/... from the currently loaded policy.</p>
-<p>This package uses <a href="http://www.swig.org/">swig</a>, the Simplified (sic)
-Wrapper and Interface Generator to …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2012/08/lots-of-work-on-supporting-swig-2/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2012/07/dynamic-transitions-in-selinux/">Dynamic transitions in SELinux</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 22 July 2012</span></span>
-                <p><p>In between talks on heap spraying techniques and visualization of data
-for fast analysis, I'm working on integrating the chromium SELinux
-policy that was offered in bug <a href="https://bugs.gentoo.org/show_bug.cgi?id=412637">bug
-#412637</a> within Gentoo
-Hardened. If you take a look at the bug, you notice I'm not really fond
-of the policy because …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2012/07/dynamic-transitions-in-selinux/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2012/02/transitioning-to-mcs-policies/">Transitioning to MCS policies</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 24 February 2012</span></span>
-                <p><p>Since I started maintaining the <a href="http://hardened.gentoo.org/selinux">SELinux
-policies</a> for <a href="http://hardened.gentoo.org">Gentoo
-Hardened</a>, the policy types we supported
-were primarily <code>strict</code> and <code>targeted</code>. About half a year ago, we also
-started supported <code>mcs</code> and offered the possibility for using <code>mls</code> as
-well (but didn't really support that one).</p>
-<p>With the recent release of …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2012/02/transitioning-to-mcs-policies/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
                     </div>
                 </div>
             </div>

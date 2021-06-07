@@ -199,6 +199,130 @@ Simplicity is a form of art... - SELinux category        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/">Switching context depending on user code-wise</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 12 January 2014</span></span>
+                <p><p>I blogged about how SELinux decides what the context should be for a
+particular Linux user; how it checks the default context(s) and tells
+the SELinux-aware application on what the new context should be. Let's
+look into the C code that does so, and how an application should behave …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/default_context/">default_context</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/domain/">domain</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/libselinux/">libselinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux-aware/">selinux-aware</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/transition/">transition</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/">How does foo_t get this privilege?</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 05 January 2014</span></span>
+                <p><p>Today a question was raised how the unprivileged user domain <code>user_t</code>
+was allowed to write to <code>cgroup_t</code> files. There is nothing obvious about
+that in the <code>roles/unprivuser.te</code> file, so what gives?</p>
+<p>I used a simple script (which I've been using for a while already)
+called <strong>seshowtree</strong> which presents …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/seshowtree/">seshowtree</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/01/oh-it-is-cron-again/">Oh it is cron again...</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 03 January 2014</span></span>
+                <p><p>Today I was pointed to the following error:</p>
+<div class="highlight"><pre><span></span><code>test fcron[6722]: fcron[6722] 3.1.2 started
+test fcron[6722]: Cannot bind socket to &#39;/var/run/fcron.fifo&#39;: Permission denied
+test fcron[6722]:  &quot;at&quot; reboot jobs will only be run at computer&#39;s startup.
+test fcron[6722]: updating configuration from …</code></pre></div></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/01/oh-it-is-cron-again/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cron/">cron</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/">Private key handling and SELinux protection</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 02 January 2014</span></span>
+                <p><p>In this post I'll give some insight in a <em>possible</em> SELinux policy for a
+script I wrote.</p>
+<p>The script is a certificate authority handling script, in which I can
+generate a private key (and certificate assigned to it), sign the
+certificate either by itself (for the root CA key) or …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ca/">ca</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/certcli/">certcli</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/12/limiting-file-access-with-selinux-alone/">Limiting file access with SELinux alone?</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 31 December 2013</span></span>
+                <p><p>While writing a small script to handle simple certificate authority
+activities using OpenSSL, I considered how to properly protect the files
+that OpenSSL uses for these activities. As you are probably aware, a
+system that hosts the necessary files for CA activities (like signing
+certificate requests) should be very secure …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/12/limiting-file-access-with-selinux-alone/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/access/">access</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/acl/">acl</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/file-access/">file access</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2013/09/it-has-finally-arrived-selinux-system-administration/">It has finally arrived: SELinux System Administration</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 27 September 2013</span></span>
@@ -317,135 +441,6 @@ have accomplished so far...</p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                             <span class="card-link"><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-finishing-up/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/incron/">incron</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/">A SELinux policy for incron: using booleans</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 30 May 2013</span></span>
-                <p><p>After using a default set of directories to watch, and <a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/">allowing admins
-to mark other
-types</a>
-as such as well, let's consider another approach for making the policy
-more flexible: booleans. The idea now is that a boolean called
-<em>incron_notify_non_security_files</em> enables <strong>incrond</strong> to be
-notified on changes on all possible …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/boolean/">boolean</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/incron/">incron</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/">A SELinux policy for incron: marking types eligible for watching</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 29 May 2013</span></span>
-                <p><p>In the
-<a herf="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/">previous
-post</a> we made <strong>incrond</strong> able to watch <code>public_content_t</code> and
-<code>public_content_rw_t</code> types. However, this is not scalable, so we might
-want to be able to update the policy more dynamically with additional
-types. To accomplish this, we will make types eligible for watching
-through an attribute.</p>
-<p>So how …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/attribute/">attribute</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/incrond/">incrond</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/watch/">watch</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/">A SELinux policy for incron: default set</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 28 May 2013</span></span>
-                <p><p>I finished the last post a bit with a
-<a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/">cliffhanger</a>
-as <strong>incrond</strong> is still not working properly, and we got a few denials
-that needed to be resolved; here they are again for your convenience:</p>
-<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&quot;incrond …</code></pre></div></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/booleans/">booleans</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/incrond/">incrond</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/">A SELinux policy for incron: the incrond daemon</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 27 May 2013</span></span>
-                <p><p>With <code>incrontab_t</code> (hopefully) complete, let's look at the <code>incrond_t</code>
-domain. As this domain will also be used to execute the user (and
-system) commands provided through the incrontabs, we need to consider
-how we are going to deal with this wide range of possible permissions
-that it might take. One …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/incrond/">incrond</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/">A SELinux policy for incron: new types and transitions</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 26 May 2013</span></span>
-                <p><p>So I've shown the <a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/">iterative approach
-used</a>
-to develop policies. Again, please be aware that this is my way of
-developing policies, other policy developers might have a different
-approach. We were working on the <strong>incrontab</strong> command, so let's
-continue with trying to create a new user incrontab:</p>
-<div class="highlight"><pre><span></span><code>$ incrontab -e …</code></pre></div></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/#disqus_thread"></a></span>
                     </div>
                     <div class=" float-right">
                         <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>

@@ -59,33 +59,29 @@ SELinux policy, or disable SELinux (actually switch it to permissive
 mode) if the Linux kernel has this enabled. By allowing users to load a
 new policy, they can basically create a SELinux policy module that
 grants them the necessary accesses towards the file:&lt;/p&gt;
-&lt;p&gt;``` {lang="bash"}
-allow sysadm_t ca_misc_file_t:file manage_file_perms;
-allow sysadm_t ca_misc_file_t:dir manage_dir_perms;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;So in order to prevent this, we have to make sure that these users can
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow sysadm_t ca_misc_file_t:file manage_file_perms;
+allow sysadm_t ca_misc_file_t:dir manage_dir_perms;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So in order to prevent this, we have to make sure that these users can
 either not manipulate the SELinux policy - or make sure users on the
 system do not get access to these domains to begin with. Preventing
 loading new policies can be handled by the Linux kernel itself
-(`CONFIG_SECURITY_SELINUX_DEVELOP` should not be set then) and through
-SELinux booleans (`secure_mode_policyload` should be set to `on` and
+(&lt;code&gt;CONFIG_SECURITY_SELINUX_DEVELOP&lt;/code&gt; should not be set then) and through
+SELinux booleans (&lt;code&gt;secure_mode_policyload&lt;/code&gt; should be set to &lt;code&gt;on&lt;/code&gt; and
 toggling the boolean off again should be prohibited). Still, it makes
 more sense to restrict people with access to these roles - something
-I&amp;#39;ll definitely come back to at a later point.
-
-*Third risk: indirect access through attributes*
-
-Another privilege that needs to be watched for is the ability to change
-the context of a file. If the `ca_private_key_t` type would not be
+I'll definitely come back to at a later point.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Third risk: indirect access through attributes&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Another privilege that needs to be watched for is the ability to change
+the context of a file. If the &lt;code&gt;ca_private_key_t&lt;/code&gt; type would not be
 declared properly, then the type might be assigned an attribute that
-domains have privileges against. Consider the `file_type` attribute,
-granted to file types (at least the name makes sense ;-)
-
-``` {lang=&amp;quot;bash&amp;quot;}
-# seinfo -tca_private_key_t -x
+domains have privileges against. Consider the &lt;code&gt;file_type&lt;/code&gt; attribute,
+granted to file types (at least the name makes sense ;-)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -tca_private_key_t -x
   ca_private_key_t
     file_type
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
 
 &lt;p&gt;The moment a domain has been granted read access to the &lt;code&gt;file_type&lt;/code&gt;
 files, then it has read access to the &lt;code&gt;ca_private_key_t&lt;/code&gt; type. In other
