@@ -18,6 +18,7 @@ network-oriented communications, which has 7 layers - each with their own
 specific peculiarities and service offerings.
 
 The seven layers are, from top to bottom:
+
 1. The Application Layer which provide the high-level interfaces to the
    application
 2. The Presentation Layer which maps data as seen / used by an application
