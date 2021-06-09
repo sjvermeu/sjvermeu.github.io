@@ -1,9 +1,9 @@
 Title: The three additional layers in the OSI model
-Date: 2021-06-10 10:10
+Date: 2021-06-09 11:10
 Category: Misc
 Tags: OSI,meeting,humor
 Slug: the-three-additional-layers-in-the-OSI-model
-Status: draft
+Status: published
 
 At my workplace, I jokingly refer to the three extra layers on top of the
 OSI network model as a way to describe the difficulties of discussions or

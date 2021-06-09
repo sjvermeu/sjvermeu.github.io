@@ -17,6 +17,8 @@ In this post, I'd like to point out two other, very common ways to
 standardize the IT environment, without really considering a
 rationalization: abstraction and virtualization.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Abstraction: common and simplified interfaces**
 
 The term "abstraction" has slightly different connotations based on the
@@ -261,5 +263,4 @@ removing technologies under the purview of "rationalization". Consider your
 options on abstraction and virtualization, but be aware of the pros and cons
 of each.
 
-<!-- PELICAN_END_SUMMARY -->
 
