@@ -11,6 +11,8 @@ cases. These three additional layers are Financial Layer, Politics Layer
 and Religion Layer, and the idea is that the higher up you go, the more
 challenging discussions will be.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Recap on the OSI model**
 
 The Open Systems Interconnection (OSI) model is a conceptual model for
@@ -201,4 +203,3 @@ finding the optimal solution, but finding a solution or decision that is
 “not in the wrong direction”. And while this is a much lower bar, it is hard
 enough to reach it.
 
-<!-- PELICAN_END_SUMMARY -->
