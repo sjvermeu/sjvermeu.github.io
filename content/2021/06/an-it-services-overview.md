@@ -23,8 +23,10 @@ consider a domain architecture.
 To start off with my overview, I had a need to structure the hundreds of
 technology services that I want to keep an eye on in a way that I can 
 quickly find it back, as well as present to other stakeholders what 
-infrastructure services are about. This structure currently looks like in
-the figure mentioned below.
+infrastructure services are about. This structure, while not perfect, 
+currently looks like in the figure below. Occasionally, I move one or
+more service groups left or right, but the main intention is just to
+have a structure available.
 
 ![Overview of the IT services]({static}/images/202106/it_service_overview.png)
 
@@ -36,31 +38,33 @@ on approaching IT services, including a paper titled
 [IT Services Reference Catalog](https://www.researchgate.net/publication/238620971_IT_Services_Reference_Catalog)
 by Nelson Gama, Maria do Mar Rosa, and Miguel Mira da Silva.
 
-Capability models, or service overviews like the one I presented do not fit
+Capability models, or service overviews like the one I presented, do not fit
 each and every organization well. When comparing the view I maintain with
 others (or the different capability and service references out there), I
 notice two main distinctions: grouping, and granularity.
 
-Certain capabilities might be grouped one way in one reference, and use a
-totally different grouping in another. A database system might be part of
-a “Databases” group in one, a “Data Management” group in another, or even
-“Information Management” in a third. Often, this grouping also reveals the
-granularity that the author wants to pursue.
+- Certain capabilities might be grouped one way in one reference, and use a
+  totally different grouping in another. A database system might be part of
+  a “Databases” group in one, a “Data Management” group in another, or even
+  “Information Management” in a third. Often, this grouping also reveals the
+  granularity that the author wants to pursue.  
+  Grouping allows for keeping things organized and easier to explain, but has
+  no structural importance. Of course, a well-chosen grouping also allows you
+  to tie principles and other architectural concerts to the groups themselves,
+  and not services in particular. But that still falls under the explainability
+  part.
 
-Grouping allows for keeping things organized and easier to explain, but has
-no structural importance. Of course, a well-chosen grouping also allows you
-to tie principles and other architectural concerts to the groups themselves,
-and not services in particular. But that still falls under the explainability
-part.
+- The granularity is more about how specific a grouping is. In the example
+  above, “Information Management” is the most coarse-grained grouping, whereas
+  “Databases” might be a very specific one. Granularity can convey more insights
+  in the importance of services, although it can also be due to historical
+  reasons, or because an overview started from one specific service and expanded
+  later. In that case, it is very likely that the specific service and its
+  dependencies are more elaborately documented.
 
-The granularity is more about how specific a grouping is. In the example
-above, “Information Management” is the most coarse-grained grouping, whereas
-“Databases” might be a very specific one. Granularity can convey more insights
-in the importance of services, although it can also be for historical reasons.
-
-In the figure I maintain, the grouping is based both on the extensiveness of a
-group (if a group contains far too many services, I might want to see if I can
-split up the group) as well as historical and organizational choices. For
+In the figure I maintain, the grouping is often based both on the extensiveness 
+of a group (if a group contains far too many services, I might want to see if I
+can split up the group) as well as historical and organizational choices. For
 instance, if the organization has a clear split between network oriented
 teams and server oriented teams, then the overview will most likely convey
 the same message, as we want to have the overview interpretable by many
@@ -69,16 +73,15 @@ distinctions.
 
 **Services versus solutions**
 
-I try to keep track of the evolutions of services and solutions within this
+I try to keep track of the evolutions of *services* and *solutions* within this
 overview. Now, the definition of a “service” versus “solution” does warrant
 a bit more explanation, as it can have multiple meanings. I even use “service”
 for different purposes depending on the context.
 
-For domain architecture, I consider an “infrastructure service” as a product
+For domain architecture, I consider an “_infrastructure service_” as a product
 that realizes or supports an IT capability. It is strongly product oriented
 (even when it is internally developed, or a cloud service, or an appliance)
 and makes a distinction between products that are often very closely related.
-
 For instance, Oracle DB is an infrastructure service, as is the Oracle
 Enterprise Manager. The Oracle DB is a product that realizes a “relational
 database” capability, whereas OEM is a “central infrastructure management”
@@ -98,7 +101,7 @@ Alongside these infrastructure services I also maintain a solution overview.
 The grouping is exactly the same as the infrastructure services, but the
 intention of solutions is more from a full internal offering point of view.
 
-Within solution architectures, I tend to focus on the choices that the
+Within _solution architectures_, I tend to focus on the choices that the
 company made and the design that follows it. Many solutions are considered
 ‘platforms’ on top of which internal development, third party hosting or
 other capabilities are provided. Within the solution, I describe how the
