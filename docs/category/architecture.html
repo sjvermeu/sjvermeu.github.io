@@ -199,6 +199,138 @@ Simplicity is a form of art... - Architecture category        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2021/06/an-it-services-overview/">An IT services overview</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 14 June 2021</span></span>
+                <p><p>My current role within the company I work for is “domain architect”, part
+of the enterprise architects teams. The domain I am accountable for is 
+“infrastructure”, which can be seen as a very broad one. Now, I’ve been
+maintaining an overview of our IT services before I reached that role, 
+mainly from an elaborate interest in the subject, as well as to optimize
+my efficiency further.</p>
+<p>Becoming a domain architect allows me to use the insights I’ve since
+gathered to try and give appropriate advice, but also now requires me to
+maintain a domain architecture. This structure is going to be the starting
+point of it, although it is not the true all and end all of what I would
+consider a domain architecture.</p>
+<p><strong>A single picture doesn’t say it all</strong></p>
+<p>To start off with my overview, I had a need to structure the hundreds of
+technology services that I want to keep an eye on in a way that I can 
+quickly find it back, as well as present to other stakeholders what 
+infrastructure services are about. This structure, while not perfect, 
+currently looks like in the figure below. Occasionally, I move one or
+more service groups left or right, but the main intention is just to
+have a structure available.</p>
+<p><img alt="Overview of the IT services" src="https://blog.siphos.be/images/202106/it_service_overview.png"/></p>
+<p>Figures like these often come about in mapping exercises, or capability models.
+A capability model that I recently skimmed through is the
+<a href="https://www.if4it.com/SYNTHESIZED/MODELS/ENTERPRISE/enterprise_capability_model.html">IF4IT Enterprise Capability Model</a>.
+I stumbled upon this model after searching for some reference architectures
+on approaching IT services, including a paper titled
+<a href="https://www.researchgate.net/publication/238620971_IT_Services_Reference_Catalog">IT Services Reference Catalog</a>
+by Nelson Gama, Maria do Mar Rosa, and Miguel Mira da Silva.</p>
+<p>Capability models, or service overviews like the one I presented, do not fit
+each and every organization well. When comparing the view I maintain with
+others (or the different capability and service references out there), I
+notice two main distinctions: grouping, and granularity.</p>
+<ul>
+<li>
+<p>Certain capabilities might be grouped one way in one reference, and use a
+  totally different grouping in another. A database system might be part of
+  a “Databases” group in one, a “Data Management” group in another, or even
+  “Information Management” in a third. Often, this grouping also reveals the
+  granularity that the author wants to pursue.<br/>
+  Grouping allows for keeping things organized and easier to explain, but has
+  no structural importance. Of course, a well-chosen grouping also allows you
+  to tie principles and other architectural concerts to the groups themselves,
+  and not services in particular. But that still falls under the explainability
+  part.</p>
+</li>
+<li>
+<p>The granularity is more about how specific a grouping is. In the example
+  above, “Information Management” is the most coarse-grained grouping, whereas
+  “Databases” might be a very specific one. Granularity can convey more insights
+  in the importance of services, although it can also be due to historical
+  reasons, or because an overview started from one specific service and expanded
+  later. In that case, it is very likely that the specific service and its
+  dependencies are more elaborately documented.</p>
+</li>
+</ul>
+<p>In the figure I maintain, the grouping is often based both on the extensiveness 
+of a group (if a group contains far too many services, I might want to see if I
+can split up the group) as well as historical and organizational choices. For
+instance, if the organization has a clear split between network oriented
+teams and server oriented teams, then the overview will most likely convey
+the same message, as we want to have the overview interpretable by many
+stakeholders - and those stakeholders are often aware of the organizational
+distinctions.</p>
+<p><strong>Services versus solutions</strong></p>
+<p>I try to keep track of the evolutions of <em>services</em> and <em>solutions</em> within this
+overview. Now, the definition of a “service” versus “solution” does warrant
+a bit more explanation, as it can have multiple meanings. I even use “service”
+for different purposes depending on the context.</p>
+<p>For domain architecture, I consider an “<em>infrastructure service</em>” as a product
+that realizes or supports an IT capability. It is strongly product oriented
+(even when it is internally developed, or a cloud service, or an appliance)
+and makes a distinction between products that are often very closely related.
+For instance, Oracle DB is an infrastructure service, as is the Oracle
+Enterprise Manager. The Oracle DB is a product that realizes a “relational
+database” capability, whereas OEM is a “central infrastructure management”
+capability.</p>
+<p>The reason I create distinct notes for these is because they have different
+life cycles, might have different organizational responsible teams, different
+setups, etc. Hence, components (parts of products) I generally do not consider
+as separate, although there are definitely examples where it makes sense to
+consider certain components separate from the products in which they are
+provided.</p>
+<p>The several hundred infrastructure services that the company is rich in are
+all documented under this overview.</p>
+<p>Alongside these infrastructure services I also maintain a solution overview.
+The grouping is exactly the same as the infrastructure services, but the
+intention of solutions is more from a full internal offering point of view.</p>
+<p>Within <em>solution architectures</em>, I tend to focus on the choices that the
+company made and the design that follows it. Many solutions are considered
+‘platforms’ on top of which internal development, third party hosting or
+other capabilities are provided. Within the solution, I describe how the
+various infrastructure services interact and work together to make the
+solution reality.</p>
+<p>A good example here is the mainframe platform. Whereas the mainframe itself
+is definitely an infrastructure service, how we internally organize the
+workload and the runtimes (such as the LPARs), how it integrates with the
+security services, database services, enterprise job scheduling, etc. is
+documented in the solution.</p>
+<p><strong>Not all my domain though</strong></p>
+<p>Not all services and solutions that I track are part of ‘my’ domain though.
+For instance, at my company, we make a distinction between the
+infrastructure-that-is-mostly-hosting, and
+infrastructure-that-is-mostly-workplace. My focus is on the ‘mostly hosting’
+orientation, whereas I have a colleague domain architect responsible for
+the ‘mostly workplace’ side of things.</p>
+<p>But that’s just about accountability. Not knowing how the other solutions
+and services function, how they are set up, etc. would make my job harder,
+so tracking their progress and architecture is effort that pays off.</p>
+<p>In a later post I’ll explain what I document about services and solutions
+and how I do it when I have some time to spend.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2021/06/an-it-services-overview/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/overview/">overview</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/service/">service</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/landscape/">landscape</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/catalog/">catalog</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/capability/">capability</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2021/06/virtualization-vs-abstraction/">Virtualization vs abstraction</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 03 June 2021</span></span>
