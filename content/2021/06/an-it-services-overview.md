@@ -3,7 +3,7 @@ Date: 2021-06-14 17:30
 Category: Architecture
 Tags: architecture,overview,service,landscape,catalog,capability
 Slug: an-it-services-overview
-Status: draft
+Status: published
 
 My current role within the company I work for is “domain architect”, part
 of the enterprise architects teams. The domain I am accountable for is 
