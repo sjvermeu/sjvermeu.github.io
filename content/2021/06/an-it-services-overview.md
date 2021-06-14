@@ -26,7 +26,7 @@ quickly find it back, as well as present to other stakeholders what
 infrastructure services are about. This structure currently looks like in
 the figure mentioned below.
 
-![Overview of the IT services]({images}/202106/it_service_overview.png)
+![Overview of the IT services]({static}/images/202106/it_service_overview.png)
 
 Figures like these often come about in mapping exercises, or capability models.
 A capability model that I recently skimmed through is the
