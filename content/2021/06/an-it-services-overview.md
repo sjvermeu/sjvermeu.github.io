@@ -18,6 +18,8 @@ maintain a domain architecture. This structure is going to be the starting
 point of it, although it is not the true all and end all of what I would
 consider a domain architecture.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **A single picture doesn’t say it all**
 
 To start off with my overview, I had a need to structure the hundreds of
@@ -130,4 +132,3 @@ so tracking their progress and architecture is effort that pays off.
 In a later post I’ll explain what I document about services and solutions
 and how I do it when I have some time to spend.
 
-<!-- PELICAN_END_SUMMARY -->

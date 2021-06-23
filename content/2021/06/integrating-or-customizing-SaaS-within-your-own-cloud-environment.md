@@ -1,9 +1,9 @@
 Title: Integrating or customizing SaaS within your own cloud environment
-Date: 2021-06-21 10:10
+Date: 2021-06-23 15:10
 Category: Architecture
 Tags: architecture,cloud,SaaS,integration,customization
 Slug: integrating-or-customizing-SaaS-within-your-own-cloud-environment
-Status: draft
+Status: published
 
 Software as a Service (SaaS) solutions are often a quick way to get new
 capabilities into an organization’s portfolio. Smaller SaaS solutions are
