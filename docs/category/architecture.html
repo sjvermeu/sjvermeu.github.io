@@ -199,6 +199,145 @@ Simplicity is a form of art... - Architecture category        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/">Integrating or customizing SaaS within your own cloud environment</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 23 June 2021</span></span>
+                <p><p>Software as a Service (SaaS) solutions are often a quick way to get new
+capabilities into an organization’s portfolio. Smaller SaaS solutions are
+simple, web-based solutions which barely integrate with the organization’s
+other solutions, besides the identity and access management (which is often
+handled by federated authentication).</p>
+<p>More complex or intermediate solutions require more integration focus, and
+a whole new market of Integration Platform as a Service (iPaaS) solutions
+came up to facilitate cross-cloud integrations. But even without the iPaaS
+offerings, integrations are often a mandatory part to leverage the benefits
+of the newly activated SaaS solution.</p>
+<p>In this post I want to bring some thoughts on the integrations that might be
+needed to support customizing a SaaS solution.</p>
+<p><strong>Integrations versus customizations</strong></p>
+<p>There are plenty of ways to integrate solutions in a larger ecosystem. Most
+integrations focus on data integration (file transfers mostly) and service
+integration (using APIs or Enterprise Service Bus solutions), although many
+other creative methods are used to facilitate the integration of a SaaS
+within the organization’s portfolio.</p>
+<p>This creativity, in my opinion, often transforms into customization of a SaaS
+solution rather than an integration approach. SaaS services are being extended
+with new, customized functionality, but in a way that we’re no longer thinking
+about integrating this customization with the SaaS, but injecting the SaaS
+with closely tied services. And SaaS providers are often happy to support
+this, as it binds the customer to their solution.</p>
+<p>Now, customizations are not integrations, and integrations are not
+customizations. If you customize a SaaS offering, then you still need an
+integration between the custom development and the SaaS offering. Sometimes
+this integration is as simple as uploading the customization into the SaaS
+and the SaaS does the rest. Or the customization is a completely separate
+application service, which integrates over managed APIs with the SaaS. Or you
+use an intermediate solution that bridges the two solutions.</p>
+<p>While many integrations are possible, I feel that there are a few integration
+approaches that are in most cases just wrong. One of these is linking the
+SaaS within your own private solution (network or cloud).</p>
+<p><strong>Don’t just extend a SaaS environment into your own</strong></p>
+<p>I don’t believe that it is wise to just extend a SaaS environment into your
+own, even when the SaaS provider enables this. Services like VPC peering,
+which can be used to link your VPC with the SaaS provider’s VPC, are easy
+ways to do so, but applying it without adjusting the architecture for it
+makes your long-term maintainability and security more challenging. How
+do you ensure that the SaaS does not abuse this link? How do you ensure
+that you don’t accidentally leak information to the SaaS? How do you ensure
+high availability and resiliency is retained?</p>
+<p>In traditional architectures, we would have these provider’s locations
+considered as a separate network, and introduce the appropriate controls
+(like those offered by application firewalls, reverse proxies, etc.) in
+between the business application and the third party. This would often be
+facilitated by the network operations teams, and governed through more
+centralized environments.</p>
+<p>In cloud environments, architectures can be completely different, and
+individual applications might pick integration architectures that are more
+fruitful for them, without considering the larger environment. If the DevOps
+teams that manage the solution architecture are mature, then they too will
+consider the various non-functionals that play a role with such integrations.
+But if the experience is lacking, setting up direct extensions towards the
+SaaS might seem to be a quick and valid solution.</p>
+<p>Some areas that I would focus on when such integrations are requested, are
+(in no particular order):</p>
+<ul>
+<li>Impact of the integration to the deployment architecture of the solution,
+  considering the availability zones and region concepts used within the
+  solution</li>
+<li>Authentication of the integration at various levels (not just
+  authentication based on the identity being used)</li>
+<li>Isolation of the integration, ensuring that no other parties are impacted
+  by the integration</li>
+<li>Filtering capabilities on network and application level</li>
+<li>Logging and metrics to get visibility on the integration, its usage, the
+  volumes sent over, etc.</li>
+<li>Resilience in case of temporary failures (be it through buffering
+  mechanisms, or asynchronous integrations)</li>
+<li>Registration of the integration in the enterprise architecture, so that
+  assessments, vendor relationship, and other processes are aware of the
+  integration</li>
+</ul>
+<p>When properly tackled, then services like AWS PrivateLink of course do
+have a role to play. But it isn’t to just link one solution with another
+and be done with it.</p>
+<p><strong>Granting SaaS providers limited access to your resources</strong></p>
+<p>Another approach that I see happening is to grant a SaaS provider
+administrative access to your own resources. Just like with extending SaaS
+environments, I feel that this is not something to apply by default and has
+to be carefully assessed. For some SaaS solutions, this is part of their
+selling proposal, and is something you know up front. But not all SaaS
+solutions are equally obvious in this requirement.</p>
+<p>Some organizations might not have their cloud architecture, account structure
+and the like designed to enable SaaS providers to get administrative access
+to (some) resources. If the current architectures focus on highly integrated
+accounts and solutions, then granting a SaaS administrative access might
+jeopardize the security and stability of your overall architecture.</p>
+<p>Furthermore, granting a third party access to your resources also has
+implications on accountability. If a SaaS has access to storage within your
+account, it could accidentally manipulate data it shouldn’t have access to,
+upload another customer’s data on your storage (or vice-versa), or due to a
+cyber incident upload toxic data to your account. The provider might also
+inadvertently access the data in an economically unfriendly way.</p>
+<p>Using such access patterns should be carefully designed. While you can
+often not implement specific IT or security measures on the solution design,
+it might be possible to use separate accounts for instance, focusing on
+the integration between your ‘core’ solutions and this intermediate one
+to ensure a secure and resilient setup, while optimizing cost management
+for this intermediate account. You can even consider putting such accounts
+under a different tree in the organization structure and apply restrictive
+policies such as through AWS’ Service Control Policies (SCP).</p>
+<p><strong>Conclusions</strong></p>
+<p>Creating solutions that link with third parties requires thought and
+design. Cloud providers make it a lot easier to change and apply connections
+and integrations, but that does not make the architectural work that
+precedes it less obvious - on the contrary.</p>
+<p>Customizations with SaaS providers still need to be carefully assessed
+and integrated, with attention on the non-functionals such as resilience,
+availability, security and the like.</p>
+<p>If the SaaS provider needs access to your own resources, carefully assess
+how fine-grained this can be implemented and how the accountability is
+assigned. See if an intermediate account can be used where both you and
+the SaaS provider have administrative access to, while keeping the rest
+of the organization’s data and solutions elsewhere.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/saas/">saas</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/integration/">integration</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/customization/">customization</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2021/06/an-it-services-overview/">An IT services overview</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 14 June 2021</span></span>
@@ -213,104 +352,6 @@ gathered to try and give appropriate advice, but also now requires me to
 maintain a domain architecture. This structure is going to be the starting
 point of it, although it is not the true all and end all of what I would
 consider a domain architecture.</p>
-<p><strong>A single picture doesn’t say it all</strong></p>
-<p>To start off with my overview, I had a need to structure the hundreds of
-technology services that I want to keep an eye on in a way that I can 
-quickly find it back, as well as present to other stakeholders what 
-infrastructure services are about. This structure, while not perfect, 
-currently looks like in the figure below. Occasionally, I move one or
-more service groups left or right, but the main intention is just to
-have a structure available.</p>
-<p><img alt="Overview of the IT services" src="https://blog.siphos.be/images/202106/it_service_overview.png"/></p>
-<p>Figures like these often come about in mapping exercises, or capability models.
-A capability model that I recently skimmed through is the
-<a href="https://www.if4it.com/SYNTHESIZED/MODELS/ENTERPRISE/enterprise_capability_model.html">IF4IT Enterprise Capability Model</a>.
-I stumbled upon this model after searching for some reference architectures
-on approaching IT services, including a paper titled
-<a href="https://www.researchgate.net/publication/238620971_IT_Services_Reference_Catalog">IT Services Reference Catalog</a>
-by Nelson Gama, Maria do Mar Rosa, and Miguel Mira da Silva.</p>
-<p>Capability models, or service overviews like the one I presented, do not fit
-each and every organization well. When comparing the view I maintain with
-others (or the different capability and service references out there), I
-notice two main distinctions: grouping, and granularity.</p>
-<ul>
-<li>
-<p>Certain capabilities might be grouped one way in one reference, and use a
-  totally different grouping in another. A database system might be part of
-  a “Databases” group in one, a “Data Management” group in another, or even
-  “Information Management” in a third. Often, this grouping also reveals the
-  granularity that the author wants to pursue.<br/>
-  Grouping allows for keeping things organized and easier to explain, but has
-  no structural importance. Of course, a well-chosen grouping also allows you
-  to tie principles and other architectural concerts to the groups themselves,
-  and not services in particular. But that still falls under the explainability
-  part.</p>
-</li>
-<li>
-<p>The granularity is more about how specific a grouping is. In the example
-  above, “Information Management” is the most coarse-grained grouping, whereas
-  “Databases” might be a very specific one. Granularity can convey more insights
-  in the importance of services, although it can also be due to historical
-  reasons, or because an overview started from one specific service and expanded
-  later. In that case, it is very likely that the specific service and its
-  dependencies are more elaborately documented.</p>
-</li>
-</ul>
-<p>In the figure I maintain, the grouping is often based both on the extensiveness 
-of a group (if a group contains far too many services, I might want to see if I
-can split up the group) as well as historical and organizational choices. For
-instance, if the organization has a clear split between network oriented
-teams and server oriented teams, then the overview will most likely convey
-the same message, as we want to have the overview interpretable by many
-stakeholders - and those stakeholders are often aware of the organizational
-distinctions.</p>
-<p><strong>Services versus solutions</strong></p>
-<p>I try to keep track of the evolutions of <em>services</em> and <em>solutions</em> within this
-overview. Now, the definition of a “service” versus “solution” does warrant
-a bit more explanation, as it can have multiple meanings. I even use “service”
-for different purposes depending on the context.</p>
-<p>For domain architecture, I consider an “<em>infrastructure service</em>” as a product
-that realizes or supports an IT capability. It is strongly product oriented
-(even when it is internally developed, or a cloud service, or an appliance)
-and makes a distinction between products that are often very closely related.
-For instance, Oracle DB is an infrastructure service, as is the Oracle
-Enterprise Manager. The Oracle DB is a product that realizes a “relational
-database” capability, whereas OEM is a “central infrastructure management”
-capability.</p>
-<p>The reason I create distinct notes for these is because they have different
-life cycles, might have different organizational responsible teams, different
-setups, etc. Hence, components (parts of products) I generally do not consider
-as separate, although there are definitely examples where it makes sense to
-consider certain components separate from the products in which they are
-provided.</p>
-<p>The several hundred infrastructure services that the company is rich in are
-all documented under this overview.</p>
-<p>Alongside these infrastructure services I also maintain a solution overview.
-The grouping is exactly the same as the infrastructure services, but the
-intention of solutions is more from a full internal offering point of view.</p>
-<p>Within <em>solution architectures</em>, I tend to focus on the choices that the
-company made and the design that follows it. Many solutions are considered
-‘platforms’ on top of which internal development, third party hosting or
-other capabilities are provided. Within the solution, I describe how the
-various infrastructure services interact and work together to make the
-solution reality.</p>
-<p>A good example here is the mainframe platform. Whereas the mainframe itself
-is definitely an infrastructure service, how we internally organize the
-workload and the runtimes (such as the LPARs), how it integrates with the
-security services, database services, enterprise job scheduling, etc. is
-documented in the solution.</p>
-<p><strong>Not all my domain though</strong></p>
-<p>Not all services and solutions that I track are part of ‘my’ domain though.
-For instance, at my company, we make a distinction between the
-infrastructure-that-is-mostly-hosting, and
-infrastructure-that-is-mostly-workplace. My focus is on the ‘mostly hosting’
-orientation, whereas I have a colleague domain architect responsible for
-the ‘mostly workplace’ side of things.</p>
-<p>But that’s just about accountability. Not knowing how the other solutions
-and services function, how they are set up, etc. would make my job harder,
-so tracking their progress and architecture is effort that pays off.</p>
-<p>In a later post I’ll explain what I document about services and solutions
-and how I do it when I have some time to spend.</p>
 </p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
