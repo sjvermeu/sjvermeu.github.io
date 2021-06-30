@@ -20,6 +20,8 @@ of the newly activated SaaS solution.
 In this post I want to bring some thoughts on the integrations that might be
 needed to support customizing a SaaS solution.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Integrations versus customizations**
 
 There are plenty of ways to integrate solutions in a larger ecosystem. Most
@@ -144,4 +146,3 @@ assigned. See if an intermediate account can be used where both you and
 the SaaS provider have administrative access to, while keeping the rest
 of the organization’s data and solutions elsewhere.
 
-<!-- PELICAN_END_SUMMARY -->
