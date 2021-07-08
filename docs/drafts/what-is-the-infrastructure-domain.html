@@ -12,13 +12,13 @@
 
         <!-- Default metadata -->
     <meta name="author" content="Sven Vermeulen" />
-    <meta name="description" content="trying-for-a-generic-infrastructure-view" />
+    <meta name="description" content="what-is-the-infrastructure-domain" />
     <meta name="keywords" content="architecture, pattern">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
-<meta property="og:title" content="Trying for a generic infrastructure view" />
+<meta property="og:title" content="What is the infrastructure domain?" />
 <meta property="og:description" content="In my job as domain architect for &#34;infrastructure&#34;, I often come across stakeholders that have no common understanding of what infrastructure means in an enterprise architecture. Since then, I am trying to figure out a way to easily explain it - to find a common, generic view on what infrastructure entails …" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://blog.siphos.be/drafts/trying-for-a-generic-infrastructure-view.html" />
+<meta property="og:url" content="https://blog.siphos.be/drafts/what-is-the-infrastructure-domain.html" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-07-14 18:30:00+02:00" />
 <meta property="article:modified_time" content="" />
@@ -33,7 +33,7 @@
 
         <!-- Title -->
         <title>
-    Trying for a generic infrastructure view &ndash; Simplicity is a form of art...
+    What is the infrastructure domain? &ndash; Simplicity is a form of art...
         </title>
         
         <!-- Icon -->
@@ -192,8 +192,8 @@
         <!-- Header -->
         <header class="bg-dark text-light shadow-sm pt-3 pb-2">
 	<div class="container">
-		<h3 id="trying-for-a-generic-infrastructure-view">Trying for a generic infrastructure view</h3>
-		<p style="font-size:larger;">trying-for-a-generic-infrastructure-view</p>
+		<h3 id="what-is-the-infrastructure-domain">What is the infrastructure domain?</h3>
+		<p style="font-size:larger;">what-is-the-infrastructure-domain</p>
         <div class="row mx-auto mt-3">
             <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
                 <a href="https://blog.siphos.be/author/sven-vermeulen.html" class="card-link">Sven Vermeulen</a>
@@ -237,7 +237,10 @@ many, many IT projects that are going around.</p>
 are plenty of reference architectures and frameworks out there that could assist
 in this. However, I still have the feeling that they are either too complex to
 use for non-architect stakeholders, too simple to expose the domain properly, or
-just don't fit the situation that I am currently faced with.</p>
+just don't fit the situation that I am currently faced with. And that's OK,
+many of these frameworks are intended for architects, and from those frameworks
+I can borrow insights left and right to use for a simple visualization, a
+landscaping of some sort.</p>
 <p>So, let's first look at the frameworks and references out there. Some remarks
 though that might be important to understand the post:</p>
 <ul>
@@ -321,11 +324,64 @@ the projects within. The ITIL practices make it possible to explain that it
 isn't just about downloading and installing software or quickly buying an
 appliance.</p>
 <p><strong>Reference Model of Open Distributed Processing (RM-ODP)</strong></p>
-<p>TODO</p>
+<p>The <a href="http://www.rm-odp.net/">RM-ODP standard</a> has a strong focus on distributed
+processing (hence the name), which is a big part of what the infrastructure
+domain is about. If we ignore the workplace environment for a bit, and focus on
+hosting of applications, the majority of today's hosting initiatives are on
+distributed platforms.</p>
+<p><img alt="RM-ODP Five Viewpoints" src="https://blog.siphos.be/images/202107/rm-odp.png">
+<em>Five viewpoints of RM-ODP, taken from <a href="https://sparxsystems.com/products/3rdparty/odp/index.html">MDG Technology for ODP - UML for ODP, SparxSystems</a></em></p>
+<p>Within RM-ODP guidance is given on how to handle requirement management, how to
+document the processing semantics, how to identify the components, integrations
+and limitations of the systems, and how to select the most appropriate
+technology. The intention of RM-ODP is to be as precise and formal as possible,
+and leave no room for interpretation. To accomplish that, RM-ODP uses an object
+model approach.</p>
+<p>Unlike the more business and information system oriented frameworks, RM-ODP has
+a strong focus on infrastructure. Its viewpoints include engineering,
+computational and technology for instance. The challenge that rises here
+however is that it sticks to the more engineering oriented abstractions, which
+make perfect sense for people and stakeholders involved in the infrastructure
+domain, but is often Chinese for others.</p>
+<p>Personally, I consider RM-ODP to be a domain-specific standard strongly
+associated with the infrastructure domain.</p>
 <p><strong>Department of Defense Architecture Framework (DoDAF)</strong></p>
-<p>TODO (refer to AGATE and MODAF)</p>
-<p><strong>Sherwoord Applied Business Security Architecture (SABSA)</strong></p>
-<p>TODO more security origin but widely applicable</p>
+<p><a href="https://dodcio.defense.gov/library/dod-architecture-framework/">DoDAF</a>
+ is an architecture framework that has a strong focus on the definition
+and visualization of the different viewpoints. It is less tangible than RM-ODP,
+instead focusing on view definitions: what and how should something be
+presented to the stakeholders. The intention of DoDAF is that organizations
+develop and use an enterprise architecture that supports and uses the
+viewpoints that DoDAF prescribes.</p>
+<p><img alt="DoDAF viewpoints" src="https://blog.siphos.be/images/202107/dodaf-viewpoints.png">
+<em>DoDAF viewpoints, taken from <a href="https://www.visual-paradigm.com/guide/enterprise-architecture/what-is-dodaf-framework/">"What is DoDAF Framework", Visual Paradigm</a></em></p>
+<p>Unlike broad scale architecture frameworks that look at an enterprise in its
+entirety, my impression is that DoDAF is more towards product architecture.
+That makes DoDAF more interesting for solution architectures, which often
+require to be more detailed and thus hit closer to home when looking at the
+infrastructure domain. However, it is not something I can 'borrow' from to
+easily explain what infrastructure is about.</p>
+<p><a href="https://www.nato.int/cps/en/natohq/topics_157575.htm">NATO's Architecture Framework (NAF)</a>
+seems to play witin the same realm.</p>
+<p><strong>Sherwood Applied Business Security Architecture (SABSA)</strong></p>
+<p>The SABSA framework and methodology has a strong security focus, but covers the
+requirements from full enterprise view up to the solutions themselves. One of
+the benefits of SABSA is inherent to this security-orientation: you really need
+to know and understand how things work before you can show that they are
+secure. Hence, SABSA is a quite complete framework and methodology.</p>
+<p><img alt="SABSA Metamodel" src="https://blog.siphos.be/images/202107/sabsa-metamodel.png">
+<em>SABSA metamodel, taken from <a href="https://sabsa.org/the-chief-architects-blog-a-brief-history-of-sabsa-21-years-old-this-year/">"A Brief History of SABSA: Part 1", sabsa.org</a></em></p>
+<p>An important focus area in SABSA is the integration between services, which is
+something I am frequently confronted with at work. Yet unlike the more solution
+driven frameworks, SABSA retains its business-oriented top-down approach, which
+places it alongside the TOGAF one in my opinion. Moreover, we can apply TOGAF's
+development method while using SABSA to receive more direct requirements and
+design focus.</p>
+<p>Its risk and enabler orientation offers a help to not only explain how things
+are set up, but also why. Especially in the sector I am currently active in
+(financial sector) having a risk-based, security-conscious approach is a good
+fit. The supporting list of attributes, metrics, security services, etc. allow
+for defining more complete architectures.</p>
 <!-- PELICAN_END_SUMMARY -->
         </div>
 
@@ -381,8 +437,8 @@ appliance.</p>
 {
     "@context": "http://schema.org",
     "@type": "BlogPosting",
-    "name": "Trying for a generic infrastructure view",
-    "headline": "Trying for a generic infrastructure view",
+    "name": "What is the infrastructure domain?",
+    "headline": "What is the infrastructure domain?",
     "datePublished": "2021-07-14 18:30:00+02:00",
     "dateModified": "",
     "author": {
@@ -391,7 +447,7 @@ appliance.</p>
         "url": "https://blog.siphos.be/author/sven-vermeulen.html"
     },
     "image": "https://blog.siphos.be/favicon.ico",
-    "url": "https://blog.siphos.be/drafts/trying-for-a-generic-infrastructure-view.html",
+    "url": "https://blog.siphos.be/drafts/what-is-the-infrastructure-domain.html",
     "description": "In my job as domain architect for "infrastructure", I often come across stakeholders that have no common understanding of what infrastructure means in an enterprise architecture. Since then, I am trying to figure out a way to easily explain it - to find a common, generic view on what infrastructure entails …"
 }
 </script>
