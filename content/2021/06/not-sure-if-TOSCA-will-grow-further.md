@@ -17,6 +17,8 @@ then using this asset to deploy on whatever cloud is very appealing to
 an architect. Especially in organizations that have a multi-cloud
 strategy.
 
+<!-- PELICAN_END_SUMMARY -->
+
 But while I do see some adoption of TOSCA, I get the feeling that it is
 struggling with its position against the various infrastructure-as-code
 (IaC) frameworks that are out there. While many of these frameworks do
@@ -217,4 +219,3 @@ here:
   is an hour-long briefing that covers TOSCA not only in theory but also applies
   it in practice, and covers some of the new features that are coming up.
 
-<!-- PELICAN_END_SUMMARY -->

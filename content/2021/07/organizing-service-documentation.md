@@ -1,9 +1,9 @@
 Title: Organizing service documentation
-Date: 2021-07-07 18:30
+Date: 2021-07-08 09:20
 Category: Architecture
 Tags: architecture,documentation,structure,wiki
 Slug: organizing-service-documentation
-Status: draft
+Status: published
 
 As I mentioned in [An IT services overview]({filename}/2021/06/an-it-services-overview.md)
 I try to keep track of the architecture and designs of the IT services and
