@@ -197,6 +197,36 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/">Umounting IPv6 NFS(v4) mounts</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 23 August 2013</span></span>
+                <p><p>I had issues umounting my NFSv4 shares on an IPv6-only network. When
+trying to umount the share, it said that it couldn't find the mount in
+<code>/proc/mounts</code>:</p>
+<div class="highlight"><pre><span></span><code>~# umount /mnt/nfs/portage
+/mnt/nfs/portage was not found in /proc/mounts
+</code></pre></div>
+
+<p>The solution: copy <code>/proc/mounts</code> to <code>/etc/mtab</code>, and …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                            <span class="card-link"><a href="https://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/#disqus_thread"></a></span>
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/misc.html">misc</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ip6/">ip6</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ipv6/">ipv6</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/linux/">linux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/nfs4/">nfs4</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/nfsv4/">nfsv4</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/umount/">umount</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2013/08/why-our-policies-dont-like-emerge-config/">Why our policies don't like emerge --config</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 23 August 2013</span></span>
@@ -429,33 +459,6 @@ have we found a good place to put the fix …</p></p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/hardened/">hardened</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/pcre/">pcre</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/07/adding-mcstrans-to-gentoo/">Adding mcstrans to Gentoo</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 07 July 2013</span></span>
-                <p><p>If you use SELinux, you might be using an MLS-enabled policy. These are
-policies that support sensitivity labels on resources and domains. In
-Gentoo, these are supported in the <code>mcs</code> and <code>mls</code> policy stores. Now
-sensitivity ranges are fun to work with, but the moment you have several
-sensitivity levels …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2013/07/adding-mcstrans-to-gentoo/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/categories/">categories</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/mcs/">mcs</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/mcstrans/">mcstrans</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/mls/">mls</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/sensitivity/">sensitivity</a>
                     </div>
                 </div>
             </div>

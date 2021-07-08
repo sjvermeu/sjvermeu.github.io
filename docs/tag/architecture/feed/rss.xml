@@ -1,5 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Simplicity is a form of art... - architecture</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Wed, 30 Jun 2021 14:30:00 +0200</lastBuildDate><item><title>Not sure if TOSCA will grow further</title><link>https://blog.siphos.be/2021/06/not-sure-if-TOSCA-will-grow-further/</link><description>&lt;p&gt;TOSCA is an OASIS open standard, and is an abbreviation for &lt;em&gt;Topology and
+<rss version="2.0"><channel><title>Simplicity is a form of art... - architecture</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Thu, 08 Jul 2021 09:20:00 +0200</lastBuildDate><item><title>Organizing service documentation</title><link>https://blog.siphos.be/2021/07/organizing-service-documentation/</link><description>&lt;p&gt;As I mentioned in &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
+I try to keep track of the architecture and designs of the IT services and
+solutions in a way that I feel helps me keep in touch with all the various
+services and solutions out there. Similar to how system administrators try to
+find a balance while working on documentation (which is often considered a
+chore) and using a structure that is sufficiently simple and standard for the
+organization to benefit from, architects should try to keep track of
+architecturally relevant information as well.&lt;/p&gt;
+&lt;p&gt;So in this post, I'm going to explain a bit more on how I approach documenting
+service and solution insights for architectural relevance.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Why I tend to document some of it myself&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Within the company I currently work for, not all architecture and designs are
+handled by a central repository, but that doesn't mean there is no architecture
+and design available. They are more commonly handled through separate documents,
+online project sites and the like. If we had a common way of documenting
+everything in the same tool using the same processes and the same taxonomy, it
+wouldn't make sense to document things myself... unless even then I would find
+that I am missing some information.&lt;/p&gt;
+&lt;p&gt;It all started when I tried to keep track of past decisions for a service or
+solution. Decisions on architecture boards, on risk forums, on department
+steering committees and what not. &lt;em&gt;Historical insights&lt;/em&gt; I call it, and it often
+provides a good sense of why a solution or service came up, what the challenges
+were, which principles were used, etc.&lt;/p&gt;
+&lt;p&gt;Once I started tracking the historical decisions and topics, I quickly moved on
+to a common structure: an entry page with the most common information about the
+service or solution, and then subpages for the following categories:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Administration (processes, authorizations, procedures)&lt;/li&gt;
+&lt;li&gt;Authentication&lt;/li&gt;
+&lt;li&gt;Authorizationn&lt;/li&gt;
+&lt;li&gt;Auditing and logging&lt;/li&gt;
+&lt;li&gt;Configuration management&lt;/li&gt;
+&lt;li&gt;Cost management&lt;/li&gt;
+&lt;li&gt;Cryptography and privacy&lt;/li&gt;
+&lt;li&gt;Data management (data handling, definitions, governance, lineage,
+  backup/restore, ...)&lt;/li&gt;
+&lt;li&gt;Deployment&lt;/li&gt;
+&lt;li&gt;Design and development (incl. naming convention)&lt;/li&gt;
+&lt;li&gt;Figures&lt;/li&gt;
+&lt;li&gt;High availability and disaster recovery&lt;/li&gt;
+&lt;li&gt;History&lt;/li&gt;
+&lt;li&gt;Operations (actor groups, source systems &amp;amp; interactions/external interfacing)&lt;/li&gt;
+&lt;li&gt;Organization (management, organisational structure within the company, etc.)&lt;/li&gt;
+&lt;li&gt;Performance management&lt;/li&gt;
+&lt;li&gt;Patterns&lt;/li&gt;
+&lt;li&gt;Processes&lt;/li&gt;
+&lt;li&gt;Quality assurance &amp;amp; reporting&lt;/li&gt;
+&lt;li&gt;Roadmap and restrictions (incl. lifecycle)&lt;/li&gt;
+&lt;li&gt;Risks and technical debt&lt;/li&gt;
+&lt;li&gt;Runtime information&lt;/li&gt;
+&lt;li&gt;Terminology&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now, I won't go in depth about all the different categories listed. Perhaps some
+areas warrant closer scrutiny in later posts, but for now the names of the
+categories should be sufficiently self-explanatory.&lt;/p&gt;
+&lt;p&gt;If there is an internal service (website or similar) that covers the
+details properly, then I will of course not duplicate that information. Instead,
+I will add a link to that resource and perhaps just document how to interpret
+the information on that resource.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The entry page&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The entry page of a service or solution always looks the same. It starts off
+with a few attributes associated with the service:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The taxonomy used within the company&lt;/li&gt;
+&lt;li&gt;The main point of contact(s)&lt;/li&gt;
+&lt;li&gt;The backlog where the responsible team tracks its progress and evolution&lt;/li&gt;
+&lt;li&gt;A link to the main documentation resources&lt;/li&gt;
+&lt;li&gt;The internal working name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;taxonomy&lt;/em&gt; is something I strongly appreciate in my current company. It is
+a uniform identifier associated with the product, service or solution, and is
+used for several of the operational processes the company has. This taxonomy
+comes up in things like chargeback, service level agreements, responsibility
+overviews, data classifications, enterprise architectural overviews, etc.&lt;/p&gt;
+&lt;p&gt;For instance, a managed macbook (asset) might have a taxonomy identifier of
+&lt;code&gt;mmac&lt;/code&gt;, or we have a service for exchanging internal company data identified as
+&lt;code&gt;cd70&lt;/code&gt; (it doesn't need to have an identifier that "reads" properly). Of course,
+people don't just run around shouting the identifiers, but when we go through
+the information available at the company, this identifier is often the primary
+key so to speak to find the information.&lt;/p&gt;
+&lt;p&gt;For the &lt;em&gt;main points of contacts&lt;/em&gt;, I usually just document the person that is
+my go-to person to get some quick insights. The full list of all contacts (like
+product owner, product manager, system architect, business analyst, release
+manager, etc.) is managed in a central tool (and uses the taxonomy to quickly
+find the right person), so I just have the few names that I quickly need listed
+here.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;backlog&lt;/em&gt; is something I recently added to support any questions on "when
+will we have feature XYZ". In the past, I had to contact the people to get this
+information, but that often became cumbersome, especially when the team uses a
+proper tool for tracking the work on the service.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;main documentation&lt;/em&gt; is often the most important part. It is a link to the
+documentation that the team provides for end users, architects or other roles.
+Some teams still have their information on a NAS, others in a document library
+on SharePoint, others use a wiki, and there are teams that use a structured
+document management system. Working for a big company has its consequences...&lt;/p&gt;
+&lt;p&gt;Finally, the &lt;em&gt;internal working name&lt;/em&gt; is the name that a service or solution
+receives the most. For infrastructure services, this is often the name of the
+product from the time the product entered the organization. While the vendor has
+switched the name of the product numerous times since, the old name sticks. For
+instance, while I will document IBM's cloud offering as "IBMCloud" (its current
+name) I will list its working name as "Bluemix" because that's how the company
+internally often refers to it.&lt;/p&gt;
+&lt;p&gt;After the basic attributes, I have&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a few paragraphs for &lt;em&gt;description&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;a diagram or architecture view to give a &lt;em&gt;high level design&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;the &lt;em&gt;most important questions&lt;/em&gt; surrounding the service or solution&lt;/li&gt;
+&lt;li&gt;some &lt;em&gt;tips and titbits&lt;/em&gt; for myself&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The high level design is often a view that I maintain myself, which uses the
+&lt;a href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/"&gt;abstraction&lt;/a&gt; that I
+mentioned earlier in my blog. It is not covering everything, but to a sufficient
+level that I can quickly understand the context of the service or solution and
+how it is generally implemented.&lt;/p&gt;
+&lt;p&gt;The most important questions are mostly a refresher for questions that pop up
+during discussions. For instance, for an API gateway, common questions might be
+"What are the security controls that it enforces" or "Does the API GW perform
+schema validation on JSON structures?".&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The history of a service&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Below the entry page, the various categories come up. As I mentioned, it all
+started with the historical insights on the service. By having a chronological
+overview of all decisions and related material per service, I can quickly find
+the most important information in many cases.&lt;/p&gt;
+&lt;p&gt;Want to know the latest architecture for a service? Let's look in the history
+when the last architectural review was, and at which decision body or board it
+came up. Once found, I just need to go to the meeting minutes or case details to
+find it.&lt;/p&gt;
+&lt;p&gt;Want to know why the decision was taken to allow a non-standard integration?
+Take a look at the history where this decision was taken, and consult its
+meeting minutes.&lt;/p&gt;
+&lt;p&gt;Need to ask for a continuance for something but you're just new in the team and
+don't know why or how it was approved in the past? No worries, I'll share with
+you the history of the service, where you can find the information, and coach
+you a bit through our organization.&lt;/p&gt;
+&lt;p&gt;Having the history for services and solutions available has been a massive
+efficiency gain for myself and my immediate stakeholders. Of course, I would
+have loved if the organization tracked this themselves, but as long as they
+don't (especially since organization changes more often than technology) I will
+put time and effort to track it myself (at least for the services and solutions
+that I am interested in).&lt;/p&gt;
+&lt;p&gt;The historical information I track myself is not a copy/paste of the meeting
+minutes of those entries. I try to use a single paragraph explaination, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ARB  2020/12/05     "Switch of PostgreSQL authentication provider to PAM+sssd"
+    Approval to switch the authentication provider of the PostgreSQL
+    database assets from the internal authentication to a PAM-supported
+    method, and use the RHEL sssd solution as a facilitator. Link with
+    Active Directory.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The &lt;code&gt;ARB&lt;/code&gt; is the name of the decision body (here it could be the &lt;em&gt;Architecture
+Review Board&lt;/em&gt;) and tells me where I can find more details if needed. I don't
+really bother with trying to add actual links, because that takes time and often
+the links become invalid after we switch from one solution to another.&lt;/p&gt;
+&lt;p&gt;Since then, I also started adding information related to the service that isn't
+just decision body oriented:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Incident    2021/06/08  "Fastly major outage"
+    A major outage occurred on Fastly, a widely used cloud edge provider,
+    between 09:47 UTC and 12:35 UTC. This impacted service ABC and DEF.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Incidents can be internal or external, and if they are internal I'll document
+the incident and root cause analysis numbers associated with the incident as
+well.&lt;/p&gt;
+&lt;p&gt;It also doesn't need to be about problems. It can be announcements from the
+vendor as well, as long as the announcement is or can be impactful for my work.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How complete is this overview&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;My overview is far, far, far from complete. It is also not my intention to make
+it a complete overview, but instead use it as a quick reference when needed.
+Services that are commonly discussed (for instance because they have wide
+implications on other domain's architectures) are documented more in depth than
+services that are barely influential to my meetings and projects. And that
+doesn't mean that the services themselves are not important.&lt;/p&gt;
+&lt;p&gt;Furthermore, the only areas that I truly want to have up-to-date, is the entry
+page and the history. For all the other information I always hope to be able to
+link to existing documentation that is kept up-to-date by the responsible teams.&lt;/p&gt;
+&lt;p&gt;But in case the information isn't available, using the same structure for noting
+down what insights that I gather helps out tremendously.&lt;/p&gt;
+&lt;p&gt;I also don't want my overview to become a critical asset. It is protected from
+prying eyes (as there is occasionally confidential information inside) and I am
+coaching the organization to take up a lot of the information gathering and
+documentation in a structured way. For instance, for managing EOL information,
+we are publishing this in a standard way for all internal stakeholders to see
+(and report on). The roadmap and strategy for the services within the domain are
+now being standardized within the backlog tool as well, so that everybody can
+clearly document when they expect to work on something, when certain investments
+are needed, etc.&lt;/p&gt;
+&lt;p&gt;In the past, architects often had to scramble all that information together
+(hence one of my categories on &lt;em&gt;Roadmap&lt;/em&gt;) whereas we can now use the backlog
+tools of the teams themselves to report on it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Which tool to use?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Personally, I use a wiki-alike service for this, so that I can search through
+the pages, move and merge information, use tagging and labels and what not. I
+also think that, unless the company already has a central tool for this, a well
+maintained wiki with good practices and agreements on how to use it would do
+wonders.&lt;/p&gt;
+&lt;p&gt;I've been playing around in my spare time with several wiki technologies.
+&lt;a href="https://www.dokuwiki.org/dokuwiki"&gt;Dokuwiki&lt;/a&gt; is still one of my favorites due
+to its simplicity, whereas &lt;a href="https://www.mediawiki.org/wiki/MediaWiki"&gt;MediaWiki&lt;/a&gt;
+is one of my go-to's for when the organization really wants to pursue a scalable
+and flexible organization-wide wiki. However, considering that I try to
+structure the information in a hierarchical way, I am planning to play around
+with &lt;a href="https://www.bookstackapp.com/"&gt;BookStack&lt;/a&gt; a bit more.&lt;/p&gt;
+&lt;p&gt;But while having a good tool is important, it isn't the critical part of
+documenting information. Good documentation, in my opinion, comes from a good
+structure and a coherent way of working. If you do it yourself, then of course
+it is coherent, but it takes time and effort to maintain it. If you collaborate
+on it, you have to make sure everybody follows the same practices and agreements
+- so don't make them too complex.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 08 Jul 2021 09:20:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-07-08:/2021/07/organizing-service-documentation/</guid><category>Architecture</category><category>architecture</category><category>documentation</category><category>structure</category><category>wiki</category></item><item><title>Not sure if TOSCA will grow further</title><link>https://blog.siphos.be/2021/06/not-sure-if-TOSCA-will-grow-further/</link><description>&lt;p&gt;TOSCA is an OASIS open standard, and is an abbreviation for &lt;em&gt;Topology and
 Orchestration Specification for Cloud Applications&lt;/em&gt;. It provides a
 domain-specific language to describe how an application should be deployed
 in the cloud (the topology), which and how many resources it needs, as well
@@ -10,179 +216,6 @@ bundling the necessary application artefacts) within a single asset and
 then using this asset to deploy on whatever cloud is very appealing to
 an architect. Especially in organizations that have a multi-cloud
 strategy.&lt;/p&gt;
-&lt;p&gt;But while I do see some adoption of TOSCA, I get the feeling that it is
-struggling with its position against the various infrastructure-as-code
-(IaC) frameworks that are out there. While many of these frameworks do
-not inherently support the abstraction that TOSCA has, it is not all that
-hard to apply similar principles and use those frameworks to facilitate
-multi-cloud deployments.&lt;/p&gt;
-&lt;p&gt;Before considering the infrastructural value of TOSCA further, let's
-see what TOSCA is about first.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Simplifying and abstracting cloud deployments&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;TOSCA offers a model where you can declare how an application should be
-hosted in the cloud, or in a cloud-native environment (like a Kubernetes
-cluster). For instance, you might want to describe a certain document
-management system, which has a web application front-end deployed on 
-a farm of web application servers with a load balancer in front of it,
-a backend processing system, a database system and a document storage
-system. With TOSCA, you can define these structural elements with their
-resource requirements.&lt;/p&gt;
-&lt;p&gt;For instance, for the database system, we could declare that it has to
-be a PostgreSQL database system with a certain administration password,
-and within the database system we define two databases with their
-own user roles:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;topology_template:
-  ...
-  node_templates:
-    db_server:
-      type: tosca.nodes.Compute
-      ...
-    postgresql:
-      type: tosca.nodes.DBMS.PostgreSQL
-      properties:
-        root_password: "..."
-      requirements:
-        host: db_server
-    db_filemeta:
-      type: tosca.nodes.Database.PostgreSQL
-      properties:
-        name: db_filemeta
-        user: fmusr
-        password: "..."
-      artifacts:
-        db_content:
-          file: files/file_server_metadata.txt
-          type: tosca.artifacts.File
-      requirements:
-        - host: postgresql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The parameters can, and should be further parameterized. TOSCA supports
-declaring inputs that are provided upon deployment so you can safely
-publicize the TOSCA structure without putting passwords in there
-for instance. Furthermore, TOSCA allows you to add scripts to execute
-when a resource is created, which is a common requirement for database
-systems.&lt;/p&gt;
-&lt;p&gt;But that's not all. Within TOSCA, you then further define the relationship
-between the different systems (nodes), including connectivity requirements.
-Connections can then be further aligned with virtual networks to model
-the network design of the application.&lt;/p&gt;
-&lt;p&gt;One of the major benefits of TOSCA is that it also provides abstraction on
-the requirements. While the above example explicitly pushes for a PostgreSQL
-database hosted on a specific compute server, we could also declare that we
-need a database management system, or for the network part we need firewall
-capabilities. The TOSCA interpreter, when mapping the model to the target
-cloud environment, can then either suggest or pick the technology service
-itself. The TOSCA model can then have different actions depending on the
-selected technology. For the database for instance, it would have different
-deployment scripts.&lt;/p&gt;
-&lt;p&gt;The last major benefit that I would like to point out are the workflow
-and policy capabilities of TOSCA. You can declare how for instance a 
-backup process should look like, or how to cleanly stop and start the
-application. You can even model how a rolling upgrade of the application
-or database could be handled.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;It is not just theoretical&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Standards can often be purely theoretical, with one or a few reference
-implementations out there. That is not the case with TOSCA. While reading
-up on TOSCA, it became clear that it has a strong focus on Network
-Functions Virtualization (NFV), a term used to denote the shift
-from appliance-driven networking capabilities towards an environment
-that has a multitude of solutions running in virtual environments, and
-where the infrastructure adopts to this virtualized situation with
-(for network) virtual routers, firewalls, etc. Another standards body,
-namely the European Telecommunications Standards Institute (ETSI), seems
-to be the driving force behind the NFV architecture.&lt;/p&gt;
-&lt;p&gt;TOSCA has a simple profile for NFV, which aligns with ETSI's NFV and 
-ensures that TOSCA parsers that support this profile can easily be used
-to set up and manage solutions in virtualized environments (and thus
-also cloud environments). The amount of online information about TOSCA
-with respect to the NFV side is large, although still in my opinion
-strongly vendor-oriented (products that support TOSCA) and standards-oriented
-(talks about how well it fits). On TOSCA's &lt;a href="https://www.oasis-open.org/tosca-implementation-stories/"&gt;implementation stories&lt;/a&gt;
-page, two of the three non-vendor stories are within the telco industry.&lt;/p&gt;
-&lt;p&gt;There are a few vendors that heavily promote
-TOSCA: &lt;a href="https://cloudify.co/"&gt;Cloudify&lt;/a&gt; and &lt;a href="https://designer.otc-service.com"&gt;Ubicity&lt;/a&gt;
-offer multi-cloud orchestrators that are TOSCA-based. Many vendors, 
-including the incumbent network technology vendors like Cisco and Nokia,
-embrace TOSCA NFV. But most information from practical TOSCA usage out
-there is in open source solutions. The list of &lt;a href="https://github.com/oasis-open/tosca-community-contributions/wiki/Known-TOSCA-Implementations"&gt;known TOSCA implementations&lt;/a&gt;
-mentions plenty of open source products. One of the solutions that I
-am considering of playing around with is &lt;a href="https://turandot.puccini.cloud/"&gt;turandot&lt;/a&gt;,
-which uses TOSCA to compose and orchestrate Kubernetes workloads.&lt;/p&gt;
-&lt;p&gt;As an infrastructure architect, TOSCA could be a nice way of putting
-initial designs into practice: after designing solutions in a language
-like ArchiMate, which is in general not 'executable', the next step could
-be to move the deployment specifications into TOSCA and have the next
-phases of the project use and enhance the TOSCA definition. But that
-easily brings me to what I consider to be shortcomings of the current
-situation.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Inhibitors for growth potential&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;There are a number of issues I have with the current state of TOSCA.&lt;/p&gt;
-&lt;p&gt;TOSCA's ecosystem &lt;em&gt;seems&lt;/em&gt; to be lacking sufficient visualization support.
-I did come across &lt;a href="https://projects.eclipse.org/projects/soa.winery"&gt;Winery&lt;/a&gt;
-but that seems to be it. I would really like to see a solution that reads
-TOSCA and generates an architectural overview. For instance, for the
-example I started this blog with, something like the following:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Visualization of a deployment" src="https://blog.siphos.be/images/202106/tosca-archimate.png"/&gt;&lt;/p&gt;
-&lt;p&gt;Furthermore, my impression is that TOSCA is strongly and mostly Infrastructure
-as a Service (IaaS) oriented. The company I currently work for strongly
-focuses on platform services, managed cloud services rather than the
-more traditional infrastructure services where we would still have to do
-the blunt of the management ourselves. Can TOSCA still play a role
-in solutions that are fully using platform services? Perhaps the answer
-here is "no", as those managed services are often very cloud-vendor specific,
-but that isn't always the case, and can often also be tackled using the
-abstraction and implementation specifics that TOSCA supports.&lt;/p&gt;
-&lt;p&gt;I also have to rely too much on impressions. While the TOSCA ecosystem
-has plenty of open source solutions out there, I find it hard to get
-tangible examples: TOSCA definitions of larger-scale definitions that
-not only show an initial setup, but are actively maintained to show
-maintenance evolution of the solution. If TOSCA is so great for vendors
-to have a cloud-independent approach, why do I find it hard to find
-vendors that expose TOSCA files? If the adoption of TOSCA stops
-at the standards bodies and too few vendors, then it is not likely
-to grow much further.&lt;/p&gt;
-&lt;p&gt;TOSCA orchestration engines often are in direct competition with
-general IaC orchestration like Terraform. Cloudify has a post that
-&lt;a href="https://cloudify.co/blog/terraform-vs-cloudify/"&gt;compares Terraform with their solution&lt;/a&gt;
-but doesn't look into how Terraform is generally used in CI/CD
-processes that join Terraform with the other services that create a
-decent end-to-end orchestration for cloud deployments. For Kubernetes,
-it competes with Helm and the likes - not fully, as TOSCA has other 
-benefits of course, but if you compare how quickly Helm is taking
-the lead in Kubernetes you can understand the struggle that TOSCA in
-my opinion has.&lt;/p&gt;
-&lt;p&gt;Another inhibitor is TOSCA's name. If you search for information on
-TOSCA, you need to exclude &lt;a href="https://www.tricentis.com/resources/tricentis-tosca-overview/"&gt;Tricentis'&lt;/a&gt;
-continuous testing platform, the &lt;a href="https://en.wikipedia.org/wiki/Tosca"&gt;1900's Opera&lt;/a&gt;,
-and several other projects, films, and other entities that use the same
-name. You'll need to explicitly mention OASIS and/or cloud as well if
-you want to find decent articles about TOSCA, knowing well that there
-can be pages out there that are missed because of it.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;While I appreciate the value TOSCA brings, I feel that it might not grow
-to its fullest potential. I hope to be wrong of course, and I would
-like to see big vendors publish their reference architecture TOSCA material
-so that large-scale solutions are shown to be manageable using TOSCA and
-that solution architects do not need to reinvent the wheel over and
-over again, as well as link architecture with the more operations
-side of things.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;More resources&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;To learn more about TOSCA, there are a few resources that I would recommend
-here:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=tosca"&gt;OASIS TOSCA Technical Committee&lt;/a&gt;
-  has a number of resources linked. The &lt;a href="https://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.3/os/TOSCA-Simple-Profile-YAML-v1.3-os.pdf"&gt;TOSCA Simple Profile in YAML Version 1.3&lt;/a&gt;
-  PDF is a good read which gradually explains the structure of a TOSCA YAML
-  file with plenty of examples.&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.etsi.org/technologies/nfv"&gt;Network Functions Virtualisation (NFV)&lt;/a&gt;
-  is the ETSI site on NFV. Given the focus on NFV that I find around when
-  looking at TOSCA (and is even referenced on this page) understanding what
-  NFV is about clarifies a bit more how valuable TOSCA is/can be in this
-  environment.&lt;/li&gt;
-&lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=NHYRESmE6uA"&gt;OCB: AMA on TOSCA the Topology and Orchestration Specification for Cloud Applications - Tal Liron&lt;/a&gt;
-  is an hour-long briefing that covers TOSCA not only in theory but also applies
-  it in practice, and covers some of the new features that are coming up.&lt;/li&gt;
-&lt;/ul&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 30 Jun 2021 14:30:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-06-30:/2021/06/not-sure-if-TOSCA-will-grow-further/</guid><category>Architecture</category><category>architecture</category><category>cloud</category><category>TOSCA</category><category>OASIS</category><category>topology</category><category>orchestration</category><category>infrastructure</category><category>IaC</category><category>NFV</category></item><item><title>Integrating or customizing SaaS within your own cloud environment</title><link>https://blog.siphos.be/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/</link><description>&lt;p&gt;Software as a Service (SaaS) solutions are often a quick way to get new
 capabilities into an organization’s portfolio. Smaller SaaS solutions are
 simple, web-based solutions which barely integrate with the organization’s
