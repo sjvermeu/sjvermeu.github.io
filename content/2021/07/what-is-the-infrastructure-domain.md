@@ -1,9 +1,9 @@
 Title: What is the infrastructure domain?
-Date: 2021-07-14 18:30
+Date: 2021-07-19 15:20
 Category: Architecture
 Tags: architecture,pattern
 Slug: what-is-the-infrastructure-domain
-Status: draft
+Status: published
 
 In my job as domain architect for "infrastructure", I often come across
 stakeholders that have no common understanding of what infrastructure means in

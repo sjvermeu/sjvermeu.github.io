@@ -17,6 +17,8 @@ architecturally relevant information as well.
 So in this post, I'm going to explain a bit more on how I approach documenting
 service and solution insights for architectural relevance.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Why I tend to document some of it myself**
 
 Within the company I currently work for, not all architecture and designs are
@@ -252,4 +254,3 @@ it is coherent, but it takes time and effort to maintain it. If you collaborate
 on it, you have to make sure everybody follows the same practices and agreements
 - so don't make them too complex.
 
-<!-- PELICAN_END_SUMMARY -->

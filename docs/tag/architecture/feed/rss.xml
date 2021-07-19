@@ -1,5 +1,229 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Simplicity is a form of art... - architecture</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Thu, 08 Jul 2021 09:20:00 +0200</lastBuildDate><item><title>Organizing service documentation</title><link>https://blog.siphos.be/2021/07/organizing-service-documentation/</link><description>&lt;p&gt;As I mentioned in &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
+<rss version="2.0"><channel><title>Simplicity is a form of art... - architecture</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Mon, 19 Jul 2021 15:20:00 +0200</lastBuildDate><item><title>What is the infrastructure domain?</title><link>https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/</link><description>&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
+stakeholders that have no common understanding of what infrastructure means in
+an enterprise architecture. Since then, I am trying to figure out a way to
+easily explain it - to find a common, generic view on what infrastructure
+entails. If successful, I could use this common view to provide context on the
+many, many IT projects that are going around.&lt;/p&gt;
+&lt;p&gt;Of course, I do not want to approach this solely from my own viewpoint. There
+are plenty of reference architectures and frameworks out there that could assist
+in this. However, I still have the feeling that they are either too complex to
+use for non-architect stakeholders, too simple to expose the domain properly, or
+just don't fit the situation that I am currently faced with. And that's OK,
+many of these frameworks are intended for architects, and from those frameworks
+I can borrow insights left and right to use for a simple visualization, a
+landscaping of some sort.&lt;/p&gt;
+&lt;p&gt;So, let's first look at the frameworks and references out there. Some remarks
+though that might be important to understand the post:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;When I use "the infrastructure domain", I reflect on how I see it. Within the
+  company that I work for, there is some guidance on what the scope is of the
+  infratructure domain, and that of course strongly influences how I look at
+  "the infrastructure domain". But keep in mind that this is still somewhat
+  organization- or company oriented. YMMV.&lt;/li&gt;
+&lt;li&gt;While I am lucky enough to have received the time and opportunity to learn
+  about enterprise architecture and architecture frameworks (and even got a
+  masters degree for it), I also learned that I know nothing. Enterprises are
+  complex, enterprise architecture is not a single framework or approach, and
+  the enterprise architecture landscape is continuously evolving. So it is very
+  well possible that I am missing something (and I will gladly learn from
+  feedback on this).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;The Open Group Architecture Framework (TOGAF)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you would ask for one common framework out there for enterprise architecture,
+then &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/"&gt;TOGAF&lt;/a&gt; is
+probably it. It is a very exhaustive framework that focuses on various aspects
+of enterprise architecture: the architecture development methodology, techniques
+to use, the content of an architecture view (like metamodel descriptions), and the
+capabilities that a mature organization should pursue.&lt;/p&gt;
+&lt;p&gt;A core part of TOGAF is the &lt;em&gt;Architecture Development Method&lt;/em&gt; cycle, which has
+several phases, including phases that are close to the infrastructure domain:
+"Technology Architecture (D)" as well as areas of "Opportunities and Solutions
+(E)" and "Information Systems Architectures (C)". Infrastructure is more than
+'just' technology, but the core of it does fit within the technology part.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TOGAF Cycle" src="https://blog.siphos.be/images/202107/togaf-adm-cycle.png"/&gt;
+&lt;em&gt;The ADM cycle, taken from &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/chap04.html"&gt;The Open Group, TOGAF 9.2, Chapter 4&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;With TOGAF, you can support a full enterprise architecture view from the
+strategy and vision up to the smallest change and its governance. However, the
+key word here is &lt;em&gt;support&lt;/em&gt;, as TOGAF will not really give you much food for
+simply representing the scope of infrastructure.&lt;/p&gt;
+&lt;p&gt;I'm not saying it isn't a good framework, on the contrary. Especially with
+&lt;a href="http://www.opengroup.org/archimate-forum"&gt;ArchiMate&lt;/a&gt; as modeling language (also
+from The Open Group), using TOGAF and its meta model is a good way to facilitate
+a mature architecture practice and enterprise-wide view within the
+organization. But just like how application architecture and design requires a
+bit more muscle than &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/chap30.html"&gt;TOGAF's
+metamodel&lt;/a&gt;
+supports, the same is true for infrastructure.&lt;/p&gt;
+&lt;p&gt;There are also plenty of other enterprise frameworks out there that can easily
+be mapped to TOGAF. Most of these focus mainly on the layering (business,
+information, application, technology), processes (requirement management and the
+like) and viewpoints (how to visualize certain insights) and, if you're fluent
+in TOGAF, you can easily understand these other frameworks as well. I will not
+be going through those in detail, but I also do not want to insinuate that they
+are not valid anymore if you compare them with TOGAF: TOGAF is very extensive
+and has a huge market adoption, but sometimes an extensive and exhaustive
+framework isn't what a company needs...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TOGAF Technical Reference Model / Integrated Information Infrastructure
+Reference Model&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As TOGAF is extremely extensive, it has parts that can be used to reference or
+visualize infrastructure a bit better. In TOGAF 9.1, we had the &lt;em&gt;TOGAF Technical
+Reference Model (TRM)&lt;/em&gt; and &lt;em&gt;TOGAF Integrated Information Infrastructure
+Reference Model (III-RM)&lt;/em&gt; where you might feel that this is closer to what I
+am seeking (for instance,
+&lt;a href="https://pubs.opengroup.org/architecture/togaf91-doc/arch/chap44.html"&gt;III-RM&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TOGAF III-RM" src="https://blog.siphos.be/images/202107/togaf-iii-rm.png"/&gt;
+&lt;em&gt;Focus of the III-RM, taken from &lt;a href="https://pubs.opengroup.org/architecture/togaf91-doc/arch/chap44.html"&gt;The Open Group, TOGAF 9.1, Chapter 44&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;While it does become a bit more tangible, TOGAF does not expand much on this
+reference model. Instead, it is more meant as a starting point for organizations
+to develop their own reference models.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Information Technology Infrastructure Library (ITIL)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.axelos.com/best-practice-solutions/itil"&gt;ITIL 4&lt;/a&gt; is another very
+common framework, this time owned by AXELOS Limited. The focus of ITIL is on
+process support, with many processes (sorry,
+'&lt;a href="https://wiki.en.it-processmaps.com/index.php/ITIL_4"&gt;practices&lt;/a&gt;' as they are
+called now) being very much close to what I consider to be part of the
+infrastructure domain. The practices give a good overview of 'what things to
+think about' when dealing with the infrastructure domain. Now, ITIL is not
+exclusive to the infrastructure domain, and the company that I work for
+currently considers many of these practices as processes that need to be tackled
+across all domains.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ITIL Practices" src="https://blog.siphos.be/images/202107/itil-practices.jpg"/&gt;
+&lt;em&gt;ITIL 4 Practices, taken from &lt;a href="https://valueinsights.ch/-the-itil-4-practices-overview/"&gt;Value Insights, The ITIL 4 Practices Overview&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Still, I do want to see some of the ITIL practices reflected in the generic
+infrastructure view as they are often influencing the infrastructure domain and
+the projects within. The ITIL practices make it possible to explain that it
+isn't just about downloading and installing software or quickly buying an
+appliance.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reference Model of Open Distributed Processing (RM-ODP)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://www.rm-odp.net/"&gt;RM-ODP standard&lt;/a&gt; has a strong focus on distributed
+processing (hence the name), which is a big part of what the infrastructure
+domain is about. If we ignore the workplace environment for a bit, and focus on
+hosting of applications, the majority of today's hosting initiatives are on
+distributed platforms.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="RM-ODP Five Viewpoints" src="https://blog.siphos.be/images/202107/rm-odp.png"/&gt;
+&lt;em&gt;Five viewpoints of RM-ODP, taken from &lt;a href="https://sparxsystems.com/products/3rdparty/odp/index.html"&gt;MDG Technology for ODP - UML for ODP, SparxSystems&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Within RM-ODP guidance is given on how to handle requirement management, how to
+document the processing semantics, how to identify the components, integrations
+and limitations of the systems, and how to select the most appropriate
+technology. The intention of RM-ODP is to be as precise and formal as possible,
+and leave no room for interpretation. To accomplish that, RM-ODP uses an object
+model approach.&lt;/p&gt;
+&lt;p&gt;Unlike the more business and information system oriented frameworks, RM-ODP has
+a strong focus on infrastructure. Its viewpoints include engineering,
+computational and technology for instance. The challenge that rises here
+however is that it sticks to the more engineering oriented abstractions, which
+make perfect sense for people and stakeholders involved in the infrastructure
+domain, but is often Chinese for others.&lt;/p&gt;
+&lt;p&gt;Personally, I consider RM-ODP to be a domain-specific standard strongly
+associated with the infrastructure domain.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Department of Defense Architecture Framework (DoDAF)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://dodcio.defense.gov/library/dod-architecture-framework/"&gt;DoDAF&lt;/a&gt;
+ is an architecture framework that has a strong focus on the definition
+and visualization of the different viewpoints. It is less tangible than RM-ODP,
+instead focusing on view definitions: what and how should something be
+presented to the stakeholders. The intention of DoDAF is that organizations
+develop and use an enterprise architecture that supports and uses the
+viewpoints that DoDAF prescribes.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="DoDAF viewpoints" src="https://blog.siphos.be/images/202107/dodaf-viewpoints.png"/&gt;
+&lt;em&gt;DoDAF viewpoints, taken from &lt;a href="https://www.visual-paradigm.com/guide/enterprise-architecture/what-is-dodaf-framework/"&gt;"What is DoDAF Framework", Visual Paradigm&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Unlike broad scale architecture frameworks that look at an enterprise in its
+entirety, my impression is that DoDAF is more towards product architecture.
+That makes DoDAF more interesting for solution architectures, which often
+require to be more detailed and thus hit closer to home when looking at the
+infrastructure domain. However, it is not something I can 'borrow' from to
+easily explain what infrastructure is about.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.nato.int/cps/en/natohq/topics_157575.htm"&gt;NATO's Architecture Framework (NAF)&lt;/a&gt;
+seems to play witin the same realm.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sherwood Applied Business Security Architecture (SABSA)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The SABSA framework and methodology has a strong security focus, but covers the
+requirements from full enterprise view up to the solutions themselves. One of
+the benefits of SABSA is inherent to this security-orientation: you really need
+to know and understand how things work before you can show that they are
+secure. Hence, SABSA is a quite complete framework and methodology.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="SABSA Metamodel" src="https://blog.siphos.be/images/202107/sabsa-metamodel.png"/&gt;
+&lt;em&gt;SABSA metamodel, taken from &lt;a href="https://sabsa.org/the-chief-architects-blog-a-brief-history-of-sabsa-21-years-old-this-year/"&gt;"A Brief History of SABSA: Part 1", sabsa.org&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;An important focus area in SABSA is the integration between services, which is
+something I am frequently confronted with at work. Yet unlike the more solution
+driven frameworks, SABSA retains its business-oriented top-down approach, which
+places it alongside the TOGAF one in my opinion. Moreover, we can apply TOGAF's
+development method while using SABSA to receive more direct requirements and
+design focus.&lt;/p&gt;
+&lt;p&gt;Its risk and enabler orientation offers a help to not only explain how things
+are set up, but also why. Especially in the sector I am currently active in
+(financial sector) having a risk-based, security-conscious approach is a good
+fit. The supporting list of attributes, metrics, security services, etc. allow
+for defining more complete architectures.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Control Objectives for IT (CObIT)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In a similar area as ITIL, the &lt;a href="https://www.isaca.org/resources/cobit"&gt;CObIT
+framework&lt;/a&gt; focuses less on a complete
+enterprise architecture framework and more on processes, process maturity, and
+alignment of the processes within the organization. I am personally a fan of
+CObIT as it is a more tangible framework, with more clear deliverables and
+requirements, compared to others. But like with most frameworks, it has
+received numerous updates to fit in continuously growing environments and
+cultures which makes it heavy to use.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="CObIT Core Model" src="https://blog.siphos.be/images/202107/cobit-core-model.jpg"/&gt;
+&lt;em&gt;The CObIT 2019 Core Model, taken from "&lt;a href="https://www.isaca.org/resources/news-and-trends/industry-news/2020/using-cobit-2019-to-plan-and-execute-an-organization-transformation-strategy"&gt;Using CObIT 2019 to plan and execute
+an organization transformation strategy,
+ISACA.org&lt;/a&gt;"&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The framework is less about the content of infrastructure and technology, and
+more about how to assess, develop, build, maintain, operate and control
+whatever service is taken up. However, there are references to infrastructure
+(especially when dealing with non-functionals) or controls that are actively
+situated in infrastructure (such as backup/restore, disaster recovery, etc.)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IT for IT (IT4IT)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The Open Group has a similar framework like CObIT, called
+&lt;a href="https://www.opengroup.org/it4it"&gt;IT4IT&lt;/a&gt;. It does have a reference architecture
+view that attempts to group certain deliverables/services together to create a
+holistic view on what IT should offer. But unlike the larger enterprise
+frameworks it focuses strongly on service delivery and its dependencies.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IT4IT Reference Architecture" src="https://blog.siphos.be/images/202107/it4it-reference-architecture.png"/&gt;
+&lt;em&gt;IT4IT Reference Architecture, taken from &lt;a href="https://www.opengroup.org/it4it-forum"&gt;The Open Group IT4IT
+Forum&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Within the IT4IT reference architecture, a grouping is attempted that maps on a
+value stream, starting from a strategy over the deployment up to the detection
+and correction facilities. This value stream orientation is common across
+frameworks, but often feels like the value is always to "add more", "deliver
+more". In my opinion, rationalization exercises, decommissioning and
+custodianship is too much hidden. Sure, it is part of the change management
+processes and operational maintenance, but those are extremely valuable areas
+that are not expressively visible in these frameworks. Compare that to the
+attention that risk and security receives: while security consciousness should
+be included at all phases of the value stream, security is always explicitly
+mentioned.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Vendor-specific visualizations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Several vendors have their own visualization methodology that represents more
+specific requirements from the domain(s) in which those vendors are active.
+These are generally domain-specific visualizations, even with a vendor-specific
+view. Such methodologies are nice to use when dealing with specific viewpoints,
+but I do not believe these should be considered "architecture" frameworks. They
+don't deal with requirement management, strategy alignment, and often lack
+functional and non-functional insights. Still, they are a must to know in the
+infrastructure areas.&lt;/p&gt;
+&lt;p&gt;If you are active in Amazon AWS for instance, then you've undoubtedly come
+across drawings like the one visible in "&lt;a href="https://aws.amazon.com/blogs/architecture/wordpress-best-practices-on-aws/"&gt;Wordpress: Best Practices on
+AWS&lt;/a&gt;".
+These drawings provide a deployment viewpoint that lists the main interactions
+between AWS services.&lt;/p&gt;
+&lt;p&gt;When you are more network oriented, then you've been immersed in Cisco's network
+diagrams, like the one visible in "&lt;a href="https://www.cisco.com/c/en/us/td/docs/solutions/Verticals/PCI_Retail/roc.html"&gt;Verizon Business Assessment for: Cisco PCI
+Solution for
+Retail&lt;/a&gt;".
+These network diagrams again focus on the deployment viewpoint of the network
+devices and their main interactions.&lt;/p&gt;
+&lt;p&gt;There are probably plenty more of these specific visualizations, but the two
+mentioned above are most visible to me currently.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are plenty of frameworks out there to learn from, and some of these can be
+used to find ways of explaining what the infrastructure domain is about.
+However, they are often all very complete and require an architectural mindset
+to start from, which is not obvious when trying to convey something to outside
+or indirect stakeholders.&lt;/p&gt;
+&lt;p&gt;Few frameworks have a reference that is directly consumable by non-architect
+stakeholders. The most tangible ones seem to be related to the IT processes, but
+those still require an IT mindset to interpret.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 19 Jul 2021 15:20:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-07-19:/2021/07/what-is-the-infrastructure-domain/</guid><category>Architecture</category><category>architecture</category><category>pattern</category></item><item><title>Organizing service documentation</title><link>https://blog.siphos.be/2021/07/organizing-service-documentation/</link><description>&lt;p&gt;As I mentioned in &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
 I try to keep track of the architecture and designs of the IT services and
 solutions in a way that I feel helps me keep in touch with all the various
 services and solutions out there. Similar to how system administrators try to
@@ -9,202 +233,6 @@ organization to benefit from, architects should try to keep track of
 architecturally relevant information as well.&lt;/p&gt;
 &lt;p&gt;So in this post, I'm going to explain a bit more on how I approach documenting
 service and solution insights for architectural relevance.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Why I tend to document some of it myself&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Within the company I currently work for, not all architecture and designs are
-handled by a central repository, but that doesn't mean there is no architecture
-and design available. They are more commonly handled through separate documents,
-online project sites and the like. If we had a common way of documenting
-everything in the same tool using the same processes and the same taxonomy, it
-wouldn't make sense to document things myself... unless even then I would find
-that I am missing some information.&lt;/p&gt;
-&lt;p&gt;It all started when I tried to keep track of past decisions for a service or
-solution. Decisions on architecture boards, on risk forums, on department
-steering committees and what not. &lt;em&gt;Historical insights&lt;/em&gt; I call it, and it often
-provides a good sense of why a solution or service came up, what the challenges
-were, which principles were used, etc.&lt;/p&gt;
-&lt;p&gt;Once I started tracking the historical decisions and topics, I quickly moved on
-to a common structure: an entry page with the most common information about the
-service or solution, and then subpages for the following categories:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Administration (processes, authorizations, procedures)&lt;/li&gt;
-&lt;li&gt;Authentication&lt;/li&gt;
-&lt;li&gt;Authorizationn&lt;/li&gt;
-&lt;li&gt;Auditing and logging&lt;/li&gt;
-&lt;li&gt;Configuration management&lt;/li&gt;
-&lt;li&gt;Cost management&lt;/li&gt;
-&lt;li&gt;Cryptography and privacy&lt;/li&gt;
-&lt;li&gt;Data management (data handling, definitions, governance, lineage,
-  backup/restore, ...)&lt;/li&gt;
-&lt;li&gt;Deployment&lt;/li&gt;
-&lt;li&gt;Design and development (incl. naming convention)&lt;/li&gt;
-&lt;li&gt;Figures&lt;/li&gt;
-&lt;li&gt;High availability and disaster recovery&lt;/li&gt;
-&lt;li&gt;History&lt;/li&gt;
-&lt;li&gt;Operations (actor groups, source systems &amp;amp; interactions/external interfacing)&lt;/li&gt;
-&lt;li&gt;Organization (management, organisational structure within the company, etc.)&lt;/li&gt;
-&lt;li&gt;Performance management&lt;/li&gt;
-&lt;li&gt;Patterns&lt;/li&gt;
-&lt;li&gt;Processes&lt;/li&gt;
-&lt;li&gt;Quality assurance &amp;amp; reporting&lt;/li&gt;
-&lt;li&gt;Roadmap and restrictions (incl. lifecycle)&lt;/li&gt;
-&lt;li&gt;Risks and technical debt&lt;/li&gt;
-&lt;li&gt;Runtime information&lt;/li&gt;
-&lt;li&gt;Terminology&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Now, I won't go in depth about all the different categories listed. Perhaps some
-areas warrant closer scrutiny in later posts, but for now the names of the
-categories should be sufficiently self-explanatory.&lt;/p&gt;
-&lt;p&gt;If there is an internal service (website or similar) that covers the
-details properly, then I will of course not duplicate that information. Instead,
-I will add a link to that resource and perhaps just document how to interpret
-the information on that resource.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;The entry page&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The entry page of a service or solution always looks the same. It starts off
-with a few attributes associated with the service:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;The taxonomy used within the company&lt;/li&gt;
-&lt;li&gt;The main point of contact(s)&lt;/li&gt;
-&lt;li&gt;The backlog where the responsible team tracks its progress and evolution&lt;/li&gt;
-&lt;li&gt;A link to the main documentation resources&lt;/li&gt;
-&lt;li&gt;The internal working name&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;The &lt;em&gt;taxonomy&lt;/em&gt; is something I strongly appreciate in my current company. It is
-a uniform identifier associated with the product, service or solution, and is
-used for several of the operational processes the company has. This taxonomy
-comes up in things like chargeback, service level agreements, responsibility
-overviews, data classifications, enterprise architectural overviews, etc.&lt;/p&gt;
-&lt;p&gt;For instance, a managed macbook (asset) might have a taxonomy identifier of
-&lt;code&gt;mmac&lt;/code&gt;, or we have a service for exchanging internal company data identified as
-&lt;code&gt;cd70&lt;/code&gt; (it doesn't need to have an identifier that "reads" properly). Of course,
-people don't just run around shouting the identifiers, but when we go through
-the information available at the company, this identifier is often the primary
-key so to speak to find the information.&lt;/p&gt;
-&lt;p&gt;For the &lt;em&gt;main points of contacts&lt;/em&gt;, I usually just document the person that is
-my go-to person to get some quick insights. The full list of all contacts (like
-product owner, product manager, system architect, business analyst, release
-manager, etc.) is managed in a central tool (and uses the taxonomy to quickly
-find the right person), so I just have the few names that I quickly need listed
-here.&lt;/p&gt;
-&lt;p&gt;The &lt;em&gt;backlog&lt;/em&gt; is something I recently added to support any questions on "when
-will we have feature XYZ". In the past, I had to contact the people to get this
-information, but that often became cumbersome, especially when the team uses a
-proper tool for tracking the work on the service.&lt;/p&gt;
-&lt;p&gt;The &lt;em&gt;main documentation&lt;/em&gt; is often the most important part. It is a link to the
-documentation that the team provides for end users, architects or other roles.
-Some teams still have their information on a NAS, others in a document library
-on SharePoint, others use a wiki, and there are teams that use a structured
-document management system. Working for a big company has its consequences...&lt;/p&gt;
-&lt;p&gt;Finally, the &lt;em&gt;internal working name&lt;/em&gt; is the name that a service or solution
-receives the most. For infrastructure services, this is often the name of the
-product from the time the product entered the organization. While the vendor has
-switched the name of the product numerous times since, the old name sticks. For
-instance, while I will document IBM's cloud offering as "IBMCloud" (its current
-name) I will list its working name as "Bluemix" because that's how the company
-internally often refers to it.&lt;/p&gt;
-&lt;p&gt;After the basic attributes, I have&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;a few paragraphs for &lt;em&gt;description&lt;/em&gt;&lt;/li&gt;
-&lt;li&gt;a diagram or architecture view to give a &lt;em&gt;high level design&lt;/em&gt;&lt;/li&gt;
-&lt;li&gt;the &lt;em&gt;most important questions&lt;/em&gt; surrounding the service or solution&lt;/li&gt;
-&lt;li&gt;some &lt;em&gt;tips and titbits&lt;/em&gt; for myself&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;The high level design is often a view that I maintain myself, which uses the
-&lt;a href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/"&gt;abstraction&lt;/a&gt; that I
-mentioned earlier in my blog. It is not covering everything, but to a sufficient
-level that I can quickly understand the context of the service or solution and
-how it is generally implemented.&lt;/p&gt;
-&lt;p&gt;The most important questions are mostly a refresher for questions that pop up
-during discussions. For instance, for an API gateway, common questions might be
-"What are the security controls that it enforces" or "Does the API GW perform
-schema validation on JSON structures?".&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;The history of a service&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Below the entry page, the various categories come up. As I mentioned, it all
-started with the historical insights on the service. By having a chronological
-overview of all decisions and related material per service, I can quickly find
-the most important information in many cases.&lt;/p&gt;
-&lt;p&gt;Want to know the latest architecture for a service? Let's look in the history
-when the last architectural review was, and at which decision body or board it
-came up. Once found, I just need to go to the meeting minutes or case details to
-find it.&lt;/p&gt;
-&lt;p&gt;Want to know why the decision was taken to allow a non-standard integration?
-Take a look at the history where this decision was taken, and consult its
-meeting minutes.&lt;/p&gt;
-&lt;p&gt;Need to ask for a continuance for something but you're just new in the team and
-don't know why or how it was approved in the past? No worries, I'll share with
-you the history of the service, where you can find the information, and coach
-you a bit through our organization.&lt;/p&gt;
-&lt;p&gt;Having the history for services and solutions available has been a massive
-efficiency gain for myself and my immediate stakeholders. Of course, I would
-have loved if the organization tracked this themselves, but as long as they
-don't (especially since organization changes more often than technology) I will
-put time and effort to track it myself (at least for the services and solutions
-that I am interested in).&lt;/p&gt;
-&lt;p&gt;The historical information I track myself is not a copy/paste of the meeting
-minutes of those entries. I try to use a single paragraph explaination, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ARB  2020/12/05     "Switch of PostgreSQL authentication provider to PAM+sssd"
-    Approval to switch the authentication provider of the PostgreSQL
-    database assets from the internal authentication to a PAM-supported
-    method, and use the RHEL sssd solution as a facilitator. Link with
-    Active Directory.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The &lt;code&gt;ARB&lt;/code&gt; is the name of the decision body (here it could be the &lt;em&gt;Architecture
-Review Board&lt;/em&gt;) and tells me where I can find more details if needed. I don't
-really bother with trying to add actual links, because that takes time and often
-the links become invalid after we switch from one solution to another.&lt;/p&gt;
-&lt;p&gt;Since then, I also started adding information related to the service that isn't
-just decision body oriented:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Incident    2021/06/08  "Fastly major outage"
-    A major outage occurred on Fastly, a widely used cloud edge provider,
-    between 09:47 UTC and 12:35 UTC. This impacted service ABC and DEF.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Incidents can be internal or external, and if they are internal I'll document
-the incident and root cause analysis numbers associated with the incident as
-well.&lt;/p&gt;
-&lt;p&gt;It also doesn't need to be about problems. It can be announcements from the
-vendor as well, as long as the announcement is or can be impactful for my work.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;How complete is this overview&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;My overview is far, far, far from complete. It is also not my intention to make
-it a complete overview, but instead use it as a quick reference when needed.
-Services that are commonly discussed (for instance because they have wide
-implications on other domain's architectures) are documented more in depth than
-services that are barely influential to my meetings and projects. And that
-doesn't mean that the services themselves are not important.&lt;/p&gt;
-&lt;p&gt;Furthermore, the only areas that I truly want to have up-to-date, is the entry
-page and the history. For all the other information I always hope to be able to
-link to existing documentation that is kept up-to-date by the responsible teams.&lt;/p&gt;
-&lt;p&gt;But in case the information isn't available, using the same structure for noting
-down what insights that I gather helps out tremendously.&lt;/p&gt;
-&lt;p&gt;I also don't want my overview to become a critical asset. It is protected from
-prying eyes (as there is occasionally confidential information inside) and I am
-coaching the organization to take up a lot of the information gathering and
-documentation in a structured way. For instance, for managing EOL information,
-we are publishing this in a standard way for all internal stakeholders to see
-(and report on). The roadmap and strategy for the services within the domain are
-now being standardized within the backlog tool as well, so that everybody can
-clearly document when they expect to work on something, when certain investments
-are needed, etc.&lt;/p&gt;
-&lt;p&gt;In the past, architects often had to scramble all that information together
-(hence one of my categories on &lt;em&gt;Roadmap&lt;/em&gt;) whereas we can now use the backlog
-tools of the teams themselves to report on it.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Which tool to use?&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Personally, I use a wiki-alike service for this, so that I can search through
-the pages, move and merge information, use tagging and labels and what not. I
-also think that, unless the company already has a central tool for this, a well
-maintained wiki with good practices and agreements on how to use it would do
-wonders.&lt;/p&gt;
-&lt;p&gt;I've been playing around in my spare time with several wiki technologies.
-&lt;a href="https://www.dokuwiki.org/dokuwiki"&gt;Dokuwiki&lt;/a&gt; is still one of my favorites due
-to its simplicity, whereas &lt;a href="https://www.mediawiki.org/wiki/MediaWiki"&gt;MediaWiki&lt;/a&gt;
-is one of my go-to's for when the organization really wants to pursue a scalable
-and flexible organization-wide wiki. However, considering that I try to
-structure the information in a hierarchical way, I am planning to play around
-with &lt;a href="https://www.bookstackapp.com/"&gt;BookStack&lt;/a&gt; a bit more.&lt;/p&gt;
-&lt;p&gt;But while having a good tool is important, it isn't the critical part of
-documenting information. Good documentation, in my opinion, comes from a good
-structure and a coherent way of working. If you do it yourself, then of course
-it is coherent, but it takes time and effort to maintain it. If you collaborate
-on it, you have to make sure everybody follows the same practices and agreements
-- so don't make them too complex.&lt;/p&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 08 Jul 2021 09:20:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-07-08:/2021/07/organizing-service-documentation/</guid><category>Architecture</category><category>architecture</category><category>documentation</category><category>structure</category><category>wiki</category></item><item><title>Not sure if TOSCA will grow further</title><link>https://blog.siphos.be/2021/06/not-sure-if-TOSCA-will-grow-further/</link><description>&lt;p&gt;TOSCA is an OASIS open standard, and is an abbreviation for &lt;em&gt;Topology and
 Orchestration Specification for Cloud Applications&lt;/em&gt;. It provides a
 domain-specific language to describe how an application should be deployed
