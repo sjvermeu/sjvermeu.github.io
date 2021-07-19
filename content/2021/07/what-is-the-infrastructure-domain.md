@@ -193,4 +193,89 @@ are set up, but also why. Especially in the sector I am currently active in
 fit. The supporting list of attributes, metrics, security services, etc. allow
 for defining more complete architectures.
 
+**Control Objectives for IT (CObIT)**
+ 
+In a similar area as ITIL, the [CObIT
+framework](https://www.isaca.org/resources/cobit) focuses less on a complete
+enterprise architecture framework and more on processes, process maturity, and
+alignment of the processes within the organization. I am personally a fan of
+CObIT as it is a more tangible framework, with more clear deliverables and
+requirements, compared to others. But like with most frameworks, it has
+received numerous updates to fit in continuously growing environments and
+cultures which makes it heavy to use.
+
+![CObIT Core Model]({static}/images/202107/cobit-core-model.jpg)
+*The CObIT 2019 Core Model, taken from "[Using CObIT 2019 to plan and execute
+an organization transformation strategy,
+ISACA.org](https://www.isaca.org/resources/news-and-trends/industry-news/2020/using-cobit-2019-to-plan-and-execute-an-organization-transformation-strategy)"*
+
+The framework is less about the content of infrastructure and technology, and
+more about how to assess, develop, build, maintain, operate and control
+whatever service is taken up. However, there are references to infrastructure
+(especially when dealing with non-functionals) or controls that are actively
+situated in infrastructure (such as backup/restore, disaster recovery, etc.)
+
+**IT for IT (IT4IT)**
+
+The Open Group has a similar framework like CObIT, called
+[IT4IT](https://www.opengroup.org/it4it). It does have a reference architecture
+view that attempts to group certain deliverables/services together to create a
+holistic view on what IT should offer. But unlike the larger enterprise
+frameworks it focuses strongly on service delivery and its dependencies.
+
+![IT4IT Reference Architecture]({static}/images/202107/it4it-reference-architecture.png)
+*IT4IT Reference Architecture, taken from [The Open Group IT4IT
+Forum](https://www.opengroup.org/it4it-forum)*
+
+Within the IT4IT reference architecture, a grouping is attempted that maps on a
+value stream, starting from a strategy over the deployment up to the detection
+and correction facilities. This value stream orientation is common across
+frameworks, but often feels like the value is always to "add more", "deliver
+more". In my opinion, rationalization exercises, decommissioning and
+custodianship is too much hidden. Sure, it is part of the change management
+processes and operational maintenance, but those are extremely valuable areas
+that are not expressively visible in these frameworks. Compare that to the
+attention that risk and security receives: while security consciousness should
+be included at all phases of the value stream, security is always explicitly
+mentioned.
+
+**Vendor-specific visualizations**
+
+Several vendors have their own visualization methodology that represents more
+specific requirements from the domain(s) in which those vendors are active.
+These are generally domain-specific visualizations, even with a vendor-specific
+view. Such methodologies are nice to use when dealing with specific viewpoints,
+but I do not believe these should be considered "architecture" frameworks. They
+don't deal with requirement management, strategy alignment, and often lack
+functional and non-functional insights. Still, they are a must to know in the
+infrastructure areas.
+
+If you are active in Amazon AWS for instance, then you've undoubtedly come
+across drawings like the one visible in "[Wordpress: Best Practices on
+AWS](https://aws.amazon.com/blogs/architecture/wordpress-best-practices-on-aws/)".
+These drawings provide a deployment viewpoint that lists the main interactions
+between AWS services.
+
+When you are more network oriented, then you've been immersed in Cisco's network
+diagrams, like the one visible in "[Verizon Business Assessment for: Cisco PCI
+Solution for
+Retail](https://www.cisco.com/c/en/us/td/docs/solutions/Verticals/PCI_Retail/roc.html)".
+These network diagrams again focus on the deployment viewpoint of the network
+devices and their main interactions.
+
+There are probably plenty more of these specific visualizations, but the two
+mentioned above are most visible to me currently.
+
+**Conclusions**
+
+There are plenty of frameworks out there to learn from, and some of these can be
+used to find ways of explaining what the infrastructure domain is about.
+However, they are often all very complete and require an architectural mindset
+to start from, which is not obvious when trying to convey something to outside
+or indirect stakeholders.
+
+Few frameworks have a reference that is directly consumable by non-architect
+stakeholders. The most tangible ones seem to be related to the IT processes, but
+those still require an IT mindset to interpret.
+
 <!-- PELICAN_END_SUMMARY -->
