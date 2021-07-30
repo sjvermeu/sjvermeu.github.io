@@ -3,7 +3,7 @@ Date: 2021-07-30 20:00
 Category: Architecture
 Tags: architecture,cloud,DRP
 Slug: disaster-recovery-in-the-public-cloud
-Status: draft
+Status: published
 
 The public cloud is a different beast than an on-premise environment, and that
 also reflects itself on how we (should) look at the processes that are

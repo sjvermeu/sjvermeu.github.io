@@ -1,234 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art...</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/feed/all.atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2021-07-19T15:20:00+02:00</updated><entry><title>What is the infrastructure domain?</title><link href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/" rel="alternate"></link><published>2021-07-19T15:20:00+02:00</published><updated>2021-07-19T15:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-19:/2021/07/what-is-the-infrastructure-domain/</id><summary type="html">&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art...</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/feed/all.atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2021-07-30T20:00:00+02:00</updated><entry><title>Disaster recovery in the public cloud</title><link href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/" rel="alternate"></link><published>2021-07-30T20:00:00+02:00</published><updated>2021-07-30T20:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-30:/2021/07/disaster-recovery-in-the-public-cloud/</id><content type="html">&lt;p&gt;The public cloud is a different beast than an on-premise environment, and that
+also reflects itself on how we (should) look at the processes that are
+actively steering infrastructure designs and architecture. One of these
+is the business continuity, severe incident handling, and the
+hopefully-never-to-occur disaster recovery. When building up procedures
+for handling disasters (&lt;a href="https://en.wikipedia.org/wiki/Disaster_recovery"&gt;DRP = Disaster Recovery Procedure or Disaster 
+Recover Planning&lt;/a&gt;),
+it is important to keep in mind what these are about.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What is a disaster&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Disasters are major incidents that have wide-ranging consequences to the
+regular operations of the business. What entails a disaster can be different
+between organizations, although they are commonly tied to the size of the
+infrastructure and the organizational and infrastructural maturity. I'll get
+back to the size dependency later when covering public cloud.&lt;/p&gt;
+&lt;p&gt;A small organization that only has a few systems can declare a
+disaster when all those systems are unreachable because their network
+provider's line is interrupted. A larger organization probably has
+redundancy of the network in place to mitigate that threat. And even
+without the redundancy, organizations might just not depend that much
+on those services.&lt;/p&gt;
+&lt;p&gt;The larger the environment becomes though, the more the business depends
+on the well-being of the services. And while I can only hope that high
+availability, resiliency and appropriate redundancy are taken into account
+as well, there are always threats that could jeopardize the availability
+of services.&lt;/p&gt;
+&lt;p&gt;When the problem at hand is specific to one or a manageable set of services,
+then taking appropriate action to remediate that threat is generally not a
+disaster. It can be a severe incident, but in general it is taken up
+by the organization as an incident with a sufficiently small yet
+efficient and well organized coordination: the teams involved are 
+low in numbers, and the coordination can be done accurately.&lt;/p&gt;
+&lt;p&gt;However, when the problem is significant or has a very wide scope, then
+depending on the standard incident coordination will be insufficient. You
+need to coordinate across too many teams, make sure communication is done
+correctly, business is continuously involved/consulted, and most of all - 
+you want to make sure that the organization doesn't independently try
+to resolve issues when they don't have a full view on the situation
+themselves.&lt;/p&gt;
+&lt;p&gt;The latter is a major reason in my opinion why a DRP is so important
+to have (the plan/procedure, not an actual disaster). If there is no
+proper, well-aligned plan of action, teams will try to get in touch
+with other teams, polluting communication and only getting incomplete
+information. They might take action that other teams should know about
+(but won't) or are heavily impacted by (e.g. because they are at that
+time trying to do activities themselves). It can make the situation
+much worse.&lt;/p&gt;
+&lt;p&gt;Because we have to make a distinction between incident management
+and disaster management, an organization has to formally declare
+a problem as a disaster, and communicate that singular fact ("we
+are now in disaster mode") so that all teams know how to respond: 
+according to the Disaster Recovery Plan (DRP).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Disasters are not just 'force majeure'&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Disasters aren't extraordinary events or circumstances beyond the
+control of the organization. Depending on the business needs, you
+might very well take precautionary actions against situations you've
+never encountered before and will never encounter. We've recently had
+a disastrous weather in Belgium (and other countries in Western Europe)
+with floods happening in large areas. But that doesn't mean that
+for an organization a flood event will trigger a disaster declaration
+within a company (the disastrous weather was a disaster from a
+human side, with several dozen deaths and millions of damage, so it
+feels somewhat incorrect to consider the threat from a theoretical
+standpoint here).&lt;/p&gt;
+&lt;p&gt;If you're located in a flood-sensitive environment, you can still take
+precautionary actions and assess what to do in case of a flood event. 
+Depending on the actions taken, a flood event (threat) will not manifest
+into availability concerns, data and infrastructure destruction, people
+unavailability, etc. It is only when the threat itself turns into an
+unforeseen (or non-remediated) situation that we speak of a disaster.&lt;/p&gt;
+&lt;p&gt;This is why disasters depend on organizations, and how risk averse
+the organization (and business) is. Some businesses might not want to
+take precautionary actions against situations that in the past only
+occur once every 100 years, especially if the investment they would
+have to do is too significant compared to the losses they might have.&lt;/p&gt;
+&lt;p&gt;Common disaster threats (sometimes also called catastrophic events)
+that I'm used to evaluate from an infrastructure point of view, with a
+company that has four strategic data centers, multiple headquarter
+locations and a high risk averse setting (considering the financial
+market it plays in) are cyberattacks, local but significant infrastructure
+disruptions (data center failures or destruction), people-oriented
+threats (targetting key personnel), critical provider outages,
+disgruntled employees, and so forth. Searching for risk matrices
+online can give you some interesting pointers, such as the European
+Commission's &lt;a href="https://ec.europa.eu/echo/sites/default/files/swd_2017_176_overview_of_risks_2.pdf"&gt;Overview of Natural and Man-made Disaster Risks the
+European Union may
+face&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Public cloud related events&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In case of public cloud, the catastrophic events that might occur are
+different, and it would be wrong to just consider the same events and
+with the same action plan. A prime example, and the one I really want
+people to focus on, is regional outages.&lt;/p&gt;
+&lt;p&gt;If your current company considers region-wide failures (for
+instance because you have two data centers but within the same
+region) more from a reactive point of view rather than preventive
+(e.g. the DRP in case of region-wide failures is to approach
+the reconstruction within the region whenever possible, rather
+than fail over to a different region), it might feel the same about
+public cloud region failures.&lt;/p&gt;
+&lt;p&gt;That would be wrong though. Whereas it is likely that a region-wide
+failure for a company is not going to happen in its lifetime, a public
+cloud provider is so much more massive in size, that the likelihood
+of region-wide failures is higher. If you do a quick search for
+region-wide failures in AWS or Azure, you'll find plenty of examples.
+And while the failures themselves might be considered 'incidents' from
+the public cloud provider point of view, they might be disasters for
+the companies/customers that rely on them.&lt;/p&gt;
+&lt;p&gt;For me, tackling disaster recovery when dealing with public cloud strongly
+focuses on region failures and (coordinated) recovery from region failures.
+Beyond region failures, I also strongly recommend to look into the dependencies
+that the public cloud consumption has with services outside of the public cloud.
+Some of these dependencies might also play a role in certain catastrophic
+events. Say that you depend on Azure AD for your authentication and
+authorization, and Microsoft is suddenly facing not just a world-wide
+Azure AD outage, but also has to explain to you that they cannot restore its
+data.&lt;/p&gt;
+&lt;p&gt;Preparing for disasters is about preparing for multiple possible catastrophic
+events, and in case of public cloud, you're required to think at massive scales.
+And that includes designing for region-wide failures as well.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Impact of public cloud disasters to the organization&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Generally, if your organization has a decent maturity in dealing with disaster
+recovery planning, they will be using Service Level Agreements with the
+business to help decide what to do in case of disasters. Important
+non-functionals that are included here are RTO (Recovery Time Objective), RPO
+(Recovery Point Objective), and MTD (Maximum Tolerable Downtime). There are
+others possibly listed in the SLA as well, but let me focus on these three.
+If you want to learn more about contigency planning in general, I recommend
+to go through the &lt;a href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf"&gt;NIST Special Publication 800-34 Rev.1, "Contingency Planning
+Guide for Federal Informatino
+Systems"&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;With the RTO, we represent the time it is allowed to take to recover a service
+to the point that it functions again. This might include with reduced capacity
+or performance degradation. The RTO can be expressed in hours, days, weeks
+or other arbitrary value. It is a disaster-oriented value, not availability!
+As long as no disaster is declared, the RTO is not considered.&lt;/p&gt;
+&lt;p&gt;The RPO identifies how much data loss is acceptable by the business in case of
+a disaster. Again, this is disaster-oriented: the business can very well take
+extra-ordinary steps to ensure full transactional consistency outside of 
+disaster situations, yet allow for a "previous day" RPO in case of a disaster.&lt;/p&gt;
+&lt;p&gt;The MTD is most often declared not on a single service, but at business service
+level, and explains how long unavailability of that service is tolerated before
+it seriously impacts the survivability of the business. It is related to the
+RTO, as most services will have an RTO that is more strict/lower value than the
+overall MTD, whereas the MTD is near non-negotiable.&lt;/p&gt;
+&lt;p&gt;Now, what does public cloud disasters have to do with this? Well, in theory
+nothing, as this model and process of capturing business requirements is quite
+sensible and maps out perfectly as well. However (and here's the culprit),
+an organization that sets up new services on a frequent basis might get
+accustomed to certain values, and these values might not be as easy to approach
+in a public cloud environment. Furthermore, the organization might not be
+accustomed to different disaster scenario's for the SLA: having different sets
+of RTO/RPO depending on the category of disaster.&lt;/p&gt;
+&lt;p&gt;Let's get back to the region-wide disasters. A company might have decided not
+to have region-wide proactive measures in place, and fixate their SLA
+non-functionals on local disasters: a data center failure is considered a threat
+that still requires proactive measures, whereas regional failures are treated
+differently.  The organization decides to only have one SLA set defined, and
+includes RTO and RPO values based on the current, local threat matrix. They
+might decide that a majority of applications or services has a RPO of "last
+transaction", meaning the data has to be fully restored at the latest situation
+in case of a disaster.&lt;/p&gt;
+&lt;p&gt;This generally implies synchronous replication as an infrastructural
+solution. If the organization is used to having this method available (for
+instance through SAN replication, cluster technologies, database recovery,
+etc.) then they won't sweat at all if the next dozen services all require
+the same RPO.&lt;/p&gt;
+&lt;p&gt;But now comes the public cloud, and a strong point of attention is region-wide
+failures. Doing synchronous replication across regions is not a proper tactic
+(as it implies significant performance degradation) and especially not sensible
+to do at the same scale as with local replication (e.g. between availability
+zones in the same region). Now you have to tell your business that this RPO
+value is not easily attainable in the public cloud. The public cloud, which
+solves all the wonders in the world. The public cloud, which has more maturity
+on operations than your own company. Yet you can't deliver the same SLA?&lt;/p&gt;
+&lt;p&gt;Apples and pears. The disasters are different, so your offering might be
+different. Of course, you should explain that your 'on premise' disaster
+scenarios do not include region-wide failures, and that if you include
+the same scenarios for 'on premise' that that RPO value would not be
+attainable on premise either.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The public cloud provides many capabilities, and has to deal with a
+significantly larger environment than companies are used to. This also means
+that disasters that are considered 'extremely unlikely' are now 'likely' (given
+the massive scale of the public cloud), and that the threats you have to
+consider while dealing with disaster recovery have to be re-visited for public
+cloud enabled scenarios.&lt;/p&gt;
+&lt;p&gt;My recommendation is to tackle the disaster-oriented non-functional requirements
+by categorizing the disasters and having different requirements based on the
+disaster at hand. Mature your cloud endeavours so that regional outages
+are not a problem anymore (moving them away from the 'disaster' board), and 
+properly map all dependencies you have through the public cloud exercises so
+that you can build up a good view on what possible threats exist that would
+require a well-coordinated approach to tackle the event.&lt;/p&gt;
+</content><category term="Architecture"></category><category term="architecture"></category><category term="cloud"></category><category term="DRP"></category></entry><entry><title>What is the infrastructure domain?</title><link href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/" rel="alternate"></link><published>2021-07-19T15:20:00+02:00</published><updated>2021-07-19T15:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-19:/2021/07/what-is-the-infrastructure-domain/</id><summary type="html">&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
 stakeholders that have no common understanding of what infrastructure means in
 an enterprise architecture. Since then, I am trying to figure out a way to
 easily explain it - to find a common, generic view on what infrastructure
 entails. If successful, I could use this common view to provide context on the
 many, many IT projects that are going around.&lt;/p&gt;
-&lt;p&gt;Of course, I do not want to approach this solely from my own viewpoint. There
-are plenty of reference architectures and frameworks out there that could assist
-in this. However, I still have the feeling that they are either too complex to
-use for non-architect stakeholders, too simple to expose the domain properly, or
-just don't fit the situation that I am currently faced with. And that's OK,
-many of these frameworks are intended for architects, and from those frameworks
-I can borrow insights left and right to use for a simple visualization, a
-landscaping of some sort.&lt;/p&gt;
-&lt;p&gt;So, let's first look at the frameworks and references out there. Some remarks
-though that might be important to understand the post:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;When I use "the infrastructure domain", I reflect on how I see it. Within the
-  company that I work for, there is some guidance on what the scope is of the
-  infratructure domain, and that of course strongly influences how I look at
-  "the infrastructure domain". But keep in mind that this is still somewhat
-  organization- or company oriented. YMMV.&lt;/li&gt;
-&lt;li&gt;While I am lucky enough to have received the time and opportunity to learn
-  about enterprise architecture and architecture frameworks (and even got a
-  masters degree for it), I also learned that I know nothing. Enterprises are
-  complex, enterprise architecture is not a single framework or approach, and
-  the enterprise architecture landscape is continuously evolving. So it is very
-  well possible that I am missing something (and I will gladly learn from
-  feedback on this).&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;The Open Group Architecture Framework (TOGAF)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;If you would ask for one common framework out there for enterprise architecture,
-then &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/"&gt;TOGAF&lt;/a&gt; is
-probably it. It is a very exhaustive framework that focuses on various aspects
-of enterprise architecture: the architecture development methodology, techniques
-to use, the content of an architecture view (like metamodel descriptions), and the
-capabilities that a mature organization should pursue.&lt;/p&gt;
-&lt;p&gt;A core part of TOGAF is the &lt;em&gt;Architecture Development Method&lt;/em&gt; cycle, which has
-several phases, including phases that are close to the infrastructure domain:
-"Technology Architecture (D)" as well as areas of "Opportunities and Solutions
-(E)" and "Information Systems Architectures (C)". Infrastructure is more than
-'just' technology, but the core of it does fit within the technology part.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="TOGAF Cycle" src="https://blog.siphos.be/images/202107/togaf-adm-cycle.png"/&gt;
-&lt;em&gt;The ADM cycle, taken from &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/chap04.html"&gt;The Open Group, TOGAF 9.2, Chapter 4&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;With TOGAF, you can support a full enterprise architecture view from the
-strategy and vision up to the smallest change and its governance. However, the
-key word here is &lt;em&gt;support&lt;/em&gt;, as TOGAF will not really give you much food for
-simply representing the scope of infrastructure.&lt;/p&gt;
-&lt;p&gt;I'm not saying it isn't a good framework, on the contrary. Especially with
-&lt;a href="http://www.opengroup.org/archimate-forum"&gt;ArchiMate&lt;/a&gt; as modeling language (also
-from The Open Group), using TOGAF and its meta model is a good way to facilitate
-a mature architecture practice and enterprise-wide view within the
-organization. But just like how application architecture and design requires a
-bit more muscle than &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/chap30.html"&gt;TOGAF's
-metamodel&lt;/a&gt;
-supports, the same is true for infrastructure.&lt;/p&gt;
-&lt;p&gt;There are also plenty of other enterprise frameworks out there that can easily
-be mapped to TOGAF. Most of these focus mainly on the layering (business,
-information, application, technology), processes (requirement management and the
-like) and viewpoints (how to visualize certain insights) and, if you're fluent
-in TOGAF, you can easily understand these other frameworks as well. I will not
-be going through those in detail, but I also do not want to insinuate that they
-are not valid anymore if you compare them with TOGAF: TOGAF is very extensive
-and has a huge market adoption, but sometimes an extensive and exhaustive
-framework isn't what a company needs...&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;TOGAF Technical Reference Model / Integrated Information Infrastructure
-Reference Model&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;As TOGAF is extremely extensive, it has parts that can be used to reference or
-visualize infrastructure a bit better. In TOGAF 9.1, we had the &lt;em&gt;TOGAF Technical
-Reference Model (TRM)&lt;/em&gt; and &lt;em&gt;TOGAF Integrated Information Infrastructure
-Reference Model (III-RM)&lt;/em&gt; where you might feel that this is closer to what I
-am seeking (for instance,
-&lt;a href="https://pubs.opengroup.org/architecture/togaf91-doc/arch/chap44.html"&gt;III-RM&lt;/a&gt;).&lt;/p&gt;
-&lt;p&gt;&lt;img alt="TOGAF III-RM" src="https://blog.siphos.be/images/202107/togaf-iii-rm.png"/&gt;
-&lt;em&gt;Focus of the III-RM, taken from &lt;a href="https://pubs.opengroup.org/architecture/togaf91-doc/arch/chap44.html"&gt;The Open Group, TOGAF 9.1, Chapter 44&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;While it does become a bit more tangible, TOGAF does not expand much on this
-reference model. Instead, it is more meant as a starting point for organizations
-to develop their own reference models.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Information Technology Infrastructure Library (ITIL)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://www.axelos.com/best-practice-solutions/itil"&gt;ITIL 4&lt;/a&gt; is another very
-common framework, this time owned by AXELOS Limited. The focus of ITIL is on
-process support, with many processes (sorry,
-'&lt;a href="https://wiki.en.it-processmaps.com/index.php/ITIL_4"&gt;practices&lt;/a&gt;' as they are
-called now) being very much close to what I consider to be part of the
-infrastructure domain. The practices give a good overview of 'what things to
-think about' when dealing with the infrastructure domain. Now, ITIL is not
-exclusive to the infrastructure domain, and the company that I work for
-currently considers many of these practices as processes that need to be tackled
-across all domains.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ITIL Practices" src="https://blog.siphos.be/images/202107/itil-practices.jpg"/&gt;
-&lt;em&gt;ITIL 4 Practices, taken from &lt;a href="https://valueinsights.ch/-the-itil-4-practices-overview/"&gt;Value Insights, The ITIL 4 Practices Overview&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Still, I do want to see some of the ITIL practices reflected in the generic
-infrastructure view as they are often influencing the infrastructure domain and
-the projects within. The ITIL practices make it possible to explain that it
-isn't just about downloading and installing software or quickly buying an
-appliance.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Reference Model of Open Distributed Processing (RM-ODP)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The &lt;a href="http://www.rm-odp.net/"&gt;RM-ODP standard&lt;/a&gt; has a strong focus on distributed
-processing (hence the name), which is a big part of what the infrastructure
-domain is about. If we ignore the workplace environment for a bit, and focus on
-hosting of applications, the majority of today's hosting initiatives are on
-distributed platforms.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="RM-ODP Five Viewpoints" src="https://blog.siphos.be/images/202107/rm-odp.png"/&gt;
-&lt;em&gt;Five viewpoints of RM-ODP, taken from &lt;a href="https://sparxsystems.com/products/3rdparty/odp/index.html"&gt;MDG Technology for ODP - UML for ODP, SparxSystems&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Within RM-ODP guidance is given on how to handle requirement management, how to
-document the processing semantics, how to identify the components, integrations
-and limitations of the systems, and how to select the most appropriate
-technology. The intention of RM-ODP is to be as precise and formal as possible,
-and leave no room for interpretation. To accomplish that, RM-ODP uses an object
-model approach.&lt;/p&gt;
-&lt;p&gt;Unlike the more business and information system oriented frameworks, RM-ODP has
-a strong focus on infrastructure. Its viewpoints include engineering,
-computational and technology for instance. The challenge that rises here
-however is that it sticks to the more engineering oriented abstractions, which
-make perfect sense for people and stakeholders involved in the infrastructure
-domain, but is often Chinese for others.&lt;/p&gt;
-&lt;p&gt;Personally, I consider RM-ODP to be a domain-specific standard strongly
-associated with the infrastructure domain.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Department of Defense Architecture Framework (DoDAF)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://dodcio.defense.gov/library/dod-architecture-framework/"&gt;DoDAF&lt;/a&gt;
- is an architecture framework that has a strong focus on the definition
-and visualization of the different viewpoints. It is less tangible than RM-ODP,
-instead focusing on view definitions: what and how should something be
-presented to the stakeholders. The intention of DoDAF is that organizations
-develop and use an enterprise architecture that supports and uses the
-viewpoints that DoDAF prescribes.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="DoDAF viewpoints" src="https://blog.siphos.be/images/202107/dodaf-viewpoints.png"/&gt;
-&lt;em&gt;DoDAF viewpoints, taken from &lt;a href="https://www.visual-paradigm.com/guide/enterprise-architecture/what-is-dodaf-framework/"&gt;"What is DoDAF Framework", Visual Paradigm&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Unlike broad scale architecture frameworks that look at an enterprise in its
-entirety, my impression is that DoDAF is more towards product architecture.
-That makes DoDAF more interesting for solution architectures, which often
-require to be more detailed and thus hit closer to home when looking at the
-infrastructure domain. However, it is not something I can 'borrow' from to
-easily explain what infrastructure is about.&lt;/p&gt;
-&lt;p&gt;&lt;a href="https://www.nato.int/cps/en/natohq/topics_157575.htm"&gt;NATO's Architecture Framework (NAF)&lt;/a&gt;
-seems to play witin the same realm.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Sherwood Applied Business Security Architecture (SABSA)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The SABSA framework and methodology has a strong security focus, but covers the
-requirements from full enterprise view up to the solutions themselves. One of
-the benefits of SABSA is inherent to this security-orientation: you really need
-to know and understand how things work before you can show that they are
-secure. Hence, SABSA is a quite complete framework and methodology.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="SABSA Metamodel" src="https://blog.siphos.be/images/202107/sabsa-metamodel.png"/&gt;
-&lt;em&gt;SABSA metamodel, taken from &lt;a href="https://sabsa.org/the-chief-architects-blog-a-brief-history-of-sabsa-21-years-old-this-year/"&gt;"A Brief History of SABSA: Part 1", sabsa.org&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;An important focus area in SABSA is the integration between services, which is
-something I am frequently confronted with at work. Yet unlike the more solution
-driven frameworks, SABSA retains its business-oriented top-down approach, which
-places it alongside the TOGAF one in my opinion. Moreover, we can apply TOGAF's
-development method while using SABSA to receive more direct requirements and
-design focus.&lt;/p&gt;
-&lt;p&gt;Its risk and enabler orientation offers a help to not only explain how things
-are set up, but also why. Especially in the sector I am currently active in
-(financial sector) having a risk-based, security-conscious approach is a good
-fit. The supporting list of attributes, metrics, security services, etc. allow
-for defining more complete architectures.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Control Objectives for IT (CObIT)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;In a similar area as ITIL, the &lt;a href="https://www.isaca.org/resources/cobit"&gt;CObIT
-framework&lt;/a&gt; focuses less on a complete
-enterprise architecture framework and more on processes, process maturity, and
-alignment of the processes within the organization. I am personally a fan of
-CObIT as it is a more tangible framework, with more clear deliverables and
-requirements, compared to others. But like with most frameworks, it has
-received numerous updates to fit in continuously growing environments and
-cultures which makes it heavy to use.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="CObIT Core Model" src="https://blog.siphos.be/images/202107/cobit-core-model.jpg"/&gt;
-&lt;em&gt;The CObIT 2019 Core Model, taken from "&lt;a href="https://www.isaca.org/resources/news-and-trends/industry-news/2020/using-cobit-2019-to-plan-and-execute-an-organization-transformation-strategy"&gt;Using CObIT 2019 to plan and execute
-an organization transformation strategy,
-ISACA.org&lt;/a&gt;"&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;The framework is less about the content of infrastructure and technology, and
-more about how to assess, develop, build, maintain, operate and control
-whatever service is taken up. However, there are references to infrastructure
-(especially when dealing with non-functionals) or controls that are actively
-situated in infrastructure (such as backup/restore, disaster recovery, etc.)&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;IT for IT (IT4IT)&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The Open Group has a similar framework like CObIT, called
-&lt;a href="https://www.opengroup.org/it4it"&gt;IT4IT&lt;/a&gt;. It does have a reference architecture
-view that attempts to group certain deliverables/services together to create a
-holistic view on what IT should offer. But unlike the larger enterprise
-frameworks it focuses strongly on service delivery and its dependencies.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="IT4IT Reference Architecture" src="https://blog.siphos.be/images/202107/it4it-reference-architecture.png"/&gt;
-&lt;em&gt;IT4IT Reference Architecture, taken from &lt;a href="https://www.opengroup.org/it4it-forum"&gt;The Open Group IT4IT
-Forum&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Within the IT4IT reference architecture, a grouping is attempted that maps on a
-value stream, starting from a strategy over the deployment up to the detection
-and correction facilities. This value stream orientation is common across
-frameworks, but often feels like the value is always to "add more", "deliver
-more". In my opinion, rationalization exercises, decommissioning and
-custodianship is too much hidden. Sure, it is part of the change management
-processes and operational maintenance, but those are extremely valuable areas
-that are not expressively visible in these frameworks. Compare that to the
-attention that risk and security receives: while security consciousness should
-be included at all phases of the value stream, security is always explicitly
-mentioned.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Vendor-specific visualizations&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Several vendors have their own visualization methodology that represents more
-specific requirements from the domain(s) in which those vendors are active.
-These are generally domain-specific visualizations, even with a vendor-specific
-view. Such methodologies are nice to use when dealing with specific viewpoints,
-but I do not believe these should be considered "architecture" frameworks. They
-don't deal with requirement management, strategy alignment, and often lack
-functional and non-functional insights. Still, they are a must to know in the
-infrastructure areas.&lt;/p&gt;
-&lt;p&gt;If you are active in Amazon AWS for instance, then you've undoubtedly come
-across drawings like the one visible in "&lt;a href="https://aws.amazon.com/blogs/architecture/wordpress-best-practices-on-aws/"&gt;Wordpress: Best Practices on
-AWS&lt;/a&gt;".
-These drawings provide a deployment viewpoint that lists the main interactions
-between AWS services.&lt;/p&gt;
-&lt;p&gt;When you are more network oriented, then you've been immersed in Cisco's network
-diagrams, like the one visible in "&lt;a href="https://www.cisco.com/c/en/us/td/docs/solutions/Verticals/PCI_Retail/roc.html"&gt;Verizon Business Assessment for: Cisco PCI
-Solution for
-Retail&lt;/a&gt;".
-These network diagrams again focus on the deployment viewpoint of the network
-devices and their main interactions.&lt;/p&gt;
-&lt;p&gt;There are probably plenty more of these specific visualizations, but the two
-mentioned above are most visible to me currently.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;There are plenty of frameworks out there to learn from, and some of these can be
-used to find ways of explaining what the infrastructure domain is about.
-However, they are often all very complete and require an architectural mindset
-to start from, which is not obvious when trying to convey something to outside
-or indirect stakeholders.&lt;/p&gt;
-&lt;p&gt;Few frameworks have a reference that is directly consumable by non-architect
-stakeholders. The most tangible ones seem to be related to the IT processes, but
-those still require an IT mindset to interpret.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
 stakeholders that have no common understanding of what infrastructure means in
 an enterprise architecture. Since then, I am trying to figure out a way to
 easily explain it - to find a common, generic view on what infrastructure
 entails. If successful, I could use this common view to provide context on the
 many, many IT projects that are going around.&lt;/p&gt;
+
+
 &lt;p&gt;Of course, I do not want to approach this solely from my own viewpoint. There
 are plenty of reference architectures and frameworks out there that could assist
 in this. However, I still have the feeling that they are either too complex to
@@ -446,8 +422,7 @@ to start from, which is not obvious when trying to convey something to outside
 or indirect stakeholders.&lt;/p&gt;
 &lt;p&gt;Few frameworks have a reference that is directly consumable by non-architect
 stakeholders. The most tangible ones seem to be related to the IT processes, but
-those still require an IT mindset to interpret.&lt;/p&gt;
-</content><category term="Architecture"></category><category term="architecture"></category><category term="pattern"></category></entry><entry><title>Organizing service documentation</title><link href="https://blog.siphos.be/2021/07/organizing-service-documentation/" rel="alternate"></link><published>2021-07-08T09:20:00+02:00</published><updated>2021-07-08T09:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-08:/2021/07/organizing-service-documentation/</id><summary type="html">&lt;p&gt;As I mentioned in &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
+those still require an IT mindset to interpret.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="pattern"></category></entry><entry><title>Organizing service documentation</title><link href="https://blog.siphos.be/2021/07/organizing-service-documentation/" rel="alternate"></link><published>2021-07-08T09:20:00+02:00</published><updated>2021-07-08T09:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-08:/2021/07/organizing-service-documentation/</id><summary type="html">&lt;p&gt;As I mentioned in &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
 I try to keep track of the architecture and designs of the IT services and
 solutions in a way that I feel helps me keep in touch with all the various
 services and solutions out there. Similar to how system administrators try to

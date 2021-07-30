@@ -12,20 +12,29 @@
 
         <!-- Default metadata -->
     <meta name="author" content="Sven Vermeulen" />
-    <meta name="description" content="" />
+    <meta name="description" content="disaster-recovery-in-the-public-cloud" />
+    <meta name="keywords" content="architecture, cloud, DRP">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
-<meta property="og:type" content="blog" />
-<meta property="og:title" content="Simplicity is a form of art..." />
-<meta property="og:description" content="" />
+<meta property="og:title" content="Disaster recovery in the public cloud" />
+<meta property="og:description" content="The public cloud is a different beast than an on-premise environment, and that also reflects itself on how we (should) look at the processes that are actively steering infrastructure designs and architecture. One of these is the business continuity, severe incident handling, and the hopefully-never-to-occur disaster recovery. When building up …" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://blog.siphos.be" />
-<meta property="og:image" content="https://blog.siphos.be/">
+<meta property="og:url" content="https://blog.siphos.be/drafts/disaster-recovery-in-the-public-cloud.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-07-30 20:00:00+02:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/author/sven-vermeulen.html">
+<meta property="article:section" content="Architecture" />
+	<meta property="article:tag" content="architecture" />
+	<meta property="article:tag" content="cloud" />
+	<meta property="article:tag" content="DRP" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
         <!-- Site Claim -->
 
 
         <!-- Title -->
         <title>
-                
+    Disaster recovery in the public cloud &ndash; Simplicity is a form of art...
         </title>
         
         <!-- Icon -->
@@ -44,7 +53,9 @@
 
             <link href="https://blog.siphos.be/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... RSS Feed" />
 
+            <link href="https://blog.siphos.be/category/architecture/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Categories Atom Feed" />
 
+            <link href="https://blog.siphos.be/category/architecture/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Categories RSS Feed" />
 
 
 
@@ -99,7 +110,7 @@
         <div class="collapse navbar-collapse" id="navbarMenu">
             <!-- Page links -->
             <ul class="navbar-nav mr-auto text-center">
-                <li class="nav-item  active ">                           
+                <li class="nav-item ">                           
                     <a class="nav-link" href="https://blog.siphos.be">
                         <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
                             <path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z" fill="currentColor"></path>
@@ -181,10 +192,27 @@
 
         <!-- Header -->
         <header class="bg-dark text-light shadow-sm pt-3 pb-2">
-    <div class="container">
-        <h1 id="Simplicity is a form of art...">Simplicity is a form of art...</h1>
-        <p style="font-size: larger; color: orange;"></p>
-    </div>
+	<div class="container">
+		<h3 id="disaster-recovery-in-the-public-cloud">Disaster recovery in the public cloud</h3>
+		<p style="font-size:larger;">disaster-recovery-in-the-public-cloud</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/author/sven-vermeulen.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Fri 30 July 2021</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Fri 30 July 2021
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/drp/">drp</a>
+            </div>
+        </div>
+	</div>
         </header>
 
         <!-- Main -->
@@ -193,14 +221,15 @@
                     <!-- Sharing -->
 
                     <!-- Content -->
-    <!-- List of article -->
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/">Disaster recovery in the public cloud</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 30 July 2021</span></span>
-                <p><p>The public cloud is a different beast than an on-premise environment, and that
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>The public cloud is a different beast than an on-premise environment, and that
 also reflects itself on how we (should) look at the processes that are
 actively steering infrastructure designs and architecture. One of these
 is the business continuity, severe incident handling, and the
@@ -392,303 +421,27 @@ are not a problem anymore (moving them away from the 'disaster' board), and
 properly map all dependencies you have through the public cloud exercises so
 that you can build up a good view on what possible threats exist that would
 require a well-coordinated approach to tackle the event.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/drp/">drp</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/">What is the infrastructure domain?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 19 July 2021</span></span>
-                <p><p>In my job as domain architect for "infrastructure", I often come across
-stakeholders that have no common understanding of what infrastructure means in
-an enterprise architecture. Since then, I am trying to figure out a way to
-easily explain it - to find a common, generic view on what infrastructure
-entails. If successful, I could use this common view to provide context on the
-many, many IT projects that are going around.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pattern/">pattern</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/07/organizing-service-documentation/">Organizing service documentation</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 08 July 2021</span></span>
-                <p><p>As I mentioned in <a href="https://blog.siphos.be/2021/06/an-it-services-overview/">An IT services overview</a>
-I try to keep track of the architecture and designs of the IT services and
-solutions in a way that I feel helps me keep in touch with all the various
-services and solutions out there. Similar to how system administrators try to
-find a balance while working on documentation (which is often considered a
-chore) and using a structure that is sufficiently simple and standard for the
-organization to benefit from, architects should try to keep track of
-architecturally relevant information as well.</p>
-<p>So in this post, I'm going to explain a bit more on how I approach documenting
-service and solution insights for architectural relevance.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/07/organizing-service-documentation/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/documentation/">documentation</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/structure/">structure</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/wiki/">wiki</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/06/not-sure-if-TOSCA-will-grow-further/">Not sure if TOSCA will grow further</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 30 June 2021</span></span>
-                <p><p>TOSCA is an OASIS open standard, and is an abbreviation for <em>Topology and
-Orchestration Specification for Cloud Applications</em>. It provides a
-domain-specific language to describe how an application should be deployed
-in the cloud (the topology), which and how many resources it needs, as well
-as tasks to run when certain events occur (the orchestration). When I
-initially came across this standard, I was (and still am) interested
-in how far this goes. The promise of declaring an application (and even
-bundling the necessary application artefacts) within a single asset and
-then using this asset to deploy on whatever cloud is very appealing to
-an architect. Especially in organizations that have a multi-cloud
-strategy.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/06/not-sure-if-TOSCA-will-grow-further/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/tosca/">tosca</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/oasis/">oasis</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/topology/">topology</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/orchestration/">orchestration</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/infrastructure/">infrastructure</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/iac/">iac</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/nfv/">nfv</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/">Integrating or customizing SaaS within your own cloud environment</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 23 June 2021</span></span>
-                <p><p>Software as a Service (SaaS) solutions are often a quick way to get new
-capabilities into an organization’s portfolio. Smaller SaaS solutions are
-simple, web-based solutions which barely integrate with the organization’s
-other solutions, besides the identity and access management (which is often
-handled by federated authentication).</p>
-<p>More complex or intermediate solutions require more integration focus, and
-a whole new market of Integration Platform as a Service (iPaaS) solutions
-came up to facilitate cross-cloud integrations. But even without the iPaaS
-offerings, integrations are often a mandatory part to leverage the benefits
-of the newly activated SaaS solution.</p>
-<p>In this post I want to bring some thoughts on the integrations that might be
-needed to support customizing a SaaS solution.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/saas/">saas</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/integration/">integration</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/customization/">customization</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/06/an-it-services-overview/">An IT services overview</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 14 June 2021</span></span>
-                <p><p>My current role within the company I work for is “domain architect”, part
-of the enterprise architects teams. The domain I am accountable for is 
-“infrastructure”, which can be seen as a very broad one. Now, I’ve been
-maintaining an overview of our IT services before I reached that role, 
-mainly from an elaborate interest in the subject, as well as to optimize
-my efficiency further.</p>
-<p>Becoming a domain architect allows me to use the insights I’ve since
-gathered to try and give appropriate advice, but also now requires me to
-maintain a domain architecture. This structure is going to be the starting
-point of it, although it is not the true all and end all of what I would
-consider a domain architecture.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/06/an-it-services-overview/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/overview/">overview</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/service/">service</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/landscape/">landscape</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/catalog/">catalog</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/capability/">capability</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/06/the-three-additional-layers-in-the-OSI-model/">The three additional layers in the OSI model</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 09 June 2021</span></span>
-                <p><p>At my workplace, I jokingly refer to the three extra layers on top of the
-OSI network model as a way to describe the difficulties of discussions or
-cases. These three additional layers are Financial Layer, Politics Layer
-and Religion Layer, and the idea is that the higher up you go, the more
-challenging discussions will be.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/06/the-three-additional-layers-in-the-OSI-model/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/misc.html">misc</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/osi/">osi</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/meeting/">meeting</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/humor/">humor</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/06/virtualization-vs-abstraction/">Virtualization vs abstraction</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 03 June 2021</span></span>
-                <p><p>When an organization has an extensively large, and heterogeneous
-infrastructure, infrastructure architects will attempt to make itless
-complex and chaotic by introducing and maintaining a certain degree of
-standardization. While many might consider standardization as a
-rationalization (standardizing on a single database technology, single
-vendor for hardware, etc.), rationalization is only one of the many ways
-in which standards can simplify such a degree of complexity.</p>
-<p>In this post, I'd like to point out two other, very common ways to
-standardize the IT environment, without really considering a
-rationalization: abstraction and virtualization.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/06/virtualization-vs-abstraction/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/virtualization/">virtualization</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/abstraction/">abstraction</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/01/selinux-system-administration-3rd-edition/">SELinux System Administration 3rd Edition</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 06 January 2021</span></span>
-                <p><p>As I mentioned previously, recently my latest installment of "SELinux System
-Administration" has been released by Packt Publishing. This is already the
-third edition of the book, after the first (2013) and second (2016) editions
-have gotten reasonable success given the technical and often hard nature of
-full SELinux administration.</p>
-<p>Like with the previous editions, this book remains true to the public of
-system administrators, rather than SELinux policy developers. Of course,
-SELinux policy development is not ignored in the book.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2021/01/selinux-system-administration-3rd-edition/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/packt/">packt</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/book/">book</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/">Abstracting infrastructure complexity</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 25 December 2020</span></span>
-                <p><p>IT is complex. Some even consider it to be more magic than reality. And with
-the ongoing evolutions and inventions, the complexity is not really going
-away. Sure, some IT areas are becoming easier to understand, but that is often
-offset with new areas being explored.</p>
-<p>Companies and organizations that have a sizeable IT footprint generally see an
-increase in their infrastructure, regardless of how many rationalization
-initiatives that are started. Personally, I find it challenging, in a fun
-way, to keep up with the onslaught of new technologies and services that are
-onboarded in the infrastructure landscape that I'm responsible for.</p>
-<p>But just understanding a technology isn't enough to deal with its position in
-the larger environment.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                            <span class="card-link"><a href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/#disqus_thread"></a></span>
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/infrastructure/">infrastructure</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/archimate/">archimate</a>
-                    </div>
-                </div>
-            </div>
+<!-- PELICAN_END_SUMMARY -->
         </div>
 
-    <!-- Pagination -->
-<div class="pagination px-2">
-    <a class="w-100" href="https://blog.siphos.be/index2.html">
-        &ll; Older Posts
-    </a>
-</div>
-    <!-- Google Adsense -->
-                </div>
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
+        <hr>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'simplicityisaformofart';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>                </div>
         </main>
 
     </div>
@@ -722,14 +475,22 @@ the larger environment.</p>
 <script type="application/ld+json">
 {
     "@context": "http://schema.org",
-    "@type": "Blog",
-    "name": " Simplicity is a form of art... ",
-    "url": "https://blog.siphos.be",
-    "image": "https://blog.siphos.be/",
-    "description": ""
+    "@type": "BlogPosting",
+    "name": "Disaster recovery in the public cloud",
+    "headline": "Disaster recovery in the public cloud",
+    "datePublished": "2021-07-30 20:00:00+02:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/author/sven-vermeulen.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/drafts/disaster-recovery-in-the-public-cloud.html",
+    "description": "The public cloud is a different beast than an on-premise environment, and that also reflects itself on how we (should) look at the processes that are actively steering infrastructure designs and architecture. One of these is the business continuity, severe incident handling, and the hopefully-never-to-occur disaster recovery. When building up …"
 }
 </script>
     <!-- Disqus count -->
-<script id="dsq-count-scr" src="//simplicityisaformofart.disqus.com/count.js" async="async"></script></body>
+</body>
 
 </html>
