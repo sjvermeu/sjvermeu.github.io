@@ -12,6 +12,8 @@ easily explain it - to find a common, generic view on what infrastructure
 entails. If successful, I could use this common view to provide context on the
 many, many IT projects that are going around.
 
+<!-- PELICAN_END_SUMMARY -->
+
 Of course, I do not want to approach this solely from my own viewpoint. There
 are plenty of reference architectures and frameworks out there that could assist
 in this. However, I still have the feeling that they are either too complex to
@@ -278,4 +280,3 @@ Few frameworks have a reference that is directly consumable by non-architect
 stakeholders. The most tangible ones seem to be related to the IT processes, but
 those still require an IT mindset to interpret.
 
-<!-- PELICAN_END_SUMMARY -->
