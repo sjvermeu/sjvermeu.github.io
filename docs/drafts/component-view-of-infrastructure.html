@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head -->
+<head>
+
+        <!-- Required metadata tags -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <!-- Default metadata -->
+    <meta name="author" content="Sven Vermeulen" />
+    <meta name="description" content="component-view-of-infrastructure" />
+    <meta name="keywords" content="architecture, component">
+<meta property="og:site_name" content="Simplicity is a form of art..." />
+<meta property="og:title" content="Component view of infrastructure" />
+<meta property="og:description" content="IT architects try to use views and viewpoints to convey the target architecture to the various stakeholders. Each stakeholder has their own interests in the architecture and wants to be able to see their requirements be fulfilled. A core role of the architect is to understand these requirements and make …" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://blog.siphos.be/drafts/component-view-of-infrastructure.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-01 00:00:00+02:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/author/sven-vermeulen.html">
+<meta property="article:section" content="Architecture" />
+	<meta property="article:tag" content="architecture" />
+	<meta property="article:tag" content="component" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
+        <!-- Site Claim -->
+
+
+        <!-- Title -->
+        <title>
+    Component view of infrastructure &ndash; Simplicity is a form of art...
+        </title>
+        
+        <!-- Icon -->
+        <link rel="shortcut icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+
+        <!-- Search engine -->
+            <meta name="robots" content="" />
+
+        <!-- Feeds -->
+            <link href="https://blog.siphos.be/feed/all.atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Full Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/all.rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Full RSS Feed" />
+
+            <link href="https://blog.siphos.be/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... RSS Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Categories Atom Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Categories RSS Feed" />
+
+
+
+        <!-- Styles -->
+        <!--
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/bootstrap/bootstrap.min.css">
+        <!--
+        <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/pygment/friendly.min.css">
+        <!--
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/extra/admonition.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/style.css">
+
+        <!-- Google Analytics -->
+
+        <!-- Google Global Site Tag -->
+
+        <!-- Google Tag Manager -->
+
+        <!-- Google Adsense -->
+
+        <!-- Heap Analytic -->
+
+        <!-- Piwik Tracking -->
+
+        <!-- Matomo Tracking -->
+
+</head>
+
+<!-- Body -->
+<body class="d-flex flex-column" data-spy="scroll" data-target="#toc" data-offset="0" style="position: relative;">
+    <!-- Top anchor -->
+    <a href="#" id="backToTop" style="display: none; z-index: 1;" title="Back to top"><span></span></a>
+
+    <!-- Google tag manager -->
+
+    <!-- Navigation -->
+    <nav class="flex-shrink-0 navbar navbar-expand-md navbar-expand-lg navbar-dark bg-dark text-light shadow-sm">
+        <!-- Logo -->
+        <a class="navbar-brand" href="https://blog.siphos.be"></a>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon small"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <!-- Page links -->
+            <ul class="navbar-nav mr-auto text-center">
+                <li class="nav-item ">                           
+                    <a class="nav-link" href="https://blog.siphos.be">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z" fill="currentColor"></path>
+                        </svg>
+                        Home <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/categories.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M16 6h-8v-6h8v6zm-8 12h-8v6h8v-6zm16 0h-8v6h8v-6zm-11-7v-3h-2v3h-8v5h2v-3h14v3h2v-5h-8z" fill="currentColor"></path>
+                        </svg>
+                        Categories
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/tags.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M10.605 0h-10.605v10.609l13.391 13.391 10.609-10.604-13.395-13.396zm-4.191 6.414c-.781.781-2.046.781-2.829.001-.781-.783-.781-2.048 0-2.829.782-.782 2.048-.781 2.829-.001.782.782.781 2.047 0 2.829z" fill="currentColor"></path>
+                        </svg>
+                        Tags
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/archives.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M1.8 9l-.8-4h22l-.8 4h-2.029l.39-2h-17.122l.414 2h-2.053zm18.575-6l.604-2h-17.979l.688 2h16.687zm3.625 8l-2 13h-20l-2-13h24zm-8 4c0-.552-.447-1-1-1h-6c-.553 0-1 .448-1 1s.447 1 1 1h6c.553 0 1-.448 1-1z" fill="currentColor"></path>
+                        </svg>
+                        Archives
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/pages/about.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z" fill="currentColor"></path>
+                        </svg>
+                        About
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search form -->
+            <form class="form-inline text-center" action="https://blog.siphos.be/search.html">
+                <input class="form-control w-100 bg-dark text-light text-center border-0 p-2" type="text" name="q" pattern=".{3,}" title="At least 3 characters" required="" placeholder="Type here to search" aria-label="Search">
+            </form>
+
+            <!-- Social links -->
+            <ul class="navbar-nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Github</title>
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://twitter.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Twitter</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.825 0 1.572.349 2.096.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.linkedin.com/in/svenvermeulen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Linkedin</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Full page -->
+    <div class="flex-shrink-0 flex-grow-1">
+
+        <!-- Header -->
+        <header class="bg-dark text-light shadow-sm pt-3 pb-2">
+	<div class="container">
+		<h3 id="component-view-of-infrastructure">Component view of infrastructure</h3>
+		<p style="font-size:larger;">component-view-of-infrastructure</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/author/sven-vermeulen.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Wed 01 September 2021</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Wed 01 September 2021
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/component/">component</a>
+            </div>
+        </div>
+	</div>
+        </header>
+
+        <!-- Main -->
+        <main class="py-3">
+                <div class="container">
+                    <!-- Sharing -->
+
+                    <!-- Content -->
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>IT architects try to use views and viewpoints to convey the target architecture
+to the various stakeholders. Each stakeholder has their own interests in the
+architecture and wants to be able to see their requirements be fulfilled. A core
+role of the architect is to understand these requirements and make sure they
+are met, and to balance all the different requirements.</p>
+<p>Architecture languages or metamodels often put significant focus on these
+views. Archimate has a large annex on <a href="https://pubs.opengroup.org/architecture/archimate3-doc/apdxc.html#_Toc10045495">Example Viewpoints</a> just for this purpose. However, unless
+the organization is widely accustomed to enterprise architecture views,
+it is unlikely that the views themselves are the final product: being able
+to translate those views into pretty slides and presentations is still an
+important task for architects when they need to present their findings to
+non-architecture roles.</p>
+<p><strong>Infrastructure domain in viewpoints</strong></p>
+<p>While searching for a way to properly describe the infrastructure domain,
+I tend to align with certain viewpoints as well, as it allows architects
+to decompose a complex situation into more manageable parts. So the question
+was no longer "how do I show what the infrastructure domain is", but rather
+"what different viewpoints do I need to cover the infrastructure domain".</p>
+<p>Currently, I settled on five views:</p>
+<ul>
+<li>A <em>component view</em>, which covers the vertical stack of an IT
+  infrastructure component.</li>
+<li>A <em>location view</em>, which is sort-of the horizontal area for IT
+  infrastructure</li>
+<li>A <em>process view</em>, which covers the general enterprise requirements
+  for IT infrastructure</li>
+<li>A <em>service view</em>, which provides insights in to what functional
+  offerings are provided (and for which I posted a current view a
+  short while ago, titled <a href="https://blog.siphos.be/2021/06/an-it-services-overview/">An IT services overview</a></li>
+<li>A <em>zoning view</em>, which represents the IT environment landscape. A few years
+  ago, I covered this as well in <a href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/">Structuring infrastructural
+  deployments</a></li>
+</ul>
+<p>All these views are related to each other, but represent insights that are
+particularly useful for certain discussions or representations. For instance,
+the <em>zoning view</em> is one of the detail views from the <em>location view</em>. A
+simple relationship between the above five views is the following:</p>
+<p><img alt="Relationship between the five infrastructure views" src="https://blog.siphos.be/images/202109/five-infra-views.png">
+<em>Relationship (sort-of) between the five infrastructure views</em></p>
+<p>Now, this isn't a proper metamodel, just a representation. It starts
+with what the infrastructure domain has to accomplish (process view),
+which defines the services the domain has to support. These services
+consists of several components, and these are deployed in various
+zones across the organization. The zone overview is part of the more
+elaborate location views that are applicable.</p>
+<p><strong>Components are a good introduction to infrastructure</strong></p>
+<p>While a good coverage of the infrastructure domain would start with the
+process view, I think it is not always the easiest. Not all stakeholders
+are fully acquainted with processes and what they entail, and I feel it
+might be easier to start with a more tangible view, i.e. a component
+view.</p>
+<p>For instance, when explaining what IT infrastructure is about to an outsider
+(say, a family member that isn't active in the IT world), I tend to start with
+a component view (often using a cellphone as a start), then going about
+the massive amount of components that need to be managed, hence the need
+for proper processes. After elaborating a bit on the various processes involved,
+we can then go to a service overview, to then move on to hosting all
+those services in a structured and reliable environment (zoning), with
+the various challenges related to locations.</p>
+<p>So, what is the component view that I tend to reuse a lot? It is basically
+the vertical stack that most hosting-related services use to explain where
+their product is situated:</p>
+<p><img alt="Layered view on a component level" src="https://blog.siphos.be/images/202109/component-view.png"></p>
+<p>If you start with a cellphone view, then you can easily describe the hardware,
+operating system, application and data layers in the view. You can mention that
+the hardware is an expensive one-time investment which you hope to use for a
+few years (so you can explain <em>capital expenditures (CapEx)</em> and <em>operational
+expenditures (OpEx)</em>, the latter for instance being a cloud service that the 
+user synchronizes its data to, like Apple iCloud or Google Drive).</p>
+<p>The distinction between operating system and application, and its impact to
+the users, can also be explained easily: operating system upgrades tend to be
+heavier, and users often want to be able to choose when this occurs as such
+upgrades are not always fully backwards compatible, or their hardware isn't
+suited for the next operating system (Apple iOS 12 to iOS 13, or Android 10
+to Android 11). Applications on the other hand are often automatically updated,
+and are less intrusive. However, because there are soo many applications, 
+managing it can be more daunting than the operating system ones.</p>
+<p>Then we can move on to the scaling challenges that an organization has to
+face, which gradually build up more insights in these layers. For instance,
+if a company is developing and maintaining a mobile application, it wants
+to be able to test its new releases on different operating system versions.
+But it would not be sensible to have each developer walk around with six
+phones because they need to test the application on iOS 12, iOS 13, iOS 14,
+Android 9, Android 10 and Android 11. Instead, testing could be done on
+emulators (which can be considered hypervisors, albeit often not that
+exhaustive in features).</p>
+<p>This introduces concepts of optimizing resources for cost, but also the
+benefits of having these services available 'at distance' (remote access
+to the emulation environments) as well as first steps in virtualization.
+You can state that this emulation is something the user can do on their
+own laptops, but that in enterprise environments this is done with either
+cloud services on on the enterprise servers. And these servers, well,
+they too are virtualized for resource optimization.</p>
+<p>We can also discuss the data part, and the challenge that a regular user
+has when his phone is near its limits, the options the user has, and compare
+that with larger enterprises where data hosting is often either centralized,
+or abstracted so that systems are not bound to the limits of their own
+storage capacity.</p>
+<p><strong>Component views enable scalability and cost insights</strong></p>
+<p>The layered view on components of course is more a meta-view than an actual
+one: it shows how a stack can be built up, but the actual benefit is when
+you start looking at the component view of a solution.</p>
+<p>For instance, if we were to look at a Kubernetes cluster, it could look
+like the following:</p>
+<p><img alt="Kubernetes component view" src="https://blog.siphos.be/images/202109/k8s-component-view.png"></p>
+<p>Going bottom-up on this view, we can identify (and thus elaborate on) the
+various layers:</p>
+<ul>
+<li>On the hardware level, we have four physical servers (named sppc01 to sppc04).
+  These servers are of a particular brand and have 32 Gb of memory each (which
+  isn't a lot, the cluster is rather small).</li>
+<li>As hypervisor, KVM is used. This is a popular open source hypervisor. The
+  hypervisor combines the four physical servers in a single cluster.</li>
+<li>KVM then provides eight virtual systems (named svpc01 to svpc08) from the
+  cluster. The first three are used for the Kubernetes control plane, the others
+  are the worker nodes. Note that it is recommended to have the nodes of the
+  control plane be on different physical machines so that a disruption of one
+  physical machine doesn't jeopardize the cluster availability. This can be
+  configured on the hypervisor, but is not in scope of this article.</li>
+<li>The physical servers use a hardened Gentoo Linux operating system using
+  the musl C library, whereas the virtual servers use a regular Gentoo Linux
+  installation as operating system.</li>
+<li>The orchestration layer is Kubernetes itself, using the CRI-O container
+  runtime as sort-of middleware.</li>
+<li>The applications depicted are those of the Kubernetes ecosystem, with
+  the main control plane applications and worker node applications listed.</li>
+</ul>
+<p>If we were to host an application inside the kubernetes cluster, it would
+be deployed on the worker nodes. The logical design of a Kubernetes cluster
+is not something to be represented in a component view (that's more for
+the location view, as there we will talk about the topology of services).</p>
+<p>With such component views, we can have some insights in the costs. Of course,
+this is just a simple Kubernetes cluster, and built with pure open source
+software, so the costs are going to be on the hardware side (and the resources
+they consume), but in larger enterprises the hypervisor is often a commercially
+backed one like Hyper-V (Microsoft) and vSphere (VMware), which have their specific
+licensing terms (which could be the number of machines, or even CPUs).</p>
+<p>Also for Kubernetes, this is often a commercially-backed solution like Rancher
+or OpenShift (Red Hat, part of IBM), which often have per-node licensing terms.</p>
+<p><strong>Component views are just the beginning</strong></p>
+<p>When I use a component view as a means to explain what infrastructure is about,
+it is merely the beginning. It basically provides a layered view, which most
+people can easily relate to. Content-wise, it is reasonably tangible, and is
+something that you can easily find a lot of material for online.</p>
+<p>If we delve into the process part of infrastructure, then it becomes more
+challenging to keep the readers / listeners with you. They can often be
+very abstract, and going into the details of each process is a lengthy
+endavour. I'll cover that in a later post.</p>
+<!-- PELICAN_END_SUMMARY -->
+        </div>
+
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
+                </div>
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="flex-shrink-0 bg-dark text-light small py-1">
+        <div class="container text-center">
+            &copy;  <a href="https://blog.siphos.be">Simplicity is a form of art...</a> by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>. Powered by <a href="http://getpelican.com">Pelican</a>, <a href="http://python.org">Python</a>, <a href="https://getbootstrap.com">Bootstrap 4</a><br>
+            <!-- Do not remove below license sentence -->
+            License: <a href="https://spdx.org/licenses/CC-BY-4.0.html">CC-BY-4.0</a>, based on <a href="https://github.com/vuquangtrong/simplify-theme">Simplify Bootstrap Theme</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/jquery/jquery-3.4.1.min.js"></script>
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/bootstrap/bootstrap.min.js"></script>
+    <!--
+    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/style.js"></script>
+
+    <!-- Sharing -->
+
+    <!-- JSON LD -->
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Component view of infrastructure",
+    "headline": "Component view of infrastructure",
+    "datePublished": "2021-09-01 00:00:00+02:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/author/sven-vermeulen.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/drafts/component-view-of-infrastructure.html",
+    "description": "IT architects try to use views and viewpoints to convey the target architecture to the various stakeholders. Each stakeholder has their own interests in the architecture and wants to be able to see their requirements be fulfilled. A core role of the architect is to understand these requirements and make …"
+}
+</script>
+    <!-- Disqus count -->
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 Title: About
-Date: 2021-06-07 11:20
+Date: 2021-08-26 11:20
 Slug: about
 
 Personalia
@@ -11,6 +11,10 @@ with responsibility on the infrastructure domain (strategy, evolution
 and standardization within both on premise and cloud) at [KBC
 Group](http://www.kbc.com) and am living happily in Mechelen, a city
 near Brussels (also Belgium).
+
+I am also self-employed as side-job to be able to help out people and
+companies, with focus on IT service engineering and formal validation
+of software code.
 
 I'm a heavy proponent of the Free Software movement. I'm an active
 [Gentoo Linux](http://www.gentoo.org) user (a Linux meta-distribution)
