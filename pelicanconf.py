@@ -14,8 +14,8 @@ DEFAULT_LANG = u'en'
 
 # Social widget
 SOCIAL = (
-  ('github', 'https://github.com/sjvermeu'),
-  ('twitter', 'https://twitter.com/sjvermeu'),
+  ('github', 'https://github.com/infrainsight'),
+  ('twitter', 'https://twitter.com/infrainsight'),
   ('linkedin', 'https://www.linkedin.com/in/svenvermeulen')
 )
 
@@ -71,7 +71,8 @@ MARKDOWN = {
 
 DIRECT_TEMPLATES = (('index', 'tags', 'categories', 'archives', 'search')) 
 
-DISQUS_SITENAME = "simplicityisaformofart"
+# Disabling due to security concerns (for visitors)
+#DISQUS_SITENAME = "simplicityisaformofart"
 
 SITEMAP = {
   'format': 'xml',
