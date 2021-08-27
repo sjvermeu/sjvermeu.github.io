@@ -5,7 +5,7 @@ Tags: architecture,process
 Slug: process-view-of-infrastructure
 Status: draft
 
-In my [previous post]({filename}/2021/09/component-view-of-infrastructure.md)
+In my [previous post]({filename}/2021/08/component-view-of-infrastructure.md)
 I started with the five different views that would support a good view on
 what infrastructure would be. These views (component, location, process,
 service and zoning) in my opinion cover the breadth of the domain. The post
