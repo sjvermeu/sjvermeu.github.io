@@ -1,5 +1,5 @@
 Title: Component view of infrastructure
-Date: 2021-09-01 00:00
+Date: 2021-08-27 20:00
 Category: Architecture
 Tags: architecture,component
 Slug: component-view-of-infrastructure
@@ -50,7 +50,7 @@ are even details for another. For instance, the *zoning view* is one of the
 detail views from the *location view*. A simple relationship between the above
 five views is the following:
 
-![Relationship between the five infrastructure views]({static}/images/202109/five-infra-views.png)
+![Relationship between the five infrastructure views]({static}/images/202108/five-infra-views.png)
 
 Now, this isn't a proper metamodel, just a representation. It starts
 with what the infrastructure domain has to accomplish (process view),
@@ -80,7 +80,7 @@ So, what is the component view that I tend to reuse a lot? It is basically
 the vertical stack that most hosting-related services use to explain where
 their product is situated:
 
-![Layered view on a component level]({static}/images/202109/component-view.png)
+![Layered view on a component level]({static}/images/202108/component-view.png)
 
 If you start with a cellphone view, then you can easily describe the hardware,
 operating system, application and data layers in the view. You can mention that
@@ -135,7 +135,7 @@ you start looking at the component view of a solution.
 For instance, if we were to look at a Kubernetes cluster, it could look
 like the following:
 
-![Kubernetes component view]({static}/images/202109/k8s-component-view.png)
+![Kubernetes component view]({static}/images/202108/k8s-component-view.png)
 
 Going bottom-up on this view, we can identify (and thus elaborate on) the
 various layers:
