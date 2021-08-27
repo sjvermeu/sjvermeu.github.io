@@ -1,9 +1,9 @@
 Title: Component view of infrastructure
-Date: 2021-08-27 20:00
+Date: 2021-08-27 21:10
 Category: Architecture
-Tags: architecture,component
+Tags: architecture,component,viewpoint
 Slug: component-view-of-infrastructure
-Status: draft
+Status: published
 
 IT architects try to use views and viewpoints to convey the target architecture
 to the various stakeholders. Each stakeholder has their own interests in the
@@ -31,15 +31,14 @@ explanation on) the infrastructure domain".
 
 I currently settle on five views:
 
-* A *component view*, which covers the vertical stack of an IT
-  infrastructure component.
-* A *location view*, which is the horizontal stack for IT
+* A *component view*, which covers the vertical stack of an IT infrastructure
+  component.
+* A *location view*, which is the horizontal stack for IT infrastructure
+* A *process view*, which covers the general enterprise requirements for IT
   infrastructure
-* A *process view*, which covers the general enterprise requirements
-  for IT infrastructure
-* A *service view*, which provides insights into what functional
-  offerings are provided (and for which I posted a current view a
-  short while ago, titled "[An IT services overview]({filename}/2021/06/an-it-services-overview.md)"
+* A *service view*, which provides insights into what functional offerings are
+  provided (and for which I posted a current view a short while ago, titled "[An
+  IT services overview]({filename}/2021/06/an-it-services-overview.md)")
 * A *zoning view*, which represents the IT environment landscape. A few years
   ago, I covered this as well in "[Structuring infrastructural
   deployments]({filename}/2017/06/structuring-infrastructural-deployments.md)"
@@ -91,7 +90,7 @@ user synchronizes its data to, like Apple iCloud or Google Drive).
 
 The distinction between operating system and application, and its impact on
 the users, can also be explained easily: operating system upgrades are
-heavier, and users often want to choose when this occurs as operating system
+heavier, and users often want to choose when this occurs, as operating system
 upgrades are not always fully backward compatible. Or, the user's hardware isn't
 supported on the next operating system (e.g. upgrading Apple iOS 12 to iOS 13,
 or Android 10 to Android 11). Applications, on the other hand, are often
@@ -132,8 +131,8 @@ The layered view on components, of course, is a meta-view rather than an actual
 one: it shows how a stack can be built up, but the actual benefit is when
 you look at the component view of a solution.
 
-For instance, if we were to look at a Kubernetes cluster, it could look
-like the following:
+For instance, if we were to assess a Kubernetes cluster, it could be represented
+as follows:
 
 ![Kubernetes component view]({static}/images/202108/k8s-component-view.png)
 
@@ -148,16 +147,16 @@ various layers:
 * KVM then provides eight virtual systems (named svpc01 to svpc08) from the
   cluster. The first three are used for the Kubernetes control plane, the others
   are the worker nodes. Note that it is recommended to host the nodes of the
-  control plane on different physical machines so that a failure on one
-  physical machine doesn't jeopardize the cluster availability. This can be
-  configured on the hypervisor, but that is outside the scope of this article.
-* The physical servers use a hardened Gentoo Linux operating system using
-  the musl C library, whereas the virtual servers use a regular Gentoo Linux
+  control plane on different physical machines so that a failure on one physical
+  machine doesn't jeopardize the cluster availability. This can be configured on
+  the hypervisor, but that is outside the scope of this article.
+* The physical servers use a hardened Gentoo Linux operating system using the
+  musl C library, whereas the virtual servers use a regular Gentoo Linux
   installation as their operating system.
 * The orchestration layer is Kubernetes itself, using the CRI-O container
-  runtime as sort-of middleware.
-* The applications depicted are those of the Kubernetes ecosystem, with
-  the main control plane applications and worker node applications listed.
+  runtime as middleware.
+* The applications depicted are those of the Kubernetes ecosystem, with the main
+  control plane applications and worker node applications listed.
 
 If we were to host an application inside the Kubernetes cluster, it would
 be deployed on the worker nodes. The logical design of a Kubernetes cluster
@@ -176,23 +175,23 @@ terms.
 
 **Component views are just the beginning**
 
-When I use a component view to start explaining what infrastructure is about,
+When I use a component view to explain what infrastructure is about,
 it is merely the beginning. It provides a rudimentary layered view, which most
 people can easily relate to. Content-wise, it is reasonably understandable (or
 easy enough to explain) for people that aren't IT savvy, and is something that
 you can easily find a lot of material for online.
 
-If we delve into the processes part of infrastructure, it becomes more
-challenging to keep the readers/listeners with you. Processes can (will)
+If we delve into the processes of (or related to) infrastructure, it becomes
+more challenging to keep the readers/listeners with you. Processes can (will)
 often be very abstract, and going into the details of each process is a lengthy
 endeavor. I'll cover that in a later post.
 
 **Feedback? Comments?**
 
-I've dropped Disqus from my blog site, mainly for concerns about my visitor's
-security, as well as the advertisements that it embedded. I want my blog to be
-simple and straightforward, so I decided to not have any other third-party
-services with it for now.
+A few days ago I've dropped Disqus as comment engine from my blog site, mainly
+for concerns about my visitor's security, as well as the advertisements that it
+embedded. I want my blog to be simple and straightforward, so I decided to not
+have any other third-party services with it for now.
 
 So, if you have feedback or comments, don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be).

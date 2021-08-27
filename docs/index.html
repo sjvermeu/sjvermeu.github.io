@@ -197,6 +197,187 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/">Component view of infrastructure</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 27 August 2021</span></span>
+                <p><p>IT architects try to use views and viewpoints to convey the target architecture
+to the various stakeholders. Each stakeholder has their own interests in the
+architecture and wants to see their requirements fulfilled. A core
+role of the architect is to understand these requirements and make sure the
+requirements are met, and to balance all the different requirements.</p>
+<p>Architecture languages or meta-models often put significant focus on these
+views. Archimate has a large annex on <a href="https://pubs.opengroup.org/architecture/archimate3-doc/apdxc.html#_Toc10045495">Example
+Viewpoints</a>
+just for this purpose. However, unless the organization is widely accustomed to
+enterprise architecture views, it is unlikely that the views themselves are the
+final product: being able to translate those views into pretty slides and
+presentations is still an important task for architects when they need to
+present their findings to non-architecture roles.</p>
+<p><strong>Infrastructure domain in viewpoints</strong></p>
+<p>While searching for a way to describe the infrastructure domain,
+I tend to align with certain viewpoints as well, as it allows architects
+to decompose a complex situation into more manageable parts. So the question
+is no longer "how do I show what the infrastructure domain is", but rather
+"what different viewpoints do I need to cover the scope of (and
+explanation on) the infrastructure domain".</p>
+<p>I currently settle on five views:</p>
+<ul>
+<li>A <em>component view</em>, which covers the vertical stack of an IT infrastructure
+  component.</li>
+<li>A <em>location view</em>, which is the horizontal stack for IT infrastructure</li>
+<li>A <em>process view</em>, which covers the general enterprise requirements for IT
+  infrastructure</li>
+<li>A <em>service view</em>, which provides insights into what functional offerings are
+  provided (and for which I posted a current view a short while ago, titled "<a href="https://blog.siphos.be/2021/06/an-it-services-overview/">An
+  IT services overview</a>")</li>
+<li>A <em>zoning view</em>, which represents the IT environment landscape. A few years
+  ago, I covered this as well in "<a href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/">Structuring infrastructural
+  deployments</a>"</li>
+</ul>
+<p>All these views are related to each other, but represent insights that are
+particularly useful for certain discussions or representations. Some viewpoints
+are even details for another. For instance, the <em>zoning view</em> is a view that
+provides more detail on a particular layer in the <em>location view</em>. A simple
+relationship between the above five views is the following:</p>
+<p><img alt="Relationship between the five infrastructure views" src="https://blog.siphos.be/images/202108/five-infra-views.png"/></p>
+<p>Now, this isn't a proper meta-model, just a representation. It starts
+with what the infrastructure domain has to accomplish (process view),
+which defines the services the domain has to support. These services
+comprise several components, and these are deployed in various
+zones across the organization. The zone overview is part of the more
+elaborate location views.</p>
+<p><strong>Components are a good introduction to infrastructure</strong></p>
+<p>While a good coverage of the infrastructure domain would start with the
+process view, I think it is not always the easiest. Not all stakeholders
+are fully acquainted with processes and what they entail, and I feel it
+might be easier to start with a more tangible view, i.e. a component
+view.</p>
+<p>For instance, when explaining what IT infrastructure is to an outsider
+(say, a family member that isn't active in the IT world), I often start with
+a component view (often using a cellphone as a starting example), then going
+about the massive amount of components that need to be managed, hence the need
+for proper processes. After elaborating a bit on the various processes involved,
+we can then go to a service overview, to then move on to the hosting of all
+those services in a structured and reliable environment (zoning), with the
+various challenges related to locations.</p>
+<p>So, what is the component view that I reuse a lot? It is basically
+the vertical stack that most hosting-related services use to explain where
+their product is situated:</p>
+<p><img alt="Layered view on a component level" src="https://blog.siphos.be/images/202108/component-view.png"/></p>
+<p>If you start with a cellphone view, then you can easily describe the hardware,
+operating system, application, and data layers in the view. You can mention that
+the hardware is an expensive one-time investment that the user hopes to use for
+a few years (so you can explain <em>capital expenditures (CapEx)</em> and <em>operational
+expenditures (OpEx)</em>. The latter can be a cloud service that the
+user synchronizes its data to, like Apple iCloud or Google Drive).</p>
+<p>The distinction between operating system and application, and its impact on
+the users, can also be explained easily: operating system upgrades are
+heavier, and users often want to choose when this occurs, as operating system
+upgrades are not always fully backward compatible. Or, the user's hardware isn't
+supported on the next operating system (e.g. upgrading Apple iOS 12 to iOS 13,
+or Android 10 to Android 11). Applications, on the other hand, are often
+automatically updated and are less intrusive. However, because there are
+many applications, managing the application landscape can be more daunting than
+the operating system one.</p>
+<p>Then we can move on to the scaling challenges that an organization has to
+face, which will gradually build up more insights into the component layers. For
+instance, if a company is developing and maintaining a mobile application, it
+wants to test its new releases on different operating system
+versions.  But it would not be sensible to have each developer walk around with
+six phones because they need to test the application on iOS 12, iOS 13, iOS 14,
+Android 9, Android 10, and Android 11. Instead, testing could be done on
+emulators (which can be considered hypervisors, albeit often not that exhaustive
+in features).</p>
+<p>This introduces concepts of optimizing resources for cost, but also the
+benefits of having these services available 'at distance' (remote access
+to the emulation environments) as well as first steps in virtualization.
+You can state that this emulation is something the user can do on their
+laptops, but that in enterprise environments this is done with either
+cloud services or on the enterprise servers, as that facilitates collaboration
+with team members, and simplifies managing these assets when the teams get
+larger or smaller. And these servers, well, they too are virtualized for
+resource optimization.</p>
+<p>We can also discuss the data layer, and the challenge that a regular user
+has when their phone is near its limits (e.g. storage is full), the options the
+user has (add SD card if the phone supports it, or use cloud storage services),
+and compare that with larger enterprises where data hosting is often either
+centralized or abstracted, so that systems are not bound to the limits of their
+device's storage capacity.</p>
+<p><strong>Component views enable scalability and cost insights</strong></p>
+<p>The layered view on components, of course, is a meta-view rather than an actual
+one: it shows how a stack can be built up, but the actual benefit is when
+you look at the component view of a solution.</p>
+<p>For instance, if we were to assess a Kubernetes cluster, it could be represented
+as follows:</p>
+<p><img alt="Kubernetes component view" src="https://blog.siphos.be/images/202108/k8s-component-view.png"/></p>
+<p>Going bottom-up on this view, we can identify (and thus elaborate on) the
+various layers:</p>
+<ul>
+<li>On the hardware level, we see four physical servers (named sppc01 to sppc04).
+  These servers are of a particular brand and have 32 Gb of memory each (which
+  isn't a lot, the cluster is rather small).</li>
+<li>KVM is used as the hypervisor. The hypervisor combines the four physical
+  servers in a single cluster.</li>
+<li>KVM then provides eight virtual systems (named svpc01 to svpc08) from the
+  cluster. The first three are used for the Kubernetes control plane, the others
+  are the worker nodes. Note that it is recommended to host the nodes of the
+  control plane on different physical machines so that a failure on one physical
+  machine doesn't jeopardize the cluster availability. This can be configured on
+  the hypervisor, but that is outside the scope of this article.</li>
+<li>The physical servers use a hardened Gentoo Linux operating system using the
+  musl C library, whereas the virtual servers use a regular Gentoo Linux
+  installation as their operating system.</li>
+<li>The orchestration layer is Kubernetes itself, using the CRI-O container
+  runtime as middleware.</li>
+<li>The applications depicted are those of the Kubernetes ecosystem, with the main
+  control plane applications and worker node applications listed.</li>
+</ul>
+<p>If we were to host an application inside the Kubernetes cluster, it would
+be deployed on the worker nodes. The logical design of a Kubernetes cluster
+is not something to be represented in a component view (that's more for
+the location view, as there we will talk about the topology of services).</p>
+<p>With such component views, we can have some insights into the costs. Of course,
+this is just a simple Kubernetes cluster, and built with pure open-source
+software, so the costs are going to be on the hardware side (and the resources
+they consume). In larger enterprises, however, the hypervisor is often a
+commercially backed one like Hyper-V (Microsoft) and vSphere (VMware), which
+have their specific licensing terms (which could be the number of machines or
+even CPUs).  Also, enterprises often use a commercially backed Kubernetes, like
+Rancher or OpenShift (Red Hat, part of IBM), which often have per-node licensing
+terms.</p>
+<p><strong>Component views are just the beginning</strong></p>
+<p>When I use a component view to explain what infrastructure is about,
+it is merely the beginning. It provides a rudimentary layered view, which most
+people can easily relate to. Content-wise, it is reasonably understandable (or
+easy enough to explain) for people that aren't IT savvy, and is something that
+you can easily find a lot of material for online.</p>
+<p>If we delve into the processes of (or related to) infrastructure, it becomes
+more challenging to keep the readers/listeners with you. Processes can (will)
+often be very abstract, and going into the details of each process is a lengthy
+endeavor. I'll cover that in a later post.</p>
+<p><strong>Feedback? Comments?</strong></p>
+<p>A few days ago I've dropped Disqus as comment engine from my blog site, mainly
+for concerns about my visitor's security, as well as the advertisements that it
+embedded. I want my blog to be simple and straightforward, so I decided to not
+have any other third-party services with it for now.</p>
+<p>So, if you have feedback or comments, don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
+email</a>.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/component/">component</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/viewpoint/">viewpoint</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/">Disaster recovery in the public cloud</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 30 July 2021</span></span>
@@ -208,190 +389,6 @@ hopefully-never-to-occur disaster recovery. When building up procedures
 for handling disasters (<a href="https://en.wikipedia.org/wiki/Disaster_recovery">DRP = Disaster Recovery Procedure or Disaster 
 Recover Planning</a>),
 it is important to keep in mind what these are about.</p>
-<p><strong>What is a disaster</strong></p>
-<p>Disasters are major incidents that have wide-ranging consequences to the
-regular operations of the business. What entails a disaster can be different
-between organizations, although they are commonly tied to the size of the
-infrastructure and the organizational and infrastructural maturity. I'll get
-back to the size dependency later when covering public cloud.</p>
-<p>A small organization that only has a few systems can declare a
-disaster when all those systems are unreachable because their network
-provider's line is interrupted. A larger organization probably has
-redundancy of the network in place to mitigate that threat. And even
-without the redundancy, organizations might just not depend that much
-on those services.</p>
-<p>The larger the environment becomes though, the more the business depends
-on the well-being of the services. And while I can only hope that high
-availability, resiliency and appropriate redundancy are taken into account
-as well, there are always threats that could jeopardize the availability
-of services.</p>
-<p>When the problem at hand is specific to one or a manageable set of services,
-then taking appropriate action to remediate that threat is generally not a
-disaster. It can be a severe incident, but in general it is taken up
-by the organization as an incident with a sufficiently small yet
-efficient and well organized coordination: the teams involved are 
-low in numbers, and the coordination can be done accurately.</p>
-<p>However, when the problem is significant or has a very wide scope, then
-depending on the standard incident coordination will be insufficient. You
-need to coordinate across too many teams, make sure communication is done
-correctly, business is continuously involved/consulted, and most of all - 
-you want to make sure that the organization doesn't independently try
-to resolve issues when they don't have a full view on the situation
-themselves.</p>
-<p>The latter is a major reason in my opinion why a DRP is so important
-to have (the plan/procedure, not an actual disaster). If there is no
-proper, well-aligned plan of action, teams will try to get in touch
-with other teams, polluting communication and only getting incomplete
-information. They might take action that other teams should know about
-(but won't) or are heavily impacted by (e.g. because they are at that
-time trying to do activities themselves). It can make the situation
-much worse.</p>
-<p>Because we have to make a distinction between incident management
-and disaster management, an organization has to formally declare
-a problem as a disaster, and communicate that singular fact ("we
-are now in disaster mode") so that all teams know how to respond: 
-according to the Disaster Recovery Plan (DRP).</p>
-<p><strong>Disasters are not just 'force majeure'</strong></p>
-<p>Disasters aren't extraordinary events or circumstances beyond the
-control of the organization. Depending on the business needs, you
-might very well take precautionary actions against situations you've
-never encountered before and will never encounter. We've recently had
-a disastrous weather in Belgium (and other countries in Western Europe)
-with floods happening in large areas. But that doesn't mean that
-for an organization a flood event will trigger a disaster declaration
-within a company (the disastrous weather was a disaster from a
-human side, with several dozen deaths and millions of damage, so it
-feels somewhat incorrect to consider the threat from a theoretical
-standpoint here).</p>
-<p>If you're located in a flood-sensitive environment, you can still take
-precautionary actions and assess what to do in case of a flood event. 
-Depending on the actions taken, a flood event (threat) will not manifest
-into availability concerns, data and infrastructure destruction, people
-unavailability, etc. It is only when the threat itself turns into an
-unforeseen (or non-remediated) situation that we speak of a disaster.</p>
-<p>This is why disasters depend on organizations, and how risk averse
-the organization (and business) is. Some businesses might not want to
-take precautionary actions against situations that in the past only
-occur once every 100 years, especially if the investment they would
-have to do is too significant compared to the losses they might have.</p>
-<p>Common disaster threats (sometimes also called catastrophic events)
-that I'm used to evaluate from an infrastructure point of view, with a
-company that has four strategic data centers, multiple headquarter
-locations and a high risk averse setting (considering the financial
-market it plays in) are cyberattacks, local but significant infrastructure
-disruptions (data center failures or destruction), people-oriented
-threats (targetting key personnel), critical provider outages,
-disgruntled employees, and so forth. Searching for risk matrices
-online can give you some interesting pointers, such as the European
-Commission's <a href="https://ec.europa.eu/echo/sites/default/files/swd_2017_176_overview_of_risks_2.pdf">Overview of Natural and Man-made Disaster Risks the
-European Union may
-face</a>.</p>
-<p><strong>Public cloud related events</strong></p>
-<p>In case of public cloud, the catastrophic events that might occur are
-different, and it would be wrong to just consider the same events and
-with the same action plan. A prime example, and the one I really want
-people to focus on, is regional outages.</p>
-<p>If your current company considers region-wide failures (for
-instance because you have two data centers but within the same
-region) more from a reactive point of view rather than preventive
-(e.g. the DRP in case of region-wide failures is to approach
-the reconstruction within the region whenever possible, rather
-than fail over to a different region), it might feel the same about
-public cloud region failures.</p>
-<p>That would be wrong though. Whereas it is likely that a region-wide
-failure for a company is not going to happen in its lifetime, a public
-cloud provider is so much more massive in size, that the likelihood
-of region-wide failures is higher. If you do a quick search for
-region-wide failures in AWS or Azure, you'll find plenty of examples.
-And while the failures themselves might be considered 'incidents' from
-the public cloud provider point of view, they might be disasters for
-the companies/customers that rely on them.</p>
-<p>For me, tackling disaster recovery when dealing with public cloud strongly
-focuses on region failures and (coordinated) recovery from region failures.
-Beyond region failures, I also strongly recommend to look into the dependencies
-that the public cloud consumption has with services outside of the public cloud.
-Some of these dependencies might also play a role in certain catastrophic
-events. Say that you depend on Azure AD for your authentication and
-authorization, and Microsoft is suddenly facing not just a world-wide
-Azure AD outage, but also has to explain to you that they cannot restore its
-data.</p>
-<p>Preparing for disasters is about preparing for multiple possible catastrophic
-events, and in case of public cloud, you're required to think at massive scales.
-And that includes designing for region-wide failures as well.</p>
-<p><strong>Impact of public cloud disasters to the organization</strong></p>
-<p>Generally, if your organization has a decent maturity in dealing with disaster
-recovery planning, they will be using Service Level Agreements with the
-business to help decide what to do in case of disasters. Important
-non-functionals that are included here are RTO (Recovery Time Objective), RPO
-(Recovery Point Objective), and MTD (Maximum Tolerable Downtime). There are
-others possibly listed in the SLA as well, but let me focus on these three.
-If you want to learn more about contigency planning in general, I recommend
-to go through the <a href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf">NIST Special Publication 800-34 Rev.1, "Contingency Planning
-Guide for Federal Informatino
-Systems"</a>.</p>
-<p>With the RTO, we represent the time it is allowed to take to recover a service
-to the point that it functions again. This might include with reduced capacity
-or performance degradation. The RTO can be expressed in hours, days, weeks
-or other arbitrary value. It is a disaster-oriented value, not availability!
-As long as no disaster is declared, the RTO is not considered.</p>
-<p>The RPO identifies how much data loss is acceptable by the business in case of
-a disaster. Again, this is disaster-oriented: the business can very well take
-extra-ordinary steps to ensure full transactional consistency outside of 
-disaster situations, yet allow for a "previous day" RPO in case of a disaster.</p>
-<p>The MTD is most often declared not on a single service, but at business service
-level, and explains how long unavailability of that service is tolerated before
-it seriously impacts the survivability of the business. It is related to the
-RTO, as most services will have an RTO that is more strict/lower value than the
-overall MTD, whereas the MTD is near non-negotiable.</p>
-<p>Now, what does public cloud disasters have to do with this? Well, in theory
-nothing, as this model and process of capturing business requirements is quite
-sensible and maps out perfectly as well. However (and here's the culprit),
-an organization that sets up new services on a frequent basis might get
-accustomed to certain values, and these values might not be as easy to approach
-in a public cloud environment. Furthermore, the organization might not be
-accustomed to different disaster scenario's for the SLA: having different sets
-of RTO/RPO depending on the category of disaster.</p>
-<p>Let's get back to the region-wide disasters. A company might have decided not
-to have region-wide proactive measures in place, and fixate their SLA
-non-functionals on local disasters: a data center failure is considered a threat
-that still requires proactive measures, whereas regional failures are treated
-differently.  The organization decides to only have one SLA set defined, and
-includes RTO and RPO values based on the current, local threat matrix. They
-might decide that a majority of applications or services has a RPO of "last
-transaction", meaning the data has to be fully restored at the latest situation
-in case of a disaster.</p>
-<p>This generally implies synchronous replication as an infrastructural
-solution. If the organization is used to having this method available (for
-instance through SAN replication, cluster technologies, database recovery,
-etc.) then they won't sweat at all if the next dozen services all require
-the same RPO.</p>
-<p>But now comes the public cloud, and a strong point of attention is region-wide
-failures. Doing synchronous replication across regions is not a proper tactic
-(as it implies significant performance degradation) and especially not sensible
-to do at the same scale as with local replication (e.g. between availability
-zones in the same region). Now you have to tell your business that this RPO
-value is not easily attainable in the public cloud. The public cloud, which
-solves all the wonders in the world. The public cloud, which has more maturity
-on operations than your own company. Yet you can't deliver the same SLA?</p>
-<p>Apples and pears. The disasters are different, so your offering might be
-different. Of course, you should explain that your 'on premise' disaster
-scenarios do not include region-wide failures, and that if you include
-the same scenarios for 'on premise' that that RPO value would not be
-attainable on premise either.</p>
-<p><strong>Conclusions</strong></p>
-<p>The public cloud provides many capabilities, and has to deal with a
-significantly larger environment than companies are used to. This also means
-that disasters that are considered 'extremely unlikely' are now 'likely' (given
-the massive scale of the public cloud), and that the threats you have to
-consider while dealing with disaster recovery have to be re-visited for public
-cloud enabled scenarios.</p>
-<p>My recommendation is to tackle the disaster-oriented non-functional requirements
-by categorizing the disasters and having different requirements based on the
-disaster at hand. Mature your cloud endeavours so that regional outages
-are not a problem anymore (moving them away from the 'disaster' board), and 
-properly map all dependencies you have through the public cloud exercises so
-that you can build up a good view on what possible threats exist that would
-require a well-coordinated approach to tackle the event.</p>
 </p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
@@ -637,35 +634,6 @@ SELinux policy development is not ignored in the book.</p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/packt/">packt</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/book/">book</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/">Abstracting infrastructure complexity</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/author/sven-vermeulen.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 25 December 2020</span></span>
-                <p><p>IT is complex. Some even consider it to be more magic than reality. And with
-the ongoing evolutions and inventions, the complexity is not really going
-away. Sure, some IT areas are becoming easier to understand, but that is often
-offset with new areas being explored.</p>
-<p>Companies and organizations that have a sizeable IT footprint generally see an
-increase in their infrastructure, regardless of how many rationalization
-initiatives that are started. Personally, I find it challenging, in a fun
-way, to keep up with the onslaught of new technologies and services that are
-onboarded in the infrastructure landscape that I'm responsible for.</p>
-<p>But just understanding a technology isn't enough to deal with its position in
-the larger environment.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/infrastructure/">infrastructure</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/archimate/">archimate</a>
                     </div>
                 </div>
             </div>

@@ -14,6 +14,8 @@ for handling disasters ([DRP = Disaster Recovery Procedure or Disaster
 Recover Planning](https://en.wikipedia.org/wiki/Disaster_recovery)),
 it is important to keep in mind what these are about.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **What is a disaster**
 
 Disasters are major incidents that have wide-ranging consequences to the
@@ -230,4 +232,3 @@ properly map all dependencies you have through the public cloud exercises so
 that you can build up a good view on what possible threats exist that would
 require a well-coordinated approach to tackle the event.
 
-<!-- PELICAN_END_SUMMARY -->
