@@ -194,6 +194,7 @@ embedded. I want my blog to be simple and straightforward, so I decided to not
 have any other third-party services with it for now.
 
 So, if you have feedback or comments, don't hesitate to [drop me an
-email](mailto:sven.vermeulen@siphos.be).
+email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
+Twitter](https://twitter.com/infrainsight/status/1431332634370711552)
 
 <!-- PELICAN_END_SUMMARY -->
