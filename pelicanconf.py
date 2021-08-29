@@ -46,7 +46,7 @@ DISPLAY_CATEGORIES_ON_MENU = False
 SHOW_ARTICLE_CATEGORY = True
 DISPLAY_ARTICLE_INFO_ON_INDEX = True
 SHOW_ARTICLE_AUTHOR = True
-AUTHOR_SAVE_AS = ''
+AUTHOR_URL = 'pages/about.html'
 
 # TODO Search currently does not seem to work well, verify later again
 # TODO Remove when publishing

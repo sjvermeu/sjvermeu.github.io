@@ -57,7 +57,7 @@ The six groups that I feel cover the infrastructure domain sufficiently are:
 In some ugly visualization, these groups (and the processes or non-functionals
 that are situated within) can be represented as follows:
 
-![Six process groups for infrastructure]({static}/images/202109/six-process-groups.png)
+![Six process groups for infrastructure]({static}/images/pending/six-process-groups.png)
 
 Let's go through each of the groups in a bit more detail.
 
