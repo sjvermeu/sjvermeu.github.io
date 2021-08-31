@@ -402,4 +402,8 @@ In the next post, I will look at the location view. Unlike the process view,
 which is often shared with other IT domains, the location view is something
 that is often more exclusive for the infrastructure domain.
 
+Feedback? Comments? Don't hesitate to [drop me an
+email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
+Twitter](TODO).
+
 <!-- PELICAN_END_SUMMARY -->

@@ -1,5 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Simplicity is a form of art... - Sven Vermeulen</title><link>http://192.168.1.71:8000/</link><description></description><lastBuildDate>Wed, 06 Jan 2021 20:00:00 +0100</lastBuildDate><item><title>SELinux System Administration 3rd Edition</title><link>http://192.168.1.71:8000/2021/01/selinux-system-administration-3rd-edition/</link><description>&lt;p&gt;As I mentioned previously, recently my latest installment of "SELinux System
+<rss version="2.0"><channel><title>Simplicity is a form of art... - Sven Vermeulen</title><link>http://192.168.1.71:8000/</link><description></description><lastBuildDate>Fri, 27 Aug 2021 21:10:00 +0200</lastBuildDate><item><title>Component view of infrastructure</title><link>http://192.168.1.71:8000/2021/08/component-view-of-infrastructure/</link><description>&lt;p&gt;IT architects try to use views and viewpoints to convey the target architecture
+to the various stakeholders. Each stakeholder has their own interests in the
+architecture and wants to see their requirements fulfilled. A core
+role of the architect is to understand these requirements and make sure the
+requirements are met, and to balance all the different requirements.&lt;/p&gt;
+&lt;p&gt;Architecture languages or meta-models often put significant focus on these
+views. Archimate has a large annex on &lt;a href="https://pubs.opengroup.org/architecture/archimate3-doc/apdxc.html#_Toc10045495"&gt;Example
+Viewpoints&lt;/a&gt;
+just for this purpose. However, unless the organization is widely accustomed to
+enterprise architecture views, it is unlikely that the views themselves are the
+final product: being able to translate those views into pretty slides and
+presentations is still an important task for architects when they need to
+present their findings to non-architecture roles.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Infrastructure domain in viewpoints&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While searching for a way to describe the infrastructure domain,
+I tend to align with certain viewpoints as well, as it allows architects
+to decompose a complex situation into more manageable parts. So the question
+is no longer "how do I show what the infrastructure domain is", but rather
+"what different viewpoints do I need to cover the scope of (and
+explanation on) the infrastructure domain".&lt;/p&gt;
+&lt;p&gt;I currently settle on five views:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;em&gt;component view&lt;/em&gt;, which covers the vertical stack of an IT infrastructure
+  component.&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;location view&lt;/em&gt;, which is the horizontal stack for IT infrastructure&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;process view&lt;/em&gt;, which covers the general enterprise requirements for IT
+  infrastructure&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;service view&lt;/em&gt;, which provides insights into what functional offerings are
+  provided (and for which I posted a current view a short while ago, titled "&lt;a href="http://192.168.1.71:8000/2021/06/an-it-services-overview/"&gt;An
+  IT services overview&lt;/a&gt;")&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;zoning view&lt;/em&gt;, which represents the IT environment landscape. A few years
+  ago, I covered this as well in "&lt;a href="http://192.168.1.71:8000/2017/06/structuring-infrastructural-deployments/"&gt;Structuring infrastructural
+  deployments&lt;/a&gt;"&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All these views are related to each other, but represent insights that are
+particularly useful for certain discussions or representations. Some viewpoints
+are even details for another. For instance, the &lt;em&gt;zoning view&lt;/em&gt; is a view that
+provides more detail on a particular layer in the &lt;em&gt;location view&lt;/em&gt;. A simple
+relationship between the above five views is the following:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Relationship between the five infrastructure views" src="http://192.168.1.71:8000/images/202108/five-infra-views.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Now, this isn't a proper meta-model, just a representation. It starts
+with what the infrastructure domain has to accomplish (process view),
+which defines the services the domain has to support. These services
+comprise several components, and these are deployed in various
+zones across the organization. The zone overview is part of the more
+elaborate location views.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Components are a good introduction to infrastructure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While a good coverage of the infrastructure domain would start with the
+process view, I think it is not always the easiest. Not all stakeholders
+are fully acquainted with processes and what they entail, and I feel it
+might be easier to start with a more tangible view, i.e. a component
+view.&lt;/p&gt;
+&lt;p&gt;For instance, when explaining what IT infrastructure is to an outsider
+(say, a family member that isn't active in the IT world), I often start with
+a component view (often using a cellphone as a starting example), then going
+about the massive amount of components that need to be managed, hence the need
+for proper processes. After elaborating a bit on the various processes involved,
+we can then go to a service overview, to then move on to the hosting of all
+those services in a structured and reliable environment (zoning), with the
+various challenges related to locations.&lt;/p&gt;
+&lt;p&gt;So, what is the component view that I reuse a lot? It is basically
+the vertical stack that most hosting-related services use to explain where
+their product is situated:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Layered view on a component level" src="http://192.168.1.71:8000/images/202108/component-view.png"/&gt;&lt;/p&gt;
+&lt;p&gt;If you start with a cellphone view, then you can easily describe the hardware,
+operating system, application, and data layers in the view. You can mention that
+the hardware is an expensive one-time investment that the user hopes to use for
+a few years (so you can explain &lt;em&gt;capital expenditures (CapEx)&lt;/em&gt; and &lt;em&gt;operational
+expenditures (OpEx)&lt;/em&gt;. The latter can be a cloud service that the
+user synchronizes its data to, like Apple iCloud or Google Drive).&lt;/p&gt;
+&lt;p&gt;The distinction between operating system and application, and its impact on
+the users, can also be explained easily: operating system upgrades are
+heavier, and users often want to choose when this occurs, as operating system
+upgrades are not always fully backward compatible. Or, the user's hardware isn't
+supported on the next operating system (e.g. upgrading Apple iOS 12 to iOS 13,
+or Android 10 to Android 11). Applications, on the other hand, are often
+automatically updated and are less intrusive. However, because there are
+many applications, managing the application landscape can be more daunting than
+the operating system one.&lt;/p&gt;
+&lt;p&gt;Then we can move on to the scaling challenges that an organization has to
+face, which will gradually build up more insights into the component layers. For
+instance, if a company is developing and maintaining a mobile application, it
+wants to test its new releases on different operating system
+versions.  But it would not be sensible to have each developer walk around with
+six phones because they need to test the application on iOS 12, iOS 13, iOS 14,
+Android 9, Android 10, and Android 11. Instead, testing could be done on
+emulators (which can be considered hypervisors, albeit often not that exhaustive
+in features).&lt;/p&gt;
+&lt;p&gt;This introduces concepts of optimizing resources for cost, but also the
+benefits of having these services available 'at distance' (remote access
+to the emulation environments) as well as first steps in virtualization.
+You can state that this emulation is something the user can do on their
+laptops, but that in enterprise environments this is done with either
+cloud services or on the enterprise servers, as that facilitates collaboration
+with team members, and simplifies managing these assets when the teams get
+larger or smaller. And these servers, well, they too are virtualized for
+resource optimization.&lt;/p&gt;
+&lt;p&gt;We can also discuss the data layer, and the challenge that a regular user
+has when their phone is near its limits (e.g. storage is full), the options the
+user has (add SD card if the phone supports it, or use cloud storage services),
+and compare that with larger enterprises where data hosting is often either
+centralized or abstracted, so that systems are not bound to the limits of their
+device's storage capacity.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Component views enable scalability and cost insights&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The layered view on components, of course, is a meta-view rather than an actual
+one: it shows how a stack can be built up, but the actual benefit is when
+you look at the component view of a solution.&lt;/p&gt;
+&lt;p&gt;For instance, if we were to assess a Kubernetes cluster, it could be represented
+as follows:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kubernetes component view" src="http://192.168.1.71:8000/images/202108/k8s-component-view.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Going bottom-up on this view, we can identify (and thus elaborate on) the
+various layers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;On the hardware level, we see four physical servers (named sppc01 to sppc04).
+  These servers are of a particular brand and have 32 Gb of memory each (which
+  isn't a lot, the cluster is rather small).&lt;/li&gt;
+&lt;li&gt;KVM is used as the hypervisor. The hypervisor combines the four physical
+  servers in a single cluster.&lt;/li&gt;
+&lt;li&gt;KVM then provides eight virtual systems (named svpc01 to svpc08) from the
+  cluster. The first three are used for the Kubernetes control plane, the others
+  are the worker nodes. Note that it is recommended to host the nodes of the
+  control plane on different physical machines so that a failure on one physical
+  machine doesn't jeopardize the cluster availability. This can be configured on
+  the hypervisor, but that is outside the scope of this article.&lt;/li&gt;
+&lt;li&gt;The physical servers use a hardened Gentoo Linux operating system using the
+  musl C library, whereas the virtual servers use a regular Gentoo Linux
+  installation as their operating system.&lt;/li&gt;
+&lt;li&gt;The orchestration layer is Kubernetes itself, using the CRI-O container
+  runtime as middleware.&lt;/li&gt;
+&lt;li&gt;The applications depicted are those of the Kubernetes ecosystem, with the main
+  control plane applications and worker node applications listed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If we were to host an application inside the Kubernetes cluster, it would
+be deployed on the worker nodes. The logical design of a Kubernetes cluster
+is not something to be represented in a component view (that's more for
+the location view, as there we will talk about the topology of services).&lt;/p&gt;
+&lt;p&gt;With such component views, we can have some insights into the costs. Of course,
+this is just a simple Kubernetes cluster, and built with pure open-source
+software, so the costs are going to be on the hardware side (and the resources
+they consume). In larger enterprises, however, the hypervisor is often a
+commercially backed one like Hyper-V (Microsoft) and vSphere (VMware), which
+have their specific licensing terms (which could be the number of machines or
+even CPUs).  Also, enterprises often use a commercially backed Kubernetes, like
+Rancher or OpenShift (Red Hat, part of IBM), which often have per-node licensing
+terms.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Component views are just the beginning&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When I use a component view to explain what infrastructure is about,
+it is merely the beginning. It provides a rudimentary layered view, which most
+people can easily relate to. Content-wise, it is reasonably understandable (or
+easy enough to explain) for people that aren't IT savvy, and is something that
+you can easily find a lot of material for online.&lt;/p&gt;
+&lt;p&gt;If we delve into the processes of (or related to) infrastructure, it becomes
+more challenging to keep the readers/listeners with you. Processes can (will)
+often be very abstract, and going into the details of each process is a lengthy
+endeavor. I'll cover that in a later post.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Feedback? Comments?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A few days ago I've dropped Disqus as comment engine from my blog site, mainly
+for concerns about my visitor's security, as well as the advertisements that it
+embedded. I want my blog to be simple and straightforward, so I decided to not
+have any other third-party services with it for now.&lt;/p&gt;
+&lt;p&gt;So, if you have feedback or comments, don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1431332634370711552"&gt;discussion on
+Twitter&lt;/a&gt;&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Fri, 27 Aug 2021 21:10:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-08-27:/2021/08/component-view-of-infrastructure/</guid><category>Architecture</category><category>architecture</category><category>component</category><category>viewpoint</category></item><item><title>Disaster recovery in the public cloud</title><link>http://192.168.1.71:8000/2021/07/disaster-recovery-in-the-public-cloud/</link><description>&lt;p&gt;The public cloud is a different beast than an on-premise environment, and that
+also reflects itself on how we (should) look at the processes that are
+actively steering infrastructure designs and architecture. One of these
+is the business continuity, severe incident handling, and the
+hopefully-never-to-occur disaster recovery. When building up procedures
+for handling disasters (&lt;a href="https://en.wikipedia.org/wiki/Disaster_recovery"&gt;DRP = Disaster Recovery Procedure or Disaster 
+Recover Planning&lt;/a&gt;),
+it is important to keep in mind what these are about.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Fri, 30 Jul 2021 20:00:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-07-30:/2021/07/disaster-recovery-in-the-public-cloud/</guid><category>Architecture</category><category>architecture</category><category>cloud</category><category>DRP</category></item><item><title>What is the infrastructure domain?</title><link>http://192.168.1.71:8000/2021/07/what-is-the-infrastructure-domain/</link><description>&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
+stakeholders that have no common understanding of what infrastructure means in
+an enterprise architecture. Since then, I am trying to figure out a way to
+easily explain it - to find a common, generic view on what infrastructure
+entails. If successful, I could use this common view to provide context on the
+many, many IT projects that are going around.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 19 Jul 2021 15:20:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-07-19:/2021/07/what-is-the-infrastructure-domain/</guid><category>Architecture</category><category>architecture</category><category>pattern</category></item><item><title>Organizing service documentation</title><link>http://192.168.1.71:8000/2021/07/organizing-service-documentation/</link><description>&lt;p&gt;As I mentioned in &lt;a href="http://192.168.1.71:8000/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
+I try to keep track of the architecture and designs of the IT services and
+solutions in a way that I feel helps me keep in touch with all the various
+services and solutions out there. Similar to how system administrators try to
+find a balance while working on documentation (which is often considered a
+chore) and using a structure that is sufficiently simple and standard for the
+organization to benefit from, architects should try to keep track of
+architecturally relevant information as well.&lt;/p&gt;
+&lt;p&gt;So in this post, I'm going to explain a bit more on how I approach documenting
+service and solution insights for architectural relevance.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 08 Jul 2021 09:20:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-07-08:/2021/07/organizing-service-documentation/</guid><category>Architecture</category><category>architecture</category><category>documentation</category><category>structure</category><category>wiki</category></item><item><title>Not sure if TOSCA will grow further</title><link>http://192.168.1.71:8000/2021/06/not-sure-if-TOSCA-will-grow-further/</link><description>&lt;p&gt;TOSCA is an OASIS open standard, and is an abbreviation for &lt;em&gt;Topology and
+Orchestration Specification for Cloud Applications&lt;/em&gt;. It provides a
+domain-specific language to describe how an application should be deployed
+in the cloud (the topology), which and how many resources it needs, as well
+as tasks to run when certain events occur (the orchestration). When I
+initially came across this standard, I was (and still am) interested
+in how far this goes. The promise of declaring an application (and even
+bundling the necessary application artefacts) within a single asset and
+then using this asset to deploy on whatever cloud is very appealing to
+an architect. Especially in organizations that have a multi-cloud
+strategy.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 30 Jun 2021 14:30:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-06-30:/2021/06/not-sure-if-TOSCA-will-grow-further/</guid><category>Architecture</category><category>architecture</category><category>cloud</category><category>TOSCA</category><category>OASIS</category><category>topology</category><category>orchestration</category><category>infrastructure</category><category>IaC</category><category>NFV</category></item><item><title>Integrating or customizing SaaS within your own cloud environment</title><link>http://192.168.1.71:8000/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/</link><description>&lt;p&gt;Software as a Service (SaaS) solutions are often a quick way to get new
+capabilities into an organization’s portfolio. Smaller SaaS solutions are
+simple, web-based solutions which barely integrate with the organization’s
+other solutions, besides the identity and access management (which is often
+handled by federated authentication).&lt;/p&gt;
+&lt;p&gt;More complex or intermediate solutions require more integration focus, and
+a whole new market of Integration Platform as a Service (iPaaS) solutions
+came up to facilitate cross-cloud integrations. But even without the iPaaS
+offerings, integrations are often a mandatory part to leverage the benefits
+of the newly activated SaaS solution.&lt;/p&gt;
+&lt;p&gt;In this post I want to bring some thoughts on the integrations that might be
+needed to support customizing a SaaS solution.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 23 Jun 2021 15:10:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-06-23:/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/</guid><category>Architecture</category><category>architecture</category><category>cloud</category><category>SaaS</category><category>integration</category><category>customization</category></item><item><title>An IT services overview</title><link>http://192.168.1.71:8000/2021/06/an-it-services-overview/</link><description>&lt;p&gt;My current role within the company I work for is “domain architect”, part
+of the enterprise architects teams. The domain I am accountable for is 
+“infrastructure”, which can be seen as a very broad one. Now, I’ve been
+maintaining an overview of our IT services before I reached that role, 
+mainly from an elaborate interest in the subject, as well as to optimize
+my efficiency further.&lt;/p&gt;
+&lt;p&gt;Becoming a domain architect allows me to use the insights I’ve since
+gathered to try and give appropriate advice, but also now requires me to
+maintain a domain architecture. This structure is going to be the starting
+point of it, although it is not the true all and end all of what I would
+consider a domain architecture.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 14 Jun 2021 17:30:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-06-14:/2021/06/an-it-services-overview/</guid><category>Architecture</category><category>architecture</category><category>overview</category><category>service</category><category>landscape</category><category>catalog</category><category>capability</category></item><item><title>The three additional layers in the OSI model</title><link>http://192.168.1.71:8000/2021/06/the-three-additional-layers-in-the-OSI-model/</link><description>&lt;p&gt;At my workplace, I jokingly refer to the three extra layers on top of the
+OSI network model as a way to describe the difficulties of discussions or
+cases. These three additional layers are Financial Layer, Politics Layer
+and Religion Layer, and the idea is that the higher up you go, the more
+challenging discussions will be.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 09 Jun 2021 11:10:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-06-09:/2021/06/the-three-additional-layers-in-the-OSI-model/</guid><category>Misc</category><category>OSI</category><category>meeting</category><category>humor</category></item><item><title>Virtualization vs abstraction</title><link>http://192.168.1.71:8000/2021/06/virtualization-vs-abstraction/</link><description>&lt;p&gt;When an organization has an extensively large, and heterogeneous
+infrastructure, infrastructure architects will attempt to make itless
+complex and chaotic by introducing and maintaining a certain degree of
+standardization. While many might consider standardization as a
+rationalization (standardizing on a single database technology, single
+vendor for hardware, etc.), rationalization is only one of the many ways
+in which standards can simplify such a degree of complexity.&lt;/p&gt;
+&lt;p&gt;In this post, I'd like to point out two other, very common ways to
+standardize the IT environment, without really considering a
+rationalization: abstraction and virtualization.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 03 Jun 2021 10:10:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-06-03:/2021/06/virtualization-vs-abstraction/</guid><category>Architecture</category><category>architecture</category><category>virtualization</category><category>abstraction</category></item><item><title>SELinux System Administration 3rd Edition</title><link>http://192.168.1.71:8000/2021/01/selinux-system-administration-3rd-edition/</link><description>&lt;p&gt;As I mentioned previously, recently my latest installment of "SELinux System
 Administration" has been released by Packt Publishing. This is already the
 third edition of the book, after the first (2013) and second (2016) editions
 have gotten reasonable success given the technical and often hard nature of
@@ -7,65 +243,6 @@ full SELinux administration.&lt;/p&gt;
 &lt;p&gt;Like with the previous editions, this book remains true to the public of
 system administrators, rather than SELinux policy developers. Of course,
 SELinux policy development is not ignored in the book.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;What has changed&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;First and foremost, it of course updates the content of the previous edition
-to be up to date with the latest evolutions within SELinux. There are no earth
-shattering changes, so the second edition isn't suddenly deprecated. The examples
-are brought up to date with a recent distribution setup, for which I used
-Gentoo Linux and CentOS.&lt;/p&gt;
-&lt;p&gt;The latter is, given the recent announcement of CentOS stopping support for
-CentOS version 8 in general, a bit confrontational, although it doesn't
-really matter that much for the scope of the book. I hope that &lt;a href="https://rockylinux.org/"&gt;Rocky
-Linux&lt;/a&gt; will get the focus and support it deserves.&lt;/p&gt;
-&lt;p&gt;Anyway, I digress. A significant part of the updates on the existing content
-is on SELinux-enabled applications, applications that act as a so-called object
-manager themselves. While quite a few were already covered in the past, these
-applications continue to enhance their SELinux support, and in the third edition
-a few of these receive a full dedicated chapter.&lt;/p&gt;
-&lt;p&gt;There are also a small set of SELinux behavioral changes, like SELinux' NNP
-support, as well as SELinux userspace changes like specific extended attributes
-for restorecon.&lt;/p&gt;
-&lt;p&gt;Most of the book though isn't about changes, but about new content.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;What has been added&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;As administrators face SELinux-aware applications more and more, the book
-goes into much more detail on how to tune SELinux with those SELinux-aware
-applications. If we look at the book's structure, you'll find that it has
-roughly three parts:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Using SELinux, which covers the fundamentals of using SELinux and
-   understanding what SELinux is.&lt;/li&gt;
-&lt;li&gt;SELinux-aware platforms, which dives into the SELinux-aware application
-   suites that administrators might come in contact with&lt;/li&gt;
-&lt;li&gt;Policy management, which focuses on managing, analyzing and even
-   developing SELinux policies.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;By including additional content on SEPostgreSQL, libvirt, container
-platforms like Kubernetes, and even Xen Security Modules (which is not
-SELinux itself, but strongly influenced and aligned to it to the level
-that it even uses the SELinux userspace utilities) the book is showing how
-wide SELinux is being used.&lt;/p&gt;
-&lt;p&gt;Even on policy development, the book now includes more support than before.
-While another book of mine, SELinux Cookbook, is more applicable to policy
-development, I did not want to keep administrators out of the loop on how
-to develop SELinux policies at all. Especially not since there are more
-tools available nowadays that support policy creation, like udica.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;SELinux CIL&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;One of the changes I also introduced in the book is to include SELinux
-Common Intermediate Language (CIL) information and support. When we need
-to add in a small SELinux policy change, the book will suggest CIL based
-changes as well.&lt;/p&gt;
-&lt;p&gt;SELinux CIL is not commonly used in large-scale policy development. Or at
-least, not directly. The most significant policy development out there,
-the &lt;a href="https://github.com/SELinuxProject/refpolicy/wiki"&gt;SELinux Reference Policy&lt;/a&gt;,
-does not use CIL directly itself, and the level of support you find for
-the current development approach is very much the default way of working. So
-I do not ignore this more traditional approach.&lt;/p&gt;
-&lt;p&gt;The reason I did include more CIL focus is because CIL has a few advantages
-up its sleeve that is harder to get with the traditional language. Nothing
-major perhaps, but enough that I feel it should be more actively promoted
-anyway. And this book is hopefully a nice start to it.&lt;/p&gt;
-&lt;p&gt;I hope the book is a good read for administrators or even architects that
-would like to know more about the technology.&lt;/p&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 06 Jan 2021 20:00:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2021-01-06:/2021/01/selinux-system-administration-3rd-edition/</guid><category>SELinux</category><category>selinux</category><category>packt</category><category>book</category></item><item><title>Abstracting infrastructure complexity</title><link>http://192.168.1.71:8000/2020/12/abstracting-infrastructure-complexity/</link><description>&lt;p&gt;IT is complex. Some even consider it to be more magic than reality. And with
 the ongoing evolutions and inventions, the complexity is not really going
 away. Sure, some IT areas are becoming easier to understand, but that is often
@@ -537,11 +714,22 @@ noticed a lot of updates and edits on the Gentoo wiki.&lt;/p&gt;
 &lt;p&gt;The move to the
 &lt;a href="https://wiki.gentoo.org/wiki/Project:Website/Tyrian"&gt;Tyrian&lt;/a&gt; layout,
 whose purpose is to eventually become the unified layout for all Gentoo
-resources, happened first. Then, three common templates (&lt;code&gt;Code …&lt;/code&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 03 Jan 2015 10:09:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2015-01-03:/2015/01/gentoo-wiki-is-growing/</guid><category>Documentation</category><category>documentation</category><category>Gentoo</category><category>wiki</category></item><item><title>Added UEFI instructions to AMD64/x86 handbooks</title><link>http://192.168.1.71:8000/2014/12/added-uefi-instructions-to-amd64x86-handbooks/</link><description>&lt;p&gt;I just finished up adding some UEFI instructions to the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;Gentoo
+resources, happened first. Then, three common templates (&lt;code&gt;Code …&lt;/code&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 03 Jan 2015 10:09:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2015-01-03:/2015/01/gentoo-wiki-is-growing/</guid><category>Documentation</category><category>documentation</category><category>Gentoo</category><category>wiki</category></item><item><title>Why does it access /etc/shadow?</title><link>http://192.168.1.71:8000/2014/12/why-does-it-access-etcshadow/</link><description>&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
+that it (well, the authdaemon that is part of Courier) wanted to access
+&lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
+know that this is through the PAM support (more specifically,
+&lt;code&gt;pam_unix …&lt;/code&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 30 Dec 2014 22:48:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-12-30:/2014/12/why-does-it-access-etcshadow/</guid><category>SELinux</category><category>chkpwd</category><category>pam</category><category>selinux</category><category>shadow</category><category>unix_chkpwd</category></item><item><title>Added UEFI instructions to AMD64/x86 handbooks</title><link>http://192.168.1.71:8000/2014/12/added-uefi-instructions-to-amd64x86-handbooks/</link><description>&lt;p&gt;I just finished up adding some UEFI instructions to the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;Gentoo
 handbooks&lt;/a&gt; for AMD64
 and x86 (I don't know how many systems are still using x86 instead of
 the AMD64 one, and if those support UEFI, but the instructions are
-shared and they don't collide). The entire EFI stuff can …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 23 Dec 2014 18:08:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-12-23:/2014/12/added-uefi-instructions-to-amd64x86-handbooks/</guid><category>Documentation</category><category>efi</category><category>Gentoo</category><category>handbook</category><category>uefi</category></item><item><title>Gentoo Handbooks almost moved to wiki</title><link>http://192.168.1.71:8000/2014/12/gentoo-handbooks-almost-moved-to-wiki/</link><description>&lt;p&gt;Content-wise, the move is done. I've done a few checks on the content to
+shared and they don't collide). The entire EFI stuff can …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 23 Dec 2014 18:08:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-12-23:/2014/12/added-uefi-instructions-to-amd64x86-handbooks/</guid><category>Documentation</category><category>efi</category><category>Gentoo</category><category>handbook</category><category>uefi</category></item><item><title>Handbooks moved</title><link>http://192.168.1.71:8000/2014/12/handbooks-moved/</link><description>&lt;p&gt;Yesterday the move of the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;Gentoo
+Wiki&lt;/a&gt; for the Gentoo
+handbooks (whose most important part are the installation instructions
+for the various supported architectures) has been concluded, with a
+last-minute addition being the &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page#Viewing_the_handbook"&gt;one-page
+views&lt;/a&gt;
+so that users who want to can view the installation instructions
+completely within one view …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 14 Dec 2014 14:42:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-12-14:/2014/12/handbooks-moved/</guid><category>Documentation</category><category>Gentoo</category><category>handbook</category><category>wiki</category></item><item><title>Gentoo Handbooks almost moved to wiki</title><link>http://192.168.1.71:8000/2014/12/gentoo-handbooks-almost-moved-to-wiki/</link><description>&lt;p&gt;Content-wise, the move is done. I've done a few checks on the content to
 see if the structure still holds, translations are enabled on all pages,
 the use of partitions is sufficiently consistent for each architecture,
 and so on. The result can be seen on &lt;a href="https://wiki.gentoo.org/wiki/Handbook:Main_Page"&gt;the gentoo handbook main
@@ -573,7 +761,11 @@ my first published book, called &lt;a href="https://www.packtpub.com/networking-
 Administration&lt;/a&gt;.
 The book covered SELinux administration commands and focuses on Linux
 administrators that need to interact with SELinux-enabled systems.&lt;/p&gt;
-&lt;p&gt;An important part of SELinux was only covered very briefly in the …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 24 Sep 2014 20:10:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-09-24:/2014/09/after-selinux-system-administration-now-the-selinux-cookbook/</guid><category>SELinux</category></item><item><title>Gentoo Hardened august meeting</title><link>http://192.168.1.71:8000/2014/08/gentoo-hardened-august-meeting/</link><description>&lt;p&gt;Another month has passed, so we had another online meeting to discuss
+&lt;p&gt;An important part of SELinux was only covered very briefly in the …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 24 Sep 2014 20:10:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-09-24:/2014/09/after-selinux-system-administration-now-the-selinux-cookbook/</guid><category>SELinux</category></item><item><title>Showing return code in PS1</title><link>http://192.168.1.71:8000/2014/08/showing-return-code-in-ps1/</link><description>&lt;p&gt;If you do daily management on Unix/Linux systems, then checking the
+return code of a command is something you'll do often. If you do SELinux
+development, you might not even notice that a command has failed without
+checking its return code, as policies might prevent the application from
+showing …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 31 Aug 2014 01:14:00 +0200</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-08-31:/2014/08/showing-return-code-in-ps1/</guid><category>Gentoo</category><category>bash</category><category>ps1</category><category>rc</category><category>shell</category></item><item><title>Gentoo Hardened august meeting</title><link>http://192.168.1.71:8000/2014/08/gentoo-hardened-august-meeting/</link><description>&lt;p&gt;Another month has passed, so we had another online meeting to discuss
 the progress within Gentoo Hardened.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Lead elections&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;The yearly lead elections within Gentoo Hardened were up again. Zorry
@@ -691,7 +883,14 @@ then a set of features provided by SELinux. The talk is directed …&lt;/p&gt;</
 &lt;p&gt;A month or so ago we got the question how to enable SELinux on a Gentoo
 profile that doesn't have a &lt;code&gt;&amp;lt;some profilename&amp;gt;/selinux&lt;/code&gt; equivalent.
 Because we don't create SELinux profiles for all possible profiles out
-there, having a way to do this …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 24 Mar 2014 21:51:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-03-24:/2014/03/create-your-own-selinux-gentoo-profile/</guid><category>Gentoo</category><category>Gentoo</category><category>profile</category></item><item><title>Closing week? No, starting week...</title><link>http://192.168.1.71:8000/2014/03/closing-week-no-starting-week/</link><description>&lt;p&gt;I've been away for a while, and this week will (hopefully) be the last
+there, having a way to do this …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 24 Mar 2014 21:51:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-03-24:/2014/03/create-your-own-selinux-gentoo-profile/</guid><category>Gentoo</category><category>Gentoo</category><category>profile</category></item><item><title>Hidden symbols and dynamic linking</title><link>http://192.168.1.71:8000/2014/03/hidden-symbols-and-dynamic-linking/</link><description>&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+ebuild which caused the following stacktrace to occur every time the
+&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+Traceback (most recent call last):
+  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
+    import seobject
+  File &amp;quot;/usr/lib64/python2.7 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 24 Mar 2014 21:14:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-03-24:/2014/03/hidden-symbols-and-dynamic-linking/</guid><category>Gentoo</category><category>elf</category><category>hidden</category><category>selinux</category><category>symbols</category></item><item><title>Closing week? No, starting week...</title><link>http://192.168.1.71:8000/2014/03/closing-week-no-starting-week/</link><description>&lt;p&gt;I've been away for a while, and this week will (hopefully) be the last
 week of all the effort that is causing this. And that means I'll get
 back to blogging, documentation development, SELinux integration,
 SELinux policy development and more. To be honest, I'm eagerly awaiting
@@ -702,7 +901,26 @@ look into the C code that does so, and how an application should behave …&lt;/
 a company has only RedHat Enterprise Linux as allowed / supported Linux
 platform (be it for a support model requirement, ISV certification,
 management tooling support or what not) how could or would Gentoo still
-play a role …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 09 Jan 2014 04:13:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-01-09:/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/</guid><category>Gentoo</category><category>Gentoo</category><category>linux</category><category>vappliance</category><category>virtual appliance</category></item><item><title>Upgrading old Gentoo installations</title><link>http://192.168.1.71:8000/2013/12/upgrading-old-gentoo-installations/</link><description>&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+play a role …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 09 Jan 2014 04:13:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-01-09:/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/</guid><category>Gentoo</category><category>Gentoo</category><category>linux</category><category>vappliance</category><category>virtual appliance</category></item><item><title>Linux protip: environment for a process</title><link>http://192.168.1.71:8000/2014/01/linux-protip-environment-for-a-process/</link><description>&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
+a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
+file. The file however shows the environment variables on one line, with
+a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 07 Jan 2014 04:31:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-01-07:/2014/01/linux-protip-environment-for-a-process/</guid><category>Free Software</category><category>environ</category><category>linux</category><category>protip</category></item><item><title>How does foo_t get this privilege?</title><link>http://192.168.1.71:8000/2014/01/how-does-foo_t-get-this-privilege/</link><description>&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
+that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
+&lt;p&gt;I used a simple script (which I've been using for a while already)
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 05 Jan 2014 04:14:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-01-05:/2014/01/how-does-foo_t-get-this-privilege/</guid><category>SELinux</category><category>policy</category><category>selinux</category><category>seshowtree</category></item><item><title>Oh it is cron again...</title><link>http://192.168.1.71:8000/2014/01/oh-it-is-cron-again/</link><description>&lt;p&gt;Today I was pointed to the following error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test fcron[6722]: fcron[6722] 3.1.2 started
+test fcron[6722]: Cannot bind socket to &amp;#39;/var/run/fcron.fifo&amp;#39;: Permission denied
+test fcron[6722]:  &amp;quot;at&amp;quot; reboot jobs will only be run at computer&amp;#39;s startup.
+test fcron[6722]: updating configuration from …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Fri, 03 Jan 2014 21:05:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-01-03:/2014/01/oh-it-is-cron-again/</guid><category>SELinux</category><category>cron</category><category>selinux</category></item><item><title>Private key handling and SELinux protection</title><link>http://192.168.1.71:8000/2014/01/private-key-handling-and-selinux-protection/</link><description>&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
+script I wrote.&lt;/p&gt;
+&lt;p&gt;The script is a certificate authority handling script, in which I can
+generate a private key (and certificate assigned to it), sign the
+certificate either by itself (for the root CA key) or …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 02 Jan 2014 04:00:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2014-01-02:/2014/01/private-key-handling-and-selinux-protection/</guid><category>SELinux</category><category>ca</category><category>certcli</category><category>policy</category><category>selinux</category></item><item><title>Limiting file access with SELinux alone?</title><link>http://192.168.1.71:8000/2013/12/limiting-file-access-with-selinux-alone/</link><description>&lt;p&gt;While writing a small script to handle simple certificate authority
+activities using OpenSSL, I considered how to properly protect the files
+that OpenSSL uses for these activities. As you are probably aware, a
+system that hosts the necessary files for CA activities (like signing
+certificate requests) should be very secure …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 31 Dec 2013 21:18:00 +0100</pubDate><guid isPermaLink="false">tag:192.168.1.71,2013-12-31:/2013/12/limiting-file-access-with-selinux-alone/</guid><category>SELinux</category><category>access</category><category>acl</category><category>file access</category><category>Gentoo</category><category>selinux</category></item><item><title>Upgrading old Gentoo installations</title><link>http://192.168.1.71:8000/2013/12/upgrading-old-gentoo-installations/</link><description>&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
 #463240&lt;/a&gt; about the
 difficulty of upgrading a Gentoo Linux deployment after a long time of
 inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading

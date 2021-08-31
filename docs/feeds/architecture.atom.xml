@@ -1,5 +1,1654 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - Architecture</title><link href="http://192.168.1.71:8000/" rel="alternate"></link><link href="http://192.168.1.71:8000/feeds/architecture.atom.xml" rel="self"></link><id>http://192.168.1.71:8000/</id><updated>2020-12-25T23:00:00+01:00</updated><entry><title>Abstracting infrastructure complexity</title><link href="http://192.168.1.71:8000/2020/12/abstracting-infrastructure-complexity/" rel="alternate"></link><published>2020-12-25T23:00:00+01:00</published><updated>2020-12-25T23:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2020-12-25:/2020/12/abstracting-infrastructure-complexity/</id><summary type="html">&lt;p&gt;IT is complex. Some even consider it to be more magic than reality. And with
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - Architecture</title><link href="http://192.168.1.71:8000/" rel="alternate"></link><link href="http://192.168.1.71:8000/feeds/architecture.atom.xml" rel="self"></link><id>http://192.168.1.71:8000/</id><updated>2021-08-27T21:10:00+02:00</updated><entry><title>Component view of infrastructure</title><link href="http://192.168.1.71:8000/2021/08/component-view-of-infrastructure/" rel="alternate"></link><published>2021-08-27T21:10:00+02:00</published><updated>2021-08-27T21:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2021-08-27:/2021/08/component-view-of-infrastructure/</id><summary type="html">&lt;p&gt;IT architects try to use views and viewpoints to convey the target architecture
+to the various stakeholders. Each stakeholder has their own interests in the
+architecture and wants to see their requirements fulfilled. A core
+role of the architect is to understand these requirements and make sure the
+requirements are met, and to balance all the different requirements.&lt;/p&gt;
+&lt;p&gt;Architecture languages or meta-models often put significant focus on these
+views. Archimate has a large annex on &lt;a href="https://pubs.opengroup.org/architecture/archimate3-doc/apdxc.html#_Toc10045495"&gt;Example
+Viewpoints&lt;/a&gt;
+just for this purpose. However, unless the organization is widely accustomed to
+enterprise architecture views, it is unlikely that the views themselves are the
+final product: being able to translate those views into pretty slides and
+presentations is still an important task for architects when they need to
+present their findings to non-architecture roles.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Infrastructure domain in viewpoints&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While searching for a way to describe the infrastructure domain,
+I tend to align with certain viewpoints as well, as it allows architects
+to decompose a complex situation into more manageable parts. So the question
+is no longer "how do I show what the infrastructure domain is", but rather
+"what different viewpoints do I need to cover the scope of (and
+explanation on) the infrastructure domain".&lt;/p&gt;
+&lt;p&gt;I currently settle on five views:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;em&gt;component view&lt;/em&gt;, which covers the vertical stack of an IT infrastructure
+  component.&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;location view&lt;/em&gt;, which is the horizontal stack for IT infrastructure&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;process view&lt;/em&gt;, which covers the general enterprise requirements for IT
+  infrastructure&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;service view&lt;/em&gt;, which provides insights into what functional offerings are
+  provided (and for which I posted a current view a short while ago, titled "&lt;a href="http://192.168.1.71:8000/2021/06/an-it-services-overview/"&gt;An
+  IT services overview&lt;/a&gt;")&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;zoning view&lt;/em&gt;, which represents the IT environment landscape. A few years
+  ago, I covered this as well in "&lt;a href="http://192.168.1.71:8000/2017/06/structuring-infrastructural-deployments/"&gt;Structuring infrastructural
+  deployments&lt;/a&gt;"&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All these views are related to each other, but represent insights that are
+particularly useful for certain discussions or representations. Some viewpoints
+are even details for another. For instance, the &lt;em&gt;zoning view&lt;/em&gt; is a view that
+provides more detail on a particular layer in the &lt;em&gt;location view&lt;/em&gt;. A simple
+relationship between the above five views is the following:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Relationship between the five infrastructure views" src="http://192.168.1.71:8000/images/202108/five-infra-views.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Now, this isn't a proper meta-model, just a representation. It starts
+with what the infrastructure domain has to accomplish (process view),
+which defines the services the domain has to support. These services
+comprise several components, and these are deployed in various
+zones across the organization. The zone overview is part of the more
+elaborate location views.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Components are a good introduction to infrastructure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While a good coverage of the infrastructure domain would start with the
+process view, I think it is not always the easiest. Not all stakeholders
+are fully acquainted with processes and what they entail, and I feel it
+might be easier to start with a more tangible view, i.e. a component
+view.&lt;/p&gt;
+&lt;p&gt;For instance, when explaining what IT infrastructure is to an outsider
+(say, a family member that isn't active in the IT world), I often start with
+a component view (often using a cellphone as a starting example), then going
+about the massive amount of components that need to be managed, hence the need
+for proper processes. After elaborating a bit on the various processes involved,
+we can then go to a service overview, to then move on to the hosting of all
+those services in a structured and reliable environment (zoning), with the
+various challenges related to locations.&lt;/p&gt;
+&lt;p&gt;So, what is the component view that I reuse a lot? It is basically
+the vertical stack that most hosting-related services use to explain where
+their product is situated:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Layered view on a component level" src="http://192.168.1.71:8000/images/202108/component-view.png"/&gt;&lt;/p&gt;
+&lt;p&gt;If you start with a cellphone view, then you can easily describe the hardware,
+operating system, application, and data layers in the view. You can mention that
+the hardware is an expensive one-time investment that the user hopes to use for
+a few years (so you can explain &lt;em&gt;capital expenditures (CapEx)&lt;/em&gt; and &lt;em&gt;operational
+expenditures (OpEx)&lt;/em&gt;. The latter can be a cloud service that the
+user synchronizes its data to, like Apple iCloud or Google Drive).&lt;/p&gt;
+&lt;p&gt;The distinction between operating system and application, and its impact on
+the users, can also be explained easily: operating system upgrades are
+heavier, and users often want to choose when this occurs, as operating system
+upgrades are not always fully backward compatible. Or, the user's hardware isn't
+supported on the next operating system (e.g. upgrading Apple iOS 12 to iOS 13,
+or Android 10 to Android 11). Applications, on the other hand, are often
+automatically updated and are less intrusive. However, because there are
+many applications, managing the application landscape can be more daunting than
+the operating system one.&lt;/p&gt;
+&lt;p&gt;Then we can move on to the scaling challenges that an organization has to
+face, which will gradually build up more insights into the component layers. For
+instance, if a company is developing and maintaining a mobile application, it
+wants to test its new releases on different operating system
+versions.  But it would not be sensible to have each developer walk around with
+six phones because they need to test the application on iOS 12, iOS 13, iOS 14,
+Android 9, Android 10, and Android 11. Instead, testing could be done on
+emulators (which can be considered hypervisors, albeit often not that exhaustive
+in features).&lt;/p&gt;
+&lt;p&gt;This introduces concepts of optimizing resources for cost, but also the
+benefits of having these services available 'at distance' (remote access
+to the emulation environments) as well as first steps in virtualization.
+You can state that this emulation is something the user can do on their
+laptops, but that in enterprise environments this is done with either
+cloud services or on the enterprise servers, as that facilitates collaboration
+with team members, and simplifies managing these assets when the teams get
+larger or smaller. And these servers, well, they too are virtualized for
+resource optimization.&lt;/p&gt;
+&lt;p&gt;We can also discuss the data layer, and the challenge that a regular user
+has when their phone is near its limits (e.g. storage is full), the options the
+user has (add SD card if the phone supports it, or use cloud storage services),
+and compare that with larger enterprises where data hosting is often either
+centralized or abstracted, so that systems are not bound to the limits of their
+device's storage capacity.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Component views enable scalability and cost insights&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The layered view on components, of course, is a meta-view rather than an actual
+one: it shows how a stack can be built up, but the actual benefit is when
+you look at the component view of a solution.&lt;/p&gt;
+&lt;p&gt;For instance, if we were to assess a Kubernetes cluster, it could be represented
+as follows:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kubernetes component view" src="http://192.168.1.71:8000/images/202108/k8s-component-view.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Going bottom-up on this view, we can identify (and thus elaborate on) the
+various layers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;On the hardware level, we see four physical servers (named sppc01 to sppc04).
+  These servers are of a particular brand and have 32 Gb of memory each (which
+  isn't a lot, the cluster is rather small).&lt;/li&gt;
+&lt;li&gt;KVM is used as the hypervisor. The hypervisor combines the four physical
+  servers in a single cluster.&lt;/li&gt;
+&lt;li&gt;KVM then provides eight virtual systems (named svpc01 to svpc08) from the
+  cluster. The first three are used for the Kubernetes control plane, the others
+  are the worker nodes. Note that it is recommended to host the nodes of the
+  control plane on different physical machines so that a failure on one physical
+  machine doesn't jeopardize the cluster availability. This can be configured on
+  the hypervisor, but that is outside the scope of this article.&lt;/li&gt;
+&lt;li&gt;The physical servers use a hardened Gentoo Linux operating system using the
+  musl C library, whereas the virtual servers use a regular Gentoo Linux
+  installation as their operating system.&lt;/li&gt;
+&lt;li&gt;The orchestration layer is Kubernetes itself, using the CRI-O container
+  runtime as middleware.&lt;/li&gt;
+&lt;li&gt;The applications depicted are those of the Kubernetes ecosystem, with the main
+  control plane applications and worker node applications listed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If we were to host an application inside the Kubernetes cluster, it would
+be deployed on the worker nodes. The logical design of a Kubernetes cluster
+is not something to be represented in a component view (that's more for
+the location view, as there we will talk about the topology of services).&lt;/p&gt;
+&lt;p&gt;With such component views, we can have some insights into the costs. Of course,
+this is just a simple Kubernetes cluster, and built with pure open-source
+software, so the costs are going to be on the hardware side (and the resources
+they consume). In larger enterprises, however, the hypervisor is often a
+commercially backed one like Hyper-V (Microsoft) and vSphere (VMware), which
+have their specific licensing terms (which could be the number of machines or
+even CPUs).  Also, enterprises often use a commercially backed Kubernetes, like
+Rancher or OpenShift (Red Hat, part of IBM), which often have per-node licensing
+terms.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Component views are just the beginning&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When I use a component view to explain what infrastructure is about,
+it is merely the beginning. It provides a rudimentary layered view, which most
+people can easily relate to. Content-wise, it is reasonably understandable (or
+easy enough to explain) for people that aren't IT savvy, and is something that
+you can easily find a lot of material for online.&lt;/p&gt;
+&lt;p&gt;If we delve into the processes of (or related to) infrastructure, it becomes
+more challenging to keep the readers/listeners with you. Processes can (will)
+often be very abstract, and going into the details of each process is a lengthy
+endeavor. I'll cover that in a later post.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Feedback? Comments?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A few days ago I've dropped Disqus as comment engine from my blog site, mainly
+for concerns about my visitor's security, as well as the advertisements that it
+embedded. I want my blog to be simple and straightforward, so I decided to not
+have any other third-party services with it for now.&lt;/p&gt;
+&lt;p&gt;So, if you have feedback or comments, don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1431332634370711552"&gt;discussion on
+Twitter&lt;/a&gt;&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;IT architects try to use views and viewpoints to convey the target architecture
+to the various stakeholders. Each stakeholder has their own interests in the
+architecture and wants to see their requirements fulfilled. A core
+role of the architect is to understand these requirements and make sure the
+requirements are met, and to balance all the different requirements.&lt;/p&gt;
+&lt;p&gt;Architecture languages or meta-models often put significant focus on these
+views. Archimate has a large annex on &lt;a href="https://pubs.opengroup.org/architecture/archimate3-doc/apdxc.html#_Toc10045495"&gt;Example
+Viewpoints&lt;/a&gt;
+just for this purpose. However, unless the organization is widely accustomed to
+enterprise architecture views, it is unlikely that the views themselves are the
+final product: being able to translate those views into pretty slides and
+presentations is still an important task for architects when they need to
+present their findings to non-architecture roles.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Infrastructure domain in viewpoints&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While searching for a way to describe the infrastructure domain,
+I tend to align with certain viewpoints as well, as it allows architects
+to decompose a complex situation into more manageable parts. So the question
+is no longer "how do I show what the infrastructure domain is", but rather
+"what different viewpoints do I need to cover the scope of (and
+explanation on) the infrastructure domain".&lt;/p&gt;
+&lt;p&gt;I currently settle on five views:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;em&gt;component view&lt;/em&gt;, which covers the vertical stack of an IT infrastructure
+  component.&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;location view&lt;/em&gt;, which is the horizontal stack for IT infrastructure&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;process view&lt;/em&gt;, which covers the general enterprise requirements for IT
+  infrastructure&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;service view&lt;/em&gt;, which provides insights into what functional offerings are
+  provided (and for which I posted a current view a short while ago, titled "&lt;a href="http://192.168.1.71:8000/2021/06/an-it-services-overview/"&gt;An
+  IT services overview&lt;/a&gt;")&lt;/li&gt;
+&lt;li&gt;A &lt;em&gt;zoning view&lt;/em&gt;, which represents the IT environment landscape. A few years
+  ago, I covered this as well in "&lt;a href="http://192.168.1.71:8000/2017/06/structuring-infrastructural-deployments/"&gt;Structuring infrastructural
+  deployments&lt;/a&gt;"&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All these views are related to each other, but represent insights that are
+particularly useful for certain discussions or representations. Some viewpoints
+are even details for another. For instance, the &lt;em&gt;zoning view&lt;/em&gt; is a view that
+provides more detail on a particular layer in the &lt;em&gt;location view&lt;/em&gt;. A simple
+relationship between the above five views is the following:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Relationship between the five infrastructure views" src="http://192.168.1.71:8000/images/202108/five-infra-views.png"&gt;&lt;/p&gt;
+&lt;p&gt;Now, this isn't a proper meta-model, just a representation. It starts
+with what the infrastructure domain has to accomplish (process view),
+which defines the services the domain has to support. These services
+comprise several components, and these are deployed in various
+zones across the organization. The zone overview is part of the more
+elaborate location views.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Components are a good introduction to infrastructure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While a good coverage of the infrastructure domain would start with the
+process view, I think it is not always the easiest. Not all stakeholders
+are fully acquainted with processes and what they entail, and I feel it
+might be easier to start with a more tangible view, i.e. a component
+view.&lt;/p&gt;
+&lt;p&gt;For instance, when explaining what IT infrastructure is to an outsider
+(say, a family member that isn't active in the IT world), I often start with
+a component view (often using a cellphone as a starting example), then going
+about the massive amount of components that need to be managed, hence the need
+for proper processes. After elaborating a bit on the various processes involved,
+we can then go to a service overview, to then move on to the hosting of all
+those services in a structured and reliable environment (zoning), with the
+various challenges related to locations.&lt;/p&gt;
+&lt;p&gt;So, what is the component view that I reuse a lot? It is basically
+the vertical stack that most hosting-related services use to explain where
+their product is situated:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Layered view on a component level" src="http://192.168.1.71:8000/images/202108/component-view.png"&gt;&lt;/p&gt;
+&lt;p&gt;If you start with a cellphone view, then you can easily describe the hardware,
+operating system, application, and data layers in the view. You can mention that
+the hardware is an expensive one-time investment that the user hopes to use for
+a few years (so you can explain &lt;em&gt;capital expenditures (CapEx)&lt;/em&gt; and &lt;em&gt;operational
+expenditures (OpEx)&lt;/em&gt;. The latter can be a cloud service that the
+user synchronizes its data to, like Apple iCloud or Google Drive).&lt;/p&gt;
+&lt;p&gt;The distinction between operating system and application, and its impact on
+the users, can also be explained easily: operating system upgrades are
+heavier, and users often want to choose when this occurs, as operating system
+upgrades are not always fully backward compatible. Or, the user's hardware isn't
+supported on the next operating system (e.g. upgrading Apple iOS 12 to iOS 13,
+or Android 10 to Android 11). Applications, on the other hand, are often
+automatically updated and are less intrusive. However, because there are
+many applications, managing the application landscape can be more daunting than
+the operating system one.&lt;/p&gt;
+&lt;p&gt;Then we can move on to the scaling challenges that an organization has to
+face, which will gradually build up more insights into the component layers. For
+instance, if a company is developing and maintaining a mobile application, it
+wants to test its new releases on different operating system
+versions.  But it would not be sensible to have each developer walk around with
+six phones because they need to test the application on iOS 12, iOS 13, iOS 14,
+Android 9, Android 10, and Android 11. Instead, testing could be done on
+emulators (which can be considered hypervisors, albeit often not that exhaustive
+in features).&lt;/p&gt;
+&lt;p&gt;This introduces concepts of optimizing resources for cost, but also the
+benefits of having these services available 'at distance' (remote access
+to the emulation environments) as well as first steps in virtualization.
+You can state that this emulation is something the user can do on their
+laptops, but that in enterprise environments this is done with either
+cloud services or on the enterprise servers, as that facilitates collaboration
+with team members, and simplifies managing these assets when the teams get
+larger or smaller. And these servers, well, they too are virtualized for
+resource optimization.&lt;/p&gt;
+&lt;p&gt;We can also discuss the data layer, and the challenge that a regular user
+has when their phone is near its limits (e.g. storage is full), the options the
+user has (add SD card if the phone supports it, or use cloud storage services),
+and compare that with larger enterprises where data hosting is often either
+centralized or abstracted, so that systems are not bound to the limits of their
+device's storage capacity.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Component views enable scalability and cost insights&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The layered view on components, of course, is a meta-view rather than an actual
+one: it shows how a stack can be built up, but the actual benefit is when
+you look at the component view of a solution.&lt;/p&gt;
+&lt;p&gt;For instance, if we were to assess a Kubernetes cluster, it could be represented
+as follows:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Kubernetes component view" src="http://192.168.1.71:8000/images/202108/k8s-component-view.png"&gt;&lt;/p&gt;
+&lt;p&gt;Going bottom-up on this view, we can identify (and thus elaborate on) the
+various layers:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;On the hardware level, we see four physical servers (named sppc01 to sppc04).
+  These servers are of a particular brand and have 32 Gb of memory each (which
+  isn't a lot, the cluster is rather small).&lt;/li&gt;
+&lt;li&gt;KVM is used as the hypervisor. The hypervisor combines the four physical
+  servers in a single cluster.&lt;/li&gt;
+&lt;li&gt;KVM then provides eight virtual systems (named svpc01 to svpc08) from the
+  cluster. The first three are used for the Kubernetes control plane, the others
+  are the worker nodes. Note that it is recommended to host the nodes of the
+  control plane on different physical machines so that a failure on one physical
+  machine doesn't jeopardize the cluster availability. This can be configured on
+  the hypervisor, but that is outside the scope of this article.&lt;/li&gt;
+&lt;li&gt;The physical servers use a hardened Gentoo Linux operating system using the
+  musl C library, whereas the virtual servers use a regular Gentoo Linux
+  installation as their operating system.&lt;/li&gt;
+&lt;li&gt;The orchestration layer is Kubernetes itself, using the CRI-O container
+  runtime as middleware.&lt;/li&gt;
+&lt;li&gt;The applications depicted are those of the Kubernetes ecosystem, with the main
+  control plane applications and worker node applications listed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If we were to host an application inside the Kubernetes cluster, it would
+be deployed on the worker nodes. The logical design of a Kubernetes cluster
+is not something to be represented in a component view (that's more for
+the location view, as there we will talk about the topology of services).&lt;/p&gt;
+&lt;p&gt;With such component views, we can have some insights into the costs. Of course,
+this is just a simple Kubernetes cluster, and built with pure open-source
+software, so the costs are going to be on the hardware side (and the resources
+they consume). In larger enterprises, however, the hypervisor is often a
+commercially backed one like Hyper-V (Microsoft) and vSphere (VMware), which
+have their specific licensing terms (which could be the number of machines or
+even CPUs).  Also, enterprises often use a commercially backed Kubernetes, like
+Rancher or OpenShift (Red Hat, part of IBM), which often have per-node licensing
+terms.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Component views are just the beginning&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When I use a component view to explain what infrastructure is about,
+it is merely the beginning. It provides a rudimentary layered view, which most
+people can easily relate to. Content-wise, it is reasonably understandable (or
+easy enough to explain) for people that aren't IT savvy, and is something that
+you can easily find a lot of material for online.&lt;/p&gt;
+&lt;p&gt;If we delve into the processes of (or related to) infrastructure, it becomes
+more challenging to keep the readers/listeners with you. Processes can (will)
+often be very abstract, and going into the details of each process is a lengthy
+endeavor. I'll cover that in a later post.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Feedback? Comments?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A few days ago I've dropped Disqus as comment engine from my blog site, mainly
+for concerns about my visitor's security, as well as the advertisements that it
+embedded. I want my blog to be simple and straightforward, so I decided to not
+have any other third-party services with it for now.&lt;/p&gt;
+&lt;p&gt;So, if you have feedback or comments, don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1431332634370711552"&gt;discussion on
+Twitter&lt;/a&gt;&lt;/p&gt;
+</content><category term="Architecture"></category><category term="architecture"></category><category term="component"></category><category term="viewpoint"></category></entry><entry><title>Disaster recovery in the public cloud</title><link href="http://192.168.1.71:8000/2021/07/disaster-recovery-in-the-public-cloud/" rel="alternate"></link><published>2021-07-30T20:00:00+02:00</published><updated>2021-07-30T20:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2021-07-30:/2021/07/disaster-recovery-in-the-public-cloud/</id><summary type="html">&lt;p&gt;The public cloud is a different beast than an on-premise environment, and that
+also reflects itself on how we (should) look at the processes that are
+actively steering infrastructure designs and architecture. One of these
+is the business continuity, severe incident handling, and the
+hopefully-never-to-occur disaster recovery. When building up procedures
+for handling disasters (&lt;a href="https://en.wikipedia.org/wiki/Disaster_recovery"&gt;DRP = Disaster Recovery Procedure or Disaster 
+Recover Planning&lt;/a&gt;),
+it is important to keep in mind what these are about.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;The public cloud is a different beast than an on-premise environment, and that
+also reflects itself on how we (should) look at the processes that are
+actively steering infrastructure designs and architecture. One of these
+is the business continuity, severe incident handling, and the
+hopefully-never-to-occur disaster recovery. When building up procedures
+for handling disasters (&lt;a href="https://en.wikipedia.org/wiki/Disaster_recovery"&gt;DRP = Disaster Recovery Procedure or Disaster 
+Recover Planning&lt;/a&gt;),
+it is important to keep in mind what these are about.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;What is a disaster&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Disasters are major incidents that have wide-ranging consequences to the
+regular operations of the business. What entails a disaster can be different
+between organizations, although they are commonly tied to the size of the
+infrastructure and the organizational and infrastructural maturity. I'll get
+back to the size dependency later when covering public cloud.&lt;/p&gt;
+&lt;p&gt;A small organization that only has a few systems can declare a
+disaster when all those systems are unreachable because their network
+provider's line is interrupted. A larger organization probably has
+redundancy of the network in place to mitigate that threat. And even
+without the redundancy, organizations might just not depend that much
+on those services.&lt;/p&gt;
+&lt;p&gt;The larger the environment becomes though, the more the business depends
+on the well-being of the services. And while I can only hope that high
+availability, resiliency and appropriate redundancy are taken into account
+as well, there are always threats that could jeopardize the availability
+of services.&lt;/p&gt;
+&lt;p&gt;When the problem at hand is specific to one or a manageable set of services,
+then taking appropriate action to remediate that threat is generally not a
+disaster. It can be a severe incident, but in general it is taken up
+by the organization as an incident with a sufficiently small yet
+efficient and well organized coordination: the teams involved are 
+low in numbers, and the coordination can be done accurately.&lt;/p&gt;
+&lt;p&gt;However, when the problem is significant or has a very wide scope, then
+depending on the standard incident coordination will be insufficient. You
+need to coordinate across too many teams, make sure communication is done
+correctly, business is continuously involved/consulted, and most of all - 
+you want to make sure that the organization doesn't independently try
+to resolve issues when they don't have a full view on the situation
+themselves.&lt;/p&gt;
+&lt;p&gt;The latter is a major reason in my opinion why a DRP is so important
+to have (the plan/procedure, not an actual disaster). If there is no
+proper, well-aligned plan of action, teams will try to get in touch
+with other teams, polluting communication and only getting incomplete
+information. They might take action that other teams should know about
+(but won't) or are heavily impacted by (e.g. because they are at that
+time trying to do activities themselves). It can make the situation
+much worse.&lt;/p&gt;
+&lt;p&gt;Because we have to make a distinction between incident management
+and disaster management, an organization has to formally declare
+a problem as a disaster, and communicate that singular fact ("we
+are now in disaster mode") so that all teams know how to respond: 
+according to the Disaster Recovery Plan (DRP).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Disasters are not just 'force majeure'&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Disasters aren't extraordinary events or circumstances beyond the
+control of the organization. Depending on the business needs, you
+might very well take precautionary actions against situations you've
+never encountered before and will never encounter. We've recently had
+a disastrous weather in Belgium (and other countries in Western Europe)
+with floods happening in large areas. But that doesn't mean that
+for an organization a flood event will trigger a disaster declaration
+within a company (the disastrous weather was a disaster from a
+human side, with several dozen deaths and millions of damage, so it
+feels somewhat incorrect to consider the threat from a theoretical
+standpoint here).&lt;/p&gt;
+&lt;p&gt;If you're located in a flood-sensitive environment, you can still take
+precautionary actions and assess what to do in case of a flood event. 
+Depending on the actions taken, a flood event (threat) will not manifest
+into availability concerns, data and infrastructure destruction, people
+unavailability, etc. It is only when the threat itself turns into an
+unforeseen (or non-remediated) situation that we speak of a disaster.&lt;/p&gt;
+&lt;p&gt;This is why disasters depend on organizations, and how risk averse
+the organization (and business) is. Some businesses might not want to
+take precautionary actions against situations that in the past only
+occur once every 100 years, especially if the investment they would
+have to do is too significant compared to the losses they might have.&lt;/p&gt;
+&lt;p&gt;Common disaster threats (sometimes also called catastrophic events)
+that I'm used to evaluate from an infrastructure point of view, with a
+company that has four strategic data centers, multiple headquarter
+locations and a high risk averse setting (considering the financial
+market it plays in) are cyberattacks, local but significant infrastructure
+disruptions (data center failures or destruction), people-oriented
+threats (targetting key personnel), critical provider outages,
+disgruntled employees, and so forth. Searching for risk matrices
+online can give you some interesting pointers, such as the European
+Commission's &lt;a href="https://ec.europa.eu/echo/sites/default/files/swd_2017_176_overview_of_risks_2.pdf"&gt;Overview of Natural and Man-made Disaster Risks the
+European Union may
+face&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Public cloud related events&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In case of public cloud, the catastrophic events that might occur are
+different, and it would be wrong to just consider the same events and
+with the same action plan. A prime example, and the one I really want
+people to focus on, is regional outages.&lt;/p&gt;
+&lt;p&gt;If your current company considers region-wide failures (for
+instance because you have two data centers but within the same
+region) more from a reactive point of view rather than preventive
+(e.g. the DRP in case of region-wide failures is to approach
+the reconstruction within the region whenever possible, rather
+than fail over to a different region), it might feel the same about
+public cloud region failures.&lt;/p&gt;
+&lt;p&gt;That would be wrong though. Whereas it is likely that a region-wide
+failure for a company is not going to happen in its lifetime, a public
+cloud provider is so much more massive in size, that the likelihood
+of region-wide failures is higher. If you do a quick search for
+region-wide failures in AWS or Azure, you'll find plenty of examples.
+And while the failures themselves might be considered 'incidents' from
+the public cloud provider point of view, they might be disasters for
+the companies/customers that rely on them.&lt;/p&gt;
+&lt;p&gt;For me, tackling disaster recovery when dealing with public cloud strongly
+focuses on region failures and (coordinated) recovery from region failures.
+Beyond region failures, I also strongly recommend to look into the dependencies
+that the public cloud consumption has with services outside of the public cloud.
+Some of these dependencies might also play a role in certain catastrophic
+events. Say that you depend on Azure AD for your authentication and
+authorization, and Microsoft is suddenly facing not just a world-wide
+Azure AD outage, but also has to explain to you that they cannot restore its
+data.&lt;/p&gt;
+&lt;p&gt;Preparing for disasters is about preparing for multiple possible catastrophic
+events, and in case of public cloud, you're required to think at massive scales.
+And that includes designing for region-wide failures as well.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Impact of public cloud disasters to the organization&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Generally, if your organization has a decent maturity in dealing with disaster
+recovery planning, they will be using Service Level Agreements with the
+business to help decide what to do in case of disasters. Important
+non-functionals that are included here are RTO (Recovery Time Objective), RPO
+(Recovery Point Objective), and MTD (Maximum Tolerable Downtime). There are
+others possibly listed in the SLA as well, but let me focus on these three.
+If you want to learn more about contigency planning in general, I recommend
+to go through the &lt;a href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-34r1.pdf"&gt;NIST Special Publication 800-34 Rev.1, "Contingency Planning
+Guide for Federal Informatino
+Systems"&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;With the RTO, we represent the time it is allowed to take to recover a service
+to the point that it functions again. This might include with reduced capacity
+or performance degradation. The RTO can be expressed in hours, days, weeks
+or other arbitrary value. It is a disaster-oriented value, not availability!
+As long as no disaster is declared, the RTO is not considered.&lt;/p&gt;
+&lt;p&gt;The RPO identifies how much data loss is acceptable by the business in case of
+a disaster. Again, this is disaster-oriented: the business can very well take
+extra-ordinary steps to ensure full transactional consistency outside of 
+disaster situations, yet allow for a "previous day" RPO in case of a disaster.&lt;/p&gt;
+&lt;p&gt;The MTD is most often declared not on a single service, but at business service
+level, and explains how long unavailability of that service is tolerated before
+it seriously impacts the survivability of the business. It is related to the
+RTO, as most services will have an RTO that is more strict/lower value than the
+overall MTD, whereas the MTD is near non-negotiable.&lt;/p&gt;
+&lt;p&gt;Now, what does public cloud disasters have to do with this? Well, in theory
+nothing, as this model and process of capturing business requirements is quite
+sensible and maps out perfectly as well. However (and here's the culprit),
+an organization that sets up new services on a frequent basis might get
+accustomed to certain values, and these values might not be as easy to approach
+in a public cloud environment. Furthermore, the organization might not be
+accustomed to different disaster scenario's for the SLA: having different sets
+of RTO/RPO depending on the category of disaster.&lt;/p&gt;
+&lt;p&gt;Let's get back to the region-wide disasters. A company might have decided not
+to have region-wide proactive measures in place, and fixate their SLA
+non-functionals on local disasters: a data center failure is considered a threat
+that still requires proactive measures, whereas regional failures are treated
+differently.  The organization decides to only have one SLA set defined, and
+includes RTO and RPO values based on the current, local threat matrix. They
+might decide that a majority of applications or services has a RPO of "last
+transaction", meaning the data has to be fully restored at the latest situation
+in case of a disaster.&lt;/p&gt;
+&lt;p&gt;This generally implies synchronous replication as an infrastructural
+solution. If the organization is used to having this method available (for
+instance through SAN replication, cluster technologies, database recovery,
+etc.) then they won't sweat at all if the next dozen services all require
+the same RPO.&lt;/p&gt;
+&lt;p&gt;But now comes the public cloud, and a strong point of attention is region-wide
+failures. Doing synchronous replication across regions is not a proper tactic
+(as it implies significant performance degradation) and especially not sensible
+to do at the same scale as with local replication (e.g. between availability
+zones in the same region). Now you have to tell your business that this RPO
+value is not easily attainable in the public cloud. The public cloud, which
+solves all the wonders in the world. The public cloud, which has more maturity
+on operations than your own company. Yet you can't deliver the same SLA?&lt;/p&gt;
+&lt;p&gt;Apples and pears. The disasters are different, so your offering might be
+different. Of course, you should explain that your 'on premise' disaster
+scenarios do not include region-wide failures, and that if you include
+the same scenarios for 'on premise' that that RPO value would not be
+attainable on premise either.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The public cloud provides many capabilities, and has to deal with a
+significantly larger environment than companies are used to. This also means
+that disasters that are considered 'extremely unlikely' are now 'likely' (given
+the massive scale of the public cloud), and that the threats you have to
+consider while dealing with disaster recovery have to be re-visited for public
+cloud enabled scenarios.&lt;/p&gt;
+&lt;p&gt;My recommendation is to tackle the disaster-oriented non-functional requirements
+by categorizing the disasters and having different requirements based on the
+disaster at hand. Mature your cloud endeavours so that regional outages
+are not a problem anymore (moving them away from the 'disaster' board), and 
+properly map all dependencies you have through the public cloud exercises so
+that you can build up a good view on what possible threats exist that would
+require a well-coordinated approach to tackle the event.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="cloud"></category><category term="DRP"></category></entry><entry><title>What is the infrastructure domain?</title><link href="http://192.168.1.71:8000/2021/07/what-is-the-infrastructure-domain/" rel="alternate"></link><published>2021-07-19T15:20:00+02:00</published><updated>2021-07-19T15:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2021-07-19:/2021/07/what-is-the-infrastructure-domain/</id><summary type="html">&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
+stakeholders that have no common understanding of what infrastructure means in
+an enterprise architecture. Since then, I am trying to figure out a way to
+easily explain it - to find a common, generic view on what infrastructure
+entails. If successful, I could use this common view to provide context on the
+many, many IT projects that are going around.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
+stakeholders that have no common understanding of what infrastructure means in
+an enterprise architecture. Since then, I am trying to figure out a way to
+easily explain it - to find a common, generic view on what infrastructure
+entails. If successful, I could use this common view to provide context on the
+many, many IT projects that are going around.&lt;/p&gt;
+
+
+&lt;p&gt;Of course, I do not want to approach this solely from my own viewpoint. There
+are plenty of reference architectures and frameworks out there that could assist
+in this. However, I still have the feeling that they are either too complex to
+use for non-architect stakeholders, too simple to expose the domain properly, or
+just don't fit the situation that I am currently faced with. And that's OK,
+many of these frameworks are intended for architects, and from those frameworks
+I can borrow insights left and right to use for a simple visualization, a
+landscaping of some sort.&lt;/p&gt;
+&lt;p&gt;So, let's first look at the frameworks and references out there. Some remarks
+though that might be important to understand the post:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;When I use "the infrastructure domain", I reflect on how I see it. Within the
+  company that I work for, there is some guidance on what the scope is of the
+  infratructure domain, and that of course strongly influences how I look at
+  "the infrastructure domain". But keep in mind that this is still somewhat
+  organization- or company oriented. YMMV.&lt;/li&gt;
+&lt;li&gt;While I am lucky enough to have received the time and opportunity to learn
+  about enterprise architecture and architecture frameworks (and even got a
+  masters degree for it), I also learned that I know nothing. Enterprises are
+  complex, enterprise architecture is not a single framework or approach, and
+  the enterprise architecture landscape is continuously evolving. So it is very
+  well possible that I am missing something (and I will gladly learn from
+  feedback on this).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;The Open Group Architecture Framework (TOGAF)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you would ask for one common framework out there for enterprise architecture,
+then &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/"&gt;TOGAF&lt;/a&gt; is
+probably it. It is a very exhaustive framework that focuses on various aspects
+of enterprise architecture: the architecture development methodology, techniques
+to use, the content of an architecture view (like metamodel descriptions), and the
+capabilities that a mature organization should pursue.&lt;/p&gt;
+&lt;p&gt;A core part of TOGAF is the &lt;em&gt;Architecture Development Method&lt;/em&gt; cycle, which has
+several phases, including phases that are close to the infrastructure domain:
+"Technology Architecture (D)" as well as areas of "Opportunities and Solutions
+(E)" and "Information Systems Architectures (C)". Infrastructure is more than
+'just' technology, but the core of it does fit within the technology part.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TOGAF Cycle" src="http://192.168.1.71:8000/images/202107/togaf-adm-cycle.png"&gt;
+&lt;em&gt;The ADM cycle, taken from &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/chap04.html"&gt;The Open Group, TOGAF 9.2, Chapter 4&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;With TOGAF, you can support a full enterprise architecture view from the
+strategy and vision up to the smallest change and its governance. However, the
+key word here is &lt;em&gt;support&lt;/em&gt;, as TOGAF will not really give you much food for
+simply representing the scope of infrastructure.&lt;/p&gt;
+&lt;p&gt;I'm not saying it isn't a good framework, on the contrary. Especially with
+&lt;a href="http://www.opengroup.org/archimate-forum"&gt;ArchiMate&lt;/a&gt; as modeling language (also
+from The Open Group), using TOGAF and its meta model is a good way to facilitate
+a mature architecture practice and enterprise-wide view within the
+organization. But just like how application architecture and design requires a
+bit more muscle than &lt;a href="https://pubs.opengroup.org/architecture/togaf9-doc/arch/chap30.html"&gt;TOGAF's
+metamodel&lt;/a&gt;
+supports, the same is true for infrastructure.&lt;/p&gt;
+&lt;p&gt;There are also plenty of other enterprise frameworks out there that can easily
+be mapped to TOGAF. Most of these focus mainly on the layering (business,
+information, application, technology), processes (requirement management and the
+like) and viewpoints (how to visualize certain insights) and, if you're fluent
+in TOGAF, you can easily understand these other frameworks as well. I will not
+be going through those in detail, but I also do not want to insinuate that they
+are not valid anymore if you compare them with TOGAF: TOGAF is very extensive
+and has a huge market adoption, but sometimes an extensive and exhaustive
+framework isn't what a company needs...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TOGAF Technical Reference Model / Integrated Information Infrastructure
+Reference Model&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As TOGAF is extremely extensive, it has parts that can be used to reference or
+visualize infrastructure a bit better. In TOGAF 9.1, we had the &lt;em&gt;TOGAF Technical
+Reference Model (TRM)&lt;/em&gt; and &lt;em&gt;TOGAF Integrated Information Infrastructure
+Reference Model (III-RM)&lt;/em&gt; where you might feel that this is closer to what I
+am seeking (for instance,
+&lt;a href="https://pubs.opengroup.org/architecture/togaf91-doc/arch/chap44.html"&gt;III-RM&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img alt="TOGAF III-RM" src="http://192.168.1.71:8000/images/202107/togaf-iii-rm.png"&gt;
+&lt;em&gt;Focus of the III-RM, taken from &lt;a href="https://pubs.opengroup.org/architecture/togaf91-doc/arch/chap44.html"&gt;The Open Group, TOGAF 9.1, Chapter 44&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;While it does become a bit more tangible, TOGAF does not expand much on this
+reference model. Instead, it is more meant as a starting point for organizations
+to develop their own reference models.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Information Technology Infrastructure Library (ITIL)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.axelos.com/best-practice-solutions/itil"&gt;ITIL 4&lt;/a&gt; is another very
+common framework, this time owned by AXELOS Limited. The focus of ITIL is on
+process support, with many processes (sorry,
+'&lt;a href="https://wiki.en.it-processmaps.com/index.php/ITIL_4"&gt;practices&lt;/a&gt;' as they are
+called now) being very much close to what I consider to be part of the
+infrastructure domain. The practices give a good overview of 'what things to
+think about' when dealing with the infrastructure domain. Now, ITIL is not
+exclusive to the infrastructure domain, and the company that I work for
+currently considers many of these practices as processes that need to be tackled
+across all domains.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ITIL Practices" src="http://192.168.1.71:8000/images/202107/itil-practices.jpg"&gt;
+&lt;em&gt;ITIL 4 Practices, taken from &lt;a href="https://valueinsights.ch/-the-itil-4-practices-overview/"&gt;Value Insights, The ITIL 4 Practices Overview&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Still, I do want to see some of the ITIL practices reflected in the generic
+infrastructure view as they are often influencing the infrastructure domain and
+the projects within. The ITIL practices make it possible to explain that it
+isn't just about downloading and installing software or quickly buying an
+appliance.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reference Model of Open Distributed Processing (RM-ODP)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;a href="http://www.rm-odp.net/"&gt;RM-ODP standard&lt;/a&gt; has a strong focus on distributed
+processing (hence the name), which is a big part of what the infrastructure
+domain is about. If we ignore the workplace environment for a bit, and focus on
+hosting of applications, the majority of today's hosting initiatives are on
+distributed platforms.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="RM-ODP Five Viewpoints" src="http://192.168.1.71:8000/images/202107/rm-odp.png"&gt;
+&lt;em&gt;Five viewpoints of RM-ODP, taken from &lt;a href="https://sparxsystems.com/products/3rdparty/odp/index.html"&gt;MDG Technology for ODP - UML for ODP, SparxSystems&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Within RM-ODP guidance is given on how to handle requirement management, how to
+document the processing semantics, how to identify the components, integrations
+and limitations of the systems, and how to select the most appropriate
+technology. The intention of RM-ODP is to be as precise and formal as possible,
+and leave no room for interpretation. To accomplish that, RM-ODP uses an object
+model approach.&lt;/p&gt;
+&lt;p&gt;Unlike the more business and information system oriented frameworks, RM-ODP has
+a strong focus on infrastructure. Its viewpoints include engineering,
+computational and technology for instance. The challenge that rises here
+however is that it sticks to the more engineering oriented abstractions, which
+make perfect sense for people and stakeholders involved in the infrastructure
+domain, but is often Chinese for others.&lt;/p&gt;
+&lt;p&gt;Personally, I consider RM-ODP to be a domain-specific standard strongly
+associated with the infrastructure domain.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Department of Defense Architecture Framework (DoDAF)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://dodcio.defense.gov/library/dod-architecture-framework/"&gt;DoDAF&lt;/a&gt;
+ is an architecture framework that has a strong focus on the definition
+and visualization of the different viewpoints. It is less tangible than RM-ODP,
+instead focusing on view definitions: what and how should something be
+presented to the stakeholders. The intention of DoDAF is that organizations
+develop and use an enterprise architecture that supports and uses the
+viewpoints that DoDAF prescribes.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="DoDAF viewpoints" src="http://192.168.1.71:8000/images/202107/dodaf-viewpoints.png"&gt;
+&lt;em&gt;DoDAF viewpoints, taken from &lt;a href="https://www.visual-paradigm.com/guide/enterprise-architecture/what-is-dodaf-framework/"&gt;"What is DoDAF Framework", Visual Paradigm&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Unlike broad scale architecture frameworks that look at an enterprise in its
+entirety, my impression is that DoDAF is more towards product architecture.
+That makes DoDAF more interesting for solution architectures, which often
+require to be more detailed and thus hit closer to home when looking at the
+infrastructure domain. However, it is not something I can 'borrow' from to
+easily explain what infrastructure is about.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://www.nato.int/cps/en/natohq/topics_157575.htm"&gt;NATO's Architecture Framework (NAF)&lt;/a&gt;
+seems to play witin the same realm.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Sherwood Applied Business Security Architecture (SABSA)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The SABSA framework and methodology has a strong security focus, but covers the
+requirements from full enterprise view up to the solutions themselves. One of
+the benefits of SABSA is inherent to this security-orientation: you really need
+to know and understand how things work before you can show that they are
+secure. Hence, SABSA is a quite complete framework and methodology.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="SABSA Metamodel" src="http://192.168.1.71:8000/images/202107/sabsa-metamodel.png"&gt;
+&lt;em&gt;SABSA metamodel, taken from &lt;a href="https://sabsa.org/the-chief-architects-blog-a-brief-history-of-sabsa-21-years-old-this-year/"&gt;"A Brief History of SABSA: Part 1", sabsa.org&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;An important focus area in SABSA is the integration between services, which is
+something I am frequently confronted with at work. Yet unlike the more solution
+driven frameworks, SABSA retains its business-oriented top-down approach, which
+places it alongside the TOGAF one in my opinion. Moreover, we can apply TOGAF's
+development method while using SABSA to receive more direct requirements and
+design focus.&lt;/p&gt;
+&lt;p&gt;Its risk and enabler orientation offers a help to not only explain how things
+are set up, but also why. Especially in the sector I am currently active in
+(financial sector) having a risk-based, security-conscious approach is a good
+fit. The supporting list of attributes, metrics, security services, etc. allow
+for defining more complete architectures.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Control Objectives for IT (CObIT)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In a similar area as ITIL, the &lt;a href="https://www.isaca.org/resources/cobit"&gt;CObIT
+framework&lt;/a&gt; focuses less on a complete
+enterprise architecture framework and more on processes, process maturity, and
+alignment of the processes within the organization. I am personally a fan of
+CObIT as it is a more tangible framework, with more clear deliverables and
+requirements, compared to others. But like with most frameworks, it has
+received numerous updates to fit in continuously growing environments and
+cultures which makes it heavy to use.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="CObIT Core Model" src="http://192.168.1.71:8000/images/202107/cobit-core-model.jpg"&gt;
+&lt;em&gt;The CObIT 2019 Core Model, taken from "&lt;a href="https://www.isaca.org/resources/news-and-trends/industry-news/2020/using-cobit-2019-to-plan-and-execute-an-organization-transformation-strategy"&gt;Using CObIT 2019 to plan and execute
+an organization transformation strategy,
+ISACA.org&lt;/a&gt;"&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The framework is less about the content of infrastructure and technology, and
+more about how to assess, develop, build, maintain, operate and control
+whatever service is taken up. However, there are references to infrastructure
+(especially when dealing with non-functionals) or controls that are actively
+situated in infrastructure (such as backup/restore, disaster recovery, etc.)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;IT for IT (IT4IT)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The Open Group has a similar framework like CObIT, called
+&lt;a href="https://www.opengroup.org/it4it"&gt;IT4IT&lt;/a&gt;. It does have a reference architecture
+view that attempts to group certain deliverables/services together to create a
+holistic view on what IT should offer. But unlike the larger enterprise
+frameworks it focuses strongly on service delivery and its dependencies.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="IT4IT Reference Architecture" src="http://192.168.1.71:8000/images/202107/it4it-reference-architecture.png"&gt;
+&lt;em&gt;IT4IT Reference Architecture, taken from &lt;a href="https://www.opengroup.org/it4it-forum"&gt;The Open Group IT4IT
+Forum&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Within the IT4IT reference architecture, a grouping is attempted that maps on a
+value stream, starting from a strategy over the deployment up to the detection
+and correction facilities. This value stream orientation is common across
+frameworks, but often feels like the value is always to "add more", "deliver
+more". In my opinion, rationalization exercises, decommissioning and
+custodianship is too much hidden. Sure, it is part of the change management
+processes and operational maintenance, but those are extremely valuable areas
+that are not expressively visible in these frameworks. Compare that to the
+attention that risk and security receives: while security consciousness should
+be included at all phases of the value stream, security is always explicitly
+mentioned.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Vendor-specific visualizations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Several vendors have their own visualization methodology that represents more
+specific requirements from the domain(s) in which those vendors are active.
+These are generally domain-specific visualizations, even with a vendor-specific
+view. Such methodologies are nice to use when dealing with specific viewpoints,
+but I do not believe these should be considered "architecture" frameworks. They
+don't deal with requirement management, strategy alignment, and often lack
+functional and non-functional insights. Still, they are a must to know in the
+infrastructure areas.&lt;/p&gt;
+&lt;p&gt;If you are active in Amazon AWS for instance, then you've undoubtedly come
+across drawings like the one visible in "&lt;a href="https://aws.amazon.com/blogs/architecture/wordpress-best-practices-on-aws/"&gt;Wordpress: Best Practices on
+AWS&lt;/a&gt;".
+These drawings provide a deployment viewpoint that lists the main interactions
+between AWS services.&lt;/p&gt;
+&lt;p&gt;When you are more network oriented, then you've been immersed in Cisco's network
+diagrams, like the one visible in "&lt;a href="https://www.cisco.com/c/en/us/td/docs/solutions/Verticals/PCI_Retail/roc.html"&gt;Verizon Business Assessment for: Cisco PCI
+Solution for
+Retail&lt;/a&gt;".
+These network diagrams again focus on the deployment viewpoint of the network
+devices and their main interactions.&lt;/p&gt;
+&lt;p&gt;There are probably plenty more of these specific visualizations, but the two
+mentioned above are most visible to me currently.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are plenty of frameworks out there to learn from, and some of these can be
+used to find ways of explaining what the infrastructure domain is about.
+However, they are often all very complete and require an architectural mindset
+to start from, which is not obvious when trying to convey something to outside
+or indirect stakeholders.&lt;/p&gt;
+&lt;p&gt;Few frameworks have a reference that is directly consumable by non-architect
+stakeholders. The most tangible ones seem to be related to the IT processes, but
+those still require an IT mindset to interpret.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="pattern"></category></entry><entry><title>Organizing service documentation</title><link href="http://192.168.1.71:8000/2021/07/organizing-service-documentation/" rel="alternate"></link><published>2021-07-08T09:20:00+02:00</published><updated>2021-07-08T09:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2021-07-08:/2021/07/organizing-service-documentation/</id><summary type="html">&lt;p&gt;As I mentioned in &lt;a href="http://192.168.1.71:8000/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
+I try to keep track of the architecture and designs of the IT services and
+solutions in a way that I feel helps me keep in touch with all the various
+services and solutions out there. Similar to how system administrators try to
+find a balance while working on documentation (which is often considered a
+chore) and using a structure that is sufficiently simple and standard for the
+organization to benefit from, architects should try to keep track of
+architecturally relevant information as well.&lt;/p&gt;
+&lt;p&gt;So in this post, I'm going to explain a bit more on how I approach documenting
+service and solution insights for architectural relevance.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;As I mentioned in &lt;a href="http://192.168.1.71:8000/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
+I try to keep track of the architecture and designs of the IT services and
+solutions in a way that I feel helps me keep in touch with all the various
+services and solutions out there. Similar to how system administrators try to
+find a balance while working on documentation (which is often considered a
+chore) and using a structure that is sufficiently simple and standard for the
+organization to benefit from, architects should try to keep track of
+architecturally relevant information as well.&lt;/p&gt;
+&lt;p&gt;So in this post, I'm going to explain a bit more on how I approach documenting
+service and solution insights for architectural relevance.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Why I tend to document some of it myself&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Within the company I currently work for, not all architecture and designs are
+handled by a central repository, but that doesn't mean there is no architecture
+and design available. They are more commonly handled through separate documents,
+online project sites and the like. If we had a common way of documenting
+everything in the same tool using the same processes and the same taxonomy, it
+wouldn't make sense to document things myself... unless even then I would find
+that I am missing some information.&lt;/p&gt;
+&lt;p&gt;It all started when I tried to keep track of past decisions for a service or
+solution. Decisions on architecture boards, on risk forums, on department
+steering committees and what not. &lt;em&gt;Historical insights&lt;/em&gt; I call it, and it often
+provides a good sense of why a solution or service came up, what the challenges
+were, which principles were used, etc.&lt;/p&gt;
+&lt;p&gt;Once I started tracking the historical decisions and topics, I quickly moved on
+to a common structure: an entry page with the most common information about the
+service or solution, and then subpages for the following categories:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Administration (processes, authorizations, procedures)&lt;/li&gt;
+&lt;li&gt;Authentication&lt;/li&gt;
+&lt;li&gt;Authorizationn&lt;/li&gt;
+&lt;li&gt;Auditing and logging&lt;/li&gt;
+&lt;li&gt;Configuration management&lt;/li&gt;
+&lt;li&gt;Cost management&lt;/li&gt;
+&lt;li&gt;Cryptography and privacy&lt;/li&gt;
+&lt;li&gt;Data management (data handling, definitions, governance, lineage,
+  backup/restore, ...)&lt;/li&gt;
+&lt;li&gt;Deployment&lt;/li&gt;
+&lt;li&gt;Design and development (incl. naming convention)&lt;/li&gt;
+&lt;li&gt;Figures&lt;/li&gt;
+&lt;li&gt;High availability and disaster recovery&lt;/li&gt;
+&lt;li&gt;History&lt;/li&gt;
+&lt;li&gt;Operations (actor groups, source systems &amp;amp; interactions/external interfacing)&lt;/li&gt;
+&lt;li&gt;Organization (management, organisational structure within the company, etc.)&lt;/li&gt;
+&lt;li&gt;Performance management&lt;/li&gt;
+&lt;li&gt;Patterns&lt;/li&gt;
+&lt;li&gt;Processes&lt;/li&gt;
+&lt;li&gt;Quality assurance &amp;amp; reporting&lt;/li&gt;
+&lt;li&gt;Roadmap and restrictions (incl. lifecycle)&lt;/li&gt;
+&lt;li&gt;Risks and technical debt&lt;/li&gt;
+&lt;li&gt;Runtime information&lt;/li&gt;
+&lt;li&gt;Terminology&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now, I won't go in depth about all the different categories listed. Perhaps some
+areas warrant closer scrutiny in later posts, but for now the names of the
+categories should be sufficiently self-explanatory.&lt;/p&gt;
+&lt;p&gt;If there is an internal service (website or similar) that covers the
+details properly, then I will of course not duplicate that information. Instead,
+I will add a link to that resource and perhaps just document how to interpret
+the information on that resource.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The entry page&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The entry page of a service or solution always looks the same. It starts off
+with a few attributes associated with the service:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The taxonomy used within the company&lt;/li&gt;
+&lt;li&gt;The main point of contact(s)&lt;/li&gt;
+&lt;li&gt;The backlog where the responsible team tracks its progress and evolution&lt;/li&gt;
+&lt;li&gt;A link to the main documentation resources&lt;/li&gt;
+&lt;li&gt;The internal working name&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;taxonomy&lt;/em&gt; is something I strongly appreciate in my current company. It is
+a uniform identifier associated with the product, service or solution, and is
+used for several of the operational processes the company has. This taxonomy
+comes up in things like chargeback, service level agreements, responsibility
+overviews, data classifications, enterprise architectural overviews, etc.&lt;/p&gt;
+&lt;p&gt;For instance, a managed macbook (asset) might have a taxonomy identifier of
+&lt;code&gt;mmac&lt;/code&gt;, or we have a service for exchanging internal company data identified as
+&lt;code&gt;cd70&lt;/code&gt; (it doesn't need to have an identifier that "reads" properly). Of course,
+people don't just run around shouting the identifiers, but when we go through
+the information available at the company, this identifier is often the primary
+key so to speak to find the information.&lt;/p&gt;
+&lt;p&gt;For the &lt;em&gt;main points of contacts&lt;/em&gt;, I usually just document the person that is
+my go-to person to get some quick insights. The full list of all contacts (like
+product owner, product manager, system architect, business analyst, release
+manager, etc.) is managed in a central tool (and uses the taxonomy to quickly
+find the right person), so I just have the few names that I quickly need listed
+here.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;backlog&lt;/em&gt; is something I recently added to support any questions on "when
+will we have feature XYZ". In the past, I had to contact the people to get this
+information, but that often became cumbersome, especially when the team uses a
+proper tool for tracking the work on the service.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;main documentation&lt;/em&gt; is often the most important part. It is a link to the
+documentation that the team provides for end users, architects or other roles.
+Some teams still have their information on a NAS, others in a document library
+on SharePoint, others use a wiki, and there are teams that use a structured
+document management system. Working for a big company has its consequences...&lt;/p&gt;
+&lt;p&gt;Finally, the &lt;em&gt;internal working name&lt;/em&gt; is the name that a service or solution
+receives the most. For infrastructure services, this is often the name of the
+product from the time the product entered the organization. While the vendor has
+switched the name of the product numerous times since, the old name sticks. For
+instance, while I will document IBM's cloud offering as "IBMCloud" (its current
+name) I will list its working name as "Bluemix" because that's how the company
+internally often refers to it.&lt;/p&gt;
+&lt;p&gt;After the basic attributes, I have&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a few paragraphs for &lt;em&gt;description&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;a diagram or architecture view to give a &lt;em&gt;high level design&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;the &lt;em&gt;most important questions&lt;/em&gt; surrounding the service or solution&lt;/li&gt;
+&lt;li&gt;some &lt;em&gt;tips and titbits&lt;/em&gt; for myself&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The high level design is often a view that I maintain myself, which uses the
+&lt;a href="http://192.168.1.71:8000/2020/12/abstracting-infrastructure-complexity/"&gt;abstraction&lt;/a&gt; that I
+mentioned earlier in my blog. It is not covering everything, but to a sufficient
+level that I can quickly understand the context of the service or solution and
+how it is generally implemented.&lt;/p&gt;
+&lt;p&gt;The most important questions are mostly a refresher for questions that pop up
+during discussions. For instance, for an API gateway, common questions might be
+"What are the security controls that it enforces" or "Does the API GW perform
+schema validation on JSON structures?".&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The history of a service&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Below the entry page, the various categories come up. As I mentioned, it all
+started with the historical insights on the service. By having a chronological
+overview of all decisions and related material per service, I can quickly find
+the most important information in many cases.&lt;/p&gt;
+&lt;p&gt;Want to know the latest architecture for a service? Let's look in the history
+when the last architectural review was, and at which decision body or board it
+came up. Once found, I just need to go to the meeting minutes or case details to
+find it.&lt;/p&gt;
+&lt;p&gt;Want to know why the decision was taken to allow a non-standard integration?
+Take a look at the history where this decision was taken, and consult its
+meeting minutes.&lt;/p&gt;
+&lt;p&gt;Need to ask for a continuance for something but you're just new in the team and
+don't know why or how it was approved in the past? No worries, I'll share with
+you the history of the service, where you can find the information, and coach
+you a bit through our organization.&lt;/p&gt;
+&lt;p&gt;Having the history for services and solutions available has been a massive
+efficiency gain for myself and my immediate stakeholders. Of course, I would
+have loved if the organization tracked this themselves, but as long as they
+don't (especially since organization changes more often than technology) I will
+put time and effort to track it myself (at least for the services and solutions
+that I am interested in).&lt;/p&gt;
+&lt;p&gt;The historical information I track myself is not a copy/paste of the meeting
+minutes of those entries. I try to use a single paragraph explaination, like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ARB  2020/12/05     &amp;quot;Switch of PostgreSQL authentication provider to PAM+sssd&amp;quot;
+    Approval to switch the authentication provider of the PostgreSQL
+    database assets from the internal authentication to a PAM-supported
+    method, and use the RHEL sssd solution as a facilitator. Link with
+    Active Directory.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code&gt;ARB&lt;/code&gt; is the name of the decision body (here it could be the &lt;em&gt;Architecture
+Review Board&lt;/em&gt;) and tells me where I can find more details if needed. I don't
+really bother with trying to add actual links, because that takes time and often
+the links become invalid after we switch from one solution to another.&lt;/p&gt;
+&lt;p&gt;Since then, I also started adding information related to the service that isn't
+just decision body oriented:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Incident    2021/06/08  &amp;quot;Fastly major outage&amp;quot;
+    A major outage occurred on Fastly, a widely used cloud edge provider,
+    between 09:47 UTC and 12:35 UTC. This impacted service ABC and DEF.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Incidents can be internal or external, and if they are internal I'll document
+the incident and root cause analysis numbers associated with the incident as
+well.&lt;/p&gt;
+&lt;p&gt;It also doesn't need to be about problems. It can be announcements from the
+vendor as well, as long as the announcement is or can be impactful for my work.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How complete is this overview&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;My overview is far, far, far from complete. It is also not my intention to make
+it a complete overview, but instead use it as a quick reference when needed.
+Services that are commonly discussed (for instance because they have wide
+implications on other domain's architectures) are documented more in depth than
+services that are barely influential to my meetings and projects. And that
+doesn't mean that the services themselves are not important.&lt;/p&gt;
+&lt;p&gt;Furthermore, the only areas that I truly want to have up-to-date, is the entry
+page and the history. For all the other information I always hope to be able to
+link to existing documentation that is kept up-to-date by the responsible teams.&lt;/p&gt;
+&lt;p&gt;But in case the information isn't available, using the same structure for noting
+down what insights that I gather helps out tremendously.&lt;/p&gt;
+&lt;p&gt;I also don't want my overview to become a critical asset. It is protected from
+prying eyes (as there is occasionally confidential information inside) and I am
+coaching the organization to take up a lot of the information gathering and
+documentation in a structured way. For instance, for managing EOL information,
+we are publishing this in a standard way for all internal stakeholders to see
+(and report on). The roadmap and strategy for the services within the domain are
+now being standardized within the backlog tool as well, so that everybody can
+clearly document when they expect to work on something, when certain investments
+are needed, etc.&lt;/p&gt;
+&lt;p&gt;In the past, architects often had to scramble all that information together
+(hence one of my categories on &lt;em&gt;Roadmap&lt;/em&gt;) whereas we can now use the backlog
+tools of the teams themselves to report on it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Which tool to use?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Personally, I use a wiki-alike service for this, so that I can search through
+the pages, move and merge information, use tagging and labels and what not. I
+also think that, unless the company already has a central tool for this, a well
+maintained wiki with good practices and agreements on how to use it would do
+wonders.&lt;/p&gt;
+&lt;p&gt;I've been playing around in my spare time with several wiki technologies.
+&lt;a href="https://www.dokuwiki.org/dokuwiki"&gt;Dokuwiki&lt;/a&gt; is still one of my favorites due
+to its simplicity, whereas &lt;a href="https://www.mediawiki.org/wiki/MediaWiki"&gt;MediaWiki&lt;/a&gt;
+is one of my go-to's for when the organization really wants to pursue a scalable
+and flexible organization-wide wiki. However, considering that I try to
+structure the information in a hierarchical way, I am planning to play around
+with &lt;a href="https://www.bookstackapp.com/"&gt;BookStack&lt;/a&gt; a bit more.&lt;/p&gt;
+&lt;p&gt;But while having a good tool is important, it isn't the critical part of
+documenting information. Good documentation, in my opinion, comes from a good
+structure and a coherent way of working. If you do it yourself, then of course
+it is coherent, but it takes time and effort to maintain it. If you collaborate
+on it, you have to make sure everybody follows the same practices and agreements
+- so don't make them too complex.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="documentation"></category><category term="structure"></category><category term="wiki"></category></entry><entry><title>Not sure if TOSCA will grow further</title><link href="http://192.168.1.71:8000/2021/06/not-sure-if-TOSCA-will-grow-further/" rel="alternate"></link><published>2021-06-30T14:30:00+02:00</published><updated>2021-06-30T14:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2021-06-30:/2021/06/not-sure-if-TOSCA-will-grow-further/</id><summary type="html">&lt;p&gt;TOSCA is an OASIS open standard, and is an abbreviation for &lt;em&gt;Topology and
+Orchestration Specification for Cloud Applications&lt;/em&gt;. It provides a
+domain-specific language to describe how an application should be deployed
+in the cloud (the topology), which and how many resources it needs, as well
+as tasks to run when certain events occur (the orchestration). When I
+initially came across this standard, I was (and still am) interested
+in how far this goes. The promise of declaring an application (and even
+bundling the necessary application artefacts) within a single asset and
+then using this asset to deploy on whatever cloud is very appealing to
+an architect. Especially in organizations that have a multi-cloud
+strategy.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;TOSCA is an OASIS open standard, and is an abbreviation for &lt;em&gt;Topology and
+Orchestration Specification for Cloud Applications&lt;/em&gt;. It provides a
+domain-specific language to describe how an application should be deployed
+in the cloud (the topology), which and how many resources it needs, as well
+as tasks to run when certain events occur (the orchestration). When I
+initially came across this standard, I was (and still am) interested
+in how far this goes. The promise of declaring an application (and even
+bundling the necessary application artefacts) within a single asset and
+then using this asset to deploy on whatever cloud is very appealing to
+an architect. Especially in organizations that have a multi-cloud
+strategy.&lt;/p&gt;
+
+
+&lt;p&gt;But while I do see some adoption of TOSCA, I get the feeling that it is
+struggling with its position against the various infrastructure-as-code
+(IaC) frameworks that are out there. While many of these frameworks do
+not inherently support the abstraction that TOSCA has, it is not all that
+hard to apply similar principles and use those frameworks to facilitate
+multi-cloud deployments.&lt;/p&gt;
+&lt;p&gt;Before considering the infrastructural value of TOSCA further, let's
+see what TOSCA is about first.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Simplifying and abstracting cloud deployments&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;TOSCA offers a model where you can declare how an application should be
+hosted in the cloud, or in a cloud-native environment (like a Kubernetes
+cluster). For instance, you might want to describe a certain document
+management system, which has a web application front-end deployed on 
+a farm of web application servers with a load balancer in front of it,
+a backend processing system, a database system and a document storage
+system. With TOSCA, you can define these structural elements with their
+resource requirements.&lt;/p&gt;
+&lt;p&gt;For instance, for the database system, we could declare that it has to
+be a PostgreSQL database system with a certain administration password,
+and within the database system we define two databases with their
+own user roles:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;topology_template:
+  ...
+  node_templates:
+    db_server:
+      type: tosca.nodes.Compute
+      ...
+    postgresql:
+      type: tosca.nodes.DBMS.PostgreSQL
+      properties:
+        root_password: &amp;quot;...&amp;quot;
+      requirements:
+        host: db_server
+    db_filemeta:
+      type: tosca.nodes.Database.PostgreSQL
+      properties:
+        name: db_filemeta
+        user: fmusr
+        password: &amp;quot;...&amp;quot;
+      artifacts:
+        db_content:
+          file: files/file_server_metadata.txt
+          type: tosca.artifacts.File
+      requirements:
+        - host: postgresql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The parameters can, and should be further parameterized. TOSCA supports
+declaring inputs that are provided upon deployment so you can safely
+publicize the TOSCA structure without putting passwords in there
+for instance. Furthermore, TOSCA allows you to add scripts to execute
+when a resource is created, which is a common requirement for database
+systems.&lt;/p&gt;
+&lt;p&gt;But that's not all. Within TOSCA, you then further define the relationship
+between the different systems (nodes), including connectivity requirements.
+Connections can then be further aligned with virtual networks to model
+the network design of the application.&lt;/p&gt;
+&lt;p&gt;One of the major benefits of TOSCA is that it also provides abstraction on
+the requirements. While the above example explicitly pushes for a PostgreSQL
+database hosted on a specific compute server, we could also declare that we
+need a database management system, or for the network part we need firewall
+capabilities. The TOSCA interpreter, when mapping the model to the target
+cloud environment, can then either suggest or pick the technology service
+itself. The TOSCA model can then have different actions depending on the
+selected technology. For the database for instance, it would have different
+deployment scripts.&lt;/p&gt;
+&lt;p&gt;The last major benefit that I would like to point out are the workflow
+and policy capabilities of TOSCA. You can declare how for instance a 
+backup process should look like, or how to cleanly stop and start the
+application. You can even model how a rolling upgrade of the application
+or database could be handled.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;It is not just theoretical&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Standards can often be purely theoretical, with one or a few reference
+implementations out there. That is not the case with TOSCA. While reading
+up on TOSCA, it became clear that it has a strong focus on Network
+Functions Virtualization (NFV), a term used to denote the shift
+from appliance-driven networking capabilities towards an environment
+that has a multitude of solutions running in virtual environments, and
+where the infrastructure adopts to this virtualized situation with
+(for network) virtual routers, firewalls, etc. Another standards body,
+namely the European Telecommunications Standards Institute (ETSI), seems
+to be the driving force behind the NFV architecture.&lt;/p&gt;
+&lt;p&gt;TOSCA has a simple profile for NFV, which aligns with ETSI's NFV and 
+ensures that TOSCA parsers that support this profile can easily be used
+to set up and manage solutions in virtualized environments (and thus
+also cloud environments). The amount of online information about TOSCA
+with respect to the NFV side is large, although still in my opinion
+strongly vendor-oriented (products that support TOSCA) and standards-oriented
+(talks about how well it fits). On TOSCA's &lt;a href="https://www.oasis-open.org/tosca-implementation-stories/"&gt;implementation stories&lt;/a&gt;
+page, two of the three non-vendor stories are within the telco industry.&lt;/p&gt;
+&lt;p&gt;There are a few vendors that heavily promote
+TOSCA: &lt;a href="https://cloudify.co/"&gt;Cloudify&lt;/a&gt; and &lt;a href="https://designer.otc-service.com"&gt;Ubicity&lt;/a&gt;
+offer multi-cloud orchestrators that are TOSCA-based. Many vendors, 
+including the incumbent network technology vendors like Cisco and Nokia,
+embrace TOSCA NFV. But most information from practical TOSCA usage out
+there is in open source solutions. The list of &lt;a href="https://github.com/oasis-open/tosca-community-contributions/wiki/Known-TOSCA-Implementations"&gt;known TOSCA implementations&lt;/a&gt;
+mentions plenty of open source products. One of the solutions that I
+am considering of playing around with is &lt;a href="https://turandot.puccini.cloud/"&gt;turandot&lt;/a&gt;,
+which uses TOSCA to compose and orchestrate Kubernetes workloads.&lt;/p&gt;
+&lt;p&gt;As an infrastructure architect, TOSCA could be a nice way of putting
+initial designs into practice: after designing solutions in a language
+like ArchiMate, which is in general not 'executable', the next step could
+be to move the deployment specifications into TOSCA and have the next
+phases of the project use and enhance the TOSCA definition. But that
+easily brings me to what I consider to be shortcomings of the current
+situation.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Inhibitors for growth potential&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are a number of issues I have with the current state of TOSCA.&lt;/p&gt;
+&lt;p&gt;TOSCA's ecosystem &lt;em&gt;seems&lt;/em&gt; to be lacking sufficient visualization support.
+I did come across &lt;a href="https://projects.eclipse.org/projects/soa.winery"&gt;Winery&lt;/a&gt;
+but that seems to be it. I would really like to see a solution that reads
+TOSCA and generates an architectural overview. For instance, for the
+example I started this blog with, something like the following:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Visualization of a deployment" src="http://192.168.1.71:8000/images/202106/tosca-archimate.png"&gt;&lt;/p&gt;
+&lt;p&gt;Furthermore, my impression is that TOSCA is strongly and mostly Infrastructure
+as a Service (IaaS) oriented. The company I currently work for strongly
+focuses on platform services, managed cloud services rather than the
+more traditional infrastructure services where we would still have to do
+the blunt of the management ourselves. Can TOSCA still play a role
+in solutions that are fully using platform services? Perhaps the answer
+here is "no", as those managed services are often very cloud-vendor specific,
+but that isn't always the case, and can often also be tackled using the
+abstraction and implementation specifics that TOSCA supports.&lt;/p&gt;
+&lt;p&gt;I also have to rely too much on impressions. While the TOSCA ecosystem
+has plenty of open source solutions out there, I find it hard to get
+tangible examples: TOSCA definitions of larger-scale definitions that
+not only show an initial setup, but are actively maintained to show
+maintenance evolution of the solution. If TOSCA is so great for vendors
+to have a cloud-independent approach, why do I find it hard to find
+vendors that expose TOSCA files? If the adoption of TOSCA stops
+at the standards bodies and too few vendors, then it is not likely
+to grow much further.&lt;/p&gt;
+&lt;p&gt;TOSCA orchestration engines often are in direct competition with
+general IaC orchestration like Terraform. Cloudify has a post that
+&lt;a href="https://cloudify.co/blog/terraform-vs-cloudify/"&gt;compares Terraform with their solution&lt;/a&gt;
+but doesn't look into how Terraform is generally used in CI/CD
+processes that join Terraform with the other services that create a
+decent end-to-end orchestration for cloud deployments. For Kubernetes,
+it competes with Helm and the likes - not fully, as TOSCA has other 
+benefits of course, but if you compare how quickly Helm is taking
+the lead in Kubernetes you can understand the struggle that TOSCA in
+my opinion has.&lt;/p&gt;
+&lt;p&gt;Another inhibitor is TOSCA's name. If you search for information on
+TOSCA, you need to exclude &lt;a href="https://www.tricentis.com/resources/tricentis-tosca-overview/"&gt;Tricentis'&lt;/a&gt;
+continuous testing platform, the &lt;a href="https://en.wikipedia.org/wiki/Tosca"&gt;1900's Opera&lt;/a&gt;,
+and several other projects, films, and other entities that use the same
+name. You'll need to explicitly mention OASIS and/or cloud as well if
+you want to find decent articles about TOSCA, knowing well that there
+can be pages out there that are missed because of it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While I appreciate the value TOSCA brings, I feel that it might not grow
+to its fullest potential. I hope to be wrong of course, and I would
+like to see big vendors publish their reference architecture TOSCA material
+so that large-scale solutions are shown to be manageable using TOSCA and
+that solution architects do not need to reinvent the wheel over and
+over again, as well as link architecture with the more operations
+side of things.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;More resources&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To learn more about TOSCA, there are a few resources that I would recommend
+here:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=tosca"&gt;OASIS TOSCA Technical Committee&lt;/a&gt;
+  has a number of resources linked. The &lt;a href="https://docs.oasis-open.org/tosca/TOSCA-Simple-Profile-YAML/v1.3/os/TOSCA-Simple-Profile-YAML-v1.3-os.pdf"&gt;TOSCA Simple Profile in YAML Version 1.3&lt;/a&gt;
+  PDF is a good read which gradually explains the structure of a TOSCA YAML
+  file with plenty of examples.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.etsi.org/technologies/nfv"&gt;Network Functions Virtualisation (NFV)&lt;/a&gt;
+  is the ETSI site on NFV. Given the focus on NFV that I find around when
+  looking at TOSCA (and is even referenced on this page) understanding what
+  NFV is about clarifies a bit more how valuable TOSCA is/can be in this
+  environment.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=NHYRESmE6uA"&gt;OCB: AMA on TOSCA the Topology and Orchestration Specification for Cloud Applications - Tal Liron&lt;/a&gt;
+  is an hour-long briefing that covers TOSCA not only in theory but also applies
+  it in practice, and covers some of the new features that are coming up.&lt;/li&gt;
+&lt;/ul&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="cloud"></category><category term="TOSCA"></category><category term="OASIS"></category><category term="topology"></category><category term="orchestration"></category><category term="infrastructure"></category><category term="IaC"></category><category term="NFV"></category></entry><entry><title>Integrating or customizing SaaS within your own cloud environment</title><link href="http://192.168.1.71:8000/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/" rel="alternate"></link><published>2021-06-23T15:10:00+02:00</published><updated>2021-06-23T15:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2021-06-23:/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/</id><summary type="html">&lt;p&gt;Software as a Service (SaaS) solutions are often a quick way to get new
+capabilities into an organization’s portfolio. Smaller SaaS solutions are
+simple, web-based solutions which barely integrate with the organization’s
+other solutions, besides the identity and access management (which is often
+handled by federated authentication).&lt;/p&gt;
+&lt;p&gt;More complex or intermediate solutions require more integration focus, and
+a whole new market of Integration Platform as a Service (iPaaS) solutions
+came up to facilitate cross-cloud integrations. But even without the iPaaS
+offerings, integrations are often a mandatory part to leverage the benefits
+of the newly activated SaaS solution.&lt;/p&gt;
+&lt;p&gt;In this post I want to bring some thoughts on the integrations that might be
+needed to support customizing a SaaS solution.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;Software as a Service (SaaS) solutions are often a quick way to get new
+capabilities into an organization’s portfolio. Smaller SaaS solutions are
+simple, web-based solutions which barely integrate with the organization’s
+other solutions, besides the identity and access management (which is often
+handled by federated authentication).&lt;/p&gt;
+&lt;p&gt;More complex or intermediate solutions require more integration focus, and
+a whole new market of Integration Platform as a Service (iPaaS) solutions
+came up to facilitate cross-cloud integrations. But even without the iPaaS
+offerings, integrations are often a mandatory part to leverage the benefits
+of the newly activated SaaS solution.&lt;/p&gt;
+&lt;p&gt;In this post I want to bring some thoughts on the integrations that might be
+needed to support customizing a SaaS solution.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Integrations versus customizations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are plenty of ways to integrate solutions in a larger ecosystem. Most
+integrations focus on data integration (file transfers mostly) and service
+integration (using APIs or Enterprise Service Bus solutions), although many
+other creative methods are used to facilitate the integration of a SaaS
+within the organization’s portfolio.&lt;/p&gt;
+&lt;p&gt;This creativity, in my opinion, often transforms into customization of a SaaS
+solution rather than an integration approach. SaaS services are being extended
+with new, customized functionality, but in a way that we’re no longer thinking
+about integrating this customization with the SaaS, but injecting the SaaS
+with closely tied services. And SaaS providers are often happy to support
+this, as it binds the customer to their solution.&lt;/p&gt;
+&lt;p&gt;Now, customizations are not integrations, and integrations are not
+customizations. If you customize a SaaS offering, then you still need an
+integration between the custom development and the SaaS offering. Sometimes
+this integration is as simple as uploading the customization into the SaaS
+and the SaaS does the rest. Or the customization is a completely separate
+application service, which integrates over managed APIs with the SaaS. Or you
+use an intermediate solution that bridges the two solutions.&lt;/p&gt;
+&lt;p&gt;While many integrations are possible, I feel that there are a few integration
+approaches that are in most cases just wrong. One of these is linking the
+SaaS within your own private solution (network or cloud).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Don’t just extend a SaaS environment into your own&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I don’t believe that it is wise to just extend a SaaS environment into your
+own, even when the SaaS provider enables this. Services like VPC peering,
+which can be used to link your VPC with the SaaS provider’s VPC, are easy
+ways to do so, but applying it without adjusting the architecture for it
+makes your long-term maintainability and security more challenging. How
+do you ensure that the SaaS does not abuse this link? How do you ensure
+that you don’t accidentally leak information to the SaaS? How do you ensure
+high availability and resiliency is retained?&lt;/p&gt;
+&lt;p&gt;In traditional architectures, we would have these provider’s locations
+considered as a separate network, and introduce the appropriate controls
+(like those offered by application firewalls, reverse proxies, etc.) in
+between the business application and the third party. This would often be
+facilitated by the network operations teams, and governed through more
+centralized environments.&lt;/p&gt;
+&lt;p&gt;In cloud environments, architectures can be completely different, and
+individual applications might pick integration architectures that are more
+fruitful for them, without considering the larger environment. If the DevOps
+teams that manage the solution architecture are mature, then they too will
+consider the various non-functionals that play a role with such integrations.
+But if the experience is lacking, setting up direct extensions towards the
+SaaS might seem to be a quick and valid solution.&lt;/p&gt;
+&lt;p&gt;Some areas that I would focus on when such integrations are requested, are
+(in no particular order):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Impact of the integration to the deployment architecture of the solution,
+  considering the availability zones and region concepts used within the
+  solution&lt;/li&gt;
+&lt;li&gt;Authentication of the integration at various levels (not just
+  authentication based on the identity being used)&lt;/li&gt;
+&lt;li&gt;Isolation of the integration, ensuring that no other parties are impacted
+  by the integration&lt;/li&gt;
+&lt;li&gt;Filtering capabilities on network and application level&lt;/li&gt;
+&lt;li&gt;Logging and metrics to get visibility on the integration, its usage, the
+  volumes sent over, etc.&lt;/li&gt;
+&lt;li&gt;Resilience in case of temporary failures (be it through buffering
+  mechanisms, or asynchronous integrations)&lt;/li&gt;
+&lt;li&gt;Registration of the integration in the enterprise architecture, so that
+  assessments, vendor relationship, and other processes are aware of the
+  integration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When properly tackled, then services like AWS PrivateLink of course do
+have a role to play. But it isn’t to just link one solution with another
+and be done with it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Granting SaaS providers limited access to your resources&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Another approach that I see happening is to grant a SaaS provider
+administrative access to your own resources. Just like with extending SaaS
+environments, I feel that this is not something to apply by default and has
+to be carefully assessed. For some SaaS solutions, this is part of their
+selling proposal, and is something you know up front. But not all SaaS
+solutions are equally obvious in this requirement.&lt;/p&gt;
+&lt;p&gt;Some organizations might not have their cloud architecture, account structure
+and the like designed to enable SaaS providers to get administrative access
+to (some) resources. If the current architectures focus on highly integrated
+accounts and solutions, then granting a SaaS administrative access might
+jeopardize the security and stability of your overall architecture.&lt;/p&gt;
+&lt;p&gt;Furthermore, granting a third party access to your resources also has
+implications on accountability. If a SaaS has access to storage within your
+account, it could accidentally manipulate data it shouldn’t have access to,
+upload another customer’s data on your storage (or vice-versa), or due to a
+cyber incident upload toxic data to your account. The provider might also
+inadvertently access the data in an economically unfriendly way.&lt;/p&gt;
+&lt;p&gt;Using such access patterns should be carefully designed. While you can
+often not implement specific IT or security measures on the solution design,
+it might be possible to use separate accounts for instance, focusing on
+the integration between your ‘core’ solutions and this intermediate one
+to ensure a secure and resilient setup, while optimizing cost management
+for this intermediate account. You can even consider putting such accounts
+under a different tree in the organization structure and apply restrictive
+policies such as through AWS’ Service Control Policies (SCP).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Creating solutions that link with third parties requires thought and
+design. Cloud providers make it a lot easier to change and apply connections
+and integrations, but that does not make the architectural work that
+precedes it less obvious - on the contrary.&lt;/p&gt;
+&lt;p&gt;Customizations with SaaS providers still need to be carefully assessed
+and integrated, with attention on the non-functionals such as resilience,
+availability, security and the like.&lt;/p&gt;
+&lt;p&gt;If the SaaS provider needs access to your own resources, carefully assess
+how fine-grained this can be implemented and how the accountability is
+assigned. See if an intermediate account can be used where both you and
+the SaaS provider have administrative access to, while keeping the rest
+of the organization’s data and solutions elsewhere.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="cloud"></category><category term="SaaS"></category><category term="integration"></category><category term="customization"></category></entry><entry><title>An IT services overview</title><link href="http://192.168.1.71:8000/2021/06/an-it-services-overview/" rel="alternate"></link><published>2021-06-14T17:30:00+02:00</published><updated>2021-06-14T17:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2021-06-14:/2021/06/an-it-services-overview/</id><summary type="html">&lt;p&gt;My current role within the company I work for is “domain architect”, part
+of the enterprise architects teams. The domain I am accountable for is 
+“infrastructure”, which can be seen as a very broad one. Now, I’ve been
+maintaining an overview of our IT services before I reached that role, 
+mainly from an elaborate interest in the subject, as well as to optimize
+my efficiency further.&lt;/p&gt;
+&lt;p&gt;Becoming a domain architect allows me to use the insights I’ve since
+gathered to try and give appropriate advice, but also now requires me to
+maintain a domain architecture. This structure is going to be the starting
+point of it, although it is not the true all and end all of what I would
+consider a domain architecture.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;My current role within the company I work for is “domain architect”, part
+of the enterprise architects teams. The domain I am accountable for is 
+“infrastructure”, which can be seen as a very broad one. Now, I’ve been
+maintaining an overview of our IT services before I reached that role, 
+mainly from an elaborate interest in the subject, as well as to optimize
+my efficiency further.&lt;/p&gt;
+&lt;p&gt;Becoming a domain architect allows me to use the insights I’ve since
+gathered to try and give appropriate advice, but also now requires me to
+maintain a domain architecture. This structure is going to be the starting
+point of it, although it is not the true all and end all of what I would
+consider a domain architecture.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;A single picture doesn’t say it all&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To start off with my overview, I had a need to structure the hundreds of
+technology services that I want to keep an eye on in a way that I can 
+quickly find it back, as well as present to other stakeholders what 
+infrastructure services are about. This structure, while not perfect, 
+currently looks like in the figure below. Occasionally, I move one or
+more service groups left or right, but the main intention is just to
+have a structure available.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Overview of the IT services" src="http://192.168.1.71:8000/images/202106/it_service_overview.png"&gt;&lt;/p&gt;
+&lt;p&gt;Figures like these often come about in mapping exercises, or capability models.
+A capability model that I recently skimmed through is the
+&lt;a href="https://www.if4it.com/SYNTHESIZED/MODELS/ENTERPRISE/enterprise_capability_model.html"&gt;IF4IT Enterprise Capability Model&lt;/a&gt;.
+I stumbled upon this model after searching for some reference architectures
+on approaching IT services, including a paper titled
+&lt;a href="https://www.researchgate.net/publication/238620971_IT_Services_Reference_Catalog"&gt;IT Services Reference Catalog&lt;/a&gt;
+by Nelson Gama, Maria do Mar Rosa, and Miguel Mira da Silva.&lt;/p&gt;
+&lt;p&gt;Capability models, or service overviews like the one I presented, do not fit
+each and every organization well. When comparing the view I maintain with
+others (or the different capability and service references out there), I
+notice two main distinctions: grouping, and granularity.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Certain capabilities might be grouped one way in one reference, and use a
+  totally different grouping in another. A database system might be part of
+  a “Databases” group in one, a “Data Management” group in another, or even
+  “Information Management” in a third. Often, this grouping also reveals the
+  granularity that the author wants to pursue.&lt;br&gt;
+  Grouping allows for keeping things organized and easier to explain, but has
+  no structural importance. Of course, a well-chosen grouping also allows you
+  to tie principles and other architectural concerts to the groups themselves,
+  and not services in particular. But that still falls under the explainability
+  part.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The granularity is more about how specific a grouping is. In the example
+  above, “Information Management” is the most coarse-grained grouping, whereas
+  “Databases” might be a very specific one. Granularity can convey more insights
+  in the importance of services, although it can also be due to historical
+  reasons, or because an overview started from one specific service and expanded
+  later. In that case, it is very likely that the specific service and its
+  dependencies are more elaborately documented.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the figure I maintain, the grouping is often based both on the extensiveness 
+of a group (if a group contains far too many services, I might want to see if I
+can split up the group) as well as historical and organizational choices. For
+instance, if the organization has a clear split between network oriented
+teams and server oriented teams, then the overview will most likely convey
+the same message, as we want to have the overview interpretable by many
+stakeholders - and those stakeholders are often aware of the organizational
+distinctions.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Services versus solutions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I try to keep track of the evolutions of &lt;em&gt;services&lt;/em&gt; and &lt;em&gt;solutions&lt;/em&gt; within this
+overview. Now, the definition of a “service” versus “solution” does warrant
+a bit more explanation, as it can have multiple meanings. I even use “service”
+for different purposes depending on the context.&lt;/p&gt;
+&lt;p&gt;For domain architecture, I consider an “&lt;em&gt;infrastructure service&lt;/em&gt;” as a product
+that realizes or supports an IT capability. It is strongly product oriented
+(even when it is internally developed, or a cloud service, or an appliance)
+and makes a distinction between products that are often very closely related.
+For instance, Oracle DB is an infrastructure service, as is the Oracle
+Enterprise Manager. The Oracle DB is a product that realizes a “relational
+database” capability, whereas OEM is a “central infrastructure management”
+capability.&lt;/p&gt;
+&lt;p&gt;The reason I create distinct notes for these is because they have different
+life cycles, might have different organizational responsible teams, different
+setups, etc. Hence, components (parts of products) I generally do not consider
+as separate, although there are definitely examples where it makes sense to
+consider certain components separate from the products in which they are
+provided.&lt;/p&gt;
+&lt;p&gt;The several hundred infrastructure services that the company is rich in are
+all documented under this overview.&lt;/p&gt;
+&lt;p&gt;Alongside these infrastructure services I also maintain a solution overview.
+The grouping is exactly the same as the infrastructure services, but the
+intention of solutions is more from a full internal offering point of view.&lt;/p&gt;
+&lt;p&gt;Within &lt;em&gt;solution architectures&lt;/em&gt;, I tend to focus on the choices that the
+company made and the design that follows it. Many solutions are considered
+‘platforms’ on top of which internal development, third party hosting or
+other capabilities are provided. Within the solution, I describe how the
+various infrastructure services interact and work together to make the
+solution reality.&lt;/p&gt;
+&lt;p&gt;A good example here is the mainframe platform. Whereas the mainframe itself
+is definitely an infrastructure service, how we internally organize the
+workload and the runtimes (such as the LPARs), how it integrates with the
+security services, database services, enterprise job scheduling, etc. is
+documented in the solution.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Not all my domain though&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Not all services and solutions that I track are part of ‘my’ domain though.
+For instance, at my company, we make a distinction between the
+infrastructure-that-is-mostly-hosting, and
+infrastructure-that-is-mostly-workplace. My focus is on the ‘mostly hosting’
+orientation, whereas I have a colleague domain architect responsible for
+the ‘mostly workplace’ side of things.&lt;/p&gt;
+&lt;p&gt;But that’s just about accountability. Not knowing how the other solutions
+and services function, how they are set up, etc. would make my job harder,
+so tracking their progress and architecture is effort that pays off.&lt;/p&gt;
+&lt;p&gt;In a later post I’ll explain what I document about services and solutions
+and how I do it when I have some time to spend.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="overview"></category><category term="service"></category><category term="landscape"></category><category term="catalog"></category><category term="capability"></category></entry><entry><title>Virtualization vs abstraction</title><link href="http://192.168.1.71:8000/2021/06/virtualization-vs-abstraction/" rel="alternate"></link><published>2021-06-03T10:10:00+02:00</published><updated>2021-06-03T10:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2021-06-03:/2021/06/virtualization-vs-abstraction/</id><summary type="html">&lt;p&gt;When an organization has an extensively large, and heterogeneous
+infrastructure, infrastructure architects will attempt to make itless
+complex and chaotic by introducing and maintaining a certain degree of
+standardization. While many might consider standardization as a
+rationalization (standardizing on a single database technology, single
+vendor for hardware, etc.), rationalization is only one of the many ways
+in which standards can simplify such a degree of complexity.&lt;/p&gt;
+&lt;p&gt;In this post, I'd like to point out two other, very common ways to
+standardize the IT environment, without really considering a
+rationalization: abstraction and virtualization.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;When an organization has an extensively large, and heterogeneous
+infrastructure, infrastructure architects will attempt to make itless
+complex and chaotic by introducing and maintaining a certain degree of
+standardization. While many might consider standardization as a
+rationalization (standardizing on a single database technology, single
+vendor for hardware, etc.), rationalization is only one of the many ways
+in which standards can simplify such a degree of complexity.&lt;/p&gt;
+&lt;p&gt;In this post, I'd like to point out two other, very common ways to
+standardize the IT environment, without really considering a
+rationalization: abstraction and virtualization.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Abstraction: common and simplified interfaces&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The term "abstraction" has slightly different connotations based on the
+context in which the term is used. Generally speaking, an abstraction
+provides a less detailed view on an object and shows the intrinsic qualities
+upon which one looks at that object. Let's say we have a PostgreSQL database
+and a MariaDB database. An abstract view on it could find that it has a lot
+of commonalities, such as tabular representation of data, a network-facing
+interface through which their database clients can interact with the
+database, etc.&lt;/p&gt;
+&lt;p&gt;We then further generalize this abstraction to come to the generalized
+"relational database management system" concept. Furthermore, rather than
+focusing on the database-specific languages of the PostgreSQL database and
+the MariaDB database (i.e. the commands that database clients send to the
+database), we abstract the details that are not shared across the two, and
+create a more common set of commands that both databases support.&lt;/p&gt;
+&lt;p&gt;Once you standardize on this common set of commands, you get more freedom in
+exchanging one database technology for the other. This is exactly what
+happened several dozen years ago, and resulted in the SQL standard
+(ISO/IEC 9075). This standard is a language that, if all your relational
+database technologies support it, allows you - as an organization - to work
+with a multitude of database technologies while still having a more efficient
+and standardized way of dealing with it.&lt;/p&gt;
+&lt;p&gt;Now, the SQL language standard is one example. IT is filled with many other
+examples, some more formally defined as standards than others. Let's look at
+a more recent example, within the area of application containerization.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;CRI and OCI are abstraction implementations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When the Docker project, now supported through the Docker company, started
+with enabling application containerization in a more efficient way, it leaned
+upon the capabilities that the Linux kernel offered on hiding information and
+isolating resources (namespaces and control groups) and expanded on it to
+make it user friendly. It was an immediate hit, and has since then resulted
+in a very competitive market.&lt;/p&gt;
+&lt;p&gt;With Docker, applications could be put in more isolated environments and run
+in parallel on the same system, without these applications seeing the other
+ones. Each application has its own, private view on the system. With these
+containers, the most important service that is still shared is the kernel,
+with the kernel offering only those services to the containers that it can
+keep isolated.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Container runtime abstraction" src="http://192.168.1.71:8000/images/202106/container-runtimes.jpg"&gt;
+&lt;em&gt;Source: &lt;a href="https://merlijn.sebrechts.be/blog/2020-01-docker-podman-kata-cri-o/"&gt;https://merlijn.sebrechts.be/blog/2020-01-docker-podman-kata-cri-o/&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Now, while Docker can be easily attributed to bringing this to the wider
+public, other initiatives quickly followed suit. Multiple container
+technologies were coming to life, and started to bid for a place in the
+containerization market. To be able to compete here, many of these attempted
+to use the same interfaces (be it system calls, commands or other) as Docker
+used, so the users can more easily switch. But while trying to copy and
+implement the same interfaces is a possible venue, it is still strongly
+controlled by the evolution that Docker is taking.&lt;/p&gt;
+&lt;p&gt;Since then, larger projects like Kubernetes have started introducing an
+abstraction between the container runtime (which implements the actual
+containerization) and the container definitions and management (which uses
+the containerization). Within Kubernetes for instance, this is through the
+Common Runtime Interface (CRI), and the Open Container Interface (OCI) is
+used to link the container runtime management with the underlying container
+technologies.&lt;/p&gt;
+&lt;p&gt;Introducing such an abstraction is a common way to establish a bit more
+foothold in the market. Rather than trying to copy the market leader
+verbatim, you create an intermediate layer, with immediate implementation
+for the market leader as well, but with the promise that anyone that uses
+the intermediate layer will be less tied to a single vendor or project: it
+abstracts that vendor or project specifics away and shows mainly the
+intrinsic qualities needed.&lt;/p&gt;
+&lt;p&gt;If that abstraction is successful, other implementations for this abstraction
+layer can easily come in and replace the previous technology.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Abstraction is not virtualization&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The introduction of abstraction layers, abstract technologies or abstract
+languages should not be misunderstood for virtualization. Abstraction does
+not hide or differently represent the resources beneath. It does not represent
+itself as something else, but merely leaves out details that might make
+interactions with the different technologies more complex.&lt;/p&gt;
+&lt;p&gt;Virtualization on the other hand takes a different view. Rather than removing
+the specific details, it represents a resource as something that it isn't
+(or isn't completely). Hypervisors like KVM create a virtual hardware view,
+and translates whatever calls towards the virtual hardware into calls to the
+actual hardware - sometimes to the same type of hardware, but often towards
+the CPU or resources that simulate the virtualized hardware further.&lt;/p&gt;
+&lt;p&gt;Abstraction is a bit like classification, and defining how to work with a
+resource through the agreed upon interfaces for that class. If you plug in
+a USB device like a USB stick or USB keyboard or mouse, operating systems
+will be able to interact with it regardless of its vendor and product,
+because it uses the abstraction offered by the device classes: the USB mass
+storage device class for the USB stick, or the USB human interface device
+class for the keyboard and mouse. It abstracts away the complexity of
+dealing with multiple implementations, but the devices themselves still
+need to be classified as such.&lt;/p&gt;
+&lt;p&gt;On hypervisors, you can create a virtual USB stick which in reality is just
+a file on the hypervisor host or on a network file share. The hypervisor
+virtualizes the view towards this file as if it is a USB stick, but in reality
+there is no USB involved at all. Again, this doesn't have to be the case,
+the hypervisor might as well enable virtualization of the USB device and
+still eventually interact with an actual USB device.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;VLANs are virtualized networks&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Another example of a virtualization is network virtualization through the
+use of VLANs. In a virtual local area network (VLAN), all systems that
+interact with this VLAN will see each other on the network as if they are
+part of the same broadcast domain. Well, they are part of the same broadcast
+domain. But if you look at the physical network implementation, this does not
+imply that all these systems are attached to the same switch, and that no
+routers are put in between to facilitate the communication.&lt;/p&gt;
+&lt;p&gt;In larger enterprises, the use of VLANs is ubiquitous. Network virtualization
+enables the telco teams and departments to optimize the actual physical
+network without continuously impacting the configurations and deployments of
+the services that use the network. Teams can create hundreds or thousands of
+such VLANs while keeping the actual hardware investments under control, and
+even be able to change and manage the network without impacting services.&lt;/p&gt;
+&lt;p&gt;This benefit is strongly tied to virtualization, as we see the same in
+hardware virtualization for server and workstation resources. By offering
+virtualized systems, the underlying hardware can be changed, replaced or
+switched without impact on the actual software that is running within the
+virtualized environment. Well, mostly without impact, because not all
+virtualization technologies or implementations are creating a full
+virtualized view - sometimes shortcuts are created to improve efficiency
+and performance. But in general, it works Just Fine (tm).&lt;/p&gt;
+&lt;p&gt;Resource optimization and consolidation is easily accomplished when using
+virtualization. You need far fewer switches in a virtualized network, and
+you need far fewer servers for a virtualized server farm. But, it does come
+at a cost.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Virtualization introduces different complexity&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When you introduce a virtualization layer, be it for network, storage,
+hardware or application runtimes, you introduce a layer that needs to be
+actively managed. Abstraction is often much less resource intensive, as it
+is a way to simplify the view on the actual resources while still being 100%
+aligned with those underlying resources. Virtualization means that you need
+to manage the virtualized resources, and keep track of how these resources
+map to the actual underlying resources.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="vSphere services" src="http://192.168.1.71:8000/images/202106/vsphere.png"&gt;
+&lt;em&gt;Source: &lt;a href="https://virtualgyaan.com/vmkernel-components-and-functionality/"&gt;https://virtualgyaan.com/vmkernel-components-and-functionality/&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Let's look at virtualized hardware for servers. On top of it, you have to
+run and maintain the hypervisor, which represents the virtual hardware to
+the operating systems. Within those (virtually running) operating systems,
+you have a virtual view on resources: CPU, memory, etc. The sum of all
+(virtual) CPUs is often not the same as the sum of all (actual) CPUs
+(depending on configuration of course), and in larger environments the
+virtual operating systems might not even be running on the same hardware
+as they did a few hours ago, even though the system has not been restarted.&lt;/p&gt;
+&lt;p&gt;Doing performance analysis implies looking at the resources within (virtual)
+as well as mapped on the actual resources, which might not be of the same
+type. A virtual GPU representation might be mapped to an actual GPU (and if
+you want performance, I hope it is) but doesn't have to be. I've done
+investigations on a virtual Trusted Platform Module (TPM) within a virtual
+system running on a server that didn't have a TPM.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Assessing which standardization to approach&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When I'm confronted with an increase in IT complexity, I will often be
+looking at a certain degree of standardization to facilitate this in the
+organization. But what type of standardization to approach depends strongly
+on the situation.&lt;/p&gt;
+&lt;p&gt;Standardization by rationalization is often triggered by cost optimization
+or knowledge optimization. An organization that has ten different relational
+database technologies in use could benefit of a rationalization in the number
+of technologies to support. However, unless there is also sufficient
+abstraction put in place, this rationalization can be intensive. Another
+rationalization example could be on public cloud, where an organization
+chooses to only focus on a single or two cloud providers but not more.&lt;/p&gt;
+&lt;p&gt;While rationalization is easy to understand and explain, it does have adverse
+consequences: you miss the benefits of whatever you're rationalized away,
+and unless another type of standardization is put in place, it will be hard
+to switch later on if the rationalization was ill-advised or picked the
+wrong targets to rationalize towards.&lt;/p&gt;
+&lt;p&gt;Standardization by abstraction focuses more on simplification. You are
+introducing technologies that might have better interoperability through
+this abstraction, but this can only be successful if the abstraction is
+comprehensive enough to still use the underlying resources in an optimal
+manner.&lt;/p&gt;
+&lt;p&gt;My own observation on abstraction is that it is not commonly accepted by
+engineers and developers at face value. It requires much more communication
+and explanation than rationalization, which is often easy to put under "cost
+pressure". Abstraction focuses on efficiency in a different way, and thus
+requires different communication. At the company I currently work for,
+we've introduced the Open Service Broker (OSB) API as an abstraction for
+service instantiation and service catalogs, and after even more than a
+year, including management support, it is still a common endeavor to
+explain and motivate why we chose this.&lt;/p&gt;
+&lt;p&gt;Virtualization creates a highly efficient environment and supports resource
+optimizations that aren't possible in other ways. Its benefits are much easier
+to explain to the organization (and to management), but has a downside that
+is often neglected: it introduces complexity. Hence, virtualization should
+only be pursued if you can manage the complexity, and that it isn't much
+worse than the complexity you want to remove. Virtualization requires
+organizational support which is more platform-oriented (and thus might be
+further away from the immediate 'business value' IT often has to explain),
+in effect creating a new type of technology within the ever increasing
+catalog of IT services.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Software-defined infrastructure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While virtualization has been going around in IT for quite some time (before
+I was born), a new kid on the block is becoming very popular: software-defined
+infrastructure. The likes of Software Defined Network (SDN), Compute (SDC) and
+Storage (SDS) are already common or becoming common. Other implementations,
+like the Software Defined Perimeter, are getting jabbed by vendors as well.&lt;/p&gt;
+&lt;p&gt;Now, SDI is not its own type of standardization. It is a way of managing
+resources through code, and thus is a way of abstracting the infrastructure.
+But unlike using a technology-agnostic abstraction, it pulls you into a
+vendor-defined abstraction. That has its pros and cons, and as an architect
+it is important to consider how to approach infrastructure-as-code, as SDI
+implementations are not the only way to accomplish this.&lt;/p&gt;
+&lt;p&gt;Furthermore, SDI does not imply virtualization. Certainly, if a technology
+is virtualized, then SDI will also easily interact with it, and help you
+define and manage the virtualized infrastructure as well as its underlay
+infrastructure. But virtualization isn't a prerequisite for SDI.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When you're confronted with chaos and complexity, don't immediately start
+removing technologies under the purview of "rationalization". Consider your
+options on abstraction and virtualization, but be aware of the pros and cons
+of each.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="virtualization"></category><category term="abstraction"></category></entry><entry><title>Abstracting infrastructure complexity</title><link href="http://192.168.1.71:8000/2020/12/abstracting-infrastructure-complexity/" rel="alternate"></link><published>2020-12-25T23:00:00+01:00</published><updated>2020-12-25T23:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2020-12-25:/2020/12/abstracting-infrastructure-complexity/</id><summary type="html">&lt;p&gt;IT is complex. Some even consider it to be more magic than reality. And with
 the ongoing evolutions and inventions, the complexity is not really going
 away. Sure, some IT areas are becoming easier to understand, but that is often
 offset with new areas being explored.&lt;/p&gt;

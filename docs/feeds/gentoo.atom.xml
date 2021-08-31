@@ -853,7 +853,52 @@ Attempting to rebuild policy from /var/lib/selinux
 
 &lt;p&gt;So... don't worry - the change is small and does not break stuff. And
 for those wondering about CIL I'll talk about it in one of my next
-posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>Gentoo Hardened august meeting</title><link href="http://192.168.1.71:8000/2014/08/gentoo-hardened-august-meeting/" rel="alternate"></link><published>2014-08-29T16:43:00+02:00</published><updated>2014-08-29T16:43:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2014-08-29:/2014/08/gentoo-hardened-august-meeting/</id><summary type="html">&lt;p&gt;Another month has passed, so we had another online meeting to discuss
+posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>Showing return code in PS1</title><link href="http://192.168.1.71:8000/2014/08/showing-return-code-in-ps1/" rel="alternate"></link><published>2014-08-31T01:14:00+02:00</published><updated>2014-08-31T01:14:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2014-08-31:/2014/08/showing-return-code-in-ps1/</id><summary type="html">&lt;p&gt;If you do daily management on Unix/Linux systems, then checking the
+return code of a command is something you'll do often. If you do SELinux
+development, you might not even notice that a command has failed without
+checking its return code, as policies might prevent the application from
+showing …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you do daily management on Unix/Linux systems, then checking the
+return code of a command is something you'll do often. If you do SELinux
+development, you might not even notice that a command has failed without
+checking its return code, as policies might prevent the application from
+showing any output.&lt;/p&gt;
+&lt;p&gt;To make sure I don't miss out on application failures, I wanted to add
+the return code of the last executed command to my PS1 (i.e. the prompt
+displayed on my terminal).&lt;br&gt;
+I wasn't able to add it to the prompt easily - in fact, I had to use a
+bash feature called the &lt;em&gt;prompt command&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;When the &lt;code&gt;PROMPT_COMMMAND&lt;/code&gt; variable is defined, then bash will execute
+its content (which I declare as a function) to generate the prompt.
+Inside the function, I obtain the return code of the last command (&lt;code&gt;$?&lt;/code&gt;)
+and then add it to the PS1 variable. This results in the following code
+snippet inside my &lt;code&gt;~/.bashrc&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;export PROMPT_COMMAND=__gen_ps1
+
+function __gen_ps1() {
+  local EXITCODE=&amp;quot;$?&amp;quot;;
+  # Enable colors for ls, etc.  Prefer ~/.dir_colors #64489
+  if type -P dircolors &amp;gt;/dev/null ; then
+    if [[ -f ~/.dir_colors ]] ; then
+      eval $(dircolors -b ~/.dir_colors)
+    elif [[ -f /etc/DIR_COLORS ]] ; then
+      eval $(dircolors -b /etc/DIR_COLORS)
+    fi
+  fi
+
+  if [[ ${EUID} == 0 ]] ; then
+    PS1=&amp;quot;RC=${EXITCODE} \[\033[01;31m\]\h\[\033[01;34m\] \W \$\[\033[00m\] &amp;quot;
+  else
+    PS1=&amp;quot;RC=${EXITCODE} \[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] &amp;quot;
+  fi
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;With it, my prompt now nicely shows the return code of the last executed
+command. Neat.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; Sean Patrick Santos showed me my utter failure in that this can
+be accomplished with the &lt;code&gt;PS1&lt;/code&gt; variable immediately, without using the
+overhead of the &lt;code&gt;PROMPT_COMMAND&lt;/code&gt;. Just make sure to properly escape the
+&lt;code&gt;$&lt;/code&gt; sign which I of course forgot in my late-night experiments :-(.&lt;/p&gt;</content><category term="Gentoo"></category><category term="bash"></category><category term="ps1"></category><category term="rc"></category><category term="shell"></category></entry><entry><title>Gentoo Hardened august meeting</title><link href="http://192.168.1.71:8000/2014/08/gentoo-hardened-august-meeting/" rel="alternate"></link><published>2014-08-29T16:43:00+02:00</published><updated>2014-08-29T16:43:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2014-08-29:/2014/08/gentoo-hardened-august-meeting/</id><summary type="html">&lt;p&gt;Another month has passed, so we had another online meeting to discuss
 the progress within Gentoo Hardened.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Lead elections&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;The yearly lead elections within Gentoo Hardened were up again. Zorry
@@ -1517,7 +1562,61 @@ from &lt;code&gt;features/selinux&lt;/code&gt;.&lt;/p&gt;
 &lt;code&gt;/etc/portage/make.profile&lt;/code&gt; directory (instead of having it be a symlink
 managed by &lt;strong&gt;eselect profile&lt;/strong&gt;) which does support &lt;code&gt;parent&lt;/code&gt; files. In
 that case, just create one with two entries: one path to the profile you
-want, and one path to the &lt;code&gt;features/selinux&lt;/code&gt; location.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="profile"></category></entry><entry><title>Closing week? No, starting week...</title><link href="http://192.168.1.71:8000/2014/03/closing-week-no-starting-week/" rel="alternate"></link><published>2014-03-16T21:36:00+01:00</published><updated>2014-03-16T21:36:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2014-03-16:/2014/03/closing-week-no-starting-week/</id><summary type="html">&lt;p&gt;I've been away for a while, and this week will (hopefully) be the last
+want, and one path to the &lt;code&gt;features/selinux&lt;/code&gt; location.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="profile"></category></entry><entry><title>Hidden symbols and dynamic linking</title><link href="http://192.168.1.71:8000/2014/03/hidden-symbols-and-dynamic-linking/" rel="alternate"></link><published>2014-03-24T21:14:00+01:00</published><updated>2014-03-24T21:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2014-03-24:/2014/03/hidden-symbols-and-dynamic-linking/</id><summary type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+ebuild which caused the following stacktrace to occur every time the
+&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+Traceback (most recent call last):
+  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
+    import seobject
+  File &amp;quot;/usr/lib64/python2.7 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+ebuild which caused the following stacktrace to occur every time the
+&lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+Traceback (most recent call last):
+  File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
+    import seobject
+  File &amp;quot;/usr/lib64/python2.7/site-packages/seobject.py&amp;quot;, line 27, in 
+    import sepolicy
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolicy/__init__.py&amp;quot;, line 11, in 
+    import sepolgen.interfaces as interfaces
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/interfaces.py&amp;quot;, line 24, in 
+    import access
+  File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/access.py&amp;quot;, line 35, in 
+    from selinux import audit2why
+ImportError: /usr/lib64/python2.7/site-packages/selinux/audit2why.so: undefined symbol: sepol_set_policydb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Usually this error means that a needed library (a &lt;code&gt;.so&lt;/code&gt; file) is
+missing, or is not part of the &lt;code&gt;/etc/ld.so.conf&lt;/code&gt; list of directories to
+scan. And when SELinux is enabled, you might want to check the
+permissions of that file as well (who knows). But that wasn't the case
+here. After trying to figure things out (which includes switching Python
+versions, grepping for &lt;em&gt;sepol_set_policydb&lt;/em&gt; in &lt;code&gt;libsepol.so&lt;/code&gt; and more)
+I looked at the &lt;code&gt;audit2why.c&lt;/code&gt; code and see if/where
+&lt;em&gt;sepol_set_policydb&lt;/em&gt; is needed, as well as at the &lt;code&gt;libsepol&lt;/code&gt; sources
+to see where it is defined. And yes, the call is (of course) needed, but
+the definition made me wonder if this wasn't a bug:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;int hidden sepol_set_policydb(policydb_t * p)
+{
+        policydb = p;
+        return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Hidden? But, that means that the function symbol is not available for
+dynamic linking... So if that is the case, shouldn't &lt;code&gt;audit2why.c&lt;/code&gt; not
+call it? Turns out, this was due to a fix we introduced earlier on,
+where &lt;code&gt;libsepol&lt;/code&gt; got linked dynamically instead of statically (i.e.
+using &lt;code&gt;libsepol.a&lt;/code&gt;). Static linking of libraries still allows for the
+(hidden) symbols to be used, whereas dynamic linking doesn't.&lt;/p&gt;
+&lt;p&gt;So that part of the fix got reverted (and should fix the bug we
+introduced), and I learned a bit more about symbols (and the &lt;em&gt;hidden&lt;/em&gt;
+statement).&lt;/p&gt;
+&lt;p&gt;Bonus: if you need to check what symbols are available in a binary /
+shared library, use &lt;strong&gt;nm&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ nm -D /path/to/binary
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Gentoo"></category><category term="elf"></category><category term="hidden"></category><category term="selinux"></category><category term="symbols"></category></entry><entry><title>Closing week? No, starting week...</title><link href="http://192.168.1.71:8000/2014/03/closing-week-no-starting-week/" rel="alternate"></link><published>2014-03-16T21:36:00+01:00</published><updated>2014-03-16T21:36:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:192.168.1.71,2014-03-16:/2014/03/closing-week-no-starting-week/</id><summary type="html">&lt;p&gt;I've been away for a while, and this week will (hopefully) be the last
 week of all the effort that is causing this. And that means I'll get
 back to blogging, documentation development, SELinux integration,
 SELinux policy development and more. To be honest, I'm eagerly awaiting
