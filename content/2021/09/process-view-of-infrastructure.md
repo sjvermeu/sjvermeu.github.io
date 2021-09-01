@@ -404,6 +404,6 @@ that is often more exclusive for the infrastructure domain.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](TODO).
+Twitter](https://twitter.com/infrainsight/status/1432996739846397957).
 
 <!-- PELICAN_END_SUMMARY -->
