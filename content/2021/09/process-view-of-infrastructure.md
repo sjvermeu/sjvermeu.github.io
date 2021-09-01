@@ -1,9 +1,9 @@
 Title: Process view of infrastructure
-Date: 2021-09-01 00:00
+Date: 2021-09-01 11:20
 Category: Architecture
 Tags: architecture,process
 Slug: process-view-of-infrastructure
-Status: draft
+Status: published
 
 In my [previous post]({filename}/2021/08/component-view-of-infrastructure.md),
 I started with the five different views that would support a good view of
@@ -57,7 +57,7 @@ The six groups that I feel cover the infrastructure domain sufficiently are:
 In some ugly visualization, these groups (and the processes or non-functionals
 that are within) can be represented as follows:
 
-![Six process groups for infrastructure]({static}/images/pending/six-process-groups.png)
+![Six process groups for infrastructure]({static}/images/202109/six-process-groups.png)
 
 Let's go through each of the groups in a bit more detail.
 

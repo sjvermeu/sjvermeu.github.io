@@ -1,5 +1,689 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art...</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2021-08-27T21:10:00+02:00</updated><entry><title>Component view of infrastructure</title><link href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/" rel="alternate"></link><published>2021-08-27T21:10:00+02:00</published><updated>2021-08-27T21:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-08-27:/2021/08/component-view-of-infrastructure/</id><summary type="html">&lt;p&gt;IT architects try to use views and viewpoints to convey the target architecture
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art...</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2021-09-01T11:20:00+02:00</updated><entry><title>Process view of infrastructure</title><link href="https://blog.siphos.be/2021/09/process-view-of-infrastructure/" rel="alternate"></link><published>2021-09-01T11:20:00+02:00</published><updated>2021-09-01T11:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-01:/2021/09/process-view-of-infrastructure/</id><summary type="html">&lt;p&gt;In my &lt;a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/"&gt;previous post&lt;/a&gt;,
+I started with the five different views that would support a good view of
+what infrastructure would be. I believe these views (component, location,
+process, service, and zoning) cover the breadth of the domain. The post also
+described the component view a bit more and linked to previous posts I made (one
+for &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;services&lt;/a&gt;, another for
+&lt;a href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/"&gt;zoning&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The one I want to tackle here is the most elaborate one, also the most
+enterprise-ish, and one that always is a balance on how much time and
+effort to put into it (as an architect), as well as hoping that the processes
+are sufficiently standardized in a flexible manner so that you don't need
+to cover everything again and again in each project.&lt;/p&gt;
+&lt;p&gt;So, let's talk about processes...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Six process groups&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are plenty of process frameworks out there. I've covered many of these
+in a previous article (&lt;a href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/"&gt;What is the infrastructure domain?&lt;/a&gt;), with &lt;a href="https://www.axelos.com/best-practice-solutions/itil"&gt;ITIL&lt;/a&gt;
+and &lt;a href="https://www.isaca.org/resources/cobit"&gt;CObIT&lt;/a&gt; being my main resources.&lt;/p&gt;
+&lt;p&gt;Companies often select a mature framework to align their IT on. After all, why
+invent everything over and over again if a popular framework with all its
+resources exists. But just like how companies like to use commercially available
+resources, they also like to adjust and nudge it left and right to fit
+the organization better. And that's fine.&lt;/p&gt;
+&lt;p&gt;I'm going to give a spin to it and combine processes with non-functionals, as
+infrastructure is often about non-functionals. That doesn't mean that frameworks
+like ITIL or CObIT are not good, but explaining them easily is sometimes a
+challenge, and I'm not versed enough in the intricacies of these frameworks
+to use them as a starting point, rather as a reference.&lt;/p&gt;
+&lt;p&gt;The six groups that I feel cover the infrastructure domain sufficiently are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Governance &amp;amp; Organization&lt;/em&gt;, which is about the company and the organization
+  used within the company.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Consumers &amp;amp; Suppliers&lt;/em&gt;, which is about the interaction (and supporting needs)
+  with the consumers of our services, as well as with the providers.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Research &amp;amp; Development&lt;/em&gt;, which is about preparing updates on the services
+  and architecture&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Risk &amp;amp; Security&lt;/em&gt;, which enables risk reduction strategies and facilitates
+  secure integrations of services&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Custodianship&lt;/em&gt;, which is about facilitating maintenance and support
+  improvements that are more environment-wide&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Engineering &amp;amp; Operations&lt;/em&gt;, which focuses on the operational control and
+  support of the services.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In some ugly visualization, these groups (and the processes or non-functionals
+that are within) can be represented as follows:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Six process groups for infrastructure" src="https://blog.siphos.be/images/202109/six-process-groups.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Let's go through each of the groups in a bit more detail.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Governance and Organization&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The first group is titled &lt;em&gt;Governance &amp;amp; Organization&lt;/em&gt; and covers the company
+specifics. It has five processes or non-functionals in it:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Strategy and Innovation&lt;/li&gt;
+&lt;li&gt;Enterprise Architecture&lt;/li&gt;
+&lt;li&gt;Organizational Efficiency&lt;/li&gt;
+&lt;li&gt;Separation of Concerns&lt;/li&gt;
+&lt;li&gt;Formalization&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;strategy&lt;/em&gt; of a company is an important starting point for larger changes,
+as architects need to make sure that the changes they want to guide, coach, or
+support are aligned with the company strategy. Most companies will have a
+hierarchy of strategies, with the main strategy being translated to specific
+strategies or strategic objectives, which are then further formalized down.&lt;/p&gt;
+&lt;p&gt;Alongside supporting the company strategy in general, domain architects might
+need to plan the strategy for their domain as well (as I had to do for the
+infrastructure domain). This, again, is a translation of the overall strategy,
+showing how infrastructure will support the strategic objectives.&lt;/p&gt;
+&lt;p&gt;For the &lt;em&gt;innovation&lt;/em&gt; part, the infrastructure domain needs to make clear how to
+support innovative ideas and suggestions in the organization. Often,
+the infrastructure and operations field is considered to be protective, and
+might be perceived as obstructing innovative ideas. That's not a correct view -
+while the operations field often has a more conservative view of the
+infrastructure to make sure the production environment is available and secure,
+it also has a viewpoint on how to deal with innovation. For instance, the
+delivery of sandbox environments in which innovations can play a role, or
+prototype environments that have limited, secured integration possibilities
+toward the rest of the environment.&lt;/p&gt;
+&lt;p&gt;Innovation is not only limited to technological innovation. Innovative ideas on
+governance and organization (such as when agile development practices were
+being formulated) are also important to track, as they influence many
+other processes and non-functional attributes.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;enterprise architecture&lt;/em&gt; part covers abstracting and guiding the
+organization, the business, the product development, etc. in a coherent and
+well-documented manner. It lays the foundations for an effective and efficient,
+collaborative, large organization. Domain architects ensure that their domain
+architecture is related to the enterprise architecture (and contributes to the
+enterprise architecture directly).&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Organizational efficiency&lt;/em&gt; focuses more on how the organization functions.
+Does the organization use DevOps teams, for instance, or is it more traditional
+in the development versus operations part? Does the organization have vertical
+technology-oriented teams, or more horizontal, solution-driven teams, or a
+mixture? Knowing how the company organizes its IT is important to properly
+structure and present changes. Domain architects also provide input towards
+reorganizations, as they can easily define how such shifts in responsibilities
+will affect the organization and its efficiency.&lt;/p&gt;
+&lt;p&gt;With the &lt;em&gt;segregation of duties&lt;/em&gt;, I focus on which roles can be shared and which
+ones can't. Knowing which segregation applies in the organization (such as
+the different security officer focus, the segregation between risk officers and
+audit officers, the exclusivity between domain administrators (in Active
+Directory terms) and regular server administrators) is an important driver
+for architecting. Architects can suggest introducing additional segregations or
+suggest methods for removing the need to segregate these duties (as often those
+are inspired by historical events and assessed on older capabilities). I've
+mentioned DevOps before, and those who supported a DevOps transition will know
+about the historical segregation between development and operations.&lt;/p&gt;
+&lt;p&gt;Finally, &lt;em&gt;formalization&lt;/em&gt; is about how to have formal evidence of decisions.
+While this is often just part of a company's 'governance', I focus on it
+specifically, as it is always balancing efficiency and effectiveness. When
+formal evidence is expected by the organization, it is wise to keep track of why
+this is. Often, formalization can be optimized further without reducing the
+benefits or impacting the requirements.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Consumers and Suppliers&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Whereas the first group focused on the company itself, the group on consumers
+and suppliers focuses on the users of the infrastructure services that are
+offered (which often, but not always, are internal customers) and the suppliers
+for the various services the organization consumes.&lt;/p&gt;
+&lt;p&gt;It covers the following four processes and non-functionals:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cost &amp;amp; Licensing&lt;/li&gt;
+&lt;li&gt;Portfolio&lt;/li&gt;
+&lt;li&gt;Agreements &amp;amp; Support&lt;/li&gt;
+&lt;li&gt;Incidents &amp;amp; Problems&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;cost and licensing&lt;/em&gt; part is often a large time-consumer. I include
+chargeback and showback here as well, although I must be very clear that actual
+costs and chargeback-reported costs are not the same. For the services
+infrastructure offers internally, knowing the costs (showback) and charging the
+costs through to the internal customers (chargeback) are hard processes to
+tackle, requiring intensive thoughts on what is and isn't allowed, how the
+company looks at the services, etc.&lt;/p&gt;
+&lt;p&gt;While looking at the suppliers, an important part is to understand and optimize
+the licensing. Each product and service that you consume costs money one way or
+another. I've had the "pleasure" of being an Oracle license manager (as in,
+responsible within my company for tracking, reporting, and optimizing the costs
+associated with all Oracle products we consumed) for a while, and being part of
+the Microsoft license management team (with responsibility for data center
+oriented products). Knowing the license requirements, the terms and conditions,
+the contractual obligations (and deviations that a company negotiated), etc. is
+very useful.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;portfolio&lt;/em&gt; is about knowing what you consume (from vendors) and offer
+internally, and how you intend to track and evolve it. For infrastructure
+services, for instance, you want to make sure you have a decent catalog (which
+is part of the portfolio) that your internal customers can consume. Designing
+the catalog is an important first step in assessing and deriving the domain
+architecture if it isn't available yet.&lt;/p&gt;
+&lt;p&gt;With &lt;em&gt;agreements and support&lt;/em&gt; I look not just at the contractual agreements
+related to service consumption (as in, the terms and conditions related to the
+licensing), but also towards agreements on areas such as support (Can we call
+the vendor any time of the day? How much time does the vendor contractually
+have before they 'pick up the phone'? Is the service agreement conforming to
+market expectations?). The same is true for the service agreements offered
+internally - something that is best aligned with the portfolio.&lt;/p&gt;
+&lt;p&gt;Deriving decent service level agreements (SLA), and ensuring they can be
+tracked and asserted, can be important if the vendor isn't all that
+trustworthy, as well as to show your internal customers that you care about
+reaching and keeping the SLAs.&lt;/p&gt;
+&lt;p&gt;Support is also about how to reach and interact with the support organization.
+From an infrastructure point of view, that isn't always as easy as it sounds.
+Some vendors require specific applications to interact with their support
+organization, and your company might not allow those applications. Or, certain
+metrics need to be sent out to a cloud service, but that cloud service isn't
+easily identified as being secure and compliant enough with the regulations you
+have to cover.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;incidents and problems&lt;/em&gt; item covers the standard incident and problem
+resolution processes, and how these are handled in the organization. It is
+about standardizing what incidents are, how to react to them, how to derive
+problems from the observations, prioritizing work related to incidents and
+problems, and more. A decent incident and problem tracking solution is a must,
+but the solution itself is just part of the setup. A good tool does not give
+you an efficient and effective organization.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Research &amp;amp; Development&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The next group is about evolving the service offerings. I consider the following
+four processes and non-functionals as part of this group:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Architecture&lt;/li&gt;
+&lt;li&gt;Design&lt;/li&gt;
+&lt;li&gt;Product Lifecycle&lt;/li&gt;
+&lt;li&gt;Quality Control&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With &lt;em&gt;architecture&lt;/em&gt;, I focus on the solution architecture, and how the solutions
+interact with the domain architecture. The domain architecture is generally
+part of the enterprise architecture, whereas the solution architecture is
+something that regularly needs updates based on the changes that are being
+planned. Most of this architecture is done by the system architects with
+the support or coaching of the domain architect.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;design&lt;/em&gt; is the next phase of a development cycle and is more detailed
+than the solution architecture. Designs are often handled by the
+engineering teams themselves, with the support of the system architects. For
+domain architects, knowing where the designs are and to read them/understand
+them is vital for a good collaboration between architects and engineering teams.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;product life-cycle&lt;/em&gt; focuses on the entire life-cycle of a product, starting
+with innovative ideas and research, prototypes, towards supporting the
+development of the product, and even after deployment towards end-of-life
+support/tracking, or in case of bought products the end-of-sale,
+end-of-premier-support, extended support, custom support, and whatnot.&lt;/p&gt;
+&lt;p&gt;Balancing the product life-cycles against each other is a common occurrence for
+architects and product owners, as it is always a puzzle about when to make which
+changes, release what versions, etc. If you don't track the life-cycle of a
+product continuously, you might face situations where you need to
+purchase older products because your reinvestment wasn't planned yet, but
+capacity limits require an increase anyway.&lt;/p&gt;
+&lt;p&gt;Finally, &lt;em&gt;quality control&lt;/em&gt; is about ensuring the quality of the products is 
+according to expectations. This includes support for different environments
+(pre-production), specific quality testing (which I'll discuss later as well),
+supporting QA teams (if you have those), and the processes for reporting
+defects, etc. It also includes quality assurance on products purchased from
+third parties.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Risk &amp;amp; Security&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A major part of my work is to assess the risk exposure and ensuring a secure
+and reliable infrastructure. Hence, it shouldn't come as a surprise that it is
+an entire group by itself.&lt;/p&gt;
+&lt;p&gt;While security is a large domain (with lots of focus on processes and
+assurance), the following processes and non-functionals are strongly
+represented in the infrastructure domain:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Crypto&lt;/li&gt;
+&lt;li&gt;Authentication&lt;/li&gt;
+&lt;li&gt;Authorization&lt;/li&gt;
+&lt;li&gt;Privacy&lt;/li&gt;
+&lt;li&gt;Access Control&lt;/li&gt;
+&lt;li&gt;Audit &amp;amp; Compliance&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For &lt;em&gt;crypto&lt;/em&gt;, a major challenge is not only to ensure cryptographic services or
+protocols are used where it makes sense (or better said, not used where it
+makes sense) but also to understand the intricate details of the cryptographic
+services, knowing what service is used for which purpose, etc. I could make an
+entire article purely to discuss the sense and nonsense of transparent
+encryption on file systems or databases...&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;authentication&lt;/em&gt; processes (and the closely related identity processes) are
+to support assurance on the identity of a user, process, system, device, or
+any other type of subject. Knowing how the authentication is handled, which
+authentication protocols are used, the landscape in case of federated
+authentication, etc. can take up several days to know. Authentication is no
+longer based on user IDs and passwords. We have OpenID Connect, SAML, Kerberos,
+TACACS, RADIUS, NTLM, and more, which all have their quirks. And those are just
+the protocols to handle authentication: they don't talk about user management,
+the processes you will need to support in case of account abuse, etc.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Authorization&lt;/em&gt;, while often combined with the authentication phase, is about
+knowing what a (freshly authenticated) identity may do (authorized). Here, we
+have the challenges of coarse-grained authorization versus fine-grained
+authorizations, dynamic authorizations, transient authorizations, or
+authorizations that are inherited from others. Often, architects will need to
+design the authorization granularity and approach based on the organizational
+and security requirements.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;privacy&lt;/em&gt; controls are about ensuring confidential or strictly confidential
+data (if those are the terms used by the organization) are properly protected.
+Data can be anonymized, pseudonymized, redacted, tokenized, encrypted, and/or
+de-identified. Architects should know which control is possible where, which
+services can be used, what the impact is of the controls, as well as what the
+organizational data requirements are.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;access control&lt;/em&gt; part is closely related to the authorization part. In
+effect, it should be what enforces the authorizations. Access control is a wide
+domain with many, many products and services working with (or against
+apparently) each other. Especially in more modern architectures where zero
+trust plays a role, you'll notice that access control is a challenging beast,
+with dynamic and contextual controls becoming primary services rather than the
+standard, relatively static (role-based) access controls.&lt;/p&gt;
+&lt;p&gt;The last part is the &lt;em&gt;audit and compliance&lt;/em&gt;, where audit focuses on obtaining
+traceability of all events (what has happened where, when, by whom), whereas
+compliance looks at assuring current state and processes are according to
+expectations. Compliance can be about assuring adherence to the organizational
+processes and standards, but also that a system's configuration is accurate and
+still in effect. So, yes, it is more than what a "compliance" department would
+focus on.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Custodianship&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In custodianship, I group processes and non-functionals that often play a more
+active role after having a successful deployment, or after a project is
+finished. While these do not imply that they are to be implemented by different
+teams (that's the organizational efficiency which has to decide on this), I
+notice that they are challenging to keep up properly for a large organization.&lt;/p&gt;
+&lt;p&gt;In it, I cover the following processes and non-functionals:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Data Governance&lt;/li&gt;
+&lt;li&gt;Rationalization&lt;/li&gt;
+&lt;li&gt;Reporting &amp;amp; Insights&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Data governance&lt;/em&gt; is about defining and tracking data, data flows, data
+definitions, as well as their purpose. You need proper data governance to know
+which privacy measures to apply, as one of its measures is the retention of the
+data.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Rationalization&lt;/em&gt; is the effort to rationalize existing infrastructure usage
+and services. While major rationalization exercises are company-wide
+initiatives, there are many benefits to achieve with small, incremental
+rationalization exercises. Most of the time, rationalization exercises are
+about cost reduction, but that doesn't always need to be the case. Of course,
+eventually, everything is about finances nowadays.&lt;/p&gt;
+&lt;p&gt;With &lt;em&gt;reporting and insights&lt;/em&gt;, I consider the means to report on various areas
+(such as capacity, cost, performance, and SLA breaches), as well as gain
+insights from the data at hand.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Engineering &amp;amp; Operations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The final group covers the disciplines that I see on the engineering and
+operations side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Configuration&lt;/li&gt;
+&lt;li&gt;Orchestration&lt;/li&gt;
+&lt;li&gt;Testing&lt;/li&gt;
+&lt;li&gt;Change Management&lt;/li&gt;
+&lt;li&gt;Operational Control&lt;/li&gt;
+&lt;li&gt;Monitoring&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;configuration&lt;/em&gt; part is to ensure that the systems and services are
+properly configured and that the life-cycle of the configuration items is
+guaranteed as well. &lt;/p&gt;
+&lt;p&gt;With &lt;em&gt;orchestration&lt;/em&gt;, the focus is on ensuring larger environments are optimally
+used and the appropriate abstractions are in place. Kubernetes is a good
+example of an orchestration that requires close attention and support. But
+others exist as well, such as those in the Hadoop ecosystem.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Testing&lt;/em&gt; focuses on the various testing strategies that enable us to trust the
+final product and services and help in ensuring no regressions are
+creeping in. Testing on the infrastructure side is about load and performance
+testing, smoke testing, regression testing, destructive testing, etc.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;change management&lt;/em&gt; process is about properly staging the changes,
+communicating the changes, following up on the changes, etc. It is not just
+about preparing a deployment and then hitting a button: you want to validate
+that the change is successful, track the performance to ensure nothing is acting
+strangely, etc.&lt;/p&gt;
+&lt;p&gt;With &lt;em&gt;operational control&lt;/em&gt;, I consider the systems that drive the operational
+systems autonomously. Self-driving and self-healing are the two non-functionals
+I embed under this. Many cluster management systems are part of this, and
+designing for self-driving and self-healing infrastructure comes up more and
+more with modern systems.&lt;/p&gt;
+&lt;p&gt;Finally, &lt;em&gt;monitoring&lt;/em&gt; covers tracking the telemetry of the systems, the logs
+that are generated, and derive the right insights from it. I initially wanted
+to call it "Observation" as that seems to be the term that comes up more and
+more (monitoring too much resembles watching telemetry for thresholds, whereas
+observation goes much beyond that) but monitoring seems to resound most amongst
+users.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;A huge list that covers most of the requirements&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This list of processes and non-functional attributes covers most, if not all,
+requirements that are related to the infrastructure domain. The component
+view that I mentioned in a previous post, for instance, is part of the
+architecture and design processes in the Research &amp;amp; Development group.&lt;/p&gt;
+&lt;p&gt;However, because they are still processes and non-functionals, they can often
+seem to be less tangible. Sure, you have to manage the costs, but how do you do
+that? What processes do you have in place to manage cost insights? How do you
+deliver these insights? What tooling is used to support the organization? What
+tooling is mandatory to use (like license management tools from larger vendors)?
+Detailing this and making the right choices is part of being an architect.&lt;/p&gt;
+&lt;p&gt;In the next post, I will look at the location view. Unlike the process view,
+which is often shared with other IT domains, the location view is something
+that is often more exclusive for the infrastructure domain.&lt;/p&gt;
+&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="TODO"&gt;discussion on
+Twitter&lt;/a&gt;.&lt;/p&gt;
+</summary><content type="html">&lt;p&gt;In my &lt;a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/"&gt;previous post&lt;/a&gt;,
+I started with the five different views that would support a good view of
+what infrastructure would be. I believe these views (component, location,
+process, service, and zoning) cover the breadth of the domain. The post also
+described the component view a bit more and linked to previous posts I made (one
+for &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;services&lt;/a&gt;, another for
+&lt;a href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/"&gt;zoning&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The one I want to tackle here is the most elaborate one, also the most
+enterprise-ish, and one that always is a balance on how much time and
+effort to put into it (as an architect), as well as hoping that the processes
+are sufficiently standardized in a flexible manner so that you don't need
+to cover everything again and again in each project.&lt;/p&gt;
+&lt;p&gt;So, let's talk about processes...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Six process groups&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are plenty of process frameworks out there. I've covered many of these
+in a previous article (&lt;a href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/"&gt;What is the infrastructure domain?&lt;/a&gt;), with &lt;a href="https://www.axelos.com/best-practice-solutions/itil"&gt;ITIL&lt;/a&gt;
+and &lt;a href="https://www.isaca.org/resources/cobit"&gt;CObIT&lt;/a&gt; being my main resources.&lt;/p&gt;
+&lt;p&gt;Companies often select a mature framework to align their IT on. After all, why
+invent everything over and over again if a popular framework with all its
+resources exists. But just like how companies like to use commercially available
+resources, they also like to adjust and nudge it left and right to fit
+the organization better. And that's fine.&lt;/p&gt;
+&lt;p&gt;I'm going to give a spin to it and combine processes with non-functionals, as
+infrastructure is often about non-functionals. That doesn't mean that frameworks
+like ITIL or CObIT are not good, but explaining them easily is sometimes a
+challenge, and I'm not versed enough in the intricacies of these frameworks
+to use them as a starting point, rather as a reference.&lt;/p&gt;
+&lt;p&gt;The six groups that I feel cover the infrastructure domain sufficiently are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;Governance &amp;amp; Organization&lt;/em&gt;, which is about the company and the organization
+  used within the company.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Consumers &amp;amp; Suppliers&lt;/em&gt;, which is about the interaction (and supporting needs)
+  with the consumers of our services, as well as with the providers.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Research &amp;amp; Development&lt;/em&gt;, which is about preparing updates on the services
+  and architecture&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Risk &amp;amp; Security&lt;/em&gt;, which enables risk reduction strategies and facilitates
+  secure integrations of services&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Custodianship&lt;/em&gt;, which is about facilitating maintenance and support
+  improvements that are more environment-wide&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Engineering &amp;amp; Operations&lt;/em&gt;, which focuses on the operational control and
+  support of the services.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In some ugly visualization, these groups (and the processes or non-functionals
+that are within) can be represented as follows:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Six process groups for infrastructure" src="https://blog.siphos.be/images/202109/six-process-groups.png"&gt;&lt;/p&gt;
+&lt;p&gt;Let's go through each of the groups in a bit more detail.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Governance and Organization&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The first group is titled &lt;em&gt;Governance &amp;amp; Organization&lt;/em&gt; and covers the company
+specifics. It has five processes or non-functionals in it:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Strategy and Innovation&lt;/li&gt;
+&lt;li&gt;Enterprise Architecture&lt;/li&gt;
+&lt;li&gt;Organizational Efficiency&lt;/li&gt;
+&lt;li&gt;Separation of Concerns&lt;/li&gt;
+&lt;li&gt;Formalization&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;strategy&lt;/em&gt; of a company is an important starting point for larger changes,
+as architects need to make sure that the changes they want to guide, coach, or
+support are aligned with the company strategy. Most companies will have a
+hierarchy of strategies, with the main strategy being translated to specific
+strategies or strategic objectives, which are then further formalized down.&lt;/p&gt;
+&lt;p&gt;Alongside supporting the company strategy in general, domain architects might
+need to plan the strategy for their domain as well (as I had to do for the
+infrastructure domain). This, again, is a translation of the overall strategy,
+showing how infrastructure will support the strategic objectives.&lt;/p&gt;
+&lt;p&gt;For the &lt;em&gt;innovation&lt;/em&gt; part, the infrastructure domain needs to make clear how to
+support innovative ideas and suggestions in the organization. Often,
+the infrastructure and operations field is considered to be protective, and
+might be perceived as obstructing innovative ideas. That's not a correct view -
+while the operations field often has a more conservative view of the
+infrastructure to make sure the production environment is available and secure,
+it also has a viewpoint on how to deal with innovation. For instance, the
+delivery of sandbox environments in which innovations can play a role, or
+prototype environments that have limited, secured integration possibilities
+toward the rest of the environment.&lt;/p&gt;
+&lt;p&gt;Innovation is not only limited to technological innovation. Innovative ideas on
+governance and organization (such as when agile development practices were
+being formulated) are also important to track, as they influence many
+other processes and non-functional attributes.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;enterprise architecture&lt;/em&gt; part covers abstracting and guiding the
+organization, the business, the product development, etc. in a coherent and
+well-documented manner. It lays the foundations for an effective and efficient,
+collaborative, large organization. Domain architects ensure that their domain
+architecture is related to the enterprise architecture (and contributes to the
+enterprise architecture directly).&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Organizational efficiency&lt;/em&gt; focuses more on how the organization functions.
+Does the organization use DevOps teams, for instance, or is it more traditional
+in the development versus operations part? Does the organization have vertical
+technology-oriented teams, or more horizontal, solution-driven teams, or a
+mixture? Knowing how the company organizes its IT is important to properly
+structure and present changes. Domain architects also provide input towards
+reorganizations, as they can easily define how such shifts in responsibilities
+will affect the organization and its efficiency.&lt;/p&gt;
+&lt;p&gt;With the &lt;em&gt;segregation of duties&lt;/em&gt;, I focus on which roles can be shared and which
+ones can't. Knowing which segregation applies in the organization (such as
+the different security officer focus, the segregation between risk officers and
+audit officers, the exclusivity between domain administrators (in Active
+Directory terms) and regular server administrators) is an important driver
+for architecting. Architects can suggest introducing additional segregations or
+suggest methods for removing the need to segregate these duties (as often those
+are inspired by historical events and assessed on older capabilities). I've
+mentioned DevOps before, and those who supported a DevOps transition will know
+about the historical segregation between development and operations.&lt;/p&gt;
+&lt;p&gt;Finally, &lt;em&gt;formalization&lt;/em&gt; is about how to have formal evidence of decisions.
+While this is often just part of a company's 'governance', I focus on it
+specifically, as it is always balancing efficiency and effectiveness. When
+formal evidence is expected by the organization, it is wise to keep track of why
+this is. Often, formalization can be optimized further without reducing the
+benefits or impacting the requirements.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Consumers and Suppliers&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Whereas the first group focused on the company itself, the group on consumers
+and suppliers focuses on the users of the infrastructure services that are
+offered (which often, but not always, are internal customers) and the suppliers
+for the various services the organization consumes.&lt;/p&gt;
+&lt;p&gt;It covers the following four processes and non-functionals:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cost &amp;amp; Licensing&lt;/li&gt;
+&lt;li&gt;Portfolio&lt;/li&gt;
+&lt;li&gt;Agreements &amp;amp; Support&lt;/li&gt;
+&lt;li&gt;Incidents &amp;amp; Problems&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;cost and licensing&lt;/em&gt; part is often a large time-consumer. I include
+chargeback and showback here as well, although I must be very clear that actual
+costs and chargeback-reported costs are not the same. For the services
+infrastructure offers internally, knowing the costs (showback) and charging the
+costs through to the internal customers (chargeback) are hard processes to
+tackle, requiring intensive thoughts on what is and isn't allowed, how the
+company looks at the services, etc.&lt;/p&gt;
+&lt;p&gt;While looking at the suppliers, an important part is to understand and optimize
+the licensing. Each product and service that you consume costs money one way or
+another. I've had the "pleasure" of being an Oracle license manager (as in,
+responsible within my company for tracking, reporting, and optimizing the costs
+associated with all Oracle products we consumed) for a while, and being part of
+the Microsoft license management team (with responsibility for data center
+oriented products). Knowing the license requirements, the terms and conditions,
+the contractual obligations (and deviations that a company negotiated), etc. is
+very useful.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;portfolio&lt;/em&gt; is about knowing what you consume (from vendors) and offer
+internally, and how you intend to track and evolve it. For infrastructure
+services, for instance, you want to make sure you have a decent catalog (which
+is part of the portfolio) that your internal customers can consume. Designing
+the catalog is an important first step in assessing and deriving the domain
+architecture if it isn't available yet.&lt;/p&gt;
+&lt;p&gt;With &lt;em&gt;agreements and support&lt;/em&gt; I look not just at the contractual agreements
+related to service consumption (as in, the terms and conditions related to the
+licensing), but also towards agreements on areas such as support (Can we call
+the vendor any time of the day? How much time does the vendor contractually
+have before they 'pick up the phone'? Is the service agreement conforming to
+market expectations?). The same is true for the service agreements offered
+internally - something that is best aligned with the portfolio.&lt;/p&gt;
+&lt;p&gt;Deriving decent service level agreements (SLA), and ensuring they can be
+tracked and asserted, can be important if the vendor isn't all that
+trustworthy, as well as to show your internal customers that you care about
+reaching and keeping the SLAs.&lt;/p&gt;
+&lt;p&gt;Support is also about how to reach and interact with the support organization.
+From an infrastructure point of view, that isn't always as easy as it sounds.
+Some vendors require specific applications to interact with their support
+organization, and your company might not allow those applications. Or, certain
+metrics need to be sent out to a cloud service, but that cloud service isn't
+easily identified as being secure and compliant enough with the regulations you
+have to cover.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;incidents and problems&lt;/em&gt; item covers the standard incident and problem
+resolution processes, and how these are handled in the organization. It is
+about standardizing what incidents are, how to react to them, how to derive
+problems from the observations, prioritizing work related to incidents and
+problems, and more. A decent incident and problem tracking solution is a must,
+but the solution itself is just part of the setup. A good tool does not give
+you an efficient and effective organization.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Research &amp;amp; Development&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The next group is about evolving the service offerings. I consider the following
+four processes and non-functionals as part of this group:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Architecture&lt;/li&gt;
+&lt;li&gt;Design&lt;/li&gt;
+&lt;li&gt;Product Lifecycle&lt;/li&gt;
+&lt;li&gt;Quality Control&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With &lt;em&gt;architecture&lt;/em&gt;, I focus on the solution architecture, and how the solutions
+interact with the domain architecture. The domain architecture is generally
+part of the enterprise architecture, whereas the solution architecture is
+something that regularly needs updates based on the changes that are being
+planned. Most of this architecture is done by the system architects with
+the support or coaching of the domain architect.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;design&lt;/em&gt; is the next phase of a development cycle and is more detailed
+than the solution architecture. Designs are often handled by the
+engineering teams themselves, with the support of the system architects. For
+domain architects, knowing where the designs are and to read them/understand
+them is vital for a good collaboration between architects and engineering teams.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;product life-cycle&lt;/em&gt; focuses on the entire life-cycle of a product, starting
+with innovative ideas and research, prototypes, towards supporting the
+development of the product, and even after deployment towards end-of-life
+support/tracking, or in case of bought products the end-of-sale,
+end-of-premier-support, extended support, custom support, and whatnot.&lt;/p&gt;
+&lt;p&gt;Balancing the product life-cycles against each other is a common occurrence for
+architects and product owners, as it is always a puzzle about when to make which
+changes, release what versions, etc. If you don't track the life-cycle of a
+product continuously, you might face situations where you need to
+purchase older products because your reinvestment wasn't planned yet, but
+capacity limits require an increase anyway.&lt;/p&gt;
+&lt;p&gt;Finally, &lt;em&gt;quality control&lt;/em&gt; is about ensuring the quality of the products is 
+according to expectations. This includes support for different environments
+(pre-production), specific quality testing (which I'll discuss later as well),
+supporting QA teams (if you have those), and the processes for reporting
+defects, etc. It also includes quality assurance on products purchased from
+third parties.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Risk &amp;amp; Security&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A major part of my work is to assess the risk exposure and ensuring a secure
+and reliable infrastructure. Hence, it shouldn't come as a surprise that it is
+an entire group by itself.&lt;/p&gt;
+&lt;p&gt;While security is a large domain (with lots of focus on processes and
+assurance), the following processes and non-functionals are strongly
+represented in the infrastructure domain:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Crypto&lt;/li&gt;
+&lt;li&gt;Authentication&lt;/li&gt;
+&lt;li&gt;Authorization&lt;/li&gt;
+&lt;li&gt;Privacy&lt;/li&gt;
+&lt;li&gt;Access Control&lt;/li&gt;
+&lt;li&gt;Audit &amp;amp; Compliance&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For &lt;em&gt;crypto&lt;/em&gt;, a major challenge is not only to ensure cryptographic services or
+protocols are used where it makes sense (or better said, not used where it
+makes sense) but also to understand the intricate details of the cryptographic
+services, knowing what service is used for which purpose, etc. I could make an
+entire article purely to discuss the sense and nonsense of transparent
+encryption on file systems or databases...&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;authentication&lt;/em&gt; processes (and the closely related identity processes) are
+to support assurance on the identity of a user, process, system, device, or
+any other type of subject. Knowing how the authentication is handled, which
+authentication protocols are used, the landscape in case of federated
+authentication, etc. can take up several days to know. Authentication is no
+longer based on user IDs and passwords. We have OpenID Connect, SAML, Kerberos,
+TACACS, RADIUS, NTLM, and more, which all have their quirks. And those are just
+the protocols to handle authentication: they don't talk about user management,
+the processes you will need to support in case of account abuse, etc.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Authorization&lt;/em&gt;, while often combined with the authentication phase, is about
+knowing what a (freshly authenticated) identity may do (authorized). Here, we
+have the challenges of coarse-grained authorization versus fine-grained
+authorizations, dynamic authorizations, transient authorizations, or
+authorizations that are inherited from others. Often, architects will need to
+design the authorization granularity and approach based on the organizational
+and security requirements.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;privacy&lt;/em&gt; controls are about ensuring confidential or strictly confidential
+data (if those are the terms used by the organization) are properly protected.
+Data can be anonymized, pseudonymized, redacted, tokenized, encrypted, and/or
+de-identified. Architects should know which control is possible where, which
+services can be used, what the impact is of the controls, as well as what the
+organizational data requirements are.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;access control&lt;/em&gt; part is closely related to the authorization part. In
+effect, it should be what enforces the authorizations. Access control is a wide
+domain with many, many products and services working with (or against
+apparently) each other. Especially in more modern architectures where zero
+trust plays a role, you'll notice that access control is a challenging beast,
+with dynamic and contextual controls becoming primary services rather than the
+standard, relatively static (role-based) access controls.&lt;/p&gt;
+&lt;p&gt;The last part is the &lt;em&gt;audit and compliance&lt;/em&gt;, where audit focuses on obtaining
+traceability of all events (what has happened where, when, by whom), whereas
+compliance looks at assuring current state and processes are according to
+expectations. Compliance can be about assuring adherence to the organizational
+processes and standards, but also that a system's configuration is accurate and
+still in effect. So, yes, it is more than what a "compliance" department would
+focus on.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Custodianship&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In custodianship, I group processes and non-functionals that often play a more
+active role after having a successful deployment, or after a project is
+finished. While these do not imply that they are to be implemented by different
+teams (that's the organizational efficiency which has to decide on this), I
+notice that they are challenging to keep up properly for a large organization.&lt;/p&gt;
+&lt;p&gt;In it, I cover the following processes and non-functionals:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Data Governance&lt;/li&gt;
+&lt;li&gt;Rationalization&lt;/li&gt;
+&lt;li&gt;Reporting &amp;amp; Insights&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;Data governance&lt;/em&gt; is about defining and tracking data, data flows, data
+definitions, as well as their purpose. You need proper data governance to know
+which privacy measures to apply, as one of its measures is the retention of the
+data.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Rationalization&lt;/em&gt; is the effort to rationalize existing infrastructure usage
+and services. While major rationalization exercises are company-wide
+initiatives, there are many benefits to achieve with small, incremental
+rationalization exercises. Most of the time, rationalization exercises are
+about cost reduction, but that doesn't always need to be the case. Of course,
+eventually, everything is about finances nowadays.&lt;/p&gt;
+&lt;p&gt;With &lt;em&gt;reporting and insights&lt;/em&gt;, I consider the means to report on various areas
+(such as capacity, cost, performance, and SLA breaches), as well as gain
+insights from the data at hand.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Engineering &amp;amp; Operations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The final group covers the disciplines that I see on the engineering and
+operations side:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Configuration&lt;/li&gt;
+&lt;li&gt;Orchestration&lt;/li&gt;
+&lt;li&gt;Testing&lt;/li&gt;
+&lt;li&gt;Change Management&lt;/li&gt;
+&lt;li&gt;Operational Control&lt;/li&gt;
+&lt;li&gt;Monitoring&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The &lt;em&gt;configuration&lt;/em&gt; part is to ensure that the systems and services are
+properly configured and that the life-cycle of the configuration items is
+guaranteed as well. &lt;/p&gt;
+&lt;p&gt;With &lt;em&gt;orchestration&lt;/em&gt;, the focus is on ensuring larger environments are optimally
+used and the appropriate abstractions are in place. Kubernetes is a good
+example of an orchestration that requires close attention and support. But
+others exist as well, such as those in the Hadoop ecosystem.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Testing&lt;/em&gt; focuses on the various testing strategies that enable us to trust the
+final product and services and help in ensuring no regressions are
+creeping in. Testing on the infrastructure side is about load and performance
+testing, smoke testing, regression testing, destructive testing, etc.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;change management&lt;/em&gt; process is about properly staging the changes,
+communicating the changes, following up on the changes, etc. It is not just
+about preparing a deployment and then hitting a button: you want to validate
+that the change is successful, track the performance to ensure nothing is acting
+strangely, etc.&lt;/p&gt;
+&lt;p&gt;With &lt;em&gt;operational control&lt;/em&gt;, I consider the systems that drive the operational
+systems autonomously. Self-driving and self-healing are the two non-functionals
+I embed under this. Many cluster management systems are part of this, and
+designing for self-driving and self-healing infrastructure comes up more and
+more with modern systems.&lt;/p&gt;
+&lt;p&gt;Finally, &lt;em&gt;monitoring&lt;/em&gt; covers tracking the telemetry of the systems, the logs
+that are generated, and derive the right insights from it. I initially wanted
+to call it "Observation" as that seems to be the term that comes up more and
+more (monitoring too much resembles watching telemetry for thresholds, whereas
+observation goes much beyond that) but monitoring seems to resound most amongst
+users.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;A huge list that covers most of the requirements&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This list of processes and non-functional attributes covers most, if not all,
+requirements that are related to the infrastructure domain. The component
+view that I mentioned in a previous post, for instance, is part of the
+architecture and design processes in the Research &amp;amp; Development group.&lt;/p&gt;
+&lt;p&gt;However, because they are still processes and non-functionals, they can often
+seem to be less tangible. Sure, you have to manage the costs, but how do you do
+that? What processes do you have in place to manage cost insights? How do you
+deliver these insights? What tooling is used to support the organization? What
+tooling is mandatory to use (like license management tools from larger vendors)?
+Detailing this and making the right choices is part of being an architect.&lt;/p&gt;
+&lt;p&gt;In the next post, I will look at the location view. Unlike the process view,
+which is often shared with other IT domains, the location view is something
+that is often more exclusive for the infrastructure domain.&lt;/p&gt;
+&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="TODO"&gt;discussion on
+Twitter&lt;/a&gt;.&lt;/p&gt;
+</content><category term="Architecture"></category><category term="architecture"></category><category term="process"></category></entry><entry><title>Component view of infrastructure</title><link href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/" rel="alternate"></link><published>2021-08-27T21:10:00+02:00</published><updated>2021-08-27T21:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-08-27:/2021/08/component-view-of-infrastructure/</id><summary type="html">&lt;p&gt;IT architects try to use views and viewpoints to convey the target architecture
 to the various stakeholders. Each stakeholder has their own interests in the
 architecture and wants to see their requirements fulfilled. A core
 role of the architect is to understand these requirements and make sure the
@@ -12,156 +696,6 @@ enterprise architecture views, it is unlikely that the views themselves are the
 final product: being able to translate those views into pretty slides and
 presentations is still an important task for architects when they need to
 present their findings to non-architecture roles.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Infrastructure domain in viewpoints&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;While searching for a way to describe the infrastructure domain,
-I tend to align with certain viewpoints as well, as it allows architects
-to decompose a complex situation into more manageable parts. So the question
-is no longer "how do I show what the infrastructure domain is", but rather
-"what different viewpoints do I need to cover the scope of (and
-explanation on) the infrastructure domain".&lt;/p&gt;
-&lt;p&gt;I currently settle on five views:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;A &lt;em&gt;component view&lt;/em&gt;, which covers the vertical stack of an IT infrastructure
-  component.&lt;/li&gt;
-&lt;li&gt;A &lt;em&gt;location view&lt;/em&gt;, which is the horizontal stack for IT infrastructure&lt;/li&gt;
-&lt;li&gt;A &lt;em&gt;process view&lt;/em&gt;, which covers the general enterprise requirements for IT
-  infrastructure&lt;/li&gt;
-&lt;li&gt;A &lt;em&gt;service view&lt;/em&gt;, which provides insights into what functional offerings are
-  provided (and for which I posted a current view a short while ago, titled "&lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;An
-  IT services overview&lt;/a&gt;")&lt;/li&gt;
-&lt;li&gt;A &lt;em&gt;zoning view&lt;/em&gt;, which represents the IT environment landscape. A few years
-  ago, I covered this as well in "&lt;a href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/"&gt;Structuring infrastructural
-  deployments&lt;/a&gt;"&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;All these views are related to each other, but represent insights that are
-particularly useful for certain discussions or representations. Some viewpoints
-are even details for another. For instance, the &lt;em&gt;zoning view&lt;/em&gt; is a view that
-provides more detail on a particular layer in the &lt;em&gt;location view&lt;/em&gt;. A simple
-relationship between the above five views is the following:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Relationship between the five infrastructure views" src="https://blog.siphos.be/images/202108/five-infra-views.png"/&gt;&lt;/p&gt;
-&lt;p&gt;Now, this isn't a proper meta-model, just a representation. It starts
-with what the infrastructure domain has to accomplish (process view),
-which defines the services the domain has to support. These services
-comprise several components, and these are deployed in various
-zones across the organization. The zone overview is part of the more
-elaborate location views.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Components are a good introduction to infrastructure&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;While a good coverage of the infrastructure domain would start with the
-process view, I think it is not always the easiest. Not all stakeholders
-are fully acquainted with processes and what they entail, and I feel it
-might be easier to start with a more tangible view, i.e. a component
-view.&lt;/p&gt;
-&lt;p&gt;For instance, when explaining what IT infrastructure is to an outsider
-(say, a family member that isn't active in the IT world), I often start with
-a component view (often using a cellphone as a starting example), then going
-about the massive amount of components that need to be managed, hence the need
-for proper processes. After elaborating a bit on the various processes involved,
-we can then go to a service overview, to then move on to the hosting of all
-those services in a structured and reliable environment (zoning), with the
-various challenges related to locations.&lt;/p&gt;
-&lt;p&gt;So, what is the component view that I reuse a lot? It is basically
-the vertical stack that most hosting-related services use to explain where
-their product is situated:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Layered view on a component level" src="https://blog.siphos.be/images/202108/component-view.png"/&gt;&lt;/p&gt;
-&lt;p&gt;If you start with a cellphone view, then you can easily describe the hardware,
-operating system, application, and data layers in the view. You can mention that
-the hardware is an expensive one-time investment that the user hopes to use for
-a few years (so you can explain &lt;em&gt;capital expenditures (CapEx)&lt;/em&gt; and &lt;em&gt;operational
-expenditures (OpEx)&lt;/em&gt;. The latter can be a cloud service that the
-user synchronizes its data to, like Apple iCloud or Google Drive).&lt;/p&gt;
-&lt;p&gt;The distinction between operating system and application, and its impact on
-the users, can also be explained easily: operating system upgrades are
-heavier, and users often want to choose when this occurs, as operating system
-upgrades are not always fully backward compatible. Or, the user's hardware isn't
-supported on the next operating system (e.g. upgrading Apple iOS 12 to iOS 13,
-or Android 10 to Android 11). Applications, on the other hand, are often
-automatically updated and are less intrusive. However, because there are
-many applications, managing the application landscape can be more daunting than
-the operating system one.&lt;/p&gt;
-&lt;p&gt;Then we can move on to the scaling challenges that an organization has to
-face, which will gradually build up more insights into the component layers. For
-instance, if a company is developing and maintaining a mobile application, it
-wants to test its new releases on different operating system
-versions.  But it would not be sensible to have each developer walk around with
-six phones because they need to test the application on iOS 12, iOS 13, iOS 14,
-Android 9, Android 10, and Android 11. Instead, testing could be done on
-emulators (which can be considered hypervisors, albeit often not that exhaustive
-in features).&lt;/p&gt;
-&lt;p&gt;This introduces concepts of optimizing resources for cost, but also the
-benefits of having these services available 'at distance' (remote access
-to the emulation environments) as well as first steps in virtualization.
-You can state that this emulation is something the user can do on their
-laptops, but that in enterprise environments this is done with either
-cloud services or on the enterprise servers, as that facilitates collaboration
-with team members, and simplifies managing these assets when the teams get
-larger or smaller. And these servers, well, they too are virtualized for
-resource optimization.&lt;/p&gt;
-&lt;p&gt;We can also discuss the data layer, and the challenge that a regular user
-has when their phone is near its limits (e.g. storage is full), the options the
-user has (add SD card if the phone supports it, or use cloud storage services),
-and compare that with larger enterprises where data hosting is often either
-centralized or abstracted, so that systems are not bound to the limits of their
-device's storage capacity.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Component views enable scalability and cost insights&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The layered view on components, of course, is a meta-view rather than an actual
-one: it shows how a stack can be built up, but the actual benefit is when
-you look at the component view of a solution.&lt;/p&gt;
-&lt;p&gt;For instance, if we were to assess a Kubernetes cluster, it could be represented
-as follows:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Kubernetes component view" src="https://blog.siphos.be/images/202108/k8s-component-view.png"/&gt;&lt;/p&gt;
-&lt;p&gt;Going bottom-up on this view, we can identify (and thus elaborate on) the
-various layers:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;On the hardware level, we see four physical servers (named sppc01 to sppc04).
-  These servers are of a particular brand and have 32 Gb of memory each (which
-  isn't a lot, the cluster is rather small).&lt;/li&gt;
-&lt;li&gt;KVM is used as the hypervisor. The hypervisor combines the four physical
-  servers in a single cluster.&lt;/li&gt;
-&lt;li&gt;KVM then provides eight virtual systems (named svpc01 to svpc08) from the
-  cluster. The first three are used for the Kubernetes control plane, the others
-  are the worker nodes. Note that it is recommended to host the nodes of the
-  control plane on different physical machines so that a failure on one physical
-  machine doesn't jeopardize the cluster availability. This can be configured on
-  the hypervisor, but that is outside the scope of this article.&lt;/li&gt;
-&lt;li&gt;The physical servers use a hardened Gentoo Linux operating system using the
-  musl C library, whereas the virtual servers use a regular Gentoo Linux
-  installation as their operating system.&lt;/li&gt;
-&lt;li&gt;The orchestration layer is Kubernetes itself, using the CRI-O container
-  runtime as middleware.&lt;/li&gt;
-&lt;li&gt;The applications depicted are those of the Kubernetes ecosystem, with the main
-  control plane applications and worker node applications listed.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;If we were to host an application inside the Kubernetes cluster, it would
-be deployed on the worker nodes. The logical design of a Kubernetes cluster
-is not something to be represented in a component view (that's more for
-the location view, as there we will talk about the topology of services).&lt;/p&gt;
-&lt;p&gt;With such component views, we can have some insights into the costs. Of course,
-this is just a simple Kubernetes cluster, and built with pure open-source
-software, so the costs are going to be on the hardware side (and the resources
-they consume). In larger enterprises, however, the hypervisor is often a
-commercially backed one like Hyper-V (Microsoft) and vSphere (VMware), which
-have their specific licensing terms (which could be the number of machines or
-even CPUs).  Also, enterprises often use a commercially backed Kubernetes, like
-Rancher or OpenShift (Red Hat, part of IBM), which often have per-node licensing
-terms.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Component views are just the beginning&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;When I use a component view to explain what infrastructure is about,
-it is merely the beginning. It provides a rudimentary layered view, which most
-people can easily relate to. Content-wise, it is reasonably understandable (or
-easy enough to explain) for people that aren't IT savvy, and is something that
-you can easily find a lot of material for online.&lt;/p&gt;
-&lt;p&gt;If we delve into the processes of (or related to) infrastructure, it becomes
-more challenging to keep the readers/listeners with you. Processes can (will)
-often be very abstract, and going into the details of each process is a lengthy
-endeavor. I'll cover that in a later post.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Feedback? Comments?&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;A few days ago I've dropped Disqus as comment engine from my blog site, mainly
-for concerns about my visitor's security, as well as the advertisements that it
-embedded. I want my blog to be simple and straightforward, so I decided to not
-have any other third-party services with it for now.&lt;/p&gt;
-&lt;p&gt;So, if you have feedback or comments, don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
-email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1431332634370711552"&gt;discussion on
-Twitter&lt;/a&gt;&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;IT architects try to use views and viewpoints to convey the target architecture
 to the various stakeholders. Each stakeholder has their own interests in the
 architecture and wants to see their requirements fulfilled. A core
@@ -175,6 +709,8 @@ enterprise architecture views, it is unlikely that the views themselves are the
 final product: being able to translate those views into pretty slides and
 presentations is still an important task for architects when they need to
 present their findings to non-architecture roles.&lt;/p&gt;
+
+
 &lt;p&gt;&lt;strong&gt;Infrastructure domain in viewpoints&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;While searching for a way to describe the infrastructure domain,
 I tend to align with certain viewpoints as well, as it allows architects
@@ -324,8 +860,7 @@ embedded. I want my blog to be simple and straightforward, so I decided to not
 have any other third-party services with it for now.&lt;/p&gt;
 &lt;p&gt;So, if you have feedback or comments, don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1431332634370711552"&gt;discussion on
-Twitter&lt;/a&gt;&lt;/p&gt;
-</content><category term="Architecture"></category><category term="architecture"></category><category term="component"></category><category term="viewpoint"></category></entry><entry><title>Disaster recovery in the public cloud</title><link href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/" rel="alternate"></link><published>2021-07-30T20:00:00+02:00</published><updated>2021-07-30T20:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-30:/2021/07/disaster-recovery-in-the-public-cloud/</id><summary type="html">&lt;p&gt;The public cloud is a different beast than an on-premise environment, and that
+Twitter&lt;/a&gt;&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="component"></category><category term="viewpoint"></category></entry><entry><title>Disaster recovery in the public cloud</title><link href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/" rel="alternate"></link><published>2021-07-30T20:00:00+02:00</published><updated>2021-07-30T20:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-30:/2021/07/disaster-recovery-in-the-public-cloud/</id><summary type="html">&lt;p&gt;The public cloud is a different beast than an on-premise environment, and that
 also reflects itself on how we (should) look at the processes that are
 actively steering infrastructure designs and architecture. One of these
 is the business continuity, severe incident handling, and the

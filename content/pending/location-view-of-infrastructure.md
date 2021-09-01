@@ -10,7 +10,7 @@ viewpoint that is important for an infrastructure domain representation, and
 that is the *location view*. As mentioned in previous posts, the viewpoints I
 think are most representative of the infrastructure domain are:
 
-* [process view]({filename}/pending/process-view-of-infrastructure.md)
+* [process view]({filename}/2021/09/process-view-of-infrastructure.md)
 * [service view]({filename}/2021/06/an-it-services-overview.md)
 * [component view]({filename}/2021/08/component-view-of-infrastructure.md)
 * [zoning view]({filename}/2017/06/structuring-infrastructural-deployments.md)

@@ -20,6 +20,8 @@ final product: being able to translate those views into pretty slides and
 presentations is still an important task for architects when they need to
 present their findings to non-architecture roles.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Infrastructure domain in viewpoints**
 
 While searching for a way to describe the infrastructure domain,
@@ -197,4 +199,3 @@ So, if you have feedback or comments, don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1431332634370711552)
 
-<!-- PELICAN_END_SUMMARY -->
