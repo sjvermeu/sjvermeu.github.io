@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head -->
+<head>
+
+        <!-- Required metadata tags -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <!-- Default metadata -->
+    <meta name="author" content="Sven Vermeulen" />
+    <meta name="description" content="scale-is-a-cloud-threat" />
+    <meta name="keywords" content="cloud, vulnerability">
+<meta property="og:site_name" content="Simplicity is a form of art..." />
+<meta property="og:title" content="Scale is a cloud threat" />
+<meta property="og:description" content="Not that long ago, a vulnerability was found in Microsoft Azure Cosmos DB, a NoSQL SaaS database within the Microsoft Azure cloud. The vulnerability, which is dubbed ChaosDB by the Wiz Research Team, uses a vulnerability or misconfiguration in the Jupyter Notebook feature within Cosmos DB. This vulnerability allowed an …" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://blog.siphos.be/drafts/scale-is-a-cloud-threat.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-01 00:00:00+02:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/pages/about.html">
+<meta property="article:section" content="Architecture" />
+	<meta property="article:tag" content="cloud" />
+	<meta property="article:tag" content="vulnerability" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
+        <!-- Site Claim -->
+
+
+        <!-- Title -->
+        <title>
+    Scale is a cloud threat &ndash; Simplicity is a form of art...
+        </title>
+        
+        <!-- Icon -->
+        <link rel="shortcut icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+
+        <!-- Search engine -->
+            <meta name="robots" content="" />
+
+        <!-- Feeds -->
+            <link href="https://blog.siphos.be/feed/all.atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Full Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/all.rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Full RSS Feed" />
+
+            <link href="https://blog.siphos.be/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... RSS Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Categories Atom Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Categories RSS Feed" />
+
+
+
+        <!-- Styles -->
+        <!--
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/bootstrap/bootstrap.min.css">
+        <!--
+        <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/pygment/friendly.min.css">
+        <!--
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/extra/admonition.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/style.css">
+
+        <!-- Google Analytics -->
+
+        <!-- Google Global Site Tag -->
+
+        <!-- Google Tag Manager -->
+
+        <!-- Google Adsense -->
+
+        <!-- Heap Analytic -->
+
+        <!-- Piwik Tracking -->
+
+        <!-- Matomo Tracking -->
+
+</head>
+
+<!-- Body -->
+<body class="d-flex flex-column" data-spy="scroll" data-target="#toc" data-offset="0" style="position: relative;">
+    <!-- Top anchor -->
+    <a href="#" id="backToTop" style="display: none; z-index: 1;" title="Back to top"><span></span></a>
+
+    <!-- Google tag manager -->
+
+    <!-- Navigation -->
+    <nav class="flex-shrink-0 navbar navbar-expand-md navbar-expand-lg navbar-dark bg-dark text-light shadow-sm">
+        <!-- Logo -->
+        <a class="navbar-brand" href="https://blog.siphos.be"></a>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon small"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <!-- Page links -->
+            <ul class="navbar-nav mr-auto text-center">
+                <li class="nav-item ">                           
+                    <a class="nav-link" href="https://blog.siphos.be">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z" fill="currentColor"></path>
+                        </svg>
+                        Home <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/categories.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M16 6h-8v-6h8v6zm-8 12h-8v6h8v-6zm16 0h-8v6h8v-6zm-11-7v-3h-2v3h-8v5h2v-3h14v3h2v-5h-8z" fill="currentColor"></path>
+                        </svg>
+                        Categories
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/tags.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M10.605 0h-10.605v10.609l13.391 13.391 10.609-10.604-13.395-13.396zm-4.191 6.414c-.781.781-2.046.781-2.829.001-.781-.783-.781-2.048 0-2.829.782-.782 2.048-.781 2.829-.001.782.782.781 2.047 0 2.829z" fill="currentColor"></path>
+                        </svg>
+                        Tags
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/archives.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M1.8 9l-.8-4h22l-.8 4h-2.029l.39-2h-17.122l.414 2h-2.053zm18.575-6l.604-2h-17.979l.688 2h16.687zm3.625 8l-2 13h-20l-2-13h24zm-8 4c0-.552-.447-1-1-1h-6c-.553 0-1 .448-1 1s.447 1 1 1h6c.553 0 1-.448 1-1z" fill="currentColor"></path>
+                        </svg>
+                        Archives
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/pages/about.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z" fill="currentColor"></path>
+                        </svg>
+                        About
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search form -->
+            <form class="form-inline text-center" action="https://blog.siphos.be/search.html">
+                <input class="form-control w-100 bg-dark text-light text-center border-0 p-2" type="text" name="q" pattern=".{3,}" title="At least 3 characters" required="" placeholder="Type here to search" aria-label="Search">
+            </form>
+
+            <!-- Social links -->
+            <ul class="navbar-nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Github</title>
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://twitter.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Twitter</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.825 0 1.572.349 2.096.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.linkedin.com/in/svenvermeulen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Linkedin</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Full page -->
+    <div class="flex-shrink-0 flex-grow-1">
+
+        <!-- Header -->
+        <header class="bg-dark text-light shadow-sm pt-3 pb-2">
+	<div class="container">
+		<h3 id="scale-is-a-cloud-threat">Scale is a cloud threat</h3>
+		<p style="font-size:larger;">scale-is-a-cloud-threat</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/pages/about.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Wed 01 September 2021</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Wed 01 September 2021
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/vulnerability/">vulnerability</a>
+            </div>
+        </div>
+	</div>
+        </header>
+
+        <!-- Main -->
+        <main class="py-3">
+                <div class="container">
+                    <!-- Sharing -->
+
+                    <!-- Content -->
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>Not that long ago, a vulnerability was found in <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/">Microsoft Azure Cosmos
+DB</a>, a NoSQL SaaS database
+within the Microsoft Azure cloud. The vulnerability, which is dubbed
+<a href="https://chaosdb.wiz.io/">ChaosDB</a> by the <a href="https://twitter.com/wiz_io">Wiz Research
+Team</a>, uses a vulnerability or misconfiguration in
+the <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/cosmosdb-jupyter-notebooks">Jupyter Notebook
+feature</a>
+within Cosmos DB. This vulnerability allowed an attacker to gain access to
+other's Cosmos DB credentials.</p>
+<p>This vulnerability is a good example of how scale is a cloud threat. Companies
+that do not have enough experience with public cloud might not assume this in
+their threat models.</p>
+<p><strong>Perimeter controls and isolation domains</strong></p>
+<p>Before tackling the scale of a cloud service, let's consider an on premise
+service. Services that run on premise for a company are often built up
+specifically for that company, and have no relationship with other customers of
+the same service. Taking the NoSQL example, companies can perfectly run NoSQL
+database services on premise that have no internet presence. Moreover, these
+services are also often not directly exposed to the internet.</p>
+<p>Running services within your own premises reduces the likelihood that attackers
+exploit vulnerabilities of that service. Attackers that are not particularly
+eyeballing your company might not know you have that service on premise. Even if
+they do know, having proper protections in place should prevent direct access to
+those services.</p>
+<p><img alt="On premise services" src="https://blog.siphos.be/images/pending/cloud-scale-on-premise.png"></p>
+<p>Some situations do require services to expose themselves to the internet. This
+exposure increases the <em>attack surface</em> for the service significantly.
+However, these services are still part of a rather isolated deployment that I
+call an <strong>isolation domain</strong>: a logical aggregation of services that share
+one or more integrations and interactions, broadening the scope of
+potential vulnerabilities and misconfigurations.</p>
+<p>Separate isolation domains imply that vulnerabilities or misconfigurations
+that rely on information from the domain cannot spread. This is not the same as
+separate deployments or environments, as those often do share certain
+integrations. For instance, all NoSQL databases within a company might use that
+company's identity provider for federated authentication. But NoSQL databases
+exposed to the internet from two completely different companies are often in
+separate isolation domains.</p>
+<p>The Cosmos DB vulnerability exploited the fact that all Cosmos DB deployments
+are part of the same isolation domain.</p>
+<p><strong>Perimeter and isolation domain challenges for public cloud</strong></p>
+<p>Public cloud platform services, like Cosmos DB, are often lacking these two
+attributes: they have different perimeter protections in place, and share the
+same isolation domain.</p>
+<p>I do not want to imply that public cloud providers do not provide perimeter
+protections against their services. They most definitely do, but the scope of
+the perimeter is different from what a company would apply. Whereas a company
+gains some measurable security by hiding services or ensuring those services are
+not reachable from unauthorized contexts, public cloud platform services need to
+be easily accessible for the public cloud to become successful. Security
+paradigms like <a href="https://www.nist.gov/publications/zero-trust-architecture">Zero
+Trust</a> are needed to
+raise the security posture of these services. Companies that are building
+solutions within the public cloud will find that this requires a different
+mindset, and that these environments are not comparable with the traditional
+on-premise designs.</p>
+<p>For the Cosmos DB vulnerability, the FAQ mentions that instances that are not
+internet facing are still somewhat impacted (as the credentials could have been
+leaked) but accessing the database (by using the credentials) will not be
+possible without additional vulnerabilities or misconfigurations being
+addressed. This is comparable to an administrator password leakage for your
+properly isolated on-premise database: while your database might not be
+immediately accessible by attackers, you're still going to change the password
+as soon as possible to prevent it from being used in later attacks.</p>
+<p><img alt="Public cloud platform services" src="https://blog.siphos.be/images/pending/cloud-scale-public-cloud.png"></p>
+<p>The isolation domain is a bigger hurdle to take though, as this is almost always
+by design. Platform services always share interactions or integrations across
+all the customers of the public cloud. Even though you have your own logical
+deployment (or even ask for your own physical deployment), the main interface to
+access your service is shared. The service you use to authenticate users or
+systems is shared (even when it will eventually use federated authentication to
+your own identity provider, the initial service is still the same).</p>
+<p>This shared isolation domain makes each public cloud service a fantastic target
+for attackers (and luckily also security researchers). Exploits might not just
+reveal data or insights from one customer, but from thousands of customers all
+over the world. And the bigger the cloud provider, the bigger the impact.</p>
+<p><strong>Shared control planes also imply sharing the isolation domain</strong></p>
+<p>This problem of using a shared isolation domain is not restricted to public
+cloud platform services only. Even on premise deployments that use a public
+control plane are taking part in the same isolation domain as all other
+customers of the same service.</p>
+<p><img alt="Control plane also implies sharing isolation domains" src="https://blog.siphos.be/images/pending/cloud-scale-control-plane.png"></p>
+<p>Suppose you set up a big data platform on premise, but use your vendor's SaaS
+service as a control plane to manage this big data platform. This SaaS service
+is also used by the other customers of that vendor, so your deployment is part
+of the same isolation domain.</p>
+<p>While such setups have benefits (such as using the same control plane for
+multiple deployments across different environments and even hosting setups, and
+not having to manage and maintain the control services yourself) they do
+increase the risk exposure in a not dissimilar fashion from the pure public
+cloud services.</p>
+<p><strong>How to tackle these concerns</strong></p>
+<p>Knowing about these increased risks (reachability/exposure, and the shared
+isolation domain) is the foremost important part that this article wants to
+address. Once these risks are considered, companies can start taking
+precautions. I've mentioned the zero trust model as a way to address the
+reachability/exposure risk. To address the shared isolation domain, reducing the
+impact of a successful exploit can be done through proper architecture and
+design that uses the "it is not if, but when" principle for cyberattacks.</p>
+<p>For instance, the data within the databases can use application-level encryption
+(meaning the encryption is not done by or through the database, but by the
+front-end application that interacts with the database) to reduce the impact of
+data leakage through such vulnerabilities. Proper data governance processes
+should also be in place to remove any data that is no longer needed on that
+database. Active security validations on log data should exist to detect
+deviating access patterns, and access controls should be in place to prevent
+unauthorized access even from succesfully authenticated users or systems.</p>
+<p>In the Cosmos DB case, the vulnerability was possible through a selectable
+feature: deployments that do not have the Jupyter Notebook feature active would
+not leak the credentials. Hence, proper configuration management of services and
+disabling features that are not going to be used is paramount for cloud
+services.</p>
+<p><strong>Conclusions</strong></p>
+<p>If architects are sufficiently aware of the added risks of public cloud
+services, they can properly balance these risks against the benefits of the
+public cloud, and make appropriate adjustments to the architecture and design of
+the solutions. The main challenge here is to make sure this awareness is raised,
+and that this awareness is not only reaching the architects, but also the
+engineers and other stakeholders. If not, architects risk that they will be seen
+as "innovation inhibitors" if they would recommend changes and improvements to
+tackle these risks.</p>
+<p>Feedback? Comments? Don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
+email</a>, or join the <a href="TODO">discussion on
+Twitter</a>.</p>
+<!-- PELICAN_END_SUMMARY -->
+        </div>
+
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
+                </div>
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="flex-shrink-0 bg-dark text-light small py-1">
+        <div class="container text-center">
+            &copy;  <a href="https://blog.siphos.be">Simplicity is a form of art...</a> by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>. Powered by <a href="http://getpelican.com">Pelican</a>, <a href="http://python.org">Python</a>, <a href="https://getbootstrap.com">Bootstrap 4</a><br>
+            <!-- Do not remove below license sentence -->
+            License: <a href="https://spdx.org/licenses/CC-BY-4.0.html">CC-BY-4.0</a>, based on <a href="https://github.com/vuquangtrong/simplify-theme">Simplify Bootstrap Theme</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/jquery/jquery-3.4.1.min.js"></script>
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/bootstrap/bootstrap.min.js"></script>
+    <!--
+    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/style.js"></script>
+
+    <!-- Sharing -->
+
+    <!-- JSON LD -->
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Scale is a cloud threat",
+    "headline": "Scale is a cloud threat",
+    "datePublished": "2021-09-01 00:00:00+02:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/pages/about.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/drafts/scale-is-a-cloud-threat.html",
+    "description": "Not that long ago, a vulnerability was found in Microsoft Azure Cosmos DB, a NoSQL SaaS database within the Microsoft Azure cloud. The vulnerability, which is dubbed ChaosDB by the Wiz Research Team, uses a vulnerability or misconfiguration in the Jupyter Notebook feature within Cosmos DB. This vulnerability allowed an …"
+}
+</script>
+    <!-- Disqus count -->
+</body>
+
+</html>
