@@ -21,6 +21,8 @@ to cover everything again and again in each project.
 
 So, let's talk about processes...
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Six process groups**
 
 There are plenty of process frameworks out there. I've covered many of these
@@ -406,4 +408,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1432996739846397957).
 
-<!-- PELICAN_END_SUMMARY -->

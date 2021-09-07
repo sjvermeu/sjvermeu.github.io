@@ -1,5 +1,5 @@
 Title: Location view of infrastructure
-Date: 2021-09-01 00:00
+Date: 2021-09-07 18:00
 Category: Architecture
 Tags: architecture,location,network,virtualization,protocol
 Slug: location-view-of-infrastructure
@@ -21,7 +21,7 @@ initially wanted to call it the network view, "location" might be a broader
 term that matches the content better. Still, it's not a perfect name, but the
 name is less important than the content, not?
 
-![Location view representation]({static}/images/pending/location-view.png)
+![Location view representation]({static}/images/202109/location-view.png)
 
 Let's go through the layers from bottom to top.
 
@@ -42,7 +42,7 @@ lines go through the same location, you can ask for the fiber path details to
 validate this.
 
 ![A10's DDoS Threat Intelligence
-map]({static}/images/pending/a10-ddos-threat-intelligence.jpg)
+map]({static}/images/202109/a10-ddos-threat-intelligence.jpg)
 *Source: [A10 Networks](https://www.a10networks.com/), through their [DDoS
 Threat Intelligence
 Service](https://www.a10networks.com/products/network-security-services/threat-intelligence-service/)*
