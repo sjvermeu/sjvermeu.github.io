@@ -3,7 +3,7 @@ Date: 2021-09-07 18:00
 Category: Architecture
 Tags: architecture,location,network,virtualization,protocol
 Slug: location-view-of-infrastructure
-Status: draft
+Status: published
 
 In this last post on the infrastructure domain, I cover the fifth and final
 viewpoint that is important for an infrastructure domain representation, and
