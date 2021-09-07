@@ -160,6 +160,6 @@ infrastructure domain, I think these five cover it well.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](TODO).
+Twitter](https://twitter.com/infrainsight/status/1435271642507264000).
 
 <!-- PELICAN_END_SUMMARY -->
