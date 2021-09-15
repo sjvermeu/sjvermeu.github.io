@@ -21,6 +21,8 @@ initially wanted to call it the network view, "location" might be a broader
 term that matches the content better. Still, it's not a perfect name, but the
 name is less important than the content, not?
 
+<!-- PELICAN_END_SUMMARY -->
+
 ![Location view representation]({static}/images/202109/location-view.png)
 
 Let's go through the layers from bottom to top.
@@ -162,4 +164,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1435271642507264000).
 
-<!-- PELICAN_END_SUMMARY -->

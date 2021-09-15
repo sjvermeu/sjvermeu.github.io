@@ -1,9 +1,9 @@
 Title: Naming conventions
-Date: 2021-09-01 00:00
+Date: 2021-09-15 19:00
 Category: Architecture
 Tags: naming
 Slug: naming-conventions
-Status: draft
+Status: published
 
 Naming conventions. Picking the right naming convention is easy if you are all
 by yourself, but hard when you need to agree upon the conventions in a larger

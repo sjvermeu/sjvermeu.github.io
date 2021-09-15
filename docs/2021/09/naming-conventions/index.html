@@ -12,20 +12,28 @@
 
         <!-- Default metadata -->
     <meta name="author" content="Sven Vermeulen" />
-    <meta name="description" content="" />
+    <meta name="description" content="naming-conventions" />
+    <meta name="keywords" content="naming">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
-<meta property="og:type" content="blog" />
-<meta property="og:title" content="Simplicity is a form of art..." />
-<meta property="og:description" content="" />
+<meta property="og:title" content="Naming conventions" />
+<meta property="og:description" content="Naming conventions. Picking the right naming convention is easy if you are all by yourself, but hard when you need to agree upon the conventions in a larger group. Everybody has an opinion on naming conventions, and once you decide on it, you do expect everybody to follow through on it. Let&#39;s consider why naming conventions are (not) important and consider a few examples to help in creating a good naming convention yourself. Naming conventions imply standardization When you settle on a naming convention, you&#39;re effectively putting some standardization in place which you expect everybody to follow, and which should also cover 100% of the cases. So, when assessing a possible naming convention, first identify what standards you need to enforce and are future proof. Say you are addressing database object naming conventions. Are you able to enforce this at all times? You might want to start tables with tbl_ and views with vw_, but when you are dealing with ISV software, they generally do not allow such freedom on &#39;their&#39; database definitions. Your DBAs thus will learn to deal with setups that are more flexible anyway. Using a naming convention for internal development is of course still a possible path to pursue. But in that case, you will need to look at the requirements from the development teams (and related stakeholders). Standardization does not imply naming conventions The inverse isn&#39;t true: even though you might have certain standards in place, it doesn&#39;t mean that the object names need to reflect the standards. If your company standardizes on two operating systems (like Red Hat Enterprise Linux and Microsoft Windows), it doesn&#39;t mean that server names have to include an identifier that maps to Linux or Windows. I personally often fall into this trap - I see standards, so I want to see them fixed in the naming convention because that allows better control over following the standards. But naming conventions aren&#39;t about control, they are about exposing identifiable information. Structure it for readability Trying to add too much information in a naming convention makes it more complex for users to deal with. You might be able to read and understand the naming convention immediately upon seeing it, but are all the other stakeholders equally invested in understanding the naming conventions? Say that you have a hostname that looks like so: sppchypkc05m01.reg1.internal.company.com While I can tell you that this name comes from the following convention, it might be overdoing things: s to identify it is a server p to identify it is a physical server p to identify it is hosted in a production environment c to identify it is a cattle-alike managed server hypk to identify the ownership (in this case, hypervisor usage, KVM) c05 to identify it is the fifth cluster m01 to identify it is the first master node reg1 to identify the first region (location) Even if you still want to include this information, using separators might make this more obvious. For instance, for the given name, I would suggest splitting this as follows: sppc-hypk-c05m01.reg1.internal.company.com The first two parts are then global naming convention requirements, with the first set being about the type of system whereas the second is about ownership, and the third is then a naming convention specific to that owner. Choose what information to expose easily Assets that follow a certain naming convention provide information about that asset that a reader can immediately assume, without having to do additional lookups. The intention here is that you want to define important information that many stakeholders will need immediately to support their work (and thus their efficiency). Insights that are useful for a select set of stakeholders might not be suitable for a naming convention (or at least not a global one). You should consider every stakeholder that comes in contact with the name of the asset, and how that stakeholder would obtain the information they need. If you have a central, easily accessible configuration management system, it might be possible to have many structured insights exposed through that interface, but is that useful when you are dealing with lists of assets? Suppose you do not include the host class for hostnames, with the host class being what class of system the host is (server, workstation, router, firewall, appliance, ...). Does your SOC team need this insight every time they are going through events? Does your helpdesk need that information? What about the resource managers? If all these stakeholders do need that information over and over again, it might be sensible to include it in the naming convention. If, however, only a few stakeholders need that information, you might want to expose that easily through different means. For instance, resource managers might be able to easily join that information with the asset management system information. Choose what information NOT to expose easily Sometimes, you want to have some information about objects easily available, but not for everybody. It might be information that can be abused for nefarious purposes. In that case, you want this information to be shielded and only offered to authenticated and authorized users. For instance, if you use separate accounts for administering systems, you might not want to add information about what type of admin account it is, as account enumeration might reveal too much immediately and provide attackers with better insights. So, rather than having ken_adadmin for Ken&#39;s Active Directory administration account, stick to a nonsensible account identification like ua1503 (user account 1503). Stakeholders that need information about accounts, in this case, can still notice it is a user account rather than a system or machine account and will need to query the central repositories for more information (such as AD to get information about the user - and don&#39;t forget to add sensitive users to, for instance, the Protected Users group in AD). Use layered naming conventions With &#34;global naming convention&#34; I am suggesting the ability to add naming conventions for specific purposes, but leave that open in general. A server name could, for instance, require an indication of the environment (production or not) and the fact that it is a server (and not a workstation), but leave a part of the name open for the administrators. The administrators can then add their local naming convention to it. An active directory group, for instance, might have a standard global naming convention (usually the start of the group name) and leave the second part open, whereas specific teams can then use that part to add in their local naming convention. Groups that are used for NAS access might then use a naming convention to identify which NAS share and which privileges are assigned, whereas a group that is used for remote access support can use VPN naming conventions. The University of Wisconsin has their Campus Active Directory - Naming Convention published online, and the workstation and server object part is a good example of this: while the objects in AD have to follow a global naming convention (because Active Directory is often core to an organization) it leaves some room for local department policies to assign their own requirements: &lt;department&gt;&lt;objectfunction&gt;-&lt;suffix&gt; only has the first two fields standardized globally, with the &lt;suffix&gt; field left open (but within certain length constraints). Consider the full name for your naming conventions If you do want to add information in a naming convention, do not consider this purely on a single object type, but at the full name. A hostname by itself is just a hostname, but when you consider the fully qualified hostname (thus including domain names) you know that certain information points can be put in the domain name rather than the hostname. The people over at Server Density have a post titled &#34;Server Naming Conventions and Best Practices&#34; where they describe that the data center location (for the server) is a subdomain. Another example is for databases, where you not only have a table, but also the database in which the table is located. Hence, ownership of that table can easily be considered on the database level. Learn from mistakes or missing conventions As you approach naming conventions, you will make mistakes. But before making mistakes yourself, try looking out for public failures that might have been due to (bad or missing) naming conventions. Now, most public root cause analysis reports do not go in-depth on the matter completely, but they do provide some insights we might want to learn from. For instance, the incident that AWS had on February 28th, 2017, has a Summary of the Amazon S3 Service Disruption in the Northern Virginia (US-EAST-1) Region. While there is no immediate indication about the naming conventions used (mainly that a wrong command input impacted more servers than it should), we could ask ourselves if the functional purpose of the servers was included in the name (or, if not in the name, if it was added in other labeling information that the playbook should use). The analysis does reveal that AWS moved on to implement partitions (which they call cells), and the cell name will likely become part of the naming convention (or other identifiers). Also internally, it is important to go over the major incidents and their root causes, and see if the naming conventions of the company are appropriate or not. Still need examples? While most commercial companies will not expose their own naming conventions (as there is no value for them to receive, and it exposes information that malicious users might abuse), many governmental agencies and educational institutions do have this information publicly available, given their organization public nature. Hence, searching for &#34;naming convention&#34; on *.gov and *.edu already reveals many examples. Personally, I am still a stickler for naming conventions, but I am slowly accepting that some information might be better exposed elsewhere. Feedback? Comments? Don&#39;t hesitate to drop me an email, or join the discussion on Twitter." />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://blog.siphos.be" />
-<meta property="og:image" content="https://blog.siphos.be/">
+<meta property="og:url" content="https://blog.siphos.be/2021/09/naming-conventions/" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-09-15 19:00:00+02:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/pages/about.html">
+<meta property="article:section" content="Architecture" />
+	<meta property="article:tag" content="naming" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
         <!-- Site Claim -->
 
 
         <!-- Title -->
         <title>
-Simplicity is a form of art... - Architecture category        </title>
+    Naming conventions &ndash; Simplicity is a form of art...
+        </title>
         
         <!-- Icon -->
         <link rel="shortcut icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
@@ -182,10 +190,25 @@ Simplicity is a form of art... - Architecture category        </title>
 
         <!-- Header -->
         <header class="bg-dark text-light shadow-sm pt-3 pb-2">
-    <div class="container">
-        <h1 id="Simplicity is a form of art...">Simplicity is a form of art...</h1>
-        <p style="font-size: larger; color: orange;"></p>
-    </div>
+	<div class="container">
+		<h3 id="naming-conventions">Naming conventions</h3>
+		<p style="font-size:larger;">naming-conventions</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/pages/about.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Wed 15 September 2021</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Wed 15 September 2021
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/naming/">naming</a>
+            </div>
+        </div>
+	</div>
         </header>
 
         <!-- Main -->
@@ -194,14 +217,15 @@ Simplicity is a form of art... - Architecture category        </title>
                     <!-- Sharing -->
 
                     <!-- Content -->
-    <!-- List of article -->
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/09/naming-conventions/">Naming conventions</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 15 September 2021</span></span>
-                <p><p>Naming conventions. Picking the right naming convention is easy if you are all
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>Naming conventions. Picking the right naming convention is easy if you are all
 by yourself, but hard when you need to agree upon the conventions in a larger
 group. Everybody has an opinion on naming conventions, and once you decide
 on it, you do expect everybody to follow through on it.</p>
@@ -238,6 +262,7 @@ stakeholders equally invested in understanding the naming conventions? </p>
 <p>Say that you have a hostname that looks like so:</p>
 <div class="highlight"><pre><span></span><code>sppchypkc05m01.reg1.internal.company.com
 </code></pre></div>
+
 <p>While I can tell you that this name comes from the following convention, it
 might be overdoing things:</p>
 <ul>
@@ -255,6 +280,7 @@ this more obvious. For instance, for the given name, I would suggest splitting
 this as follows:</p>
 <div class="highlight"><pre><span></span><code>sppc-hypk-c05m01.reg1.internal.company.com
 </code></pre></div>
+
 <p>The first two parts are then global naming convention requirements, with the
 first set being about the type of system whereas the second is about ownership,
 and the third is then a naming convention specific to that owner.</p>
@@ -363,307 +389,16 @@ accepting that some information might be better exposed elsewhere.</p>
 <p>Feedback? Comments? Don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
 email</a>, or join the <a href="TODO">discussion on
 Twitter</a>.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/naming/">naming</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/09/location-view-of-infrastructure/">Location view of infrastructure</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 07 September 2021</span></span>
-                <p><p>In this last post on the infrastructure domain, I cover the fifth and final
-viewpoint that is important for an infrastructure domain representation, and
-that is the <em>location view</em>. As mentioned in previous posts, the viewpoints I
-think are most representative of the infrastructure domain are:</p>
-<ul>
-<li><a href="https://blog.siphos.be/2021/09/process-view-of-infrastructure/">process view</a></li>
-<li><a href="https://blog.siphos.be/2021/06/an-it-services-overview/">service view</a></li>
-<li><a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/">component view</a></li>
-<li><a href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/">zoning view</a></li>
-<li>location view</li>
-</ul>
-<p>Like with the component view, the location view is a layered approach. While I
-initially wanted to call it the network view, "location" might be a broader
-term that matches the content better. Still, it's not a perfect name, but the
-name is less important than the content, not?</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/location/">location</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/network/">network</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/virtualization/">virtualization</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/protocol/">protocol</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/09/process-view-of-infrastructure/">Process view of infrastructure</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 01 September 2021</span></span>
-                <p><p>In my <a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/">previous post</a>,
-I started with the five different views that would support a good view of
-what infrastructure would be. I believe these views (component, location,
-process, service, and zoning) cover the breadth of the domain. The post also
-described the component view a bit more and linked to previous posts I made (one
-for <a href="https://blog.siphos.be/2021/06/an-it-services-overview/">services</a>, another for
-<a href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/">zoning</a>).</p>
-<p>The one I want to tackle here is the most elaborate one, also the most
-enterprise-ish, and one that always is a balance on how much time and
-effort to put into it (as an architect), as well as hoping that the processes
-are sufficiently standardized in a flexible manner so that you don't need
-to cover everything again and again in each project.</p>
-<p>So, let's talk about processes...</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/process/">process</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/">Component view of infrastructure</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 27 August 2021</span></span>
-                <p><p>IT architects try to use views and viewpoints to convey the target architecture
-to the various stakeholders. Each stakeholder has their own interests in the
-architecture and wants to see their requirements fulfilled. A core
-role of the architect is to understand these requirements and make sure the
-requirements are met, and to balance all the different requirements.</p>
-<p>Architecture languages or meta-models often put significant focus on these
-views. Archimate has a large annex on <a href="https://pubs.opengroup.org/architecture/archimate3-doc/apdxc.html#_Toc10045495">Example
-Viewpoints</a>
-just for this purpose. However, unless the organization is widely accustomed to
-enterprise architecture views, it is unlikely that the views themselves are the
-final product: being able to translate those views into pretty slides and
-presentations is still an important task for architects when they need to
-present their findings to non-architecture roles.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/component/">component</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/viewpoint/">viewpoint</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/">Disaster recovery in the public cloud</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 30 July 2021</span></span>
-                <p><p>The public cloud is a different beast than an on-premise environment, and that
-also reflects itself on how we (should) look at the processes that are
-actively steering infrastructure designs and architecture. One of these
-is the business continuity, severe incident handling, and the
-hopefully-never-to-occur disaster recovery. When building up procedures
-for handling disasters (<a href="https://en.wikipedia.org/wiki/Disaster_recovery">DRP = Disaster Recovery Procedure or Disaster 
-Recover Planning</a>),
-it is important to keep in mind what these are about.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/drp/">drp</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/">What is the infrastructure domain?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 19 July 2021</span></span>
-                <p><p>In my job as domain architect for "infrastructure", I often come across
-stakeholders that have no common understanding of what infrastructure means in
-an enterprise architecture. Since then, I am trying to figure out a way to
-easily explain it - to find a common, generic view on what infrastructure
-entails. If successful, I could use this common view to provide context on the
-many, many IT projects that are going around.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pattern/">pattern</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/07/organizing-service-documentation/">Organizing service documentation</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 08 July 2021</span></span>
-                <p><p>As I mentioned in <a href="https://blog.siphos.be/2021/06/an-it-services-overview/">An IT services overview</a>
-I try to keep track of the architecture and designs of the IT services and
-solutions in a way that I feel helps me keep in touch with all the various
-services and solutions out there. Similar to how system administrators try to
-find a balance while working on documentation (which is often considered a
-chore) and using a structure that is sufficiently simple and standard for the
-organization to benefit from, architects should try to keep track of
-architecturally relevant information as well.</p>
-<p>So in this post, I'm going to explain a bit more on how I approach documenting
-service and solution insights for architectural relevance.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/documentation/">documentation</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/structure/">structure</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/wiki/">wiki</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/06/not-sure-if-TOSCA-will-grow-further/">Not sure if TOSCA will grow further</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 30 June 2021</span></span>
-                <p><p>TOSCA is an OASIS open standard, and is an abbreviation for <em>Topology and
-Orchestration Specification for Cloud Applications</em>. It provides a
-domain-specific language to describe how an application should be deployed
-in the cloud (the topology), which and how many resources it needs, as well
-as tasks to run when certain events occur (the orchestration). When I
-initially came across this standard, I was (and still am) interested
-in how far this goes. The promise of declaring an application (and even
-bundling the necessary application artefacts) within a single asset and
-then using this asset to deploy on whatever cloud is very appealing to
-an architect. Especially in organizations that have a multi-cloud
-strategy.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/tosca/">tosca</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/oasis/">oasis</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/topology/">topology</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/orchestration/">orchestration</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/infrastructure/">infrastructure</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/iac/">iac</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/nfv/">nfv</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/">Integrating or customizing SaaS within your own cloud environment</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 23 June 2021</span></span>
-                <p><p>Software as a Service (SaaS) solutions are often a quick way to get new
-capabilities into an organization’s portfolio. Smaller SaaS solutions are
-simple, web-based solutions which barely integrate with the organization’s
-other solutions, besides the identity and access management (which is often
-handled by federated authentication).</p>
-<p>More complex or intermediate solutions require more integration focus, and
-a whole new market of Integration Platform as a Service (iPaaS) solutions
-came up to facilitate cross-cloud integrations. But even without the iPaaS
-offerings, integrations are often a mandatory part to leverage the benefits
-of the newly activated SaaS solution.</p>
-<p>In this post I want to bring some thoughts on the integrations that might be
-needed to support customizing a SaaS solution.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/saas/">saas</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/integration/">integration</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/customization/">customization</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/06/an-it-services-overview/">An IT services overview</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 14 June 2021</span></span>
-                <p><p>My current role within the company I work for is “domain architect”, part
-of the enterprise architects teams. The domain I am accountable for is 
-“infrastructure”, which can be seen as a very broad one. Now, I’ve been
-maintaining an overview of our IT services before I reached that role, 
-mainly from an elaborate interest in the subject, as well as to optimize
-my efficiency further.</p>
-<p>Becoming a domain architect allows me to use the insights I’ve since
-gathered to try and give appropriate advice, but also now requires me to
-maintain a domain architecture. This structure is going to be the starting
-point of it, although it is not the true all and end all of what I would
-consider a domain architecture.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/overview/">overview</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/service/">service</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/landscape/">landscape</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/catalog/">catalog</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/capability/">capability</a>
-                    </div>
-                </div>
-            </div>
+
         </div>
 
-    <!-- Pagination -->
-<div class="pagination px-2">
-    <a class="w-100" href="https://blog.siphos.be/category/architecture2.html">
-        &ll; Older Posts
-    </a>
-</div>
-    <!-- Google Adsense -->
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
                 </div>
         </main>
 
@@ -698,11 +433,19 @@ consider a domain architecture.</p>
 <script type="application/ld+json">
 {
     "@context": "http://schema.org",
-    "@type": "Blog",
-    "name": " Simplicity is a form of art... ",
-    "url": "https://blog.siphos.be",
-    "image": "https://blog.siphos.be/",
-    "description": ""
+    "@type": "BlogPosting",
+    "name": "Naming conventions",
+    "headline": "Naming conventions",
+    "datePublished": "2021-09-15 19:00:00+02:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/pages/about.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/2021/09/naming-conventions/",
+    "description": "Naming conventions. Picking the right naming convention is easy if you are all by yourself, but hard when you need to agree upon the conventions in a larger group. Everybody has an opinion on naming conventions, and once you decide on it, you do expect everybody to follow through on it. Let's consider why naming conventions are (not) important and consider a few examples to help in creating a good naming convention yourself. Naming conventions imply standardization When you settle on a naming convention, you're effectively putting some standardization in place which you expect everybody to follow, and which should also cover 100% of the cases. So, when assessing a possible naming convention, first identify what standards you need to enforce and are future proof. Say you are addressing database object naming conventions. Are you able to enforce this at all times? You might want to start tables with tbl_ and views with vw_, but when you are dealing with ISV software, they generally do not allow such freedom on 'their' database definitions. Your DBAs thus will learn to deal with setups that are more flexible anyway. Using a naming convention for internal development is of course still a possible path to pursue. But in that case, you will need to look at the requirements from the development teams (and related stakeholders). Standardization does not imply naming conventions The inverse isn't true: even though you might have certain standards in place, it doesn't mean that the object names need to reflect the standards. If your company standardizes on two operating systems (like Red Hat Enterprise Linux and Microsoft Windows), it doesn't mean that server names have to include an identifier that maps to Linux or Windows. I personally often fall into this trap - I see standards, so I want to see them fixed in the naming convention because that allows better control over following the standards. But naming conventions aren't about control, they are about exposing identifiable information. Structure it for readability Trying to add too much information in a naming convention makes it more complex for users to deal with. You might be able to read and understand the naming convention immediately upon seeing it, but are all the other stakeholders equally invested in understanding the naming conventions? Say that you have a hostname that looks like so: sppchypkc05m01.reg1.internal.company.com While I can tell you that this name comes from the following convention, it might be overdoing things: s to identify it is a server p to identify it is a physical server p to identify it is hosted in a production environment c to identify it is a cattle-alike managed server hypk to identify the ownership (in this case, hypervisor usage, KVM) c05 to identify it is the fifth cluster m01 to identify it is the first master node reg1 to identify the first region (location) Even if you still want to include this information, using separators might make this more obvious. For instance, for the given name, I would suggest splitting this as follows: sppc-hypk-c05m01.reg1.internal.company.com The first two parts are then global naming convention requirements, with the first set being about the type of system whereas the second is about ownership, and the third is then a naming convention specific to that owner. Choose what information to expose easily Assets that follow a certain naming convention provide information about that asset that a reader can immediately assume, without having to do additional lookups. The intention here is that you want to define important information that many stakeholders will need immediately to support their work (and thus their efficiency). Insights that are useful for a select set of stakeholders might not be suitable for a naming convention (or at least not a global one). You should consider every stakeholder that comes in contact with the name of the asset, and how that stakeholder would obtain the information they need. If you have a central, easily accessible configuration management system, it might be possible to have many structured insights exposed through that interface, but is that useful when you are dealing with lists of assets? Suppose you do not include the host class for hostnames, with the host class being what class of system the host is (server, workstation, router, firewall, appliance, ...). Does your SOC team need this insight every time they are going through events? Does your helpdesk need that information? What about the resource managers? If all these stakeholders do need that information over and over again, it might be sensible to include it in the naming convention. If, however, only a few stakeholders need that information, you might want to expose that easily through different means. For instance, resource managers might be able to easily join that information with the asset management system information. Choose what information NOT to expose easily Sometimes, you want to have some information about objects easily available, but not for everybody. It might be information that can be abused for nefarious purposes. In that case, you want this information to be shielded and only offered to authenticated and authorized users. For instance, if you use separate accounts for administering systems, you might not want to add information about what type of admin account it is, as account enumeration might reveal too much immediately and provide attackers with better insights. So, rather than having ken_adadmin for Ken's Active Directory administration account, stick to a nonsensible account identification like ua1503 (user account 1503). Stakeholders that need information about accounts, in this case, can still notice it is a user account rather than a system or machine account and will need to query the central repositories for more information (such as AD to get information about the user - and don't forget to add sensitive users to, for instance, the Protected Users group in AD). Use layered naming conventions With "global naming convention" I am suggesting the ability to add naming conventions for specific purposes, but leave that open in general. A server name could, for instance, require an indication of the environment (production or not) and the fact that it is a server (and not a workstation), but leave a part of the name open for the administrators. The administrators can then add their local naming convention to it. An active directory group, for instance, might have a standard global naming convention (usually the start of the group name) and leave the second part open, whereas specific teams can then use that part to add in their local naming convention. Groups that are used for NAS access might then use a naming convention to identify which NAS share and which privileges are assigned, whereas a group that is used for remote access support can use VPN naming conventions. The University of Wisconsin has their Campus Active Directory - Naming Convention published online, and the workstation and server object part is a good example of this: while the objects in AD have to follow a global naming convention (because Active Directory is often core to an organization) it leaves some room for local department policies to assign their own requirements: <department><objectfunction>-<suffix> only has the first two fields standardized globally, with the <suffix> field left open (but within certain length constraints). Consider the full name for your naming conventions If you do want to add information in a naming convention, do not consider this purely on a single object type, but at the full name. A hostname by itself is just a hostname, but when you consider the fully qualified hostname (thus including domain names) you know that certain information points can be put in the domain name rather than the hostname. The people over at Server Density have a post titled "Server Naming Conventions and Best Practices" where they describe that the data center location (for the server) is a subdomain. Another example is for databases, where you not only have a table, but also the database in which the table is located. Hence, ownership of that table can easily be considered on the database level. Learn from mistakes or missing conventions As you approach naming conventions, you will make mistakes. But before making mistakes yourself, try looking out for public failures that might have been due to (bad or missing) naming conventions. Now, most public root cause analysis reports do not go in-depth on the matter completely, but they do provide some insights we might want to learn from. For instance, the incident that AWS had on February 28th, 2017, has a Summary of the Amazon S3 Service Disruption in the Northern Virginia (US-EAST-1) Region. While there is no immediate indication about the naming conventions used (mainly that a wrong command input impacted more servers than it should), we could ask ourselves if the functional purpose of the servers was included in the name (or, if not in the name, if it was added in other labeling information that the playbook should use). The analysis does reveal that AWS moved on to implement partitions (which they call cells), and the cell name will likely become part of the naming convention (or other identifiers). Also internally, it is important to go over the major incidents and their root causes, and see if the naming conventions of the company are appropriate or not. Still need examples? While most commercial companies will not expose their own naming conventions (as there is no value for them to receive, and it exposes information that malicious users might abuse), many governmental agencies and educational institutions do have this information publicly available, given their organization public nature. Hence, searching for "naming convention" on *.gov and *.edu already reveals many examples. Personally, I am still a stickler for naming conventions, but I am slowly accepting that some information might be better exposed elsewhere. Feedback? Comments? Don't hesitate to drop me an email, or join the discussion on Twitter."
 }
 </script>
     <!-- Disqus count -->

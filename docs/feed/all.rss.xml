@@ -1,5 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Simplicity is a form of art...</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Tue, 07 Sep 2021 18:00:00 +0200</lastBuildDate><item><title>Location view of infrastructure</title><link>https://blog.siphos.be/2021/09/location-view-of-infrastructure/</link><description>&lt;p&gt;In this last post on the infrastructure domain, I cover the fifth and final
+<rss version="2.0"><channel><title>Simplicity is a form of art...</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Wed, 15 Sep 2021 19:00:00 +0200</lastBuildDate><item><title>Naming conventions</title><link>https://blog.siphos.be/2021/09/naming-conventions/</link><description>&lt;p&gt;Naming conventions. Picking the right naming convention is easy if you are all
+by yourself, but hard when you need to agree upon the conventions in a larger
+group. Everybody has an opinion on naming conventions, and once you decide
+on it, you do expect everybody to follow through on it.&lt;/p&gt;
+&lt;p&gt;Let's consider why naming conventions are (not) important and consider a few
+examples to help in creating a good naming convention yourself.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Naming conventions imply standardization&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When you settle on a naming convention, you're effectively putting some
+standardization in place which you expect everybody to follow, and which should
+also cover 100% of the cases. So, when assessing a possible naming convention,
+first identify what standards you need to enforce and are future proof.&lt;/p&gt;
+&lt;p&gt;Say you are addressing database object naming conventions. Are you able to
+enforce this at all times? You might want to start tables with &lt;code&gt;tbl_&lt;/code&gt; and views
+with &lt;code&gt;vw_&lt;/code&gt;, but when you are dealing with ISV software, they generally do not
+allow such freedom on 'their' database definitions. Your DBAs thus will learn
+to deal with setups that are more flexible anyway.&lt;/p&gt;
+&lt;p&gt;Using a naming convention for internal development is of course still a
+possible path to pursue. But in that case, you will need to look at the
+requirements from the development teams (and related stakeholders).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Standardization does not imply naming conventions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The inverse isn't true: even though you might have certain standards in place,
+it doesn't mean that the object names need to reflect the standards. If your
+company standardizes on two operating systems (like Red Hat Enterprise Linux
+and Microsoft Windows), it doesn't mean that server names have to include an
+identifier that maps to Linux or Windows.&lt;/p&gt;
+&lt;p&gt;I personally often fall into this trap - I see standards, so I want to see them
+fixed in the naming convention because that allows better control over
+following the standards. But naming conventions aren't about control, they are
+about exposing identifiable information.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Structure it for readability&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Trying to add too much information in a naming convention makes it
+more complex for users to deal with. You might be able to read and understand
+the naming convention immediately upon seeing it, but are all the other
+stakeholders equally invested in understanding the naming conventions? &lt;/p&gt;
+&lt;p&gt;Say that you have a hostname that looks like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sppchypkc05m01.reg1.internal.company.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;While I can tell you that this name comes from the following convention, it
+might be overdoing things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;s&lt;/strong&gt; to identify it is a server&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;p&lt;/strong&gt; to identify it is a physical server&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;p&lt;/strong&gt; to identify it is hosted in a production environment&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;c&lt;/strong&gt; to identify it is a cattle-alike managed server&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;hypk&lt;/strong&gt; to identify the ownership (in this case, hypervisor usage, KVM)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;c05&lt;/strong&gt; to identify it is the fifth cluster&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;m01&lt;/strong&gt; to identify it is the first master node&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;reg1&lt;/strong&gt; to identify the first region (location)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Even if you still want to include this information, using separators might make
+this more obvious. For instance, for the given name, I would suggest splitting
+this as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sppc-hypk-c05m01.reg1.internal.company.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The first two parts are then global naming convention requirements, with the
+first set being about the type of system whereas the second is about ownership,
+and the third is then a naming convention specific to that owner.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Choose what information to expose easily&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Assets that follow a certain naming convention provide information about that
+asset that a reader can immediately assume, without having to do additional
+lookups. The intention here is that you want to define important information
+that many stakeholders will need immediately to support their work (and thus
+their efficiency). Insights that are useful for a select set of stakeholders
+might not be suitable for a naming convention (or at least not a global one).&lt;/p&gt;
+&lt;p&gt;You should consider every stakeholder that comes in contact with the name of
+the asset, and how that stakeholder would obtain the information they need. If
+you have a central, easily accessible configuration management system, it might
+be possible to have many structured insights exposed through that interface,
+but is that useful when you are dealing with lists of assets?&lt;/p&gt;
+&lt;p&gt;Suppose you do not include the host class for hostnames, with the host class
+being what class of system the host is (server, workstation, router, firewall,
+appliance, ...). Does your SOC team need this insight every time they are going
+through events? Does your helpdesk need that information? What about the
+resource managers?&lt;/p&gt;
+&lt;p&gt;If all these stakeholders do need that information over and over again, it
+might be sensible to include it in the naming convention. If, however, only a
+few stakeholders need that information, you might want to expose that easily
+through different means. For instance, resource managers might be able to easily
+join that information with the asset management system information.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Choose what information NOT to expose easily&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Sometimes, you want to have some information about objects easily available,
+but not for everybody. It might be information that can be abused for nefarious
+purposes. In that case, you want this information to be shielded and only
+offered to authenticated and authorized users. For instance, if you use separate
+accounts for administering systems, you might not want to add information about
+what type of admin account it is, as account enumeration might reveal too much
+immediately and provide attackers with better insights.&lt;/p&gt;
+&lt;p&gt;So, rather than having &lt;code&gt;ken_adadmin&lt;/code&gt; for Ken's Active Directory administration
+account, stick to a nonsensible account identification like &lt;code&gt;ua1503&lt;/code&gt; (user
+account 1503). Stakeholders that need information about accounts, in this case,
+can still notice it is a user account rather than a system or machine account
+and will need to query the central repositories for more information (such as
+AD to get information about the user - and don't forget to add sensitive users
+to, for instance, the &lt;code&gt;Protected Users&lt;/code&gt; group in AD).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Use layered naming conventions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;With "global naming convention" I am suggesting the ability to add naming
+conventions for specific purposes, but leave that open in general. A server
+name could, for instance, require an indication of the environment (production or
+not) and the fact that it is a server (and not a workstation), but leave a part
+of the name open for the administrators. The administrators can then add their
+local naming convention to it.&lt;/p&gt;
+&lt;p&gt;An active directory group, for instance, might have a standard global naming
+convention (usually the start of the group name) and leave the second part
+open, whereas specific teams can then use that part to add in their local naming
+convention. Groups that are used for NAS access might then use a naming
+convention to identify which NAS share and which privileges are assigned,
+whereas a group that is used for remote access support can use VPN naming
+conventions.&lt;/p&gt;
+&lt;p&gt;The University of Wisconsin has their &lt;a href="https://kb.wisc.edu/iam/page.php?id=30600"&gt;Campus Active Directory - Naming
+Convention&lt;/a&gt; published online, and
+the workstation and server object part is a good example of this: while the
+objects in AD have to follow a global naming convention (because Active
+Directory is often core to an organization) it leaves some room for local
+department policies to assign their own requirements:
+&lt;code&gt;&amp;lt;department&amp;gt;&amp;lt;objectfunction&amp;gt;-&amp;lt;suffix&amp;gt;&lt;/code&gt; only has the first two fields
+standardized globally, with the &lt;code&gt;&amp;lt;suffix&amp;gt;&lt;/code&gt; field left open (but within certain
+length constraints).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Consider the full name for your naming conventions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If you do want to add information in a naming convention, do not consider
+this purely on a single object type, but at the full name. A hostname by itself
+is just a hostname, but when you consider the fully qualified hostname (thus
+including domain names) you know that certain information points can be put in
+the domain name rather than the hostname. The people over at &lt;a href="https://www.serverdensity.com/"&gt;Server
+Density&lt;/a&gt; have a post titled "&lt;a href="https://blog.serverdensity.com/server-naming-conventions-and-best-practices/"&gt;Server Naming
+Conventions and Best
+Practices&lt;/a&gt;"
+where they describe that the data center location (for the server) is a
+subdomain.&lt;/p&gt;
+&lt;p&gt;Another example is for databases, where you not only have a table, but also the
+database in which the table is located. Hence, ownership of that table can
+easily be considered on the database level.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Learn from mistakes or missing conventions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As you approach naming conventions, you will make mistakes. But before making
+mistakes yourself, try looking out for public failures that might have been due
+to (bad or missing) naming conventions. Now, most public root cause analysis
+reports do not go in-depth on the matter completely, but they do provide some
+insights we might want to learn from.&lt;/p&gt;
+&lt;p&gt;For instance, the incident that AWS had on February 28th, 2017, has a &lt;a href="https://aws.amazon.com/message/41926/"&gt;Summary of
+the Amazon S3 Service Disruption in the Northern Virginia (US-EAST-1)
+Region&lt;/a&gt;. While there is no immediate
+indication about the naming conventions used (mainly that a wrong command input
+impacted more servers than it should), we could ask ourselves if the functional
+purpose of the servers was included in the name (or, if not in the name, if it
+was added in other labeling information that the playbook should use). The
+analysis does reveal that AWS moved on to implement partitions (which they call
+cells), and the cell name will likely become part of the naming convention (or
+other identifiers).&lt;/p&gt;
+&lt;p&gt;Also internally, it is important to go over the major incidents and their
+root causes, and see if the naming conventions of the company are appropriate
+or not.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Still need examples?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;While most commercial companies will not expose their own naming conventions
+(as there is no value for them to receive, and it exposes information that
+malicious users might abuse), many governmental agencies and educational
+institutions do have this information publicly available, given their
+organization public nature. Hence, searching for "naming convention" on &lt;code&gt;*.gov&lt;/code&gt;
+and &lt;code&gt;*.edu&lt;/code&gt; already reveals many examples.&lt;/p&gt;
+&lt;p&gt;Personally, I am still a stickler for naming conventions, but I am slowly
+accepting that some information might be better exposed elsewhere.&lt;/p&gt;
+&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="TODO"&gt;discussion on
+Twitter&lt;/a&gt;.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 15 Sep 2021 19:00:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-09-15:/2021/09/naming-conventions/</guid><category>Architecture</category><category>naming</category></item><item><title>Location view of infrastructure</title><link>https://blog.siphos.be/2021/09/location-view-of-infrastructure/</link><description>&lt;p&gt;In this last post on the infrastructure domain, I cover the fifth and final
 viewpoint that is important for an infrastructure domain representation, and
 that is the &lt;em&gt;location view&lt;/em&gt;. As mentioned in previous posts, the viewpoints I
 think are most representative of the infrastructure domain are:&lt;/p&gt;
@@ -14,122 +176,6 @@ think are most representative of the infrastructure domain are:&lt;/p&gt;
 initially wanted to call it the network view, "location" might be a broader
 term that matches the content better. Still, it's not a perfect name, but the
 name is less important than the content, not?&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Location view representation" src="https://blog.siphos.be/images/202109/location-view.png"/&gt;&lt;/p&gt;
-&lt;p&gt;Let's go through the layers from bottom to top.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Easiest to represent: geographic location and facilities&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The geographic location is the least IT-specific view out there, as it
-represents where everything is in the world. These views are popular not only to
-scope projects better (like data center locations) but also to support getting
-important infrastructural metrics.&lt;/p&gt;
-&lt;p&gt;WAN latency, for instance, is limited by the distance (you can't outsmart
-physics), and by knowing the path between two points, you can calculate the
-throughput and latency (such as through the &lt;a href="https://wintelguy.com/wanlat.html"&gt;Wintelguy WAN Latency
-Estimator&lt;/a&gt;). When designing redundant network
-connections between separate locations, you might depend on multiple line
-providers. To ensure there are no chokepoints where both providers have their
-lines go through the same location, you can ask for the fiber path details to
-validate this.&lt;/p&gt;
-&lt;p&gt;&lt;img alt="A10's DDoS Threat Intelligence
-map" src="https://blog.siphos.be/images/202109/a10-ddos-threat-intelligence.jpg"/&gt;
-&lt;em&gt;Source: &lt;a href="https://www.a10networks.com/"&gt;A10 Networks&lt;/a&gt;, through their &lt;a href="https://www.a10networks.com/products/network-security-services/threat-intelligence-service/"&gt;DDoS
-Threat Intelligence
-Service&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Using geographic locations also facilitates understanding by other stakeholders,
-even if it has a less technological impact on the case at hand. For instance,
-while undergoing active DDoS attacks, a geographic representation of where they
-come from helps to get more understanding from management, even though on
-network-level you're more interested in the Autonomous System (AS) networks that
-are involved. Those are very large groups of networks that cover the main
-global-wide routing of data.&lt;/p&gt;
-&lt;p&gt;If we drill down from a geographic location, the next view is the
-facility-related one. Here, the view focuses on building design and
-infrastructure (such as HVAC and power distribution in data rooms or data
-centers), as well as the location of individual devices (floor plans, rack
-spaces). Facility views help not just with initial network designs where you
-want to onboard a new headquarter location, but also with capacity management
-within data centers (identifying hotspots), dealing with wireless networks and
-their impact on the surroundings, cable management for networks, ensuring the
-resilience of infrastructure services and more.&lt;/p&gt;
-&lt;p&gt;A decent facility view is very helpful when dealing with operational technology
-environments (IoT), and can be dynamically generated. A while ago, I was at a
-conference where they showed people's movement based on the data received from
-their smartphones. They used the view to see which areas were too crowded (it
-was pre-COVID times), as well as to see if there are sudden movements that might
-indicate problems or threats.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Foundations for networks: connectivity, underlay, and virtualization&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The next three layers in the location view focus on the foundations for a
-company's network. They are strongly IT oriented with the main stakeholders
-being the telco- and infrastructure related teams and roles. Unlike the higher
-level viewpoints, the foundations require more thought in their design as errors
-are harder to correct.&lt;/p&gt;
-&lt;p&gt;The connectivity focuses on the cabling and other connections made between
-devices. This includes backplane-related connectivity, something that is
-relevant when using enclosures or pre-engineered systems. Connectivity and
-cabling seem rudimentary, but are critical for the proper functioning of a
-network. Remember the science report about possible faster-than-light
-neutrino's? Well, a &lt;a href="http://blogs.nature.com/news/2012/02/faster-than-light-neutrino-measurement-has-two-possible-errors.html"&gt;faulty connection was partially to
-blame&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;The network underlay is the network view that network engineers have on their
-network. For small environments, the network view from the engineering point of
-view might be the same as the view from the application side, but for larger
-environments, I often see a distinction between the two. And when that occurs,
-the underlay view is less of a concern for application engineers and business
-stakeholders (unless of course there are major issues with the underlay design),
-but that does not make it less important. People are often not aware of how our
-electricity net works, but if it fails, we're all affected. Similarly, if the
-network underlay is badly designed, the higher networks will see troubles too.&lt;/p&gt;
-&lt;p&gt;The network virtualization stack is a technology component that supports
-building virtual networks on top of the underlay environment. So while the
-underlay is like the foundation on top of which all networks are hosted, the
-virtualization makes this possible. In that sense, it is similar to the
-hypervisor level on the component view (and perhaps is less of a location view
-than a component one, although network virtualization technologies do require a
-common understanding of the full network to function properly).&lt;/p&gt;
-&lt;p&gt;Companies use different virtualization technologies and concepts. A simple
-network virtualization technology is the VLAN (Virtual LAN), which presents
-itself as a single broadcast domain to the participating systems, even though
-these systems might not be physically connected to the same switch or switch
-environment. It is even possible to stretch VLANs across wide areas.&lt;/p&gt;
-&lt;p&gt;But virtualization can go further. Technologies such as Cisco ACI or VMware NSX
-don't just focus on the LAN level, but also virtualize the network on the
-addressing and routing part. And with Network Functions Virtualization (NFV), we
-also include firewalls and traffic control. However, do not consider NFV to just
-be the next phase beyond Software Defined Networks (SDN), as NFV and SDN are
-different beasts.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;View from application and system side: topology and protocols&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The highest levels in the location view focus on the network as it is seen by
-the business applications and systems that a company hosts.&lt;/p&gt;
-&lt;p&gt;The network topology is the view on segregation, segments/subnets, and the
-network functions that take part in the overall environment (such as DNS/DHCP/IP
-address management, firewall functionality, proxies, and other gateways). This
-is the view that is probably going to change the most, as it constantly evolves
-based on business demand and IT evolutions. Topology views are not just
-one-of-a-kind: depending on the scope you want to address, multiple views might
-be needed to convey the message you want to tell.&lt;/p&gt;
-&lt;p&gt;One type of view within the topology is the &lt;a href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/"&gt;zoning
-view&lt;/a&gt; which I've
-covered before, and which is very expressive towards the other stakeholders: it
-covers the entire company's environment while abstracting enough of the details
-so that it remains understandable.&lt;/p&gt;
-&lt;p&gt;If we were to zoom in further on the network topology, you get into the specific
-interactions that are made between systems, which are standardized in protocols.
-But while the network (and application) protocols are often very standardized,
-they are also very challenging to understand.&lt;/p&gt;
-&lt;p&gt;The main challenge is that there are so many protocols out there, with so many
-options and implementation choices, that you need to be an expert to
-troubleshoot issues if they arise. Web applications aren't just disclosed over
-the HTTP protocol: you have channel encryption (TLS), might be using WebSockets,
-or even the QUIC protocol. And if you think you understand HTTP, do you
-understand HTTP/2?&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The past few posts (with a few historical ones) make up what I consider being 
-the infrastructure domain, and how to structurally approach changes within. Of
-course, these are not the only views out there, and based on the project ahead,
-different viewpoints might come up. But for a holistic view of the
-infrastructure domain, I think these five cover it well.&lt;/p&gt;
-&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
-email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1435271642507264000"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 07 Sep 2021 18:00:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-09-07:/2021/09/location-view-of-infrastructure/</guid><category>Architecture</category><category>architecture</category><category>location</category><category>network</category><category>virtualization</category><category>protocol</category></item><item><title>Process view of infrastructure</title><link>https://blog.siphos.be/2021/09/process-view-of-infrastructure/</link><description>&lt;p&gt;In my &lt;a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/"&gt;previous post&lt;/a&gt;,
 I started with the five different views that would support a good view of
 what infrastructure would be. I believe these views (component, location,
