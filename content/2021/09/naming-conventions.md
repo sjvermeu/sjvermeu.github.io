@@ -13,6 +13,8 @@ on it, you do expect everybody to follow through on it.
 Let's consider why naming conventions are (not) important and consider a few
 examples to help in creating a good naming convention yourself.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Naming conventions imply standardization**
 
 When you settle on a naming convention, you're effectively putting some
@@ -208,4 +210,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1438175688444596227).
 
-<!-- PELICAN_END_SUMMARY -->

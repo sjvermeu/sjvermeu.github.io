@@ -1,9 +1,9 @@
 Title: Scale is a cloud threat
-Date: 2021-09-01 00:00
+Date: 2021-09-28 17:00
 Category: Architecture
 Tags: cloud,vulnerability
 Slug: scale-is-a-cloud-threat
-Status: draft
+Status: published
 
 Not that long ago, a vulnerability was found in [Microsoft Azure Cosmos
 DB](https://docs.microsoft.com/en-us/azure/cosmos-db/), a NoSQL SaaS database
@@ -13,9 +13,12 @@ Team](https://twitter.com/wiz_io), uses a vulnerability or misconfiguration in
 the [Jupyter Notebook
 feature](https://docs.microsoft.com/en-us/azure/cosmos-db/cosmosdb-jupyter-notebooks)
 within Cosmos DB. This vulnerability allowed an attacker to gain access to
-other's Cosmos DB credentials.
+other's Cosmos DB credentials. Not long thereafter, a second vulnerability
+dubbed
+[OMIGOD](https://www.wiz.io/blog/omigod-critical-vulnerabilities-in-omi-azure)
+showed that cloud security is not as simple as some vendors like you to believe.
 
-This vulnerability is a good example of how scale is a cloud threat. Companies
+These vulnerabilities are a good example of how scale is a cloud threat. Companies
 that do not have enough experience with public cloud might not assume this in
 their threat models.
 
@@ -34,7 +37,7 @@ eyeballing your company might not know you have that service on premise. Even if
 they do know, having proper protections in place should prevent direct access to
 those services.
 
-![On premise services]({static}/images/pending/cloud-scale-on-premise.png)
+![On premise services]({static}/images/202109/cloud-scale-on-premise.png)
 
 Some situations do require services to expose themselves to the internet. This
 exposure increases the *attack surface* for the service significantly.
@@ -82,7 +85,7 @@ properly isolated on-premise database: while your database might not be
 immediately accessible by attackers, you're still going to change the password
 as soon as possible to prevent it from being used in later attacks.
 
-![Public cloud platform services]({static}/images/pending/cloud-scale-public-cloud.png)
+![Public cloud platform services]({static}/images/202109/cloud-scale-public-cloud.png)
 
 The isolation domain is a bigger hurdle to take though, as this is almost always
 by design. Platform services always share interactions or integrations across
@@ -104,7 +107,7 @@ cloud platform services only. Even on premise deployments that use a public
 control plane are taking part in the same isolation domain as all other
 customers of the same service.
 
-![Control plane also implies sharing isolation domains]({static}/images/pending/cloud-scale-control-plane.png)
+![Control plane also implies sharing isolation domains]({static}/images/202109/cloud-scale-control-plane.png)
 
 Suppose you set up a big data platform on premise, but use your vendor's SaaS
 service as a control plane to manage this big data platform. This SaaS service
