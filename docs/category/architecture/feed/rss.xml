@@ -1,166 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Simplicity is a form of art... - Architecture</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Wed, 15 Sep 2021 19:00:00 +0200</lastBuildDate><item><title>Naming conventions</title><link>https://blog.siphos.be/2021/09/naming-conventions/</link><description>&lt;p&gt;Naming conventions. Picking the right naming convention is easy if you are all
+<rss version="2.0"><channel><title>Simplicity is a form of art... - Architecture</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Tue, 28 Sep 2021 17:00:00 +0200</lastBuildDate><item><title>Scale is a cloud threat</title><link>https://blog.siphos.be/2021/09/scale-is-a-cloud-threat/</link><description>&lt;p&gt;Not that long ago, a vulnerability was found in &lt;a href="https://docs.microsoft.com/en-us/azure/cosmos-db/"&gt;Microsoft Azure Cosmos
+DB&lt;/a&gt;, a NoSQL SaaS database
+within the Microsoft Azure cloud. The vulnerability, which is dubbed
+&lt;a href="https://chaosdb.wiz.io/"&gt;ChaosDB&lt;/a&gt; by the &lt;a href="https://twitter.com/wiz_io"&gt;Wiz Research
+Team&lt;/a&gt;, uses a vulnerability or misconfiguration in
+the &lt;a href="https://docs.microsoft.com/en-us/azure/cosmos-db/cosmosdb-jupyter-notebooks"&gt;Jupyter Notebook
+feature&lt;/a&gt;
+within Cosmos DB. This vulnerability allowed an attacker to gain access to
+other's Cosmos DB credentials. Not long thereafter, a second vulnerability
+dubbed
+&lt;a href="https://www.wiz.io/blog/omigod-critical-vulnerabilities-in-omi-azure"&gt;OMIGOD&lt;/a&gt;
+showed that cloud security is not as simple as some vendors like you to believe.&lt;/p&gt;
+&lt;p&gt;These vulnerabilities are a good example of how scale is a cloud threat. Companies
+that do not have enough experience with public cloud might not assume this in
+their threat models.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Perimeter controls and isolation domains&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Before tackling the scale of a cloud service, let's consider an on premise
+service. Services that run on premise for a company are often built up
+specifically for that company, and have no relationship with other customers of
+the same service. Taking the NoSQL example, companies can perfectly run NoSQL
+database services on premise that have no internet presence. Moreover, these
+services are also often not directly exposed to the internet.&lt;/p&gt;
+&lt;p&gt;Running services within your own premises reduces the likelihood that attackers
+exploit vulnerabilities of that service. Attackers that are not particularly
+eyeballing your company might not know you have that service on premise. Even if
+they do know, having proper protections in place should prevent direct access to
+those services.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="On premise services" src="https://blog.siphos.be/images/202109/cloud-scale-on-premise.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Some situations do require services to expose themselves to the internet. This
+exposure increases the &lt;em&gt;attack surface&lt;/em&gt; for the service significantly.
+However, these services are still part of a rather isolated deployment that I
+call an &lt;strong&gt;isolation domain&lt;/strong&gt;: a logical aggregation of services that share
+one or more integrations and interactions, broadening the scope of
+potential vulnerabilities and misconfigurations.&lt;/p&gt;
+&lt;p&gt;Separate isolation domains imply that vulnerabilities or misconfigurations
+that rely on information from the domain cannot spread. This is not the same as
+separate deployments or environments, as those often do share certain
+integrations. For instance, all NoSQL databases within a company might use that
+company's identity provider for federated authentication. But NoSQL databases
+exposed to the internet from two completely different companies are often in
+separate isolation domains.&lt;/p&gt;
+&lt;p&gt;The Cosmos DB vulnerability exploited the fact that all Cosmos DB deployments
+are part of the same isolation domain.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Perimeter and isolation domain challenges for public cloud&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Public cloud platform services, like Cosmos DB, are often lacking these two
+attributes: they have different perimeter protections in place, and share the
+same isolation domain.&lt;/p&gt;
+&lt;p&gt;I do not want to imply that public cloud providers do not provide perimeter
+protections against their services. They most definitely do, but the scope of
+the perimeter is different from what a company would apply. Whereas a company
+gains some measurable security by hiding services or ensuring those services are
+not reachable from unauthorized contexts, public cloud platform services need to
+be easily accessible for the public cloud to become successful. Security
+paradigms like &lt;a href="https://www.nist.gov/publications/zero-trust-architecture"&gt;Zero
+Trust&lt;/a&gt; are needed to
+raise the security posture of these services. Companies that are building
+solutions within the public cloud will find that this requires a different
+mindset, and that these environments are not comparable with the traditional
+on-premise designs.&lt;/p&gt;
+&lt;p&gt;For the Cosmos DB vulnerability, the FAQ mentions that instances that are not
+internet facing are still somewhat impacted (as the credentials could have been
+leaked) but accessing the database (by using the credentials) will not be
+possible without additional vulnerabilities or misconfigurations being
+addressed. This is comparable to an administrator password leakage for your
+properly isolated on-premise database: while your database might not be
+immediately accessible by attackers, you're still going to change the password
+as soon as possible to prevent it from being used in later attacks.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Public cloud platform services" src="https://blog.siphos.be/images/202109/cloud-scale-public-cloud.png"/&gt;&lt;/p&gt;
+&lt;p&gt;The isolation domain is a bigger hurdle to take though, as this is almost always
+by design. Platform services always share interactions or integrations across
+all the customers of the public cloud. Even though you have your own logical
+deployment (or even ask for your own physical deployment), the main interface to
+access your service is shared. The service you use to authenticate users or
+systems is shared (even when it will eventually use federated authentication to
+your own identity provider, the initial service is still the same).&lt;/p&gt;
+&lt;p&gt;This shared isolation domain makes each public cloud service a fantastic target
+for attackers (and luckily also security researchers). Exploits might not just
+reveal data or insights from one customer, but from thousands of customers all
+over the world. And the bigger the cloud provider, the bigger the impact.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Shared control planes also imply sharing the isolation domain&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This problem of using a shared isolation domain is not restricted to public
+cloud platform services only. Even on premise deployments that use a public
+control plane are taking part in the same isolation domain as all other
+customers of the same service.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Control plane also implies sharing isolation domains" src="https://blog.siphos.be/images/202109/cloud-scale-control-plane.png"/&gt;&lt;/p&gt;
+&lt;p&gt;Suppose you set up a big data platform on premise, but use your vendor's SaaS
+service as a control plane to manage this big data platform. This SaaS service
+is also used by the other customers of that vendor, so your deployment is part
+of the same isolation domain.&lt;/p&gt;
+&lt;p&gt;While such setups have benefits (such as using the same control plane for
+multiple deployments across different environments and even hosting setups, and
+not having to manage and maintain the control services yourself) they do
+increase the risk exposure in a not dissimilar fashion from the pure public
+cloud services.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How to tackle these concerns&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Knowing about these increased risks (reachability/exposure, and the shared
+isolation domain) is the foremost important part that this article wants to
+address. Once these risks are considered, companies can start taking
+precautions. I've mentioned the zero trust model as a way to address the
+reachability/exposure risk. To address the shared isolation domain, reducing the
+impact of a successful exploit can be done through proper architecture and
+design that uses the "it is not if, but when" principle for cyberattacks.&lt;/p&gt;
+&lt;p&gt;For instance, the data within the databases can use application-level encryption
+(meaning the encryption is not done by or through the database, but by the
+front-end application that interacts with the database) to reduce the impact of
+data leakage through such vulnerabilities. Proper data governance processes
+should also be in place to remove any data that is no longer needed on that
+database. Active security validations on log data should exist to detect
+deviating access patterns, and access controls should be in place to prevent
+unauthorized access even from succesfully authenticated users or systems.&lt;/p&gt;
+&lt;p&gt;In the Cosmos DB case, the vulnerability was possible through a selectable
+feature: deployments that do not have the Jupyter Notebook feature active would
+not leak the credentials. Hence, proper configuration management of services and
+disabling features that are not going to be used is paramount for cloud
+services.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If architects are sufficiently aware of the added risks of public cloud
+services, they can properly balance these risks against the benefits of the
+public cloud, and make appropriate adjustments to the architecture and design of
+the solutions. The main challenge here is to make sure this awareness is raised,
+and that this awareness is not only reaching the architects, but also the
+engineers and other stakeholders. If not, architects risk that they will be seen
+as "innovation inhibitors" if they would recommend changes and improvements to
+tackle these risks.&lt;/p&gt;
+&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="TODO"&gt;discussion on
+Twitter&lt;/a&gt;.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 28 Sep 2021 17:00:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-09-28:/2021/09/scale-is-a-cloud-threat/</guid><category>Architecture</category><category>cloud</category><category>vulnerability</category></item><item><title>Naming conventions</title><link>https://blog.siphos.be/2021/09/naming-conventions/</link><description>&lt;p&gt;Naming conventions. Picking the right naming convention is easy if you are all
 by yourself, but hard when you need to agree upon the conventions in a larger
 group. Everybody has an opinion on naming conventions, and once you decide
 on it, you do expect everybody to follow through on it.&lt;/p&gt;
 &lt;p&gt;Let's consider why naming conventions are (not) important and consider a few
 examples to help in creating a good naming convention yourself.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Naming conventions imply standardization&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;When you settle on a naming convention, you're effectively putting some
-standardization in place which you expect everybody to follow, and which should
-also cover 100% of the cases. So, when assessing a possible naming convention,
-first identify what standards you need to enforce and are future proof.&lt;/p&gt;
-&lt;p&gt;Say you are addressing database object naming conventions. Are you able to
-enforce this at all times? You might want to start tables with &lt;code&gt;tbl_&lt;/code&gt; and views
-with &lt;code&gt;vw_&lt;/code&gt;, but when you are dealing with ISV software, they generally do not
-allow such freedom on 'their' database definitions. Your DBAs thus will learn
-to deal with setups that are more flexible anyway.&lt;/p&gt;
-&lt;p&gt;Using a naming convention for internal development is of course still a
-possible path to pursue. But in that case, you will need to look at the
-requirements from the development teams (and related stakeholders).&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Standardization does not imply naming conventions&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The inverse isn't true: even though you might have certain standards in place,
-it doesn't mean that the object names need to reflect the standards. If your
-company standardizes on two operating systems (like Red Hat Enterprise Linux
-and Microsoft Windows), it doesn't mean that server names have to include an
-identifier that maps to Linux or Windows.&lt;/p&gt;
-&lt;p&gt;I personally often fall into this trap - I see standards, so I want to see them
-fixed in the naming convention because that allows better control over
-following the standards. But naming conventions aren't about control, they are
-about exposing identifiable information.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Structure it for readability&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Trying to add too much information in a naming convention makes it
-more complex for users to deal with. You might be able to read and understand
-the naming convention immediately upon seeing it, but are all the other
-stakeholders equally invested in understanding the naming conventions? &lt;/p&gt;
-&lt;p&gt;Say that you have a hostname that looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sppchypkc05m01.reg1.internal.company.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;While I can tell you that this name comes from the following convention, it
-might be overdoing things:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;s&lt;/strong&gt; to identify it is a server&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;p&lt;/strong&gt; to identify it is a physical server&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;p&lt;/strong&gt; to identify it is hosted in a production environment&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;c&lt;/strong&gt; to identify it is a cattle-alike managed server&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;hypk&lt;/strong&gt; to identify the ownership (in this case, hypervisor usage, KVM)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;c05&lt;/strong&gt; to identify it is the fifth cluster&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;m01&lt;/strong&gt; to identify it is the first master node&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;reg1&lt;/strong&gt; to identify the first region (location)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Even if you still want to include this information, using separators might make
-this more obvious. For instance, for the given name, I would suggest splitting
-this as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sppc-hypk-c05m01.reg1.internal.company.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The first two parts are then global naming convention requirements, with the
-first set being about the type of system whereas the second is about ownership,
-and the third is then a naming convention specific to that owner.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Choose what information to expose easily&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Assets that follow a certain naming convention provide information about that
-asset that a reader can immediately assume, without having to do additional
-lookups. The intention here is that you want to define important information
-that many stakeholders will need immediately to support their work (and thus
-their efficiency). Insights that are useful for a select set of stakeholders
-might not be suitable for a naming convention (or at least not a global one).&lt;/p&gt;
-&lt;p&gt;You should consider every stakeholder that comes in contact with the name of
-the asset, and how that stakeholder would obtain the information they need. If
-you have a central, easily accessible configuration management system, it might
-be possible to have many structured insights exposed through that interface,
-but is that useful when you are dealing with lists of assets?&lt;/p&gt;
-&lt;p&gt;Suppose you do not include the host class for hostnames, with the host class
-being what class of system the host is (server, workstation, router, firewall,
-appliance, ...). Does your SOC team need this insight every time they are going
-through events? Does your helpdesk need that information? What about the
-resource managers?&lt;/p&gt;
-&lt;p&gt;If all these stakeholders do need that information over and over again, it
-might be sensible to include it in the naming convention. If, however, only a
-few stakeholders need that information, you might want to expose that easily
-through different means. For instance, resource managers might be able to easily
-join that information with the asset management system information.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Choose what information NOT to expose easily&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Sometimes, you want to have some information about objects easily available,
-but not for everybody. It might be information that can be abused for nefarious
-purposes. In that case, you want this information to be shielded and only
-offered to authenticated and authorized users. For instance, if you use separate
-accounts for administering systems, you might not want to add information about
-what type of admin account it is, as account enumeration might reveal too much
-immediately and provide attackers with better insights.&lt;/p&gt;
-&lt;p&gt;So, rather than having &lt;code&gt;ken_adadmin&lt;/code&gt; for Ken's Active Directory administration
-account, stick to a nonsensible account identification like &lt;code&gt;ua1503&lt;/code&gt; (user
-account 1503). Stakeholders that need information about accounts, in this case,
-can still notice it is a user account rather than a system or machine account
-and will need to query the central repositories for more information (such as
-AD to get information about the user - and don't forget to add sensitive users
-to, for instance, the &lt;code&gt;Protected Users&lt;/code&gt; group in AD).&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Use layered naming conventions&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;With "global naming convention" I am suggesting the ability to add naming
-conventions for specific purposes, but leave that open in general. A server
-name could, for instance, require an indication of the environment (production or
-not) and the fact that it is a server (and not a workstation), but leave a part
-of the name open for the administrators. The administrators can then add their
-local naming convention to it.&lt;/p&gt;
-&lt;p&gt;An active directory group, for instance, might have a standard global naming
-convention (usually the start of the group name) and leave the second part
-open, whereas specific teams can then use that part to add in their local naming
-convention. Groups that are used for NAS access might then use a naming
-convention to identify which NAS share and which privileges are assigned,
-whereas a group that is used for remote access support can use VPN naming
-conventions.&lt;/p&gt;
-&lt;p&gt;The University of Wisconsin has their &lt;a href="https://kb.wisc.edu/iam/page.php?id=30600"&gt;Campus Active Directory - Naming
-Convention&lt;/a&gt; published online, and
-the workstation and server object part is a good example of this: while the
-objects in AD have to follow a global naming convention (because Active
-Directory is often core to an organization) it leaves some room for local
-department policies to assign their own requirements:
-&lt;code&gt;&amp;lt;department&amp;gt;&amp;lt;objectfunction&amp;gt;-&amp;lt;suffix&amp;gt;&lt;/code&gt; only has the first two fields
-standardized globally, with the &lt;code&gt;&amp;lt;suffix&amp;gt;&lt;/code&gt; field left open (but within certain
-length constraints).&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Consider the full name for your naming conventions&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;If you do want to add information in a naming convention, do not consider
-this purely on a single object type, but at the full name. A hostname by itself
-is just a hostname, but when you consider the fully qualified hostname (thus
-including domain names) you know that certain information points can be put in
-the domain name rather than the hostname. The people over at &lt;a href="https://www.serverdensity.com/"&gt;Server
-Density&lt;/a&gt; have a post titled "&lt;a href="https://blog.serverdensity.com/server-naming-conventions-and-best-practices/"&gt;Server Naming
-Conventions and Best
-Practices&lt;/a&gt;"
-where they describe that the data center location (for the server) is a
-subdomain.&lt;/p&gt;
-&lt;p&gt;Another example is for databases, where you not only have a table, but also the
-database in which the table is located. Hence, ownership of that table can
-easily be considered on the database level.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Learn from mistakes or missing conventions&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;As you approach naming conventions, you will make mistakes. But before making
-mistakes yourself, try looking out for public failures that might have been due
-to (bad or missing) naming conventions. Now, most public root cause analysis
-reports do not go in-depth on the matter completely, but they do provide some
-insights we might want to learn from.&lt;/p&gt;
-&lt;p&gt;For instance, the incident that AWS had on February 28th, 2017, has a &lt;a href="https://aws.amazon.com/message/41926/"&gt;Summary of
-the Amazon S3 Service Disruption in the Northern Virginia (US-EAST-1)
-Region&lt;/a&gt;. While there is no immediate
-indication about the naming conventions used (mainly that a wrong command input
-impacted more servers than it should), we could ask ourselves if the functional
-purpose of the servers was included in the name (or, if not in the name, if it
-was added in other labeling information that the playbook should use). The
-analysis does reveal that AWS moved on to implement partitions (which they call
-cells), and the cell name will likely become part of the naming convention (or
-other identifiers).&lt;/p&gt;
-&lt;p&gt;Also internally, it is important to go over the major incidents and their
-root causes, and see if the naming conventions of the company are appropriate
-or not.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Still need examples?&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;While most commercial companies will not expose their own naming conventions
-(as there is no value for them to receive, and it exposes information that
-malicious users might abuse), many governmental agencies and educational
-institutions do have this information publicly available, given their
-organization public nature. Hence, searching for "naming convention" on &lt;code&gt;*.gov&lt;/code&gt;
-and &lt;code&gt;*.edu&lt;/code&gt; already reveals many examples.&lt;/p&gt;
-&lt;p&gt;Personally, I am still a stickler for naming conventions, but I am slowly
-accepting that some information might be better exposed elsewhere.&lt;/p&gt;
-&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
-email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1438175688444596227"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Wed, 15 Sep 2021 19:00:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-09-15:/2021/09/naming-conventions/</guid><category>Architecture</category><category>naming</category></item><item><title>Location view of infrastructure</title><link>https://blog.siphos.be/2021/09/location-view-of-infrastructure/</link><description>&lt;p&gt;In this last post on the infrastructure domain, I cover the fifth and final
 viewpoint that is important for an infrastructure domain representation, and
 that is the &lt;em&gt;location view&lt;/em&gt;. As mentioned in previous posts, the viewpoints I
