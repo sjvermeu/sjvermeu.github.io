@@ -158,6 +158,6 @@ tackle these risks.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](TODO).
+Twitter](https://twitter.com/infrainsight/status/1442867880639401989).
 
 <!-- PELICAN_END_SUMMARY -->
