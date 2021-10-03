@@ -287,7 +287,8 @@ initiatives even further. Assuming the policy is sufficiently supportive of open
 source, having it published might eliminate the fear of engineers and developers
 to suggest certain open source projects.
 
-If you have feedback or comments, get in touch on [Twitter](TODO) or drop me [an
-email](mailto:sven.vermeulen@siphos.be).
+Feedback? Comments? Don't hesitate to [drop me an
+email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
+Twitter](https://twitter.com/infrainsight/status/TODO).
 
 <!-- PELICAN_END_SUMMARY -->

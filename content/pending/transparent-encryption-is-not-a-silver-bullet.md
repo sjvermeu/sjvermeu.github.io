@@ -83,10 +83,12 @@ servers will not have a too hard time to find an entrypoint to the system.
 Advanced attackers might even be able to capture the data from memory without
 being detected.
 
-My recommendation for transparent disk encryption is mostly towards removable
-media (like USB sticks) if they contain any (possible) confidential data and
-the method for transparent encryption is supported on all systems where you are
-going to use the removable media.
+Transparent disk encryption is very sensible when dealing with removable media
+(like USB sticks), especially if they contain any (possible) confidential data
+and the method for transparent encryption is supported on all systems where you
+are going to use the removable media. In larger enterprises, it also makes sense
+to apply as well when multiple teams or even companies have physical access and
+could attempt to maliciously access the systems.
 
 For server disks or SAN storage for instance, this has to be balanced against
 the downsides of the encryption. You can do disk encryption from the storage
@@ -98,7 +100,11 @@ wiped or destroyed, then such transparent encryption imo has little value.
 Of course, when you have systems hosted in third party locations, then you do
 have a higher risk that the media are being removed or stolen, especially if
 those locations are accessed by many others, and your own space isn't
-physically further protected.
+physically further protected. So while a company-controlled data center with
+tight access requirements, policies and controls that no media leaves the
+premises and what not could easily evaluate to not apply transparent disk
+encryption, using a public cloud service or a non-private colocation facility
+should assess encryption capabilities on disk (and higher).
 
 Furthermore, a properly configured database system will not expose its data to
 unauthorized users to start with, so the *system user* role should not have
@@ -242,5 +248,9 @@ company already has other means to cover the threats that it does handle.
 
 The above image shows all the different encryption levels and where in the
 application, database and system interactions they are situated.
+
+Feedback? Comments? Don't hesitate to [drop me an
+email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
+Twitter](https://twitter.com/infrainsight/status/TODO).
 
 <!-- PELICAN_END_SUMMARY -->

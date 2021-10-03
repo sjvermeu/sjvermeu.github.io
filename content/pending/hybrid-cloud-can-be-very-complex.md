@@ -298,7 +298,8 @@ this with a setup where the infrastructure side of the hybrid cloud still uses
 separate environments, and where you manage each environment using the
 strengths of that environment.
 
-What are your thoughts? Feel free to [drop me an
-email](mailto:sven.vermeulen@siphos.be) or discuss this on [Twitter](https://twitter.com/infrainsight/status/0).
+Feedback? Comments? Don't hesitate to [drop me an
+email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
+Twitter](https://twitter.com/infrainsight/status/TODO).
 
 <!-- PELICAN_END_SUMMARY -->
