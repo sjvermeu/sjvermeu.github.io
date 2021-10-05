@@ -196,6 +196,38 @@ Simplicity is a form of art... - Articles by Sven Vermeulen        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2016/03/template-was-specified-incorrectly/">Template was specified incorrectly</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 27 March 2016</span></span>
+                <p><p>After reorganizing my salt configuration, I received the following error:</p>
+<div class="highlight"><pre><span></span><code>[ERROR   ] Template was specified incorrectly: False
+</code></pre></div>
+<p>Enabling some debugging on the command gave me a slight pointer why this occurred:</p>
+<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
+[DEBUG   ] No contents loaded for env: testing
+[DEBUG   ] compile template: False
+[ERROR   ] Template was specified incorrectly: False
+</code></pre></div>
+<p>I was using a single top file as recommended by Salt, but apparently it was still
+looking for top files in the other environments.</p>
+<p>Yet, if I split the top files across the environments, I got the following warning:</p>
+<div class="highlight"><pre><span></span><code>[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+</code></pre></div>
+<p>So what's all this about?</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free software</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/salt/">salt</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2016/03/using-salt-ssh-with-agent-forwarding/">Using salt-ssh with agent forwarding</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 26 March 2016</span></span>
@@ -417,37 +449,6 @@ to look into was how CIL policies would deal with interfaces.</p>
                         <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/cil/">cil</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2015/08/slowly-converting-from-guidexml-to-html/">Slowly converting from GuideXML to HTML</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 25 August 2015</span></span>
-                <p><p>Gentoo has removed its support of the older GuideXML format in favor of using
-the <a href="https://wiki.gentoo.org">Gentoo Wiki</a> and a new content management system
-for the main site (or is it static pages, I don't have the faintest idea to be
-honest). I do still have a few GuideXML pages in my development space, which I
-am going to move to HTML pretty soon.</p>
-<p>In order to do so, I make use of the <a href="https://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl?view=log">guidexml2wiki</a>
-stylesheet I <a href="http://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/">developed</a>.
-But instead of migrating it to wiki syntax, I want to end with HTML.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/guidexml/">guidexml</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/xml/">xml</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/xslt/">xslt</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/rst/">rst</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/mediawiki/">mediawiki</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/html/">html</a>
                     </div>
                 </div>
             </div>
