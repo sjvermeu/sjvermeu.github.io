@@ -200,6 +200,6 @@ environment evolves.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](https://twitter.com/infrainsight/status/TODO).
+Twitter](https://twitter.com/infrainsight/status/1445380710706073613).
 
 <!-- PELICAN_END_SUMMARY -->
