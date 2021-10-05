@@ -1,5 +1,5 @@
 Title: Evaluating the zero trust hype
-Date: 2021-09-01 00:00
+Date: 2021-10-05 00:00
 Category: Architecture
 Tags: zero trust,security,enterprise,network security
 Slug: evaluating-the-zero-trust-hype
