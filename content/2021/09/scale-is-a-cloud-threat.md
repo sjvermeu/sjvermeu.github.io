@@ -22,6 +22,8 @@ These vulnerabilities are a good example of how scale is a cloud threat. Compani
 that do not have enough experience with public cloud might not assume this in
 their threat models.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Perimeter controls and isolation domains**
 
 Before tackling the scale of a cloud service, let's consider an on premise
@@ -160,4 +162,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1442867880639401989).
 
-<!-- PELICAN_END_SUMMARY -->

@@ -3,7 +3,7 @@ Date: 2021-09-01 00:00
 Category: Architecture
 Tags: zero trust,security,enterprise,network security
 Slug: evaluating-the-zero-trust-hype
-Status: draft
+Status: published
 
 Security vendors are touting the benefits of "zero trust" as the new way to
 approach security and security-conscious architecturing. But while there are
@@ -45,7 +45,7 @@ components that take an active role within the architecture. This view is
 happily shared by vendors to show where in the zero trust architecture their
 component(s) are positioned.
 
-![NIST core view on zero trust]({static}/images/pending/zerotrust-core.png)
+![NIST core view on zero trust]({static}/images/202110/zerotrust-core.png)
 
 The publication further evaluates a few possible architectural approaches (or
 patterns if you will) for zero trust, with specific focus on the network side.
