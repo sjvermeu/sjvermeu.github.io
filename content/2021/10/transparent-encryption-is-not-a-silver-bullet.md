@@ -251,6 +251,6 @@ application, database and system interactions they are situated.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](https://twitter.com/infrainsight/status/TODO).
+Twitter](https://twitter.com/infrainsight/status/1450345580778110980).
 
 <!-- PELICAN_END_SUMMARY -->
