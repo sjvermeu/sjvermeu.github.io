@@ -11,6 +11,8 @@ principles within the zero trust mindset that came up in the last dozen years,
 most of the content in zero trust discussions is tied to age-old security
 propositions.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **What is zero trust**
 
 In the zero trust hype, two sources are driving (or aggregating) most of the
@@ -202,4 +204,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1445380710706073613).
 
-<!-- PELICAN_END_SUMMARY -->

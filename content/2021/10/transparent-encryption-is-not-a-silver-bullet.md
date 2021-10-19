@@ -1,9 +1,9 @@
 Title: Transparent encryption is not a silver bullet
-Date: 2021-09-01 00:00
+Date: 2021-10-19 08:20
 Category: Architecture
 Tags: encryption,transparent,luks,dm-crypt
 Slug: transparent-encryption-is-not-a-silver-bullet
-Status: draft
+Status: published
 
 Transparent encryption is relatively easy to implement, but without
 understanding what it actually means or why you are implementing it, you will
@@ -36,7 +36,7 @@ focus. This does not mean it isn't infrastructure oriented anymore, but more
 that it can't be transparently implemented without the application supporting
 it.
 
-![Application and database interaction]({static}/images/pending/te-accesspatterns.png)
+![Application and database interaction]({static}/images/202110/te-accesspatterns.png)
 
 There are eight roles listed (well, technically seven roles but let's keep it simple and make "physical access" also a role), ranging from the application user to the physical access:
 
@@ -72,7 +72,7 @@ the users. All users. Its purpose hence is not to prevent unauthorized users
 from accessing the data directly, but to prevent the storage media to expose
 the data if the media is leaked or lost.
 
-![Transparent Disk Encryption]({static}/images/pending/te-tde.png)
+![Transparent Disk Encryption]({static}/images/202110/te-tde.png)
 
 In the diagram, you notice that the transparent disk encryption only takes
 effect between the server and its storage. Hence, the only 'inappropriate'
@@ -119,7 +119,7 @@ encryption themselves. In this case, the actual database files on the system
 are encrypted by the database engine, but the database users still see the data
 as it is unencrypted.
 
-![Transparent Database Encryption]({static}/images/pending/te-tdbe.png)
+![Transparent Database Encryption]({static}/images/202110/te-tdbe.png)
 
 Here again, it is important to know what you are protecting yourself from.
 Transparent database/middleware encryption does prevent the non-middleware
@@ -153,7 +153,7 @@ appropriate stored procedures or similar. In this case, the application itself
 is designed to use these encryption methods from the database (or middleware),
 and often holds the main encryption key itself (rather than in the database).
 
-![Database or middleware supported data encryption]({static}/images/pending/te-dmsde.png)
+![Database or middleware supported data encryption]({static}/images/202110/te-dmsde.png)
 
 While this prevents some of the attack vectors (for instance, some attacks
 against the application will not result in getting a context that is able to
@@ -175,7 +175,7 @@ of the data for things like performance tuning.
 With application-managed data encryption, the application itself will encrypt
 and decrypt the data even before it is sent over to the database or middleware.
 
-![Application-managed data encryption]({static}/images/pending/te-amde.png)
+![Application-managed data encryption]({static}/images/202110/te-amde.png)
 
 With this measure, many of the threats are mitigated. Even network interception
 is partially prevented, as the network interception now is only still possible
@@ -200,7 +200,7 @@ The highest level of protection against the threats listed, but of course also
 the most impactful and challenging to implement, is to use client-managed data
 encryption.
 
-![Client-managed data encryption]({static}/images/pending/te-cmde.png)
+![Client-managed data encryption]({static}/images/202110/te-cmde.png)
 
 A web application might for instance have a (properly designed) encryption
 method brought to the browser (e.g. using javascript), allowing the end user to
@@ -226,7 +226,7 @@ Network encryption (as in the use of TLS encrypted communications) only focuses
 on the confidentiality and integrity of the communication, in our example
 towards the network poweruser that might be using network interception.
 
-![Network encryption]({static}/images/pending/te-ne.png)
+![Network encryption]({static}/images/202110/te-ne.png)
 
 While the majority of other threats are still applicable, I do want to point
 out that network encryption is an important measure against other threats. For
@@ -244,7 +244,7 @@ obvious that transparent (and thus without any application support) encryption
 methods do not cover all the threats out there, and it is likely that your
 company already has other means to cover the threats that it does handle.
 
-![Full overview]({static}/images/pending/te-full.png)
+![Full overview]({static}/images/202110/te-full.png)
 
 The above image shows all the different encryption levels and where in the
 application, database and system interactions they are situated.
