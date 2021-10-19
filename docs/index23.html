@@ -197,6 +197,40 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/04/not-needing-run_init-for-password-less-service-management/">Not needing run_init for password-less service management</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 09 April 2013</span></span>
+                <p><p>One of the things that has been bugging me was why, even with having
+<code>pam_rootok.so</code> set in <code>/etc/pam.d/run_init</code>, I cannot enjoy
+passwordless service management without using <strong>run_init</strong> directly:</p>
+<div class="highlight"><pre><span></span><code># rc-service postgresql-9.2 status
+Authenticating root.
+Password:
+
+# run_init rc-service postgresql-9.2 status
+Authenticating root.
+ * status: started
+</code></pre></div>
+
+<p>So I …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/hardened/">hardened</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pam/">pam</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/rootok/">rootok</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/run_init/">run_init</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/">How far reaching vulnerabilities can go</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 09 April 2013</span></span>
@@ -409,34 +443,6 @@ after all, I use VMs for testing, so it makes sense to …</p></p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/kvm/">kvm</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/virtual/">virtual</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/02/working-on-a-new-selinuxnode-vm/">Working on a new selinuxnode VM</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 23 February 2013</span></span>
-                <p><p>A long time ago, I made a <a href="http://distfiles.gentoo.org/experimental/amd64/qemu-selinux/">SELinux enabled
-VM</a> for
-people to play with, displaying a minimal Gentoo installation, including
-the hardening features it supports (PIE/PIC toolchain, grSecurity, PaX
-and SELinux). I'm currently trying to create a new one, which also
-includes IMA/EVM, but it looks like …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/evm/">evm</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/hardened/">hardened</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ima/">ima</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinuxnode/">selinuxnode</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/vm/">vm</a>
                     </div>
                 </div>
             </div>
