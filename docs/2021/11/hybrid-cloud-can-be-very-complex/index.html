@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head -->
+<head>
+
+        <!-- Required metadata tags -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <!-- Default metadata -->
+    <meta name="author" content="Sven Vermeulen" />
+    <meta name="description" content="hybrid-cloud-can-be-very-complex" />
+    <meta name="keywords" content="hybrid, cloud">
+<meta property="og:site_name" content="Simplicity is a form of art..." />
+<meta property="og:title" content="Hybrid cloud can be very complex" />
+<meta property="og:description" content="I am not an advocate for hybrid cloud architectures. Or at least, not the definition for hybrid cloud that assumes one (cloud or on premise) environment is just an extension of another (cloud or on premise) environment. While such architectures seem to be simple and fruitful - you can easily add some capacity in the other environment to handle burst load - they are a complex beast to tame. Hybrid cloud complexity starts with the definition The first thing that I&#39;ve already learned is not to use &#34;hybrid cloud&#34; without defining what I mean. And if somebody else uses it (or a research article), I will frantically try to get a definition on what the person or article implies with the term. Microsoft for instance defines hybrid cloud as &#34;a computing environment that combines an on-premises datacenter with a public cloud, allowing data and applications to be shared between them.&#34; This definition isn&#39;t unambiguous. What does Microsoft mean with &#34;sharing&#34;? If I expose an application and/or its data through APIs that are shielded and independently managed in each environment, and allow for interaction between those APIs, does that still entail a hybrid cloud architecture? Because if that is the case, then I want to know what other cloud interaction architectures Microsoft thinks exist besides hybrid cloud. I do think that the intention of Microsoft&#39;s definition is that the cloud hosting environments are considered as &#34;similar enough&#34; to the on premise environment, and managed in the same way (some cloud specifics notwithstanding), as inspired by their claim that hybrid cloud allow &#34;businesses [to] use the cloud to instantly scale capacity up or down to handle excess capacity&#34; and that organizations using hybrid cloud architectures &#34;are able to use many of the same security mreasures that they use in their existing on-premises infrastructure&#34;. Gartner defines hybrid cloud computing as &#34;policy-based and coordinated service provisioning, use and management across a mixture of internal and external cloud services.&#34; That doesn&#39;t narrow things down, and in (paywalled) research articles, Gartner does express that &#34;hybrid cloud is a vague term that does not allow enough granularity for implementation planning by cloud and infrastructure professionals&#34;. Forrester follows a definition that is very generic, as &#34;a cloud service connected to any other corporate resource&#34; makes it a hybrid cloud service. Regardless of how it is infrastructurally or application-wise integrated. IBM declares hybrid cloud as &#34;integrates public cloud services, private cloud services and on-premises infrastructure and provides orchestration, management and application portability across all three. The result is a single, unified and flexible distributed computing environment [...]&#34; This definition does seem to imply an architecture that considers all hosting environments as infrastructurally equal (as they see the sum of all environments as a single, unified environment). Wikipedia mentions that hybrid cloud &#34;is a composition of a public cloud and a private environment [...] that remain distinct entities but are bound together, offering the benefits of multiple deployment models.&#34; Such a definition leaves the implementation details open, as it boils down to any architecture where you mix such hosting environments. For me, a hybrid cloud on infrastructure level implies that the different environments are similarly or equally managed, using the same processes, principles and most often even tooling, and that application teams have little impact on where their application (or application components) are hosted. The promise of hybrid cloud towards business When business decision makers hear (or are confronted with) hybrid cloud, they are often told that it a perfect way to deal with capacity management. Whereas a pure on-premise deployment model requires you to purchase and deploy enough capacity to deal with your maximum workload (and even more, if you need to consider disaster recovery situations), a hybrid cloud could simply &#34;add more resources as needed, without requiring the application to be refactored for cloud-native or cloud hosting&#34;. Let&#39;s make this more tangible with an example: a simple ticket sales service, which consists out of a website (frontend) and an API (which is backend-alike). The company that manages this ticket sales application is currently fully on-premise, with a simple deployment model where the front and backend are hosted on a web application hosting cluster (which could be a Kubernetes cluster), and the backend also uses a database. Ticket sales are seasonally bound, and often ticket sales platforms are services offered to the specific events. Suppose a major event wants to sell its tickets through this ticket sale application, and you are afraid that the website part will not be able to deal with the load, then you could use a hybrid cloud setup to enable bursting on the front-end side. Of course, this is just one of many target architectures that might solve the capacity challenge, and there is no reason to believe the API itself wouldn&#39;t be overloaded as well. But let&#39;s stick to this simple example. From a business perspective, this all sounds very fun and promising. There seems to be no initial investment needed, and the capacity of the cloud is limitless, not? Network investments needed for such hybrid cloud Well, as always, the devil is in the details. If we were to pursue this architecture, we need to have the public cloud and the on premise environment properly connected. You don&#39;t want to use regular Internet access, because the intention is to see these environments as a single, unified environment, and you don&#39;t open up your internal systems directly to the Internet either do you? So you need to architect the public cloud usage to be as private as possible, and then connect that environment with your on premise network, preferably through a high speed private link. Sure, you can use VPN over internet, but with a private link you have more guarantees on the latency for instance, and for many cloud environments such private link interactions are also bringing benefits for data ingress/egress (cheaper for you). They also generally have better SLAs (although larger environments will have very high internet-related SLAs) and do not require the same security protection measures (like anti-DDoS protection). In the design, we assume that the end users still first go through your on premise environment, as the perimeter protections you have in place for instance still need to apply. Perimeter protections are not just simple firewall capabilities. It includes anti-DDoS measures context gathering for, and applying coarse-grained access controls intrusion detection and prevention anti-malware protection application attack prevention network traffic filtering A perimeter is meant to act as a first line of defense. However, when integrating networks from external sites, you still need some protection measures applied (shown as external site protection in the diagram), as you are handing off some ownership to other parties and thus want to have some safeguards in place. Because we still have all traffic through the perimeter, burst loads can still jeopardize the service offering itself. If the perimeter, internet line, or the load balancer that spreads the load across the frontends is saturated, then your service will go down. The hybrid cloud setup used in this example wont help out here. Second, the high speed private link will need to be able to deal with not only the load of the user to the frontend (and back), but also between the frontend and backend. And if you were to support bursting the backend application to the public cloud as well, then it needs to deal with the load between this application and the database. The link is also often not something you set up yourself between you and the public cloud. You will need intermediate parties to support this, as often this first requires you to have private links to certain larger networks, and then have this larger network set up a private link to the point of presence where you want to &#39;attach&#39; to that public cloud environment. Management complexity rises with hybrid cloud The investments do not stop just at the network connectivity. You will need to look into managing the web application (such as deployment and releases), servers (bootstrapping, updating, maintaining), and other network areas. Let&#39;s start with the web application management. Your existing management systems will now need to deal with the public cloud as well. Your application needs to be deployed on multiple clusters, and you will need to reconfigure the load balancers in front to know where these clusters are. Unlike the pre-installed environments on premise, public cloud is more dynamic (you want to use it for bursting after all), so the target IP addresses might change (or you set up fixed IP addresses, but that costs money even when you don&#39;t use them). You will need to deal with deployments that can succeed left and fail right, or vice-versa. While this is not impossible to deal with, the current way of working might not support that yet because, you know, you never had to deal with it. What about tracking performance and user experience? Your application management suite might not know about public cloud setups yet, and once included, it might find that there is latency impact. But can you just use this APM suite in the public cloud? Perhaps your company has a site license which does not include other locations. Or it requires per-node licenses, and require each node to be assigned a license for 30 days at least. In case of burst situations, you might only have these systems up for a few hours, and with the next action, these will be new nodes with new licenses. Also on the server management level you might find many obstacles. Your on premise system might use a certain hypervisor integration (e.g. using VMware vCenter API) which you don&#39;t have in the public cloud. So you need to adapt the management system anyway, which means you need to develop your management systems to create a hybrid cloud, rather than reap the benefits of hybrid cloud directly. Your servers might use many control systems that have the same licensing issues as mentioned earlier. Or they are latency-bound, causing either reachability issues, or requiring you to adapt the infrastructure architecture of these management systems to be aware of the public cloud. Also on network management level it isn&#39;t just about connectivity. Your firewall management might not see the public cloud firewalls automatically (or doesn&#39;t support it), or your current network design doesn&#39;t allow for the bursting of network environments (subnets) in a sufficient dynamic manner. The more you consider this hybrid cloud situation, the more you find out that you will need to revisit all management, support and control systems for this setup. And you know what is hard to do in an IT environment? Reassessing all management, support and control systems. You are effectively redesigning your entire IT environment, and that is exactly what the promise of &#34;hybrid cloud&#34; wanted to take away. Or at least, the promise that is done to certain decision makers. Vendors know that it is complex (and are happy because of it) Most of the IT vendors that are related to the management, support and control of your infrastructure, will say that management in hybrid cloud is hard: Red Hat for instance mentions in its container-related article that &#34;Saying that Kubernetes makes it possible to build a cross-environment management layer doesn&#39;t mean it&#39;s easy&#34;. Aruba Networks (part of PHE) mentions that &#34;the major drawback is complex management of these platforms&#34;. Consulting firms concur as well, with for instance David Linthicum, Chief Cloud Strategy Officer of Deloitte Consulting, mentioning in 4 things you need to know about managing complex hybrid clouds that &#34;hybrid clouds are usually complex, hard to build, and hard to manage&#34;. Of course, IT vendors will be happy to tell you that it is hard (and for once I concur), because they will then follow up with how their shiny tool supports hybrid cloud much better than your existing ones. IT vendors know that an infrastructural hybrid cloud means a redesign of (many parts of) your IT architecture, so there is big money involved. Hence, it is important that hybrid cloud endeavours are assessed completely, and that your business decision makers hold off with the decision until the full scope of this exercise is known (or at least, you have a decent ballpark estimate on the impact, not just financially, but also time-to-market). So, what are all the areas you need to consider? That&#39;s difficult to state, but hopefully the list below can help you out: How are your servers bootstrapped (initial deployment)? Can this interact with the cloud APIs to do the same in the cloud, or will you need to adapt your processes? Once your server is bootstrapped, how do you add software, libraries and other artefacts to it? What security services do you need on your systems? Anti-malware? Behavior analytics? Intrusion detection and prevention? Privileged access management utilities? How do your engineers and administrators follow-up on the systems? Monitoring approaches? Application performance management? Trace capabilities? Logging? Are there any control systems in place that manage the infrastructure? Are these control systems latency-sensitive? How do you deal with applicative releases? If you have CI/CD infrastructure in place, how would it deal with a burst environment? Does it have any dynamical detection capabilities? Can your support systems deal with more ephemeral infrastructure (capacity that is added for a few hours and then removed again)? Can your processes deal with ephemeral infrastructure? Perhaps your current environment is already capable of dealing with such hybrid clouds. While the situations I am confronted with at work support my view that we need to apply a different &#39;hybrid&#39; approach than the &#39;seamless infrastructure&#39; one (I like to see the environments progress more independently, gradually move towards a zero trust model), I do believe that such hybrid cloud setups can work in certain situations. Conclusions and feedback If you do come across an intention declaration to move to a hybrid cloud (which follows the infrastructural &#39;seamless&#39; setup as implied in this post), make sure you inform the stakeholders of the consequences. Show that a majority of management, support and control systels are not designed nor capable of dealing with this bursting out-of-the-box, and that this will require a significant IT investment which might not be visible to the decision maker currently. If you have the time and resources, try to already build up the arguments for it by focusing on your management, support and control systems, validating how ready they would be, and what types of investments would be needed. Compare this with a setup where the infrastructure side of the hybrid cloud still uses separate environments, and where you manage each environment using the strengths of that environment. Feedback? Comments? Don&#39;t hesitate to drop me an email, or join the discussion on Twitter." />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://blog.siphos.be/2021/11/hybrid-cloud-can-be-very-complex/" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-11-08 20:00:00+01:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/pages/about.html">
+<meta property="article:section" content="Architecture" />
+	<meta property="article:tag" content="hybrid" />
+	<meta property="article:tag" content="cloud" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
+        <!-- Site Claim -->
+
+
+        <!-- Title -->
+        <title>
+    Hybrid cloud can be very complex &ndash; Simplicity is a form of art...
+        </title>
+        
+        <!-- Icon -->
+        <link rel="shortcut icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+
+        <!-- Search engine -->
+            <meta name="robots" content="" />
+
+        <!-- Feeds -->
+            <link href="https://blog.siphos.be/feed/all.atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Full Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/all.rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Full RSS Feed" />
+
+            <link href="https://blog.siphos.be/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... RSS Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Categories Atom Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Categories RSS Feed" />
+
+
+
+        <!-- Styles -->
+        <!--
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/bootstrap/bootstrap.min.css">
+        <!--
+        <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/pygment/friendly.min.css">
+        <!--
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/extra/admonition.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/style.css">
+
+        <!-- Google Analytics -->
+
+        <!-- Google Global Site Tag -->
+
+        <!-- Google Tag Manager -->
+
+        <!-- Google Adsense -->
+
+        <!-- Heap Analytic -->
+
+        <!-- Piwik Tracking -->
+
+        <!-- Matomo Tracking -->
+
+</head>
+
+<!-- Body -->
+<body class="d-flex flex-column" data-spy="scroll" data-target="#toc" data-offset="0" style="position: relative;">
+    <!-- Top anchor -->
+    <a href="#" id="backToTop" style="display: none; z-index: 1;" title="Back to top"><span></span></a>
+
+    <!-- Google tag manager -->
+
+    <!-- Navigation -->
+    <nav class="flex-shrink-0 navbar navbar-expand-md navbar-expand-lg navbar-dark bg-dark text-light shadow-sm">
+        <!-- Logo -->
+        <a class="navbar-brand" href="https://blog.siphos.be"></a>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon small"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <!-- Page links -->
+            <ul class="navbar-nav mr-auto text-center">
+                <li class="nav-item ">                           
+                    <a class="nav-link" href="https://blog.siphos.be">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z" fill="currentColor"></path>
+                        </svg>
+                        Home <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/categories.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M16 6h-8v-6h8v6zm-8 12h-8v6h8v-6zm16 0h-8v6h8v-6zm-11-7v-3h-2v3h-8v5h2v-3h14v3h2v-5h-8z" fill="currentColor"></path>
+                        </svg>
+                        Categories
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/tags.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M10.605 0h-10.605v10.609l13.391 13.391 10.609-10.604-13.395-13.396zm-4.191 6.414c-.781.781-2.046.781-2.829.001-.781-.783-.781-2.048 0-2.829.782-.782 2.048-.781 2.829-.001.782.782.781 2.047 0 2.829z" fill="currentColor"></path>
+                        </svg>
+                        Tags
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/archives.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M1.8 9l-.8-4h22l-.8 4h-2.029l.39-2h-17.122l.414 2h-2.053zm18.575-6l.604-2h-17.979l.688 2h16.687zm3.625 8l-2 13h-20l-2-13h24zm-8 4c0-.552-.447-1-1-1h-6c-.553 0-1 .448-1 1s.447 1 1 1h6c.553 0 1-.448 1-1z" fill="currentColor"></path>
+                        </svg>
+                        Archives
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/pages/about.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z" fill="currentColor"></path>
+                        </svg>
+                        About
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search form -->
+            <form class="form-inline text-center" action="https://blog.siphos.be/search.html">
+                <input class="form-control w-100 bg-dark text-light text-center border-0 p-2" type="text" name="q" pattern=".{3,}" title="At least 3 characters" required="" placeholder="Type here to search" aria-label="Search">
+            </form>
+
+            <!-- Social links -->
+            <ul class="navbar-nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Github</title>
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://twitter.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Twitter</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.825 0 1.572.349 2.096.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.linkedin.com/in/svenvermeulen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Linkedin</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Full page -->
+    <div class="flex-shrink-0 flex-grow-1">
+
+        <!-- Header -->
+        <header class="bg-dark text-light shadow-sm pt-3 pb-2">
+	<div class="container">
+		<h3 id="hybrid-cloud-can-be-very-complex">Hybrid cloud can be very complex</h3>
+		<p style="font-size:larger;">hybrid-cloud-can-be-very-complex</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/pages/about.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Mon 08 November 2021</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Mon 08 November 2021
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/hybrid/">hybrid</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
+            </div>
+        </div>
+	</div>
+        </header>
+
+        <!-- Main -->
+        <main class="py-3">
+                <div class="container">
+                    <!-- Sharing -->
+
+                    <!-- Content -->
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>I am not an advocate for hybrid cloud architectures. Or at least, not the
+definition for hybrid cloud that assumes one (cloud or on premise) environment
+is just an extension of another (cloud or on premise) environment. While such
+architectures seem to be simple and fruitful - you can easily add some capacity
+in the other environment to handle burst load - they are a complex beast to
+tame.</p>
+<p><strong>Hybrid cloud complexity starts with the definition</strong></p>
+<p>The first thing that I've already learned is not to use "hybrid cloud" without
+defining what I mean. And if somebody else uses it (or a research article), I
+will frantically try to get a definition on what the person or article implies
+with the term.</p>
+<p><a href="https://azure.microsoft.com/en-us/overview/what-is-hybrid-cloud-computing/">Microsoft</a>
+for instance defines hybrid cloud as "a computing environment that combines an
+on-premises datacenter with a public cloud, allowing data and applications to
+be shared between them."</p>
+<p>This definition isn't unambiguous. What does Microsoft mean with "sharing"? If
+I expose an application and/or its data through APIs that are shielded and
+independently managed in each environment, and allow for interaction between
+those APIs, does that still entail a hybrid cloud architecture? Because if that
+is the case, then I want to know what other cloud interaction architectures
+Microsoft thinks exist besides hybrid cloud.</p>
+<p>I do think that the intention of Microsoft's definition is that the cloud
+hosting environments are considered as "similar enough" to the on premise
+environment, and managed in the same way (some cloud specifics
+notwithstanding), as inspired by their claim that hybrid cloud allow
+"businesses [to] use the cloud to instantly scale capacity up or down to handle
+excess capacity" and that organizations using hybrid cloud architectures "are
+able to use many of the same security mreasures that they use in their existing
+on-premises infrastructure".</p>
+<p><a href="https://www.gartner.com/en/information-technology/glossary/hybrid-cloud-computing">Gartner</a>
+defines hybrid cloud computing as "policy-based and coordinated service
+provisioning, use and management across a mixture of internal and external
+cloud services." That doesn't narrow things down, and in <a href="https://www.gartner.com/document/3956442">(paywalled) research
+articles</a>, Gartner does express that
+"hybrid cloud is a vague term that does not allow enough granularity for
+implementation planning by cloud and infrastructure professionals".</p>
+<p><a href="https://go.forrester.com/blogs/13-08-02-cloud_management_in_a_hybrid_cloud_world/">Forrester</a>
+follows a definition that is very generic, as "a cloud service connected to any
+other corporate resource" makes it a hybrid cloud service. Regardless of how it
+is infrastructurally or application-wise integrated.</p>
+<p><a href="https://www.ibm.com/cloud/learn/hybrid-cloud">IBM</a> declares hybrid cloud as
+"integrates public cloud services, private cloud services and on-premises
+infrastructure and provides orchestration, management and application
+portability across all three. The result is a single, unified and flexible
+distributed computing environment [...]"</p>
+<p>This definition does seem to imply an architecture that considers all hosting
+environments as infrastructurally equal (as they see the sum of all
+environments as a single, unified environment).</p>
+<p><a href="https://en.wikipedia.org/wiki/Cloud_computing#Hybrid_cloud">Wikipedia</a>
+mentions that hybrid cloud "is a composition of a public cloud and a private
+environment [...] that remain distinct entities but are bound together,
+offering the benefits of multiple deployment models." Such a definition leaves
+the implementation details open, as it boils down to any architecture where you
+mix such hosting environments.</p>
+<p>For me, a <strong>hybrid cloud on infrastructure level</strong> implies that the different
+environments are similarly or equally managed, using the same processes,
+principles and most often even tooling, and that application teams have little
+impact on where their application (or application components) are hosted.</p>
+<p><strong>The promise of hybrid cloud towards business</strong></p>
+<p>When business decision makers hear (or are confronted with) hybrid cloud, they
+are often told that it a perfect way to deal with capacity management. Whereas
+a pure on-premise deployment model requires you to purchase and deploy enough
+capacity to deal with your maximum workload (and even more, if you need to
+consider disaster recovery situations), a hybrid cloud could simply "add more
+resources as needed, without requiring the application to be refactored for
+cloud-native or cloud hosting".</p>
+<p>Let's make this more tangible with an example: a simple ticket sales service,
+which consists out of a website (frontend) and an API (which is backend-alike).</p>
+<p><img alt="Ticket sales service overview" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-overview.png"></p>
+<p>The company that manages this ticket sales application is currently fully
+on-premise, with a simple deployment model where the front and backend are
+hosted on a web application hosting cluster (which could be a Kubernetes
+cluster), and the backend also uses a database.</p>
+<p><img alt="Ticket sales high level infrastructure" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-hlinfra.png"></p>
+<p>Ticket sales are seasonally bound, and often ticket sales platforms are
+services offered to the specific events. Suppose a major event wants to sell
+its tickets through this ticket sale application, and you are afraid that the
+website part will not be able to deal with the load, then you could use a
+hybrid cloud setup to enable bursting on the front-end side.</p>
+<p><img alt="Ticket sales high level bursting" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-burstfrontend.png"></p>
+<p>Of course, this is just one of many target architectures that might solve the
+capacity challenge, and there is no reason to believe the API itself wouldn't
+be overloaded as well. But let's stick to this simple example.</p>
+<p>From a business perspective, this all sounds very fun and promising. There
+seems to be no initial investment needed, and the capacity of the cloud is
+limitless, not?</p>
+<p><strong>Network investments needed for such hybrid cloud</strong></p>
+<p>Well, as always, the devil is in the details. If we were to pursue this
+architecture, we need to have the public cloud and the on premise environment
+properly connected. You don't want to use regular Internet access, because the
+intention is to see these environments as a single, unified environment, and
+you don't open up your internal systems directly to the Internet either do you?</p>
+<p>So you need to architect the public cloud usage to be as private as possible,
+and then connect that environment with your on premise network, preferably
+through a high speed private link. Sure, you can use VPN over internet, but
+with a private link you have more guarantees on the latency for instance, and
+for many cloud environments such private link interactions are also bringing
+benefits for data ingress/egress (cheaper for you). They also generally have
+better SLAs (although larger environments will have very high internet-related
+SLAs) and do not require the same security protection measures (like anti-DDoS
+protection).</p>
+<p><img alt="Ticket sales network connectivity" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-connectivity.png"></p>
+<p>In the design, we assume that the end users still first go through your on
+premise environment, as the perimeter protections you have in place for
+instance still need to apply. Perimeter protections are not just simple
+firewall capabilities. It includes</p>
+<ul>
+<li>anti-DDoS measures</li>
+<li>context gathering for, and applying coarse-grained access controls</li>
+<li>intrusion detection and prevention</li>
+<li>anti-malware protection</li>
+<li>application attack prevention</li>
+<li>network traffic filtering</li>
+</ul>
+<p>A perimeter is meant to act as a first line of defense. However, when
+integrating networks from external sites, you still need some protection
+measures applied (shown as external site protection in the diagram), as you are
+handing off some ownership to other parties and thus want to have some
+safeguards in place.</p>
+<p>Because we still have all traffic through the perimeter, burst loads can still
+jeopardize the service offering itself. If the perimeter, internet line, or the
+load balancer that spreads the load across the frontends is saturated, then
+your service will go down. The hybrid cloud setup used in this example wont
+help out here.</p>
+<p>Second, the high speed private link will need to be able to deal with not only
+the load of the user to the frontend (and back), but also between the frontend
+and backend. And if you were to support bursting the backend application to the
+public cloud as well, then it needs to deal with the load between this
+application and the database.</p>
+<p>The link is also often not something you set up yourself between you and the
+public cloud. You will need intermediate parties to support this, as often this
+first requires you to have private links to certain larger networks, and then
+have this larger network set up a private link to the point of presence where
+you want to 'attach' to that public cloud environment.</p>
+<p><strong>Management complexity rises with hybrid cloud</strong></p>
+<p>The investments do not stop just at the network connectivity. You will need to
+look into managing the web application (such as deployment and releases),
+servers (bootstrapping, updating, maintaining), and other network areas.</p>
+<p><img alt="Hybrid cloud management complexity" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-management.png"></p>
+<p>Let's start with the web application management. Your existing management
+systems will now need to deal with the public cloud as well. Your application
+needs to be deployed on multiple clusters, and you will need to reconfigure the
+load balancers in front to know where these clusters are. Unlike the
+pre-installed environments on premise, public cloud is more dynamic (you want
+to use it for bursting after all), so the target IP addresses might change (or
+you set up fixed IP addresses, but that costs money even when you don't use
+them).</p>
+<p>You will need to deal with deployments that can succeed left and fail right, or
+vice-versa. While this is not impossible to deal with, the current way of
+working might not support that yet because, you know, you never had to deal
+with it.</p>
+<p>What about tracking performance and user experience? Your application
+management suite might not know about public cloud setups yet, and once
+included, it might find that there is latency impact. But can you just use this
+APM suite in the public cloud? Perhaps your company has a site license which
+does not include other locations. Or it requires per-node licenses, and require
+each node to be assigned a license for 30 days at least. In case of burst
+situations, you might only have these systems up for a few hours, and with the
+next action, these will be new nodes with new licenses.</p>
+<p>Also on the server management level you might find many obstacles. Your on
+premise system might use a certain hypervisor integration (e.g. using VMware
+vCenter API) which you don't have in the public cloud. So you need to adapt the
+management system anyway, which means you need to develop your management
+systems to create a hybrid cloud, rather than reap the benefits of hybrid cloud
+directly.</p>
+<p>Your servers might use many control systems that have the same licensing issues
+as mentioned earlier. Or they are latency-bound, causing either reachability
+issues, or requiring you to adapt the infrastructure architecture of these
+management systems to be aware of the public cloud.</p>
+<p>Also on network management level it isn't just about connectivity. Your
+firewall management might not see the public cloud firewalls automatically (or
+doesn't support it), or your current network design doesn't allow for the
+bursting of network environments (subnets) in a sufficient dynamic manner.</p>
+<p>The more you consider this hybrid cloud situation, the more you find out that
+you will need to revisit all management, support and control systems for this
+setup. And you know what is hard to do in an IT environment? Reassessing <em>all</em>
+management, support and control systems. You are effectively redesigning your
+entire IT environment, and that is exactly what the promise of "hybrid cloud"
+wanted to take away. Or at least, the promise that is done to certain decision
+makers.</p>
+<p><strong>Vendors know that it is complex (and are happy because of it)</strong></p>
+<p>Most of the IT vendors that are related to the management, support and control
+of your infrastructure, will say that management in hybrid cloud is hard: <a href="https://www.redhat.com/en/blog/operating-hybrid-architecture-and-managing-complexity">Red
+Hat</a>
+for instance mentions in its container-related article that "Saying that
+Kubernetes makes it possible to build a cross-environment management layer
+doesn't mean it's easy". <a href="https://blogs.arubanetworks.com/solutions/easing-the-complexity-of-hybrid-cloud/">Aruba
+Networks</a>
+(part of PHE) mentions that "the major drawback is complex management of these
+platforms". Consulting firms concur as well, with for instance David Linthicum,
+Chief Cloud Strategy Officer of Deloitte Consulting, mentioning in <a href="https://techbeacon.com/enterprise-it/4-things-you-need-know-about-managing-complex-hybrid-clouds">4 things
+you need to know about managing complex hybrid
+clouds</a>
+that "hybrid clouds are usually complex, hard to build, and hard to manage".</p>
+<p>Of course, IT vendors will be happy to tell you that it is hard (and for once I
+concur), because they will then follow up with how their shiny tool supports
+hybrid cloud much better than your existing ones. IT vendors know that an
+infrastructural hybrid cloud means a redesign of (many parts of) your IT
+architecture, so there is big money involved.</p>
+<p>Hence, it is important that hybrid cloud endeavours are assessed completely,
+and that your business decision makers hold off with the decision until the
+full scope of this exercise is known (or at least, you have a decent ballpark
+estimate on the impact, not just financially, but also time-to-market). </p>
+<p>So, what are all the areas you need to consider? That's difficult to state, but
+hopefully the list below can help you out:</p>
+<ul>
+<li>How are your servers bootstrapped (initial deployment)? Can this interact
+  with the cloud APIs to do the same in the cloud, or will you need to adapt
+  your processes?</li>
+<li>Once your server is bootstrapped, how do you add software, libraries and
+  other artefacts to it?</li>
+<li>What security services do you need on your systems? Anti-malware? Behavior
+  analytics? Intrusion detection and prevention? Privileged access management
+  utilities? </li>
+<li>How do your engineers and administrators follow-up on the systems? Monitoring
+  approaches? Application performance management? Trace capabilities? Logging?</li>
+<li>Are there any control systems in place that manage the infrastructure? Are
+  these control systems latency-sensitive?</li>
+<li>How do you deal with applicative releases? If you have CI/CD infrastructure
+  in place, how would it deal with a burst environment? Does it have any
+  dynamical detection capabilities?</li>
+<li>Can your support systems deal with more ephemeral infrastructure (capacity that
+  is added for a few hours and then removed again)?</li>
+<li>Can your processes deal with ephemeral infrastructure?</li>
+</ul>
+<p>Perhaps your current environment is already capable of dealing with such hybrid
+clouds. While the situations I am confronted with at work support my view that
+we need to apply a different 'hybrid' approach than the 'seamless
+infrastructure' one (I like to see the environments progress more
+independently, gradually move towards a <a href="https://www.nist.gov/publications/zero-trust-architecture">zero
+trust</a> model), I do
+believe that such hybrid cloud setups can work in certain situations.</p>
+<p><strong>Conclusions and feedback</strong></p>
+<p>If you do come across an intention declaration to move to a hybrid cloud (which
+follows the infrastructural 'seamless' setup as implied in this post), make
+sure you inform the stakeholders of the consequences. Show that a majority of
+management, support and control systels are not designed nor capable of dealing
+with this bursting out-of-the-box, and that this will require a significant IT
+investment which might not be visible to the decision maker currently.</p>
+<p>If you have the time and resources, try to already build up the arguments for
+it by focusing on your management, support and control systems, validating how
+ready they would be, and what types of investments would be needed. Compare
+this with a setup where the infrastructure side of the hybrid cloud still uses
+separate environments, and where you manage each environment using the
+strengths of that environment.</p>
+<p>Feedback? Comments? Don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
+email</a>, or join the <a href="https://twitter.com/infrainsight/status/TODO">discussion on
+Twitter</a>.</p>
+
+        </div>
+
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
+                </div>
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="flex-shrink-0 bg-dark text-light small py-1">
+        <div class="container text-center">
+            &copy;  <a href="https://blog.siphos.be">Simplicity is a form of art...</a> by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>. Powered by <a href="http://getpelican.com">Pelican</a>, <a href="http://python.org">Python</a>, <a href="https://getbootstrap.com">Bootstrap 4</a><br>
+            <!-- Do not remove below license sentence -->
+            License: <a href="https://spdx.org/licenses/CC-BY-4.0.html">CC-BY-4.0</a>, based on <a href="https://github.com/vuquangtrong/simplify-theme">Simplify Bootstrap Theme</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/jquery/jquery-3.4.1.min.js"></script>
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/bootstrap/bootstrap.min.js"></script>
+    <!--
+    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/style.js"></script>
+
+    <!-- Sharing -->
+
+    <!-- JSON LD -->
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Hybrid cloud can be very complex",
+    "headline": "Hybrid cloud can be very complex",
+    "datePublished": "2021-11-08 20:00:00+01:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/pages/about.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/2021/11/hybrid-cloud-can-be-very-complex/",
+    "description": "I am not an advocate for hybrid cloud architectures. Or at least, not the definition for hybrid cloud that assumes one (cloud or on premise) environment is just an extension of another (cloud or on premise) environment. While such architectures seem to be simple and fruitful - you can easily add some capacity in the other environment to handle burst load - they are a complex beast to tame. Hybrid cloud complexity starts with the definition The first thing that I've already learned is not to use "hybrid cloud" without defining what I mean. And if somebody else uses it (or a research article), I will frantically try to get a definition on what the person or article implies with the term. Microsoft for instance defines hybrid cloud as "a computing environment that combines an on-premises datacenter with a public cloud, allowing data and applications to be shared between them." This definition isn't unambiguous. What does Microsoft mean with "sharing"? If I expose an application and/or its data through APIs that are shielded and independently managed in each environment, and allow for interaction between those APIs, does that still entail a hybrid cloud architecture? Because if that is the case, then I want to know what other cloud interaction architectures Microsoft thinks exist besides hybrid cloud. I do think that the intention of Microsoft's definition is that the cloud hosting environments are considered as "similar enough" to the on premise environment, and managed in the same way (some cloud specifics notwithstanding), as inspired by their claim that hybrid cloud allow "businesses [to] use the cloud to instantly scale capacity up or down to handle excess capacity" and that organizations using hybrid cloud architectures "are able to use many of the same security mreasures that they use in their existing on-premises infrastructure". Gartner defines hybrid cloud computing as "policy-based and coordinated service provisioning, use and management across a mixture of internal and external cloud services." That doesn't narrow things down, and in (paywalled) research articles, Gartner does express that "hybrid cloud is a vague term that does not allow enough granularity for implementation planning by cloud and infrastructure professionals". Forrester follows a definition that is very generic, as "a cloud service connected to any other corporate resource" makes it a hybrid cloud service. Regardless of how it is infrastructurally or application-wise integrated. IBM declares hybrid cloud as "integrates public cloud services, private cloud services and on-premises infrastructure and provides orchestration, management and application portability across all three. The result is a single, unified and flexible distributed computing environment [...]" This definition does seem to imply an architecture that considers all hosting environments as infrastructurally equal (as they see the sum of all environments as a single, unified environment). Wikipedia mentions that hybrid cloud "is a composition of a public cloud and a private environment [...] that remain distinct entities but are bound together, offering the benefits of multiple deployment models." Such a definition leaves the implementation details open, as it boils down to any architecture where you mix such hosting environments. For me, a hybrid cloud on infrastructure level implies that the different environments are similarly or equally managed, using the same processes, principles and most often even tooling, and that application teams have little impact on where their application (or application components) are hosted. The promise of hybrid cloud towards business When business decision makers hear (or are confronted with) hybrid cloud, they are often told that it a perfect way to deal with capacity management. Whereas a pure on-premise deployment model requires you to purchase and deploy enough capacity to deal with your maximum workload (and even more, if you need to consider disaster recovery situations), a hybrid cloud could simply "add more resources as needed, without requiring the application to be refactored for cloud-native or cloud hosting". Let's make this more tangible with an example: a simple ticket sales service, which consists out of a website (frontend) and an API (which is backend-alike). The company that manages this ticket sales application is currently fully on-premise, with a simple deployment model where the front and backend are hosted on a web application hosting cluster (which could be a Kubernetes cluster), and the backend also uses a database. Ticket sales are seasonally bound, and often ticket sales platforms are services offered to the specific events. Suppose a major event wants to sell its tickets through this ticket sale application, and you are afraid that the website part will not be able to deal with the load, then you could use a hybrid cloud setup to enable bursting on the front-end side. Of course, this is just one of many target architectures that might solve the capacity challenge, and there is no reason to believe the API itself wouldn't be overloaded as well. But let's stick to this simple example. From a business perspective, this all sounds very fun and promising. There seems to be no initial investment needed, and the capacity of the cloud is limitless, not? Network investments needed for such hybrid cloud Well, as always, the devil is in the details. If we were to pursue this architecture, we need to have the public cloud and the on premise environment properly connected. You don't want to use regular Internet access, because the intention is to see these environments as a single, unified environment, and you don't open up your internal systems directly to the Internet either do you? So you need to architect the public cloud usage to be as private as possible, and then connect that environment with your on premise network, preferably through a high speed private link. Sure, you can use VPN over internet, but with a private link you have more guarantees on the latency for instance, and for many cloud environments such private link interactions are also bringing benefits for data ingress/egress (cheaper for you). They also generally have better SLAs (although larger environments will have very high internet-related SLAs) and do not require the same security protection measures (like anti-DDoS protection). In the design, we assume that the end users still first go through your on premise environment, as the perimeter protections you have in place for instance still need to apply. Perimeter protections are not just simple firewall capabilities. It includes anti-DDoS measures context gathering for, and applying coarse-grained access controls intrusion detection and prevention anti-malware protection application attack prevention network traffic filtering A perimeter is meant to act as a first line of defense. However, when integrating networks from external sites, you still need some protection measures applied (shown as external site protection in the diagram), as you are handing off some ownership to other parties and thus want to have some safeguards in place. Because we still have all traffic through the perimeter, burst loads can still jeopardize the service offering itself. If the perimeter, internet line, or the load balancer that spreads the load across the frontends is saturated, then your service will go down. The hybrid cloud setup used in this example wont help out here. Second, the high speed private link will need to be able to deal with not only the load of the user to the frontend (and back), but also between the frontend and backend. And if you were to support bursting the backend application to the public cloud as well, then it needs to deal with the load between this application and the database. The link is also often not something you set up yourself between you and the public cloud. You will need intermediate parties to support this, as often this first requires you to have private links to certain larger networks, and then have this larger network set up a private link to the point of presence where you want to 'attach' to that public cloud environment. Management complexity rises with hybrid cloud The investments do not stop just at the network connectivity. You will need to look into managing the web application (such as deployment and releases), servers (bootstrapping, updating, maintaining), and other network areas. Let's start with the web application management. Your existing management systems will now need to deal with the public cloud as well. Your application needs to be deployed on multiple clusters, and you will need to reconfigure the load balancers in front to know where these clusters are. Unlike the pre-installed environments on premise, public cloud is more dynamic (you want to use it for bursting after all), so the target IP addresses might change (or you set up fixed IP addresses, but that costs money even when you don't use them). You will need to deal with deployments that can succeed left and fail right, or vice-versa. While this is not impossible to deal with, the current way of working might not support that yet because, you know, you never had to deal with it. What about tracking performance and user experience? Your application management suite might not know about public cloud setups yet, and once included, it might find that there is latency impact. But can you just use this APM suite in the public cloud? Perhaps your company has a site license which does not include other locations. Or it requires per-node licenses, and require each node to be assigned a license for 30 days at least. In case of burst situations, you might only have these systems up for a few hours, and with the next action, these will be new nodes with new licenses. Also on the server management level you might find many obstacles. Your on premise system might use a certain hypervisor integration (e.g. using VMware vCenter API) which you don't have in the public cloud. So you need to adapt the management system anyway, which means you need to develop your management systems to create a hybrid cloud, rather than reap the benefits of hybrid cloud directly. Your servers might use many control systems that have the same licensing issues as mentioned earlier. Or they are latency-bound, causing either reachability issues, or requiring you to adapt the infrastructure architecture of these management systems to be aware of the public cloud. Also on network management level it isn't just about connectivity. Your firewall management might not see the public cloud firewalls automatically (or doesn't support it), or your current network design doesn't allow for the bursting of network environments (subnets) in a sufficient dynamic manner. The more you consider this hybrid cloud situation, the more you find out that you will need to revisit all management, support and control systems for this setup. And you know what is hard to do in an IT environment? Reassessing all management, support and control systems. You are effectively redesigning your entire IT environment, and that is exactly what the promise of "hybrid cloud" wanted to take away. Or at least, the promise that is done to certain decision makers. Vendors know that it is complex (and are happy because of it) Most of the IT vendors that are related to the management, support and control of your infrastructure, will say that management in hybrid cloud is hard: Red Hat for instance mentions in its container-related article that "Saying that Kubernetes makes it possible to build a cross-environment management layer doesn't mean it's easy". Aruba Networks (part of PHE) mentions that "the major drawback is complex management of these platforms". Consulting firms concur as well, with for instance David Linthicum, Chief Cloud Strategy Officer of Deloitte Consulting, mentioning in 4 things you need to know about managing complex hybrid clouds that "hybrid clouds are usually complex, hard to build, and hard to manage". Of course, IT vendors will be happy to tell you that it is hard (and for once I concur), because they will then follow up with how their shiny tool supports hybrid cloud much better than your existing ones. IT vendors know that an infrastructural hybrid cloud means a redesign of (many parts of) your IT architecture, so there is big money involved. Hence, it is important that hybrid cloud endeavours are assessed completely, and that your business decision makers hold off with the decision until the full scope of this exercise is known (or at least, you have a decent ballpark estimate on the impact, not just financially, but also time-to-market). So, what are all the areas you need to consider? That's difficult to state, but hopefully the list below can help you out: How are your servers bootstrapped (initial deployment)? Can this interact with the cloud APIs to do the same in the cloud, or will you need to adapt your processes? Once your server is bootstrapped, how do you add software, libraries and other artefacts to it? What security services do you need on your systems? Anti-malware? Behavior analytics? Intrusion detection and prevention? Privileged access management utilities? How do your engineers and administrators follow-up on the systems? Monitoring approaches? Application performance management? Trace capabilities? Logging? Are there any control systems in place that manage the infrastructure? Are these control systems latency-sensitive? How do you deal with applicative releases? If you have CI/CD infrastructure in place, how would it deal with a burst environment? Does it have any dynamical detection capabilities? Can your support systems deal with more ephemeral infrastructure (capacity that is added for a few hours and then removed again)? Can your processes deal with ephemeral infrastructure? Perhaps your current environment is already capable of dealing with such hybrid clouds. While the situations I am confronted with at work support my view that we need to apply a different 'hybrid' approach than the 'seamless infrastructure' one (I like to see the environments progress more independently, gradually move towards a zero trust model), I do believe that such hybrid cloud setups can work in certain situations. Conclusions and feedback If you do come across an intention declaration to move to a hybrid cloud (which follows the infrastructural 'seamless' setup as implied in this post), make sure you inform the stakeholders of the consequences. Show that a majority of management, support and control systels are not designed nor capable of dealing with this bursting out-of-the-box, and that this will require a significant IT investment which might not be visible to the decision maker currently. If you have the time and resources, try to already build up the arguments for it by focusing on your management, support and control systems, validating how ready they would be, and what types of investments would be needed. Compare this with a setup where the infrastructure side of the hybrid cloud still uses separate environments, and where you manage each environment using the strengths of that environment. Feedback? Comments? Don't hesitate to drop me an email, or join the discussion on Twitter."
+}
+</script>
+    <!-- Disqus count -->
+</body>
+
+</html>
