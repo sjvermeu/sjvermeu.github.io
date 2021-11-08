@@ -10,6 +10,8 @@ understanding what it actually means or why you are implementing it, you will
 probably make the assumption that this will prevent the data from being
 accessed by unauthorized users. Nothing can be further from the truth.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Listing the threats to protect against**
 
 Let's first list the threats you want to protect against. It is beneficial that
@@ -253,4 +255,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1450345580778110980).
 
-<!-- PELICAN_END_SUMMARY -->

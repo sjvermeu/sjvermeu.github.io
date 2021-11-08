@@ -1,9 +1,9 @@
 Title: Hybrid cloud can be very complex
-Date: 2021-09-01 00:00
+Date: 2021-11-08 20:00
 Category: Architecture
 Tags: hybrid,cloud
 Slug: hybrid-cloud-can-be-very-complex
-Status: draft
+Status: published
 
 I am not an advocate for hybrid cloud architectures. Or at least, not the
 definition for hybrid cloud that assumes one (cloud or on premise) environment
@@ -88,14 +88,14 @@ cloud-native or cloud hosting".
 Let's make this more tangible with an example: a simple ticket sales service,
 which consists out of a website (frontend) and an API (which is backend-alike).
 
-![Ticket sales service overview]({static}/images/pending/hybridcloud-ticketsales-overview.png)
+![Ticket sales service overview]({static}/images/202111/hybridcloud-ticketsales-overview.png)
 
 The company that manages this ticket sales application is currently fully
 on-premise, with a simple deployment model where the front and backend are
 hosted on a web application hosting cluster (which could be a Kubernetes
 cluster), and the backend also uses a database.
 
-![Ticket sales high level infrastructure]({static}/images/pending/hybridcloud-ticketsales-hlinfra.png)
+![Ticket sales high level infrastructure]({static}/images/202111/hybridcloud-ticketsales-hlinfra.png)
 
 Ticket sales are seasonally bound, and often ticket sales platforms are
 services offered to the specific events. Suppose a major event wants to sell
@@ -103,7 +103,7 @@ its tickets through this ticket sale application, and you are afraid that the
 website part will not be able to deal with the load, then you could use a
 hybrid cloud setup to enable bursting on the front-end side.
 
-![Ticket sales high level bursting]({static}/images/pending/hybridcloud-ticketsales-burstfrontend.png)
+![Ticket sales high level bursting]({static}/images/202111/hybridcloud-ticketsales-burstfrontend.png)
 
 Of course, this is just one of many target architectures that might solve the
 capacity challenge, and there is no reason to believe the API itself wouldn't
@@ -131,7 +131,7 @@ better SLAs (although larger environments will have very high internet-related
 SLAs) and do not require the same security protection measures (like anti-DDoS
 protection).
 
-![Ticket sales network connectivity]({static}/images/pending/hybridcloud-ticketsales-connectivity.png)
+![Ticket sales network connectivity]({static}/images/202111/hybridcloud-ticketsales-connectivity.png)
 
 In the design, we assume that the end users still first go through your on
 premise environment, as the perimeter protections you have in place for
@@ -175,7 +175,7 @@ The investments do not stop just at the network connectivity. You will need to
 look into managing the web application (such as deployment and releases),
 servers (bootstrapping, updating, maintaining), and other network areas.
 
-![Hybrid cloud management complexity]({static}/images/pending/hybridcloud-ticketsales-management.png)
+![Hybrid cloud management complexity]({static}/images/202111/hybridcloud-ticketsales-management.png)
 
 Let's start with the web application management. Your existing management
 systems will now need to deal with the public cloud as well. Your application
