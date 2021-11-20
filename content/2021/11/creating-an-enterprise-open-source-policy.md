@@ -1,9 +1,9 @@
 Title: Creating an enterprise open source policy
-Date: 2021-09-01 00:00
+Date: 2021-11-20 15:00
 Category: Architecture
 Tags: opensource,enterprise,legal,compliance
 Slug: creating-an-enterprise-open-source-policy
-Status: draft
+Status: published
 
 Nowadays it is impossible to ignore, or even prevent open source from being
 active within the enterprise world. Even if a company only wants to use

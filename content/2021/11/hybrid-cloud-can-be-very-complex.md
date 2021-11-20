@@ -12,6 +12,8 @@ architectures seem to be simple and fruitful - you can easily add some capacity
 in the other environment to handle burst load - they are a complex beast to
 tame.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Hybrid cloud complexity starts with the definition**
 
 The first thing that I've already learned is not to use "hybrid cloud" without
@@ -302,4 +304,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1457745672304840709).
 
-<!-- PELICAN_END_SUMMARY -->
