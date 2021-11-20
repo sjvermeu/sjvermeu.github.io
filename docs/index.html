@@ -197,6 +197,273 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2021/11/creating-an-enterprise-open-source-policy/">Creating an enterprise open source policy</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 20 November 2021</span></span>
+                <p><p>Nowadays it is impossible to ignore, or even prevent open source from being
+active within the enterprise world. Even if a company only wants to use
+commercially backed solutions, many - if not most - of these are built with, and
+are using open source software.</p>
+<p>However, open source is more than just a code sourcing possibility. By having a
+good statement within the company on how it wants to deal with open source, what
+it wants to support, etc. engineers and developers can have a better
+understanding of what they can do to support their business further.</p>
+<p>In many cases, companies will draft up an <em>open source policy</em>, and in this post
+I want to share some practices I've learned on how to draft such a policy.</p>
+<p><strong>Assess the current situation</strong></p>
+<p>When drafting a policy, make sure you know what the current situation already
+is. Especially when the policy might be very restrictive, you might be facing a
+huge backlash from the organization if the policy is not reflecting the reality.
+If that is the case, and the policy still needs to go through, proper
+communication and grooming will be needed (and of course, the "upper management
+hammer" can help out as well).</p>
+<p>Often, higher management is not aware of the current situation either. They
+might think that open source is hardly in use. Presenting them with facts and
+figures not only makes it more understandable, it will also support the need for
+a decent open source policy.</p>
+<p>When you have a good view on the current usage, you can use that to track where
+you want to go to. For instance, if your company wants to adopt open source more
+actively, and pursue open source contributions, you might want to report on the
+currently detected contributions, and use that for follow-up later.</p>
+<p><strong>Get HR and compliance involved</strong></p>
+<p>Before you embark on the journey of developing a decent open source policy, make
+sure you have management support on this, as well as people from HR and your
+compliance department (unless your policy will be extremely restrictive, but
+let's hope that is not the case).</p>
+<p>You will need (legal &amp;) compliance involved in order to draft and assess the
+impact of internal developers and engineers working on open source projects, as
+well as the same people working on open source projects in their free time. Both
+are different use cases but have to be assessed regardless.</p>
+<p>HR is generally involved at a later stage, so they know how the company wants to
+deal with open source development. This could be useful for recruitment, but
+also for HR to understand what the policy is about in case of issues.</p>
+<p>An important consideration to assess is how the company, and the contractual
+obligations that the employees have, deals with intellectual property. In some
+companies, the contract allows for the employees to retain the intellectual
+property rights for their creations outside of company projects. However, that
+is not always the case, and in certain sectors intellectual property might be
+assumed to be owned by the company whenever the creation is something in which
+the company is active. And that might be considered very broadly (such as
+anything IT related for employees of an IT company).</p>
+<p>The open source policy that you develop should know what the contractual
+stipulations say, and clarify for engineers and developers how the company
+considers the intellectual property ownership. This is important, as it defines
+who can decide to contribute something to open source.</p>
+<p><strong>Understand and simplify license requirements</strong></p>
+<p>Many of the decisions that the open source policy has to clarify will be related
+to the open source licenses in use. Moreover, it might even be relevant to
+define what open source is to begin with.</p>
+<p>A good source to use is the <a href="https://opensource.org/osd">Open Source Definition</a>
+as published and maintained by the <a href="https://opensource.org/">Open Source Initiative
+(OSI)</a>. Another definition is the one by the <a href="https://www.fsf.org/">Free
+Software Foundation</a> titled "<a href="https://www.fsf.org/about/what-is-free-software">What is free software and
+why is it so important for society</a>".</p>
+<p>The license is the agreement that the owner of the software puts out that
+declares how users can use that software. Most, if not all software that a
+company uses, will have a license - open source or not. But most commercial
+software titles have specific licenses that you need to go through for each
+specific product, as the licenses are not reused. In the open source world,
+licenses are reused so that end users do not need to go through product-specific
+terms.</p>
+<p>The OSI organization has a list of <a href="https://opensource.org/licenses">approved
+licenses</a>. However, even amongst these
+licenses, you will find different types of licenses out there. While they are
+commonly grouped into <a href="https://en.wikipedia.org/wiki/Copyleft">copyleft</a> and
+<a href="https://fossa.com/blog/all-about-permissive-licenses/">permissive</a> open source
+licenses, there are two main categories within the copyleft licenses that you
+need to understand:</p>
+<ul>
+<li>strong copyleft licenses that require making all source code available upon
+  distribution, or sometimes even disclosure of the application base</li>
+<li>"scoped" copyleft licenses that require making only the source code available of the
+  modules or libraries that use the open source license (especially if you
+  modified them) without impacting the entire application</li>
+</ul>
+<p>While the term "strong copyleft" is something that I think is somewhat generally
+accepted (such as in the Snyk article "<a href="https://snyk.io/learn/open-source-licenses/">Open Source Licenses: Types and
+Comparison</a>" or in <a href="https://en.wikipedia.org/wiki/Copyleft">Wikipedia's
+article</a>), I do not like to use its
+opposite "weak" term, as the licenses themselves do not reduce the open source
+identity from the code. Instead, they make sure the scope of the license is
+towards a particular base (such as a library) and not the complete application
+that uses the license.</p>
+<p>Hence, open source policies might want to focus on those three license types for
+each of the use cases:</p>
+<ul>
+<li>permissive licenses, like Apache License 2.0 or MIT</li>
+<li>scoped copyleft licenses, like LGPL or EPL-2.0</li>
+<li>strong copyleft licenses, like GPL or AGPL</li>
+</ul>
+<p><strong>Differentiate on the different open source use cases</strong></p>
+<p>There are several use cases that the policy will need to tackle. These are, in
+no particular order:</p>
+<ul>
+<li>Using off-the-shelf, ready-to-use open source products</li>
+<li>Using off-the-shelf libraries and modules for development</li>
+<li>Using open source code</li>
+<li>Contributing to open source projects for company purposes</li>
+<li>Contributing to open source projects for personal/private purposes</li>
+<li>Launching and maintaining open source projects from the company</li>
+</ul>
+<p>Each of these use cases might have their specific focuses. Combine that with the
+license categories listed earlier, and you can start assessing how to deal with
+these situations.</p>
+<p>For instance, you might want to have a policy that generally boils down to the
+following:</p>
+<ul>
+<li>When using off-the-shelf, ready-to-use open source products, all types of
+  products are allowed, assuming the organization remains able to support the
+  technologies adopted. Furthermore, the products have to be known by the
+  inventory and asset tooling used by the company.</li>
+<li>When using libraries or modules in development projects, only open source
+  products with permissive or scoped copyleft licenses can be used. Furthermore,
+  the libraries or modules have to be well managed (kept up-to-date) and known
+  by the inventory and asset tooling used by the company.</li>
+<li>When using open source code, only code that is published with a permissive
+  license can be used. At all times, a reference towards the original author
+  has to be retained.</li>
+<li>When contributing to open source projects for company purposes, approval has
+  to be given by the hierarchical manager of the team. Contributions have to be
+  tagged appropriately as originating from the company (e.g. using the company
+  e-mail address as author). Furthermore, employees are not allowed to
+  contribute code or intellectual property that is deemed a competitive
+  advantage for the company.</li>
+<li>When contributing to open source projects for personal/private purposes,
+  employees are prohibited to use code from the company or to do contributions
+  using their company's e-mail address. However, the company does not claim
+  ownership on the contributions an employee does outside the company's projects
+  and hours.</li>
+<li>When creating new projects or publishing internal projects as open source,
+  sufficient support for the project has to be granted from the company, and the
+  publications are preferentially done within the same development services
+  (like version control) under management of the company. This ensures
+  consistency and control over the company's assets and liability. Projects have
+  to use a permissive license (and perhaps even a single, particular license).</li>
+</ul>
+<p>Or, if the company actively pursues an open source first strategy:</p>
+<ul>
+<li>Off-the-shelf, ready-to-use open source products are preferred over
+  propriatary products. Internal support teams must be able to deal with
+  general maintenance and updates. The use of commercially backed products is
+  not mandatory, but might help when there is a need for acquiring short-term
+  support (such as through independent consultants).</li>
+<li>Development projects must use projects that use permissive or scoped copyleft
+  licenses for the libraries and dependencies of that project. Only when the
+  development project itself uses a strong copyleft license are dependencies
+  with (the same) strong copyleft license allowed. Approval to use a strong
+  copyleft license is left to the management board.</li>
+<li>Engineers and developers retain full intellectual property rights to their
+  contributions. However, a Contributor License Agreement (CLA) is used to grant
+  the company the rights to use and distribute the contributions under the
+  license mentioned, as well as initiate or participate in legal actions related
+  to the contributed code.</li>
+</ul>
+<p><strong>Clarify what is allowed to be contributed and what not</strong></p>
+<p>In the above example I already indicated a "do not contribute code that is
+deemed a competitive advantage" statement. While it would be common sense,
+companies will need to clarify this (if they follow this principle) in their
+policies so they are not liable for problems later on.</p>
+<p>A competitive advantage primarily focuses on a company's crown jewels, but can
+be extended with code or other intellectual property (like architectural
+information, documentation, etc.) that refers to indirect advantageous
+solutions. If a company is a strong data-driven company that gains massive
+insights from data, it might refuse to share its artificial intelligence related
+code.</p>
+<p>There are other principles that might decide if code is contributed or not. For
+instance, the company might only want to contribute code that has received all
+the checks and controls to ensure it is secure, it is effective and efficient,
+and is understandable and well-written. After all, when such contributions are
+made in name of the company, the quality of that code reflects upon the company
+as well.</p>
+<p>I greatly suggest to include examples in the open source policy to clarify or
+support certain statements.</p>
+<p><strong>Assess the maturity of an open source product</strong></p>
+<p>When supporting the use of open source products, the policy will also have to
+decide which open source products can be used and which ones can't. Now, it is
+it possible to create an exhaustive list (as that would defeat the purpose of an
+open source policy). Instead, I recommend to clarify how stakeholders can assess
+if an open source product can be used or not.</p>
+<p>Personally, I consider this from a "maturity" point of view. Open source
+products that are mature are less likely to become a liability within a larger
+company, whereas products that only have a single maintained (like my own
+<a href="https://github.com/sjvermeu/cvechecker">cvechecker</a> project) are not to be used
+without understanding the consequences.</p>
+<p>So, what is a mature open source project? There are online resources that could
+help you out (like the Qualipso-originated <a href="https://en.wikipedia.org/wiki/OpenSource_Maturity_Model">Open Source Maturity Model
+(OSMM)</a>), but
+personally I tend to look at the following principles:</p>
+<ul>
+<li>The project has an active development, with more than 5 active contributors in
+  the last three months.</li>
+<li>The project is visibly used by several other projects or products.</li>
+<li>The project has well-maintained documentation, both for developers and for
+  users. This can very well be a decent wiki site.</li>
+<li>The project has an active support community, with not only an issue system,
+  but also interactive services like forums, IRC, Slack, Discord, etc.</li>
+<li>The project supports more than one major version in parallel, and has a clear
+  lifecycle for its support (such as "major version is supported up to at least
+  1 year after the next major version is released").</li>
+<li>The project publishes its artefacts in a controlled and secure manner.</li>
+</ul>
+<p><strong>A policy is just the beginning, not the end</strong></p>
+<p>As always, there will be situations where a company wants to allow a one-off
+case to deviate from the policy. Hence, make clear how deviations can be
+targeted.</p>
+<p>For instance, you might want to position an architecture review board to support
+deviations from the license usage. When you do, make sure that this governance
+body knows how to deal with such deviations - understanding what licenses are,
+what the impact might be towards the organization, etc.</p>
+<p>Furthermore, once the policy is ready to be made available, make sure you have
+support for that policy in the organization, as well as supporting tools and
+processes.</p>
+<p>You might want to include an internal community to support open source/free
+software endeavors. This community can help other stakeholders with the
+assessment of a product's maturity, or with the license identification.</p>
+<p>You might want to make sure you can track license usage in projects and
+deployments. For software development projects, there are plenty of commercial
+and free services that scan and present license usage (and other details) for a
+project. Inventory and asset management utilities often also include
+identification of detected software. Validate that you can report on open source
+usage if the demand comes up, and that you can support development and
+engineering teams in ensuring open source usage is in line with the company's
+expectations.</p>
+<p>The company might want to dedicate resources in additional leakage detection and
+prevention measures for the open source contributions. While the company might
+already have code scanning techniques in place in their on-premise version
+control system, it might be interesting to extend this service to the public
+services (like <a href="https://github.com/">GitHub</a> and
+<a href="https://about.gitlab.com/">GitLab</a>). And with that, I do not want to imply
+using the same tools and integrations, but more on a functional level.</p>
+<p><strong>Finishing off</strong></p>
+<p>A few companies, and most governmental organizations, publish their open source
+policies online. The <a href="https://todogroup.org/">TODO Group</a> has graceously drafted
+a <a href="https://github.com/todogroup/policies">list of examples and templates</a> to
+use. They might be a good resource to use when drafting up your own.</p>
+<p>Having a clear and understandable open source policy simplifies discussions, and
+with the appropriate support within the organization it might jumpstart
+initiatives even further. Assuming the policy is sufficiently supportive of open
+source, having it published might eliminate the fear of engineers and developers
+to suggest certain open source projects.</p>
+<p>Feedback? Comments? Don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
+email</a>, or join the <a href="https://twitter.com/infrainsight/status/TODO">discussion on
+Twitter</a>.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/opensource/">opensource</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/enterprise/">enterprise</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/legal/">legal</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/compliance/">compliance</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2021/11/hybrid-cloud-can-be-very-complex/">Hybrid cloud can be very complex</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 08 November 2021</span></span>
@@ -206,248 +473,6 @@ is just an extension of another (cloud or on premise) environment. While such
 architectures seem to be simple and fruitful - you can easily add some capacity
 in the other environment to handle burst load - they are a complex beast to
 tame.</p>
-<p><strong>Hybrid cloud complexity starts with the definition</strong></p>
-<p>The first thing that I've already learned is not to use "hybrid cloud" without
-defining what I mean. And if somebody else uses it (or a research article), I
-will frantically try to get a definition on what the person or article implies
-with the term.</p>
-<p><a href="https://azure.microsoft.com/en-us/overview/what-is-hybrid-cloud-computing/">Microsoft</a>
-for instance defines hybrid cloud as "a computing environment that combines an
-on-premises datacenter with a public cloud, allowing data and applications to
-be shared between them."</p>
-<p>This definition isn't unambiguous. What does Microsoft mean with "sharing"? If
-I expose an application and/or its data through APIs that are shielded and
-independently managed in each environment, and allow for interaction between
-those APIs, does that still entail a hybrid cloud architecture? Because if that
-is the case, then I want to know what other cloud interaction architectures
-Microsoft thinks exist besides hybrid cloud.</p>
-<p>I do think that the intention of Microsoft's definition is that the cloud
-hosting environments are considered as "similar enough" to the on premise
-environment, and managed in the same way (some cloud specifics
-notwithstanding), as inspired by their claim that hybrid cloud allow
-"businesses [to] use the cloud to instantly scale capacity up or down to handle
-excess capacity" and that organizations using hybrid cloud architectures "are
-able to use many of the same security mreasures that they use in their existing
-on-premises infrastructure".</p>
-<p><a href="https://www.gartner.com/en/information-technology/glossary/hybrid-cloud-computing">Gartner</a>
-defines hybrid cloud computing as "policy-based and coordinated service
-provisioning, use and management across a mixture of internal and external
-cloud services." That doesn't narrow things down, and in <a href="https://www.gartner.com/document/3956442">(paywalled) research
-articles</a>, Gartner does express that
-"hybrid cloud is a vague term that does not allow enough granularity for
-implementation planning by cloud and infrastructure professionals".</p>
-<p><a href="https://go.forrester.com/blogs/13-08-02-cloud_management_in_a_hybrid_cloud_world/">Forrester</a>
-follows a definition that is very generic, as "a cloud service connected to any
-other corporate resource" makes it a hybrid cloud service. Regardless of how it
-is infrastructurally or application-wise integrated.</p>
-<p><a href="https://www.ibm.com/cloud/learn/hybrid-cloud">IBM</a> declares hybrid cloud as
-"integrates public cloud services, private cloud services and on-premises
-infrastructure and provides orchestration, management and application
-portability across all three. The result is a single, unified and flexible
-distributed computing environment [...]"</p>
-<p>This definition does seem to imply an architecture that considers all hosting
-environments as infrastructurally equal (as they see the sum of all
-environments as a single, unified environment).</p>
-<p><a href="https://en.wikipedia.org/wiki/Cloud_computing#Hybrid_cloud">Wikipedia</a>
-mentions that hybrid cloud "is a composition of a public cloud and a private
-environment [...] that remain distinct entities but are bound together,
-offering the benefits of multiple deployment models." Such a definition leaves
-the implementation details open, as it boils down to any architecture where you
-mix such hosting environments.</p>
-<p>For me, a <strong>hybrid cloud on infrastructure level</strong> implies that the different
-environments are similarly or equally managed, using the same processes,
-principles and most often even tooling, and that application teams have little
-impact on where their application (or application components) are hosted.</p>
-<p><strong>The promise of hybrid cloud towards business</strong></p>
-<p>When business decision makers hear (or are confronted with) hybrid cloud, they
-are often told that it a perfect way to deal with capacity management. Whereas
-a pure on-premise deployment model requires you to purchase and deploy enough
-capacity to deal with your maximum workload (and even more, if you need to
-consider disaster recovery situations), a hybrid cloud could simply "add more
-resources as needed, without requiring the application to be refactored for
-cloud-native or cloud hosting".</p>
-<p>Let's make this more tangible with an example: a simple ticket sales service,
-which consists out of a website (frontend) and an API (which is backend-alike).</p>
-<p><img alt="Ticket sales service overview" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-overview.png"/></p>
-<p>The company that manages this ticket sales application is currently fully
-on-premise, with a simple deployment model where the front and backend are
-hosted on a web application hosting cluster (which could be a Kubernetes
-cluster), and the backend also uses a database.</p>
-<p><img alt="Ticket sales high level infrastructure" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-hlinfra.png"/></p>
-<p>Ticket sales are seasonally bound, and often ticket sales platforms are
-services offered to the specific events. Suppose a major event wants to sell
-its tickets through this ticket sale application, and you are afraid that the
-website part will not be able to deal with the load, then you could use a
-hybrid cloud setup to enable bursting on the front-end side.</p>
-<p><img alt="Ticket sales high level bursting" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-burstfrontend.png"/></p>
-<p>Of course, this is just one of many target architectures that might solve the
-capacity challenge, and there is no reason to believe the API itself wouldn't
-be overloaded as well. But let's stick to this simple example.</p>
-<p>From a business perspective, this all sounds very fun and promising. There
-seems to be no initial investment needed, and the capacity of the cloud is
-limitless, not?</p>
-<p><strong>Network investments needed for such hybrid cloud</strong></p>
-<p>Well, as always, the devil is in the details. If we were to pursue this
-architecture, we need to have the public cloud and the on premise environment
-properly connected. You don't want to use regular Internet access, because the
-intention is to see these environments as a single, unified environment, and
-you don't open up your internal systems directly to the Internet either do you?</p>
-<p>So you need to architect the public cloud usage to be as private as possible,
-and then connect that environment with your on premise network, preferably
-through a high speed private link. Sure, you can use VPN over internet, but
-with a private link you have more guarantees on the latency for instance, and
-for many cloud environments such private link interactions are also bringing
-benefits for data ingress/egress (cheaper for you). They also generally have
-better SLAs (although larger environments will have very high internet-related
-SLAs) and do not require the same security protection measures (like anti-DDoS
-protection).</p>
-<p><img alt="Ticket sales network connectivity" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-connectivity.png"/></p>
-<p>In the design, we assume that the end users still first go through your on
-premise environment, as the perimeter protections you have in place for
-instance still need to apply. Perimeter protections are not just simple
-firewall capabilities. It includes</p>
-<ul>
-<li>anti-DDoS measures</li>
-<li>context gathering for, and applying coarse-grained access controls</li>
-<li>intrusion detection and prevention</li>
-<li>anti-malware protection</li>
-<li>application attack prevention</li>
-<li>network traffic filtering</li>
-</ul>
-<p>A perimeter is meant to act as a first line of defense. However, when
-integrating networks from external sites, you still need some protection
-measures applied (shown as external site protection in the diagram), as you are
-handing off some ownership to other parties and thus want to have some
-safeguards in place.</p>
-<p>Because we still have all traffic through the perimeter, burst loads can still
-jeopardize the service offering itself. If the perimeter, internet line, or the
-load balancer that spreads the load across the frontends is saturated, then
-your service will go down. The hybrid cloud setup used in this example wont
-help out here.</p>
-<p>Second, the high speed private link will need to be able to deal with not only
-the load of the user to the frontend (and back), but also between the frontend
-and backend. And if you were to support bursting the backend application to the
-public cloud as well, then it needs to deal with the load between this
-application and the database.</p>
-<p>The link is also often not something you set up yourself between you and the
-public cloud. You will need intermediate parties to support this, as often this
-first requires you to have private links to certain larger networks, and then
-have this larger network set up a private link to the point of presence where
-you want to 'attach' to that public cloud environment.</p>
-<p><strong>Management complexity rises with hybrid cloud</strong></p>
-<p>The investments do not stop just at the network connectivity. You will need to
-look into managing the web application (such as deployment and releases),
-servers (bootstrapping, updating, maintaining), and other network areas.</p>
-<p><img alt="Hybrid cloud management complexity" src="https://blog.siphos.be/images/202111/hybridcloud-ticketsales-management.png"/></p>
-<p>Let's start with the web application management. Your existing management
-systems will now need to deal with the public cloud as well. Your application
-needs to be deployed on multiple clusters, and you will need to reconfigure the
-load balancers in front to know where these clusters are. Unlike the
-pre-installed environments on premise, public cloud is more dynamic (you want
-to use it for bursting after all), so the target IP addresses might change (or
-you set up fixed IP addresses, but that costs money even when you don't use
-them).</p>
-<p>You will need to deal with deployments that can succeed left and fail right, or
-vice-versa. While this is not impossible to deal with, the current way of
-working might not support that yet because, you know, you never had to deal
-with it.</p>
-<p>What about tracking performance and user experience? Your application
-management suite might not know about public cloud setups yet, and once
-included, it might find that there is latency impact. But can you just use this
-APM suite in the public cloud? Perhaps your company has a site license which
-does not include other locations. Or it requires per-node licenses, and require
-each node to be assigned a license for 30 days at least. In case of burst
-situations, you might only have these systems up for a few hours, and with the
-next action, these will be new nodes with new licenses.</p>
-<p>Also on the server management level you might find many obstacles. Your on
-premise system might use a certain hypervisor integration (e.g. using VMware
-vCenter API) which you don't have in the public cloud. So you need to adapt the
-management system anyway, which means you need to develop your management
-systems to create a hybrid cloud, rather than reap the benefits of hybrid cloud
-directly.</p>
-<p>Your servers might use many control systems that have the same licensing issues
-as mentioned earlier. Or they are latency-bound, causing either reachability
-issues, or requiring you to adapt the infrastructure architecture of these
-management systems to be aware of the public cloud.</p>
-<p>Also on network management level it isn't just about connectivity. Your
-firewall management might not see the public cloud firewalls automatically (or
-doesn't support it), or your current network design doesn't allow for the
-bursting of network environments (subnets) in a sufficient dynamic manner.</p>
-<p>The more you consider this hybrid cloud situation, the more you find out that
-you will need to revisit all management, support and control systems for this
-setup. And you know what is hard to do in an IT environment? Reassessing <em>all</em>
-management, support and control systems. You are effectively redesigning your
-entire IT environment, and that is exactly what the promise of "hybrid cloud"
-wanted to take away. Or at least, the promise that is done to certain decision
-makers.</p>
-<p><strong>Vendors know that it is complex (and are happy because of it)</strong></p>
-<p>Most of the IT vendors that are related to the management, support and control
-of your infrastructure, will say that management in hybrid cloud is hard: <a href="https://www.redhat.com/en/blog/operating-hybrid-architecture-and-managing-complexity">Red
-Hat</a>
-for instance mentions in its container-related article that "Saying that
-Kubernetes makes it possible to build a cross-environment management layer
-doesn't mean it's easy". <a href="https://blogs.arubanetworks.com/solutions/easing-the-complexity-of-hybrid-cloud/">Aruba
-Networks</a>
-(part of PHE) mentions that "the major drawback is complex management of these
-platforms". Consulting firms concur as well, with for instance David Linthicum,
-Chief Cloud Strategy Officer of Deloitte Consulting, mentioning in <a href="https://techbeacon.com/enterprise-it/4-things-you-need-know-about-managing-complex-hybrid-clouds">4 things
-you need to know about managing complex hybrid
-clouds</a>
-that "hybrid clouds are usually complex, hard to build, and hard to manage".</p>
-<p>Of course, IT vendors will be happy to tell you that it is hard (and for once I
-concur), because they will then follow up with how their shiny tool supports
-hybrid cloud much better than your existing ones. IT vendors know that an
-infrastructural hybrid cloud means a redesign of (many parts of) your IT
-architecture, so there is big money involved.</p>
-<p>Hence, it is important that hybrid cloud endeavours are assessed completely,
-and that your business decision makers hold off with the decision until the
-full scope of this exercise is known (or at least, you have a decent ballpark
-estimate on the impact, not just financially, but also time-to-market). </p>
-<p>So, what are all the areas you need to consider? That's difficult to state, but
-hopefully the list below can help you out:</p>
-<ul>
-<li>How are your servers bootstrapped (initial deployment)? Can this interact
-  with the cloud APIs to do the same in the cloud, or will you need to adapt
-  your processes?</li>
-<li>Once your server is bootstrapped, how do you add software, libraries and
-  other artefacts to it?</li>
-<li>What security services do you need on your systems? Anti-malware? Behavior
-  analytics? Intrusion detection and prevention? Privileged access management
-  utilities? </li>
-<li>How do your engineers and administrators follow-up on the systems? Monitoring
-  approaches? Application performance management? Trace capabilities? Logging?</li>
-<li>Are there any control systems in place that manage the infrastructure? Are
-  these control systems latency-sensitive?</li>
-<li>How do you deal with applicative releases? If you have CI/CD infrastructure
-  in place, how would it deal with a burst environment? Does it have any
-  dynamical detection capabilities?</li>
-<li>Can your support systems deal with more ephemeral infrastructure (capacity that
-  is added for a few hours and then removed again)?</li>
-<li>Can your processes deal with ephemeral infrastructure?</li>
-</ul>
-<p>Perhaps your current environment is already capable of dealing with such hybrid
-clouds. While the situations I am confronted with at work support my view that
-we need to apply a different 'hybrid' approach than the 'seamless
-infrastructure' one (I like to see the environments progress more
-independently, gradually move towards a <a href="https://www.nist.gov/publications/zero-trust-architecture">zero
-trust</a> model), I do
-believe that such hybrid cloud setups can work in certain situations.</p>
-<p><strong>Conclusions and feedback</strong></p>
-<p>If you do come across an intention declaration to move to a hybrid cloud (which
-follows the infrastructural 'seamless' setup as implied in this post), make
-sure you inform the stakeholders of the consequences. Show that a majority of
-management, support and control systels are not designed nor capable of dealing
-with this bursting out-of-the-box, and that this will require a significant IT
-investment which might not be visible to the decision maker currently.</p>
-<p>If you have the time and resources, try to already build up the arguments for
-it by focusing on your management, support and control systems, validating how
-ready they would be, and what types of investments would be needed. Compare
-this with a setup where the infrastructure side of the hybrid cloud still uses
-separate environments, and where you manage each environment using the
-strengths of that environment.</p>
-<p>Feedback? Comments? Don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
-email</a>, or join the <a href="https://twitter.com/infrainsight/status/1457745672304840709">discussion on
-Twitter</a>.</p>
 </p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
@@ -687,30 +712,6 @@ it is important to keep in mind what these are about.</p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/drp/">drp</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/">What is the infrastructure domain?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 19 July 2021</span></span>
-                <p><p>In my job as domain architect for "infrastructure", I often come across
-stakeholders that have no common understanding of what infrastructure means in
-an enterprise architecture. Since then, I am trying to figure out a way to
-easily explain it - to find a common, generic view on what infrastructure
-entails. If successful, I could use this common view to provide context on the
-many, many IT projects that are going around.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/architecture/">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pattern/">pattern</a>
                     </div>
                 </div>
             </div>
