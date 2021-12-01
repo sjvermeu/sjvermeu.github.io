@@ -88,7 +88,8 @@ dynaTrace | Certified for dynaTrace Diagnostics 2.5.4
 
 Date               | Publication
 ------------------ | -----------
+December 2020 | [SELinux System Administration, 3rd Edition](https://www.packtpub.com/free-ebook/selinux-system-administration-third-edition/9781800201477)
 December 2016 | [SELinux System Administration, 2nd Edition](https://www.packtpub.com/product/selinux-system-administration-second-edition/9781787126954)
 September 2014 | [SELinux Cookbook](https://www.packtpub.com/networking-and-servers/selinux-cookbook)
-September 2013 | [SELinux System Administration](https://www.packtpub.com/networking-and-servers/selinux-system-administration)
+September 2013 | SELinux System Administration ([Amazon link](https://www.amazon.com/SELinux-System-Administration-Sven-Vermeulen/dp/1783283173))
 
