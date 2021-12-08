@@ -1,4 +1,9 @@
-The pleasures of having DTAP
+Title: The pleasures of having DTAP
+Date: 2021-12-08 20:00
+Category: Architecture
+Tags: DTAP,environments,zoning,development,test,acceptance,production
+Slug: the-pleasures-of-having-DTAP
+Status: draft
 
 No, not Diphtheria, Tetanus, and Pertussis (vaccine), but *Development,
 Test, Acceptance and Production (DTAP)*: different environments that,
@@ -6,6 +11,8 @@ together with a well-working release management process, provide a way to
 get higher quality and reduced risks in production. DTAP is an important
 corner stone for a larger infrastructure architecture as it provides
 environments that can be tailored to the needs of many stakeholders.
+
+<!-- PELICAN_END_SUMMARY -->
 
 **What are these four environments?**
 
@@ -245,4 +252,8 @@ foundations that many larger companies and organizations feel comfortable
 with. The implementation details make or break how well adjusted the DTAP
 approach is for modern development processes and regulatory requirements
 though.
+
+Feedback? Comments? Don't hesitate to [drop me an
+email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
+Twitter](https://twitter.com/infrainsight/status/TODO).
 
