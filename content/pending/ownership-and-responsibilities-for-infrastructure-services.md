@@ -1,4 +1,9 @@
-Ownership and responsibilities for infrastructure services
+Title: Ownership and responsibilities for infrastructure services
+Date: 2021-12-08 20:00
+Category: Architecture
+Tags: RACI,responsibilities
+Slug: ownership-and-responsibilities-for-infrastructure-services
+Status: draft
 
 In a perfect world, using infrastructure or technology services would be
 seamless, without impact, without risks. It would auto-update, tailor to
@@ -10,6 +15,8 @@ Managing infrastructure services implies that the company or organization
 needs to organize itself to deal with all aspects of supporting a service.
 What are these aspects? Well, let's go through those that are top-of-mind
 for me...
+
+<!-- PELICAN_END_SUMMARY -->
 
 **Operational support**
 
@@ -60,6 +67,10 @@ Regardless of the structure approached by the organization, these teams
 will need the knowledge and supporting tools and procedures to do their job.
 You need people that can develop support procedures, simplified automation
 (for second line to execute), and continuously update that information.
+And if a vendor is involved, then the support line will need to have
+knowledge on how to approach the vendor: what are the procedures and
+processes for raising incidents, what is the priority queue like? Does
+the vendor have certain SLAs that the team should know about?
 
 The several layers of support will need continuous training, even if it
 is just refreshing past information. It is also wise to involve these
@@ -142,6 +153,9 @@ firewall rules need to be quickly pushed and opened up because a project
 failed to assess their integrations, resulting in security risks, is
 sadly enough all to common.
 
+Larger organizations will often have architects and designers within the teams
+or directorates to support this endeavour.
+
 **Secure setup and deployment**
 
 Given that some integrations might result in heightened risks, and
@@ -169,3 +183,180 @@ that the team has a continuous security and risk focus.
 In many cases, there is even a coding and development component with
 a service. Not many services can be installed and deployed without requiring
 any integration scripting or even in-depth coding (such as custom plugins).
+And when there is coding, there is the need for secure coding: following
+a Secure Development LifeCycle (SDLC) approach to get assurance about
+the secure state of the developed code.
+
+When the deployment uses infrastructure-as-code methods, follows a
+GitOps approach or similar, then there should also be sufficient attention
+to the secure setup of these pipelines and the platforms on which they
+run. The code (or configurations) hosted should also follow appropriate
+security guidelines
+
+**Robust and reliable services**
+
+Designing for a trust-worthy, secure environment is one thing. The other
+major focus area for infrastructure services is the availability,
+robustness and resilience of the service. While not all services
+require to be up and running 24/7, nowadays it is hard to imagine
+many services to still have significant downtimes.
+
+So, you often need to architecture and design for a resilient service,
+which can take a beating if it has to. Organize load- and stress testing.
+Organize disruptive testing if needed, and learn from the results to build
+a better service. Design for a service that you can do technical maintenance
+on without disrupting the customers themselves as much as possible - but
+don't overshoot.
+
+If the service is setup in multiple locations, make sure that there is
+independence between these locations (often across different regions) so
+that failures in one region do not affect the other regions. Consider a setup
+as used in many public cloud environments: high availability across availability
+zones in the same region, and regional independence while allowing for
+cross-region usage scenarios for the customers.
+
+Assess what can go wrong, and either try to update the architectures and
+designs to be more resilient against these failures, or establish procedures
+and processes to quickly recover. A common focus area here is to recover
+from disasters (using so-called Disaster Recovery Procedures), and there 
+are plenty of disasters to assess: data center failures, large Internet
+outages, ransomware or other cyberattacks, world-wide epidemic outbreaks,
+etc.
+
+**Quality assurance at all stages**
+
+To be able to provide secure and reliable services, it is vital to have
+good change management processes and tooling in place so that you can
+approach the various stages of quality assurance before reaching production.
+In [The pleasures of having
+DTAP]({filename}/content/pending/the-pleasures-of-having-DTAP.md) I mention
+the benefits of having four environments for the various stages of a development
+lifecycle (development, testing, acceptance and productionn) and that is
+perfectly applicable to infrastructure services as well, even when the
+environments for infrastructure services might be isolated from those of the
+more business-oriented development stages: you want to make sure that the
+business-oriented development has production-grade services for its processes,
+and not the intermediate and possibly less reliable in-development infratructure
+services.
+
+Throughout these environments, testing can (should) be introduced to provide
+guidance to the engineers and developers to improve on the service. Testing can
+take several forms: unit testing within the frameworks, integration testing of
+code in larger environments, integration testing of new products in those
+environments, sanity testing with simple use cases to ensure nothing blows
+up (figuratively... hopefully), regression tests to ensure no fixed defects
+creep back in, acceptance tests for specific features or use cases, load
+testing to ensure the product stays up under the expected loads (and the
+individual components or services have the right performance profile), stress testing
+to ensure the product is resilient against higher loads or bursts, destructive
+tests to see the product behaves as expected when unauthorized usage is
+performed, security testing and penetration testing to provide assurance
+on the secure state of the product deployment, etc.
+
+In many cases, the QA part is driven by organizational requirements, and not all
+products require the same intensity on the tests and assurance levels. But, by
+introducing the right automation, it is far easier to include multiple test
+scenarios and test types in your pipeline.
+
+Products then pass through the various stages according to the change
+management principles and processes that are in effect in the organization.
+
+**Strategy and roadmap**
+
+The team responsible for an infrastructure service will also need to consider
+the service in the long term: is the current technology (or set of products)
+still state-of-the-art, mature, and following market practices? Or does the team
+consider the technology to be relatively stale and in need of an update? When
+would the right time be to address this update?
+
+There is a distinction between the service (or better yet, "capability") that is
+offered, versus the products and technologies that support and realize it.
+Capabilities will be needed by the organization for a long, long time, whereas
+the products that realize these capabilities can have much shorter timeframes.
+
+The team will need to consider alternatives for the products, and see when those
+alternatives make sense to address and implement. Perhaps the organization might
+benefit from multiple implementations using different technologies because they
+serve different usage scenarios, and the costs of keeping multiple technologies
+in the air is less than the value it provides. Or perhaps an alternative needs
+to be quickly realizable in case of a sudden exit scenario of the current
+technology (or vendor). In that case, while the alternative doesn't need to be
+up and running, the team must be able to address the change in due time.
+
+The need to have a proper roadmap on the capability and products that are being
+used also reflects in the relationship that that team has with the vendor. For
+strategically important products, an organization might even want to participate
+in that vendor's Customer Advisory Board (CAB) or equivalent programmes. The
+team should have the time and resources to collaborate with that vendor to build
+a partnership, participate in the conferences and other events, as that provides
+input to the team on the progress and future of that product. Those insights are
+primordial to properly design and organize an internal roadmap.
+
+**More elaborate (internal) customer support**
+
+The support for the infrastructure service often has to extend beyond the
+operational support that I started with in this article. Teams that provide
+certain capabilities within the organization don't do this as a vendor, but as
+part of that organization. So when an internal customer needs help in migrating
+away from a service, the team is still involved in this process.
+
+Hence, more elaborate support such as migrations (both towards a new technology,
+service or capability, as well as migration away from it), finding
+suitable alternatives that are not properly handled by the capability (and thus
+might be best provided by a different team), ... helps in building out the trust
+that the wider organization has in IT.
+
+**Cost, licenses and contractual obligations**
+
+Many services have certain contractual obligations associated with them, often
+known as the Terms and Conditions of the contract and product usage.
+Infrastructure teams will need to make sure that these T&Cs are known and that
+the organization adheres to them.
+
+The cost of an infrastructure service usage also needs to be correctly devised
+and accounted for. Teams have to make sure the product usage remains within the
+allocated licenses (or, if there is no capping in place, that the usage is
+sufficiently constrainted that the organization does not get any surprises), and
+is often involved in defining a chargeback towards the rest of the organization.
+
+I tend to make a distinction between showback (show the organization how much a
+service costs to the company or usage group) and chargeback (a governance-driven
+or tax-driven requirement for charging usage to the organization), as the latter
+is more a company decision on how to approach this, whereas the showback is the
+actual, factual cost. Showback is needed to support conscious decisions on next
+steps or consumption patterns, whereas chargeback might be necessary for
+tax-reasons in larger corporations where IT is considered as part of a different
+legal entity.
+
+Addressing cost, licenses and T&Cs is not to be underestimated. Many vendors
+make this very difficult, as that allows for many interpretations during license
+audits that can give a nice bonus to the vendor if he can show that his
+interpretation is more appropriate than how you thought that the contract or
+license was structured.
+
+The cost of a product or technology is not just the cost of the purchase, and
+even that cost is still somewhat variable: many things are open for negotiation,
+and you also don't need to tackle this directly with the vendor, as there is a
+large market of middle parties that facilitate purchasing technologies. These
+can often provide better rates as they can bundle purchases of multiple
+customers and thus negotiate better deals with the main vendor.
+
+The cost also depends on the support contract associated with it, as well as
+depending costs of other technologies (such as capacity requirements) that come
+from its implementation. This is often neglected in SaaS purchases: even though
+you have correctly negotiated a good price for the SaaS service, you might be
+jeopardizing your internet connectivity and need to upgrade the bandwidth, the
+anti-DDoS service, your firewall capabilities, etc. because the consumption of
+that SaaS service is significant.
+
+**Conclusions**
+
+The responsibilities for managing and tracking infrastructure services are large
+and not to be underestimated. It is not a matter of deploying a new service and
+assuming everybody can deal with it, nor are all responsibilities equally
+visible to the end user.
+
+Feedback? Comments? Don't hesitate to [drop me an
+email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
+Twitter](https://twitter.com/infrainsight/status/TODO).
+
