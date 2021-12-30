@@ -6,11 +6,11 @@ Slug: the-pleasures-of-having-DTAP
 Status: draft
 
 No, not Diphtheria, Tetanus, and Pertussis (vaccine), but *Development,
-Test, Acceptance and Production (DTAP)*: different environments that,
+Test, Acceptance, and Production (DTAP)*: different environments that,
 together with a well-working release management process, provide a way to
 get higher quality and reduced risks in production. DTAP is an important
 cornerstone for a larger infrastructure architecture as it provides
-environments that can be tailored to the needs of many stakeholders.
+environments that are tailored to the needs of many stakeholders.
 
 <!-- PELICAN_END_SUMMARY -->
 
@@ -28,8 +28,8 @@ might imply different behavior, which is contra-productive. The environment
 is accessible by developers and testers, and is mainly development-oriented.
 
 Products or code that are being developed will be visible and used in this
-environment. There is hardly any threshold to be reached for code to be
-deployed or handled here.
+environment. Developers and engineers hardly have any threshold to reach for
+deploying or modifying code here.
 
 The *Testing* environment is used when the development has reached a phase
 where the product or code has passed a minimum of quality. Unit tests
@@ -53,9 +53,9 @@ also abbreviated as the *User Acceptance Testing (UAT)* environment.
 
 While the testing environment is generally approached by QA engineers, the
 acceptance environment should be more tailored to business testers. When
-a feature is introduced, the stakeholders that requested that feature
-use the acceptance environment to accept if their request is indeed
-fulfilled in the coming release or not.
+developers or engineers introduce a feature, the stakeholders that
+requested that feature use the acceptance environment to accept if the
+coming release fulfills their request or not.
 
 As the environment is production-like in its entirety (and not just for
 a single product), it is a prime target for executing performance tests
@@ -101,7 +101,7 @@ often have their own DTAP environments as well.
 It is a common misconception that a development-oriented system or service
 has a lower SLA or lower risk profile than production, and infrastructure
 architecture should make clear that there is a difference between the
-systems that host the products or code under review, and the systems that
+systems that host the products or code under review and the systems that
 facilitate the functionality needed within the environment.
 
 **Static cost is a major inhibitor for implementing DTAP**
@@ -142,7 +142,7 @@ economical view towards DTAP.
   business hours, then you don't need it running outside business hours.
 - Commercial products often have distinct terms and conditions for
   non-production usage. You can have databases in production with a
-  premium, gold service level agreement, and have the same database in
+  premium, gold service level agreement, while having the same database in
   the other environments with a low, bronze service level agreement
   towards that vendor: cheaper, but technically the same.
 - Abstraction and virtualization technologies allow for better control
@@ -182,7 +182,7 @@ and code, and thus should be tailored towards efficient and qualitative
 development processes. In many environments, DTAP is synonymous with
 "infrastructure operations" and that's a wrong approach. 
 Operations-oriented teams (like *Site Reliability Engineers (SREs)*),
-development-oriented teams and DevOps teams all have the same benefits from
+development-oriented teams, and DevOps teams all have the same benefits from
 DTAP.
 
 Some might state that an acceptance environment is no longer suitable in
