@@ -12,7 +12,6 @@ get higher quality and reduced risks in production. DTAP is an important
 cornerstone for a larger infrastructure architecture as it provides
 environments that are tailored to the needs of many stakeholders.
 
-<!-- PELICAN_END_SUMMARY -->
 
 **What are these four environments?**
 
@@ -256,3 +255,4 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/TODO).
 
+<!-- PELICAN_END_SUMMARY -->
