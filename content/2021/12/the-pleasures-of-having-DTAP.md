@@ -253,6 +253,6 @@ approach is for modern development processes and regulatory requirements.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](https://twitter.com/infrainsight/status/TODO).
+Twitter](https://twitter.com/infrainsight/status/1476505537047109635).
 
 <!-- PELICAN_END_SUMMARY -->
