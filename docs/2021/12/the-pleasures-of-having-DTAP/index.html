@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head -->
+<head>
+
+        <!-- Required metadata tags -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <!-- Default metadata -->
+    <meta name="author" content="Sven Vermeulen" />
+    <meta name="description" content="the-pleasures-of-having-DTAP" />
+    <meta name="keywords" content="DTAP, environments, zoning, development, test, acceptance, production">
+<meta property="og:site_name" content="Simplicity is a form of art..." />
+<meta property="og:title" content="The pleasures of having DTAP" />
+<meta property="og:description" content="No, not Diphtheria, Tetanus, and Pertussis (vaccine), but Development, Test, Acceptance, and Production (DTAP): different environments that, together with a well-working release management process, provide a way to get higher quality and reduced risks in production. DTAP is an important cornerstone for a larger infrastructure architecture as it provides environments that are tailored to the needs of many stakeholders." />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://blog.siphos.be/2021/12/the-pleasures-of-having-DTAP/" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-30 12:00:00+01:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/pages/about.html">
+<meta property="article:section" content="Architecture" />
+	<meta property="article:tag" content="DTAP" />
+	<meta property="article:tag" content="environments" />
+	<meta property="article:tag" content="zoning" />
+	<meta property="article:tag" content="development" />
+	<meta property="article:tag" content="test" />
+	<meta property="article:tag" content="acceptance" />
+	<meta property="article:tag" content="production" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
+        <!-- Site Claim -->
+
+
+        <!-- Title -->
+        <title>
+    The pleasures of having DTAP &ndash; Simplicity is a form of art...
+        </title>
+        
+        <!-- Icon -->
+        <link rel="shortcut icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+
+        <!-- Search engine -->
+            <meta name="robots" content="" />
+
+        <!-- Feeds -->
+            <link href="https://blog.siphos.be/feed/all.atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Full Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/all.rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Full RSS Feed" />
+
+            <link href="https://blog.siphos.be/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... RSS Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Categories Atom Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Categories RSS Feed" />
+
+
+
+        <!-- Styles -->
+        <!--
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/bootstrap/bootstrap.min.css">
+        <!--
+        <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/pygment/friendly.min.css">
+        <!--
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/extra/admonition.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/style.css">
+
+        <!-- Google Analytics -->
+
+        <!-- Google Global Site Tag -->
+
+        <!-- Google Tag Manager -->
+
+        <!-- Google Adsense -->
+
+        <!-- Heap Analytic -->
+
+        <!-- Piwik Tracking -->
+
+        <!-- Matomo Tracking -->
+
+</head>
+
+<!-- Body -->
+<body class="d-flex flex-column" data-spy="scroll" data-target="#toc" data-offset="0" style="position: relative;">
+    <!-- Top anchor -->
+    <a href="#" id="backToTop" style="display: none; z-index: 1;" title="Back to top"><span></span></a>
+
+    <!-- Google tag manager -->
+
+    <!-- Navigation -->
+    <nav class="flex-shrink-0 navbar navbar-expand-md navbar-expand-lg navbar-dark bg-dark text-light shadow-sm">
+        <!-- Logo -->
+        <a class="navbar-brand" href="https://blog.siphos.be"></a>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon small"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <!-- Page links -->
+            <ul class="navbar-nav mr-auto text-center">
+                <li class="nav-item ">                           
+                    <a class="nav-link" href="https://blog.siphos.be">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z" fill="currentColor"></path>
+                        </svg>
+                        Home <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/categories.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M16 6h-8v-6h8v6zm-8 12h-8v6h8v-6zm16 0h-8v6h8v-6zm-11-7v-3h-2v3h-8v5h2v-3h14v3h2v-5h-8z" fill="currentColor"></path>
+                        </svg>
+                        Categories
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/tags.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M10.605 0h-10.605v10.609l13.391 13.391 10.609-10.604-13.395-13.396zm-4.191 6.414c-.781.781-2.046.781-2.829.001-.781-.783-.781-2.048 0-2.829.782-.782 2.048-.781 2.829-.001.782.782.781 2.047 0 2.829z" fill="currentColor"></path>
+                        </svg>
+                        Tags
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/archives.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M1.8 9l-.8-4h22l-.8 4h-2.029l.39-2h-17.122l.414 2h-2.053zm18.575-6l.604-2h-17.979l.688 2h16.687zm3.625 8l-2 13h-20l-2-13h24zm-8 4c0-.552-.447-1-1-1h-6c-.553 0-1 .448-1 1s.447 1 1 1h6c.553 0 1-.448 1-1z" fill="currentColor"></path>
+                        </svg>
+                        Archives
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/pages/about.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z" fill="currentColor"></path>
+                        </svg>
+                        About
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search form -->
+            <form class="form-inline text-center" action="https://blog.siphos.be/search.html">
+                <input class="form-control w-100 bg-dark text-light text-center border-0 p-2" type="text" name="q" pattern=".{3,}" title="At least 3 characters" required="" placeholder="Type here to search" aria-label="Search">
+            </form>
+
+            <!-- Social links -->
+            <ul class="navbar-nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Github</title>
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://twitter.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Twitter</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.825 0 1.572.349 2.096.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.linkedin.com/in/svenvermeulen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Linkedin</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Full page -->
+    <div class="flex-shrink-0 flex-grow-1">
+
+        <!-- Header -->
+        <header class="bg-dark text-light shadow-sm pt-3 pb-2">
+	<div class="container">
+		<h3 id="the-pleasures-of-having-DTAP">The pleasures of having DTAP</h3>
+		<p style="font-size:larger;">the-pleasures-of-having-DTAP</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/pages/about.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Thu 30 December 2021</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Thu 30 December 2021
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/dtap/">dtap</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/environments/">environments</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/zoning/">zoning</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/development/">development</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/test/">test</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/acceptance/">acceptance</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/production/">production</a>
+            </div>
+        </div>
+	</div>
+        </header>
+
+        <!-- Main -->
+        <main class="py-3">
+                <div class="container">
+                    <!-- Sharing -->
+
+                    <!-- Content -->
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>No, not Diphtheria, Tetanus, and Pertussis (vaccine), but <em>Development,
+Test, Acceptance, and Production (DTAP)</em>: different environments that,
+together with a well-working release management process, provide a way to
+get higher quality and reduced risks in production. DTAP is an important
+cornerstone for a larger infrastructure architecture as it provides
+environments that are tailored to the needs of many stakeholders.</p>
+
+
+<p><strong>What are these four environments?</strong></p>
+<p>Let's go over the four environments one by one with a small introduction
+to their purpose. I'll cover more specific use cases further down in this
+post.</p>
+<p>The <em>Development</em> environment is a functionally complete environment on
+which the development of products or code is done. It should have the same
+technologies in place and very similar setups (deployments) so that
+developers are not facing a too different environment. Too much difference
+might imply different behavior, which is contra-productive. The environment
+is accessible by developers and testers, and is mainly development-oriented.</p>
+<p>Products or code that are being developed will be visible and used in this
+environment. Developers and engineers hardly have any threshold to reach for
+deploying or modifying code here.</p>
+<p>The <em>Testing</em> environment is used when the development has reached a phase
+where the product or code has passed a minimum of quality. Unit tests
+succeed, the code builds fine, and the developer has indicated that the
+code or product is ready for wider testing (hence the name).</p>
+<p>A testing environment generally applies a multitude of tests, most of
+them (hopefully) automated, but with a strong dependency on testers
+(also known as Quality Assurance engineers or QA engineers) to find issues.</p>
+<p>The automated tests focus on integrations, regression testing, security
+testing, etc., and provide insights into the new builds or products which the
+development team can take up and iterate over to improve the product.</p>
+<p>The <em>Acceptance</em> environment is a production-like environment, not
+just for one product, but for the entire business or business unit: the same
+setup, the same infrastructure, the same foundations, the same application
+portfolio, the same integrations, etc. This environment intends to 
+validate that the product is fully ready to be released. It is often
+also abbreviated as the <em>User Acceptance Testing (UAT)</em> environment.</p>
+<p>While the testing environment is generally approached by QA engineers, the
+acceptance environment should be more tailored to business testers. When
+developers or engineers introduce a feature, the stakeholders that
+requested that feature use the acceptance environment to accept if the
+coming release fulfills their request or not.</p>
+<p>As the environment is production-like in its entirety (and not just for
+a single product), it is a prime target for executing performance tests
+as well. Cross-product dependencies and processes (like migrations) are
+validated here too.</p>
+<p>The <em>Production</em> environment is the environment in which the product or
+code "goes live", where the customers use it. That does not mean that
+a product put in production is immediately accessible for the customers:
+there is still a difference between deployment (bring to production),
+activation (enable usage), and release (use by customers).</p>
+<p>While DTAP is well-known in larger organizations, there are some challenges
+or misconceptions that I would like to point out, and which I discuss
+further down:</p>
+<ul>
+<li>Environments are more than just the systems where the code is deployed to.
+  Each environment has production services associated with it.</li>
+<li>A prime challenge to implementing DTAP is the cost associated with it. But
+  it does not need to be as expensive as you think, and DTAP implementations
+  often have a positive business case.</li>
+<li>Agile methodologists might find DTAP to be old-style. They are correct
+  that many implementations are prohibitive towards fast deployment and
+  release strategies, but that isn't because DTAP is conceptually wrong.</li>
+<li>Not all environments need the same data. On the contrary, a proper DTAP
+  design likely uses separate datasets in each environment to deal with 
+  the security and regulatory requirements.</li>
+</ul>
+<p><strong>Conceptual environments still require production services</strong></p>
+<p>The purpose of each environment is strongly tied to the 'phase' in which
+the code or the product resides in the development lifecycle. That means
+that these environments have a strong focus on that product or code, and
+not on the services that are needed.</p>
+<p>Indeed, a development environment also entails services that are already
+'in production', like a usable workstation, development services like
+code repositories and build systems, ticketing services, and more. A testing
+environment requires test automation engines, regression test frameworks,
+security tools, and more. All these services are production-ready - and they
+often have their own DTAP environments as well.</p>
+<p>It is a common misconception that a development-oriented system or service
+has a lower SLA or lower risk profile than production, and infrastructure
+architecture should make clear that there is a difference between the
+systems that host the products or code under review and the systems that
+facilitate the functionality needed within the environment.</p>
+<p><strong>Static cost is a major inhibitor for implementing DTAP</strong></p>
+<p>Smaller companies or organizations might be hesitant to introduce DTAP
+environments as it might be cost-prohibitive. While it is true
+that, from a 'static' view, a DTAP environment costs more than a
+production-only environment, you need to consider the impact of implementing
+DTAP in the processes.</p>
+<p>The main purpose of DTAP is not to make your CFO angry, but to improve the
+quality of your production environment (and usage). Ask yourself: how costly
+is it when your production systems go down, or when your customers complain
+and you need to fix things... Do you update code directly on the server(s)?
+What if a security patch is rolled out and suddenly prevents your
+customer-facing application from working?</p>
+<p>While DTAP mentions four environments, some companies settle with three, and
+others with five or more. Perhaps your testing and acceptance are done by the
+same people, and you do not have many automated testing facilities at hand.
+Splitting your pre-production environments into multiple environments doesn't
+make sense yet, and you might first want to focus on improving your testing
+maturity in general.</p>
+<p>If you want to make the case for DTAP, consider the use cases or scenarios that
+have visibly disrupted your business and how/where the environments would have
+helped. In many cases, you'll notice that there is a positive business case
+for a step-wise move towards DTAP.</p>
+<p>Furthermore, a proper design of these environments will facilitate an
+economical view towards DTAP. </p>
+<ul>
+<li>You can use pay-as-you-use environments (as is commonly the case in the 
+  public cloud) which you only activate when you do your testing. If you have
+  a 24/7 customer-facing service in production, that doesn't mean that your
+  acceptance environment has to be 24/7. Yes, it should be as much
+  production-like as possible, but if it isn't doing anything outside
+  business hours, then you don't need it running outside business hours.</li>
+<li>Commercial products often have distinct terms and conditions for
+  non-production usage. You can have databases in production with a
+  premium, gold service level agreement, while having the same database in
+  the other environments with a low, bronze service level agreement
+  towards that vendor: cheaper, but technically the same.</li>
+<li>Abstraction and virtualization technologies allow for better control
+  of the resources that are being used. For instance, you can have
+  an acceptance environment that is only at 20% of the resources
+  of production for day-to-day validation, and then increase its resources
+  to 100% for load testing periods. If these environments are not in a
+  pay-as-you-use model, shifting resources from one environment to
+  another allows for controlling the costs.</li>
+<li>Security controls in these environments might be different as well,
+  assuming that these environments have different data needs: if you
+  use fictitious data in development and testing, and anonymized data
+  in acceptance, then the investments on, say, data leakage controls
+  might be different for these environments.</li>
+</ul>
+<p>Hence, while DTAP is at first glance a costly approach, the actual case is
+that it is positive for the company.</p>
+<p><strong>DTAP is not inefficient, but some implementations are</strong></p>
+<p>In a world where "Release fast, release often" is the norm, having a rigid
+DTAP strategy might be contra-productive. However, this is more an
+implementation concern than a conceptual one. If I consider the downsides
+that <a href="https://medium.com/the-liberators/want-to-be-agile-drop-your-dtap-pipeline-7dcb496fe9e3">Christiaan Verwijs</a>
+mentions in his post, I feel that I can safely state that this is not due
+to the lifecycle of the code or product, but rather the choices that a
+company has made while assessing and implementing a release strategy.</p>
+<p>There is no need to bundle and make bulk releases with DTAP. You can
+perfectly design an environment where DevOps teams can release easily
+to production. More so, the bulk release strategy is frequently the result
+of an application design constraint, not a deployment constraint.</p>
+<p>Development methodologies and DTAP environments do need to be tailored
+to each other. The purpose of DTAP is to facilitate the quality of products
+and code, and thus should be tailored towards efficient and qualitative
+development processes. In many environments, DTAP is synonymous with
+"infrastructure operations" and that's a wrong approach. 
+Operations-oriented teams (like <em>Site Reliability Engineers (SREs)</em>),
+development-oriented teams, and DevOps teams all have the same benefits from
+DTAP.</p>
+<p>Some might state that an acceptance environment is no longer suitable in
+the modern age, as they can deploy products and code to production without
+losing the benefits of the acceptance environment. With blue/green
+deployments or canary releases, you can enable business testers and
+stakeholders to validate new features or code before releasing it
+to the wider public.</p>
+<p>To accomplish this properly, however, the platform that is used will
+balance resources accordingly, and you're conceptually implementing an
+(albeit temporary) acceptance environment in an automated way. This is
+an implementation choice and has to be balanced against the requirements
+that the organization has.</p>
+<p>For instance, if you work with sensitive data, you might not be allowed
+to use this data during testing. In Europe, the <em>General Data Protection
+Regulation (GDPR)</em> is a strong regulatory requirement for dealing with
+sensitive data. It isn't a playbook though: companies need to evaluate
+how and where data is used, and perhaps the balance made by the company
+allows, if not with explicit consent, to use data unmodified for
+acceptance testing. But if that isn't the case and your acceptance tests
+need to use sanitized data, then having separate environments is likely
+more sensible (although different implementations exist that allow
+for anonymization in production as well - they're, however, not as easy
+to implement).</p>
+<p>Plus, DTAP does not imply that production is doing everything in a single
+unit of work: Deploy, Activate and Release. You can still perfectly position
+those tasks in production while having an explicit acceptance environment.</p>
+<p><strong>Separate datasets in each environment make sense</strong></p>
+<p>For regulated companies and organizations, security officers might want
+to use the DTAP distinction to focus on data minimization strategies as well.
+As mentioned before, the GDPR is a strong regulatory requirement whose
+alignment can be facilitated by a well-designed DTAP approach.</p>
+<p>You can use fictitious data in development and testing, with development
+using datasets that developers use for validating the specific functionality
+they are working on (and preferably share and put alongside the code
+and products), whereas testing uses a coherent but still fictitious
+dataset. I use "coherent" here as an indication that the data should
+be functionally correct and integer: a (fictitious) person record in the
+customer database in the testing environment should be mapped to the
+(fictitious) calls or other interactions that are stored in the support
+database (also in the testing environment) and the (fictitious) portfolio
+that this (fictitious) person has in the product database (in the testing
+environment).</p>
+<p>Don't underestimate how powerful, but also how challenging a good fictitious
+dataset is.</p>
+<p>For acceptance testing, perhaps the company decided that anonymized data
+is to be used. Or it uses pseudonymized data (which is a weaker form)
+with additional technical controls to prevent leakage and attacks (including
+inference) that try to deduce the origin of the data.</p>
+<p>Again, these are choices by the company or organization, which need to be
+taken with the risk and business stakeholders.</p>
+<p><strong>Conclusion</strong></p>
+<p>DTAP is a sensible approach for improving quality in products and code.
+While it isn't the holy grail for quality assurance, it has solid
+foundations that many larger companies and organizations feel comfortable
+with. The implementation details make or break how well-adjusted the DTAP
+approach is for modern development processes and regulatory requirements.</p>
+<p>Feedback? Comments? Don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
+email</a>, or join the <a href="https://twitter.com/infrainsight/status/TODO">discussion on
+Twitter</a>.</p>
+        </div>
+
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
+                </div>
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="flex-shrink-0 bg-dark text-light small py-1">
+        <div class="container text-center">
+            &copy;  <a href="https://blog.siphos.be">Simplicity is a form of art...</a> by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>. Powered by <a href="http://getpelican.com">Pelican</a>, <a href="http://python.org">Python</a>, <a href="https://getbootstrap.com">Bootstrap 4</a><br>
+            <!-- Do not remove below license sentence -->
+            License: <a href="https://spdx.org/licenses/CC-BY-4.0.html">CC-BY-4.0</a>, based on <a href="https://github.com/vuquangtrong/simplify-theme">Simplify Bootstrap Theme</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/jquery/jquery-3.4.1.min.js"></script>
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/bootstrap/bootstrap.min.js"></script>
+    <!--
+    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/style.js"></script>
+
+    <!-- Sharing -->
+
+    <!-- JSON LD -->
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "The pleasures of having DTAP",
+    "headline": "The pleasures of having DTAP",
+    "datePublished": "2021-12-30 12:00:00+01:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/pages/about.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/2021/12/the-pleasures-of-having-DTAP/",
+    "description": "No, not Diphtheria, Tetanus, and Pertussis (vaccine), but Development, Test, Acceptance, and Production (DTAP): different environments that, together with a well-working release management process, provide a way to get higher quality and reduced risks in production. DTAP is an important cornerstone for a larger infrastructure architecture as it provides environments that are tailored to the needs of many stakeholders."
+}
+</script>
+    <!-- Disqus count -->
+</body>
+
+</html>

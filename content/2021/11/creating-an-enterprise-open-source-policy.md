@@ -18,6 +18,8 @@ understanding of what they can do to support their business further.
 In many cases, companies will draft up an *open source policy*, and in this post
 I want to share some practices I've learned on how to draft such a policy.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Assess the current situation**
 
 When drafting a policy, make sure you know what the current situation already
@@ -291,4 +293,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1462043477835976705).
 
-<!-- PELICAN_END_SUMMARY -->

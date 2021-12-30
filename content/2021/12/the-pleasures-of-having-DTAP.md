@@ -1,9 +1,9 @@
 Title: The pleasures of having DTAP
-Date: 2021-12-30 20:00
+Date: 2021-12-30 12:00
 Category: Architecture
 Tags: DTAP,environments,zoning,development,test,acceptance,production
 Slug: the-pleasures-of-having-DTAP
-Status: draft
+Status: published
 
 No, not Diphtheria, Tetanus, and Pertussis (vaccine), but *Development,
 Test, Acceptance, and Production (DTAP)*: different environments that,
@@ -173,8 +173,8 @@ company has made while assessing and implementing a release strategy.
 
 There is no need to bundle and make bulk releases with DTAP. You can
 perfectly design an environment where DevOps teams can release easily
-to production. Moreso, the bulk release strategy is often a result of
-an application design constraint, not a deployment constraint.
+to production. More so, the bulk release strategy is frequently the result
+of an application design constraint, not a deployment constraint.
 
 Development methodologies and DTAP environments do need to be tailored
 to each other. The purpose of DTAP is to facilitate the quality of products
@@ -207,7 +207,7 @@ allows, if not with explicit consent, to use data unmodified for
 acceptance testing. But if that isn't the case and your acceptance tests
 need to use sanitized data, then having separate environments is likely
 more sensible (although different implementations exist that allow
-for anonymization in production as well - they're however not as easy
+for anonymization in production as well - they're, however, not as easy
 to implement).
 
 Plus, DTAP does not imply that production is doing everything in a single
@@ -219,7 +219,7 @@ those tasks in production while having an explicit acceptance environment.
 For regulated companies and organizations, security officers might want
 to use the DTAP distinction to focus on data minimization strategies as well.
 As mentioned before, the GDPR is a strong regulatory requirement whose
-alignment can be facilitated with a well-designed DTAP approach.
+alignment can be facilitated by a well-designed DTAP approach.
 
 You can use fictitious data in development and testing, with development
 using datasets that developers use for validating the specific functionality
@@ -230,7 +230,7 @@ be functionally correct and integer: a (fictitious) person record in the
 customer database in the testing environment should be mapped to the
 (fictitious) calls or other interactions that are stored in the support
 database (also in the testing environment) and the (fictitious) portfolio
-that that (fictitious) person has in the product database (in the testing
+that this (fictitious) person has in the product database (in the testing
 environment).
 
 Don't underestimate how powerful, but also how challenging a good fictitious
@@ -249,9 +249,8 @@ taken with the risk and business stakeholders.
 DTAP is a sensible approach for improving quality in products and code.
 While it isn't the holy grail for quality assurance, it has solid
 foundations that many larger companies and organizations feel comfortable
-with. The implementation details make or break how well adjusted the DTAP
-approach is for modern development processes and regulatory requirements
-though.
+with. The implementation details make or break how well-adjusted the DTAP
+approach is for modern development processes and regulatory requirements.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
