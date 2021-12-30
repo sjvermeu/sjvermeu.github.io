@@ -229,7 +229,7 @@ To be able to provide secure and reliable services, it is vital to have
 good change management processes and tooling in place so that you can
 approach the various stages of quality assurance before reaching production.
 In [The pleasures of having
-DTAP]({filename}/content/pending/the-pleasures-of-having-DTAP.md) I mention
+DTAP]({filename}/pending/the-pleasures-of-having-DTAP.md) I mention
 the benefits of having four environments for the various stages of a development
 lifecycle (development, testing, acceptance and productionn) and that is
 perfectly applicable to infrastructure services as well, even when the

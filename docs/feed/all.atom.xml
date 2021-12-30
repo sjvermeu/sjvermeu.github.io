@@ -12439,17 +12439,13 @@ and optionally a &lt;em&gt;state&lt;/em&gt; to which the object should (or shoul
 match.&lt;/p&gt;
 &lt;p&gt;Consider the test we made with SCE to see if a platform is a Gentoo
 Linux system:&lt;/p&gt;
-&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt;1&lt;/span&gt;
-&lt;span class="normal"&gt;2&lt;/span&gt;
-&lt;span class="normal"&gt;3&lt;/span&gt;
-&lt;span class="normal"&gt;4&lt;/span&gt;
-&lt;span class="normal"&gt;5&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#!/bin/sh
 
-&lt;span class="c1"&gt;# If /etc/gentoo-release exists then the system is a Gentoo Linux system.&lt;/span&gt;
-&lt;span class="nb"&gt;test&lt;/span&gt; -f /etc/gentoo-release &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_PASS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+# If /etc/gentoo-release exists then the system is a Gentoo Linux system.
+test -f /etc/gentoo-release &amp;amp;&amp;amp; exit ${XCCDF_RESULT_PASS};
+exit ${XCCDF_RESULT_FAIL};
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
 &lt;p&gt;In OVAL, this would be structured as follows (pseudo-OVAL):&lt;/p&gt;
 &lt;dl&gt;
 &lt;dt&gt;definition&lt;/dt&gt;
@@ -13003,91 +12999,50 @@ automated validation is provided by the &lt;code&gt;system&lt;/code&gt; attribut
 this case refers to the SCE system. The &lt;code&gt;check-content-ref&lt;/code&gt; element
 refers to the script to be executed.&lt;/p&gt;
 &lt;p&gt;Let's look at the contents of the script:&lt;/p&gt;
-&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
-&lt;span class="normal"&gt; 2&lt;/span&gt;
-&lt;span class="normal"&gt; 3&lt;/span&gt;
-&lt;span class="normal"&gt; 4&lt;/span&gt;
-&lt;span class="normal"&gt; 5&lt;/span&gt;
-&lt;span class="normal"&gt; 6&lt;/span&gt;
-&lt;span class="normal"&gt; 7&lt;/span&gt;
-&lt;span class="normal"&gt; 8&lt;/span&gt;
-&lt;span class="normal"&gt; 9&lt;/span&gt;
-&lt;span class="normal"&gt;10&lt;/span&gt;
-&lt;span class="normal"&gt;11&lt;/span&gt;
-&lt;span class="normal"&gt;12&lt;/span&gt;
-&lt;span class="normal"&gt;13&lt;/span&gt;
-&lt;span class="normal"&gt;14&lt;/span&gt;
-&lt;span class="normal"&gt;15&lt;/span&gt;
-&lt;span class="normal"&gt;16&lt;/span&gt;
-&lt;span class="normal"&gt;17&lt;/span&gt;
-&lt;span class="normal"&gt;18&lt;/span&gt;
-&lt;span class="normal"&gt;19&lt;/span&gt;
-&lt;span class="normal"&gt;20&lt;/span&gt;
-&lt;span class="normal"&gt;21&lt;/span&gt;
-&lt;span class="normal"&gt;22&lt;/span&gt;
-&lt;span class="normal"&gt;23&lt;/span&gt;
-&lt;span class="normal"&gt;24&lt;/span&gt;
-&lt;span class="normal"&gt;25&lt;/span&gt;
-&lt;span class="normal"&gt;26&lt;/span&gt;
-&lt;span class="normal"&gt;27&lt;/span&gt;
-&lt;span class="normal"&gt;28&lt;/span&gt;
-&lt;span class="normal"&gt;29&lt;/span&gt;
-&lt;span class="normal"&gt;30&lt;/span&gt;
-&lt;span class="normal"&gt;31&lt;/span&gt;
-&lt;span class="normal"&gt;32&lt;/span&gt;
-&lt;span class="normal"&gt;33&lt;/span&gt;
-&lt;span class="normal"&gt;34&lt;/span&gt;
-&lt;span class="normal"&gt;35&lt;/span&gt;
-&lt;span class="normal"&gt;36&lt;/span&gt;
-&lt;span class="normal"&gt;37&lt;/span&gt;
-&lt;span class="normal"&gt;38&lt;/span&gt;
-&lt;span class="normal"&gt;39&lt;/span&gt;
-&lt;span class="normal"&gt;40&lt;/span&gt;
-&lt;span class="normal"&gt;41&lt;/span&gt;
-&lt;span class="normal"&gt;42&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#!/bin/sh
 
-&lt;span class="c1"&gt;# Get CHOST value&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting CHOST variable content through portageq.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;portageq envvar CHOST&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;then&lt;/span&gt;
-  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- The portageq command failed. Falling back to glibc build info.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat /var/db/pkg/sys-libs/glibc-*/CHOST &lt;span class="p"&gt;|&lt;/span&gt; tail -1&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got CHOST=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+# Get CHOST value
+echo &amp;quot;Getting CHOST variable content through portageq.&amp;quot;;
+my_chost=$(portageq envvar CHOST);
+if [ -z &amp;quot;${my_chost}&amp;quot; ];
+then
+  echo &amp;quot;-- The portageq command failed. Falling back to glibc build info.&amp;quot;;
+  my_chost=$(cat /var/db/pkg/sys-libs/glibc-*/CHOST | tail -1);
+fi
+echo &amp;quot;-- Got CHOST=${my_chost}&amp;quot;;
 
-&lt;span class="c1"&gt;# Get current GCC version&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting current GCC version through /etc/env.d/gcc/config-*&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;grep CURRENT /etc/env.d/gcc/config-* &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:CURRENT=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;-::g&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:\([0-9\.-r]*\){&lt;/span&gt;$&lt;span class="s2"&gt;,-.*&lt;/span&gt;$&lt;span class="s2"&gt;}:\1:g&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got version=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+# Get current GCC version
+echo &amp;quot;Getting current GCC version through /etc/env.d/gcc/config-*&amp;quot;;
+current_gcc=$(grep CURRENT /etc/env.d/gcc/config-* | sed -e &amp;quot;s:CURRENT=${my_chost}-::g&amp;quot; | sed -e &amp;quot;s:\([0-9\.-r]*\){$,-.*$}:\1:g&amp;quot; );
+echo &amp;quot;-- Got version=${current_gcc}&amp;quot;;
 
-&lt;span class="c1"&gt;# Get type&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting compiler type (profile/spec) through its CURRENT= value.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;grep CURRENT /etc/env.d/gcc/config-* &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:CURRENT=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;-&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;::g&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s:^-::g&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got type=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+# Get type
+echo &amp;quot;Getting compiler type (profile/spec) through its CURRENT= value.&amp;quot;;
+current_type=$(grep CURRENT /etc/env.d/gcc/config-* | sed -e &amp;quot;s:CURRENT=${my_chost}-${current_gcc}::g&amp;quot; | sed -e &amp;#39;s:^-::g&amp;#39;);
+echo &amp;quot;-- Got type=${current_type}&amp;quot;;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Checking USE flags of gcc-&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; for hardened USE flag.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-grep -q hardened /var/db/pkg/sys-devel/gcc-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/USE&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;current_hardened_use&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$?&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_hardened_use&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; -ne &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;then&lt;/span&gt;
-  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! GCC &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; is not build with USE=hardened!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! Please enable a hardened profile.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;else&lt;/span&gt;
-  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- GCC &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; is build with USE=hardened.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;then&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- The default type is used which is a hardened type.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_PASS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;else&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! A non-default type is used: &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! This means not all hardened toolchain measures are enabled.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;span class="k"&gt;fi&lt;/span&gt;
+echo &amp;quot;Checking USE flags of gcc-${current_gcc} for hardened USE flag.&amp;quot;;
+grep -q hardened /var/db/pkg/sys-devel/gcc-${current_gcc}/USE;
+current_hardened_use=$?;
+if [ ${current_hardened_use} -ne 0 ];
+then
+  echo &amp;quot;!! GCC ${current_gcc} is not build with USE=hardened!&amp;quot;;
+  echo &amp;quot;!! Please enable a hardened profile.&amp;quot;;
+  exit ${XCCDF_RESULT_FAIL};
+else
+  echo &amp;quot;-- GCC ${current_gcc} is build with USE=hardened.&amp;quot;;
+  if [ -z &amp;quot;${current_type}&amp;quot; ];
+  then
+    echo &amp;quot;-- The default type is used which is a hardened type.&amp;quot;;
+    exit ${XCCDF_RESULT_PASS};
+  else
+    echo &amp;quot;!! A non-default type is used: ${current_type}&amp;quot;;
+    echo &amp;quot;!! This means not all hardened toolchain measures are enabled.&amp;quot;;
+    exit ${XCCDF_RESULT_FAIL};
+  fi
+fi
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
 &lt;p&gt;As you can see, the script can give output when needed, but the most
 important part is that it has to return a particular return value. This
 return value is provided through environment variables

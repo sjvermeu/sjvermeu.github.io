@@ -286,91 +286,50 @@ automated validation is provided by the <code>system</code> attribute, which in
 this case refers to the SCE system. The <code>check-content-ref</code> element
 refers to the script to be executed.</p>
 <p>Let's look at the contents of the script:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<div class="highlight"><pre><span></span><code>#!/bin/sh
 
-<span class="c1"># Get CHOST value</span>
-<span class="nb">echo</span> <span class="s2">&quot;Getting CHOST variable content through portageq.&quot;</span><span class="p">;</span>
-<span class="nv">my_chost</span><span class="o">=</span><span class="k">$(</span>portageq envvar CHOST<span class="k">)</span><span class="p">;</span>
-<span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="si">${</span><span class="nv">my_chost</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span>
-<span class="k">then</span>
-  <span class="nb">echo</span> <span class="s2">&quot;-- The portageq command failed. Falling back to glibc build info.&quot;</span><span class="p">;</span>
-  <span class="nv">my_chost</span><span class="o">=</span><span class="k">$(</span>cat /var/db/pkg/sys-libs/glibc-*/CHOST <span class="p">|</span> tail -1<span class="k">)</span><span class="p">;</span>
-<span class="k">fi</span>
-<span class="nb">echo</span> <span class="s2">&quot;-- Got CHOST=</span><span class="si">${</span><span class="nv">my_chost</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+# Get CHOST value
+echo &quot;Getting CHOST variable content through portageq.&quot;;
+my_chost=$(portageq envvar CHOST);
+if [ -z &quot;${my_chost}&quot; ];
+then
+  echo &quot;-- The portageq command failed. Falling back to glibc build info.&quot;;
+  my_chost=$(cat /var/db/pkg/sys-libs/glibc-*/CHOST | tail -1);
+fi
+echo &quot;-- Got CHOST=${my_chost}&quot;;
 
-<span class="c1"># Get current GCC version</span>
-<span class="nb">echo</span> <span class="s2">&quot;Getting current GCC version through /etc/env.d/gcc/config-*&quot;</span><span class="p">;</span>
-<span class="nv">current_gcc</span><span class="o">=</span><span class="k">$(</span>grep CURRENT /etc/env.d/gcc/config-* <span class="p">|</span> sed -e <span class="s2">&quot;s:CURRENT=</span><span class="si">${</span><span class="nv">my_chost</span><span class="si">}</span><span class="s2">-::g&quot;</span> <span class="p">|</span> sed -e <span class="s2">&quot;s:\([0-9\.-r]*\){</span>$<span class="s2">,-.*</span>$<span class="s2">}:\1:g&quot;</span> <span class="k">)</span><span class="p">;</span>
-<span class="nb">echo</span> <span class="s2">&quot;-- Got version=</span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+# Get current GCC version
+echo &quot;Getting current GCC version through /etc/env.d/gcc/config-*&quot;;
+current_gcc=$(grep CURRENT /etc/env.d/gcc/config-* | sed -e &quot;s:CURRENT=${my_chost}-::g&quot; | sed -e &quot;s:\([0-9\.-r]*\){$,-.*$}:\1:g&quot; );
+echo &quot;-- Got version=${current_gcc}&quot;;
 
-<span class="c1"># Get type</span>
-<span class="nb">echo</span> <span class="s2">&quot;Getting compiler type (profile/spec) through its CURRENT= value.&quot;</span><span class="p">;</span>
-<span class="nv">current_type</span><span class="o">=</span><span class="k">$(</span>grep CURRENT /etc/env.d/gcc/config-* <span class="p">|</span> sed -e <span class="s2">&quot;s:CURRENT=</span><span class="si">${</span><span class="nv">my_chost</span><span class="si">}</span><span class="s2">-</span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2">::g&quot;</span> <span class="p">|</span> sed -e <span class="s1">&#39;s:^-::g&#39;</span><span class="k">)</span><span class="p">;</span>
-<span class="nb">echo</span> <span class="s2">&quot;-- Got type=</span><span class="si">${</span><span class="nv">current_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+# Get type
+echo &quot;Getting compiler type (profile/spec) through its CURRENT= value.&quot;;
+current_type=$(grep CURRENT /etc/env.d/gcc/config-* | sed -e &quot;s:CURRENT=${my_chost}-${current_gcc}::g&quot; | sed -e &#39;s:^-::g&#39;);
+echo &quot;-- Got type=${current_type}&quot;;
 
-<span class="nb">echo</span> <span class="s2">&quot;Checking USE flags of gcc-</span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2"> for hardened USE flag.&quot;</span><span class="p">;</span>
-grep -q hardened /var/db/pkg/sys-devel/gcc-<span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span>/USE<span class="p">;</span>
-<span class="nv">current_hardened_use</span><span class="o">=</span><span class="nv">$?</span><span class="p">;</span>
-<span class="k">if</span> <span class="o">[</span> <span class="si">${</span><span class="nv">current_hardened_use</span><span class="si">}</span> -ne <span class="m">0</span> <span class="o">]</span><span class="p">;</span>
-<span class="k">then</span>
-  <span class="nb">echo</span> <span class="s2">&quot;!! GCC </span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2"> is not build with USE=hardened!&quot;</span><span class="p">;</span>
-  <span class="nb">echo</span> <span class="s2">&quot;!! Please enable a hardened profile.&quot;</span><span class="p">;</span>
-  <span class="nb">exit</span> <span class="si">${</span><span class="nv">XCCDF_RESULT_FAIL</span><span class="si">}</span><span class="p">;</span>
-<span class="k">else</span>
-  <span class="nb">echo</span> <span class="s2">&quot;-- GCC </span><span class="si">${</span><span class="nv">current_gcc</span><span class="si">}</span><span class="s2"> is build with USE=hardened.&quot;</span><span class="p">;</span>
-  <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;</span><span class="si">${</span><span class="nv">current_type</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">]</span><span class="p">;</span>
-  <span class="k">then</span>
-    <span class="nb">echo</span> <span class="s2">&quot;-- The default type is used which is a hardened type.&quot;</span><span class="p">;</span>
-    <span class="nb">exit</span> <span class="si">${</span><span class="nv">XCCDF_RESULT_PASS</span><span class="si">}</span><span class="p">;</span>
-  <span class="k">else</span>
-    <span class="nb">echo</span> <span class="s2">&quot;!! A non-default type is used: </span><span class="si">${</span><span class="nv">current_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
-    <span class="nb">echo</span> <span class="s2">&quot;!! This means not all hardened toolchain measures are enabled.&quot;</span><span class="p">;</span>
-    <span class="nb">exit</span> <span class="si">${</span><span class="nv">XCCDF_RESULT_FAIL</span><span class="si">}</span><span class="p">;</span>
-  <span class="k">fi</span>
-<span class="k">fi</span>
+echo &quot;Checking USE flags of gcc-${current_gcc} for hardened USE flag.&quot;;
+grep -q hardened /var/db/pkg/sys-devel/gcc-${current_gcc}/USE;
+current_hardened_use=$?;
+if [ ${current_hardened_use} -ne 0 ];
+then
+  echo &quot;!! GCC ${current_gcc} is not build with USE=hardened!&quot;;
+  echo &quot;!! Please enable a hardened profile.&quot;;
+  exit ${XCCDF_RESULT_FAIL};
+else
+  echo &quot;-- GCC ${current_gcc} is build with USE=hardened.&quot;;
+  if [ -z &quot;${current_type}&quot; ];
+  then
+    echo &quot;-- The default type is used which is a hardened type.&quot;;
+    exit ${XCCDF_RESULT_PASS};
+  else
+    echo &quot;!! A non-default type is used: ${current_type}&quot;;
+    echo &quot;!! This means not all hardened toolchain measures are enabled.&quot;;
+    exit ${XCCDF_RESULT_FAIL};
+  fi
+fi
 </code></pre></div>
-</td></tr></table>
+
 <p>As you can see, the script can give output when needed, but the most
 important part is that it has to return a particular return value. This
 return value is provided through environment variables
