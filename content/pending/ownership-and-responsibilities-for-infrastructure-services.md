@@ -28,24 +28,24 @@ malfunction, a security issue, or a performance degradation - you need
 In many organizations, this is handled in a three- or sometimes 
 even four-level support structure:
 
-- First line is generally a call center that procedurally validates if
-  an issue is service bound, or if they can assist the user in correctly
-  or better use the service. First line often does not require any
+- *First line* is generally a call center that procedurally validates if
+  an issue is service-bound, or if they can assist the user to correctly
+  or better use the service. *First line* often does not require any
   knowledge of the customer base nor target infrastructure, and is strongly
-  procedure oriented. They do not have operational duties on the services
+  procedure-oriented. They do not have operational duties on the services
   themselves, and are an important part to weed out unstructured or invalid
-  service requests. They then escalate the issues to second line.
-- Second line is an organization that has knowledge on the customer
+  service requests. They then escalate the issues to *second line*.
+- *Second line* is an organization that has knowledge on the customer
   base and the services themselves. They are also often the last line
-  that has a wide view on all services within the company, as subsequent
-  support levels are more specialized. Second line has the ability to
+  that has a wide view of all services within the company, as subsequent
+  support levels are more specialized. *Second line* has the ability to
   take actions on the services themselves (like restarting services)
   if this is agreed upon in the past with the main stakeholders, and when
-  this is executed in a controlled manner. If second line isn't able to
-  resolve an issue, it moves to the third line.
-- Third line support is generally the team that is operationally involved
+  this is executed in a controlled manner. If *second line* isn't able to
+  resolve an issue, it moves to *third line*.
+- *Third line* support is generally the team that is operationally involved
   in the service itself. If the problem lays with a customer portal for
-  instance, then third line support is often the team that maintains the
+  instance, then *third line support* is often the team that maintains the
   customer portal. They know the service and its usage in detail, and are
   in many organizations the last line of support.
 
@@ -59,23 +59,23 @@ organized to be experts in database and database administration).
 
 Not all companies have a technology-oriented support team though, and
 many companies will consider this as part of 3rd line support as well,
-if not just to be more aligned with market terminology on support structure.
+if not just to be more aligned with market terminology on support structures.
 Still, organizing and optimizing this third line of support is often
 something that infrastructure service support is heavily involved in.
 
 Regardless of the structure approached by the organization, these teams
 will need the knowledge and supporting tools and procedures to do their job.
-You need people that can develop support procedures, simplified automation
-(for second line to execute), and continuously update that information.
-And if a vendor is involved, then the support line will need to have
-knowledge on how to approach the vendor: what are the procedures and
+You need people that can develop support procedures, create simplified
+automation (for second line to execute), and continuously update that
+information. And if a vendor is involved, then the support line will need to
+have knowledge on how to approach the vendor: what are the procedures and
 processes for raising incidents, what is the priority queue like? Does
 the vendor have certain SLAs that the team should know about?
 
 The several layers of support will need continuous training, even if it
 is just refreshing past information. It is also wise to involve these
 support lines in information sharing, like when you know there is a growth
-on database reliance in the business services, or when you know many
+in database reliance in the business services, or when you know many
 databases are being migrated from one technology to another. Second line
 for instance might be able to use that information, together with their
 cross-organizational knowledge, to better triage issues.
@@ -96,7 +96,7 @@ maintenance requirement on services, and infrastructure services are not
 different. Perhaps even more so than business services, infrastructure
 services have a wider impact if they are hit with a bug or with
 performance degradation, as many business services rely on the infrastructure
-to be up and running, highly available, performant and secure.
+to be up and running, highly available, performant, and secure.
 
 Maintenance tasks for services include, alongside the participation in the
 operational support:
@@ -113,17 +113,17 @@ operational support:
   to higher versions. When the service cannot be transparently upgraded,
   this will involve a thorough alignment with all stakeholders as part of
   the change management processes.
-- In case of larger, wide spanning incidents (or even disasters), the teams
+- In case of larger, wide-spanning incidents (or even disasters), the teams
   play an active role in the orchestrated recovery together with all other
   teams.
 
-**Designing and architecturing the integrations**
+**Designing and architecting the integrations**
 
 To ensure that the services are well supported and can be maintained in
-an efficient manner, there is often a strong focus on proper design of
+an efficient manner, there is often a strong focus on the proper design of
 the infrastructure services and their role in the architecture. This
 design does not just include pointing out which components exist where,
-but also how the service integrates in the larger landscape:
+but also how the service integrates within the larger landscape:
 
 - How are administration tasks executed? How do administrators authenticate
   themselves?
@@ -143,7 +143,7 @@ but also how the service integrates in the larger landscape:
 - How do users interact with the service? Do they access it directly,
   or do you require intermediate gateways (like reverse proxies)?
 
-Now, design and architecture goes beyond integrations. I focus strongly on
+Now, design and architecture go beyond integrations. I focus strongly on
 integrations here as it is a part of design and architecture that has strong
 dependencies and relations with other teams and technologies. To work out
 the integration side of a service, you can't do this autonomously without
@@ -159,10 +159,10 @@ might not be ready to be activated in production, and then suddenly there
 is a stronger focus on timely delivery than on quality. Situations where
 firewall rules need to be quickly pushed and opened up because a project
 failed to assess their integrations, resulting in security risks, is
-sadly enough all to common.
+sadly enough all too common.
 
 Larger organizations will often have architects and designers within the teams
-or directorates to support this endeavour.
+or directorates to support this endeavor.
 
 **Secure setup and deployment**
 
@@ -173,17 +173,17 @@ will need to make sure that the services are designed to be secure.
 Security of a service is more than just ensuring it is up-to-date. You
 will also need to make sure it is configured correctly (as misconfigurations
 are a frequent occurrence of security incidents), that the authentication
-and authorization is properly designed (and where needed or possible,
+and authorizations are properly designed (and where needed or possible,
 using multi-factor authentication), that the deployment considers the
 placement and interactions (firewalls, zoning, etc.), that the service
 provides functional (or perhaps even physical) segregation, that the
 data governance is appropriate and aligned with regulatory and company
 requirements, that the service is continuously validated by the security
-tooling available (patch indications, vulnerability management, ...) etc.
+tooling available (patch indications, vulnerability management, ...), etc.
 
 As services also evolve when they are alive, secure setup and deployment
 is not a one-off (but the initial thoughts and designs are not to be
-underestimgated): the teams will need to assess the impact of new
+underestimated): the teams will need to assess the impact of new
 insights (like security notifications, vulnerabilities, global changes
 by the organization, new threats in the wider IT world) which implies
 that the team has a continuous security and risk focus.
@@ -196,16 +196,16 @@ a Secure Development LifeCycle (SDLC) approach to get assurance about
 the secure state of the developed code.
 
 When the deployment uses infrastructure-as-code methods, follows a
-GitOps approach or similar, then there should also be sufficient attention
+GitOps approach, or similar, then there should also be sufficient attention
 to the secure setup of these pipelines and the platforms on which they
 run. The code (or configurations) hosted should also follow appropriate
 security guidelines
 
 **Robust and reliable services**
 
-Designing for a trust-worthy, secure environment is one thing. The other
+Designing for a trustworthy, secure environment is one thing. The other
 major focus area for infrastructure services is the availability,
-robustness and resilience of the service. While not all services
+robustness, and resilience of the service. While not all services
 require to be up and running 24/7, nowadays it is hard to imagine
 many services to still have significant downtimes.
 
@@ -216,7 +216,7 @@ a better service. Design for a service that you can do technical maintenance
 on without disrupting the customers themselves as much as possible - but
 don't overshoot.
 
-If the service is setup in multiple locations, make sure that there is
+If the service is set up in multiple locations, make sure that there is
 independence between these locations (often across different regions) so
 that failures in one region do not affect the other regions. Consider a setup
 as used in many public cloud environments: high availability across availability
@@ -228,7 +228,7 @@ designs to be more resilient against these failures, or establish procedures
 and processes to quickly recover. A common focus area here is to recover
 from disasters (using so-called Disaster Recovery Procedures), and there 
 are plenty of disasters to assess: data center failures, large Internet
-outages, ransomware or other cyberattacks, world-wide epidemic outbreaks,
+outages, ransomware or other cyberattacks, worldwide epidemic outbreaks,
 etc.
 
 **Quality assurance at all stages**
@@ -239,23 +239,23 @@ doesn't mean that the organization needs to be able to develop the fixes itself:
 especially with off-the-shelf products the development is done by the
 independent software vendor (ISV). However, the organization does have the
 responsibility to track and put their weight on this so that the issues are
-indeed properly resolved (and in case of a third party product, preferably
+indeed properly resolved (and in case of a third-party product, preferably
 through a fix that is applied to the main product, and not a one-off for that
 particular company). Of course, if the service is developed in-house, then the
 development of the fixes has to be guaranteed by the organization as well.
 
 To be able to provide secure and reliable services, it is vital to have
-good change management processes and tooling in place so that you can
+good change management processes and tools in place so that you can
 approach the various stages of quality assurance before reaching production.
 In [The pleasures of having
 DTAP]({filename}/2021/12/the-pleasures-of-having-DTAP.md) I mention
 the benefits of having four environments for the various stages of a development
-lifecycle (development, testing, acceptance and productionn) and that is
+lifecycle (development, testing, acceptance, and production) and that is
 perfectly applicable to infrastructure services as well, even when the
 environments for infrastructure services might be isolated from those of the
 more business-oriented development stages: you want to make sure that the
 business-oriented development has production-grade services for its processes,
-and not the intermediate and possibly less reliable in-development infratructure
+and not the intermediate and possibly less reliable in-development infrastructure
 services.
 
 Throughout these environments, testing can (should) be introduced to provide
@@ -285,12 +285,12 @@ management principles and processes that are in effect in the organization.
 The team responsible for an infrastructure service will also need to consider
 the service in the long term: is the current technology (or set of products)
 still state-of-the-art, mature, and following market practices? Or does the team
-consider the technology to be relatively stale and in need of an update? When
+consider the technology to be relatively outdated and in need of an update? When
 would the right time be to address this update?
 
 Perhaps the currently used technology is nearing its end-of-sale, end-of-support
-(EOS) or even end-of-life (EOL). In that case, the team has to be ready to
-address these lifecycle stages accordingly, be it through a migration, or
+(EOS), or even end-of-life (EOL). In that case, the team has to be ready to
+address these lifecycle stages accordingly, be it through migrations, or
 refactoring of current usages. Perhaps the teams find that it is more sensible
 to get an extended support contract in place, or that they have the ability to
 take the support (including code development) completely internally. Whatever
@@ -314,7 +314,7 @@ up and running, the team must be able to address the change in due time.
 The need to have a proper roadmap on the capability and products that are being
 used also reflects in the relationship that that team has with the vendor. For
 strategically important products, an organization might even want to participate
-in that vendor's Customer Advisory Board (CAB) or equivalent programmes. The
+in that vendor's Customer Advisory Board (CAB) or equivalent programs. The
 team should have the time and resources to collaborate with that vendor to build
 a partnership, participate in the conferences and other events, as that provides
 input to the team on the progress and future of that product. Those insights are
@@ -322,7 +322,7 @@ primordial to properly design and organize an internal roadmap.
 
 Once the internal roadmap has taken shape, then the responsible teams are
 involved in supporting the organization through updates and upgrades, by
-communicating the need for these up front (so that the internal customers can
+communicating the need for these upfront (so that the internal customers can
 plan around it), and to track the progress so there are no lingering risks for
 the wide organization.
 
@@ -340,7 +340,7 @@ suitable alternatives that are not properly handled by the capability (and thus
 might be best provided by a different team), ... helps in building out the trust
 that the wider organization has in IT.
 
-**Cost, licenses and contractual obligations**
+**Cost, licenses, and contractual obligations**
 
 Many services have certain contractual obligations associated with them, often
 known as the Terms and Conditions of the contract and product usage.
@@ -350,7 +350,7 @@ the organization adheres to them.
 The cost of an infrastructure service usage also needs to be correctly devised
 and accounted for. Teams have to make sure the product usage remains within the
 allocated licenses (or, if there is no capping in place, that the usage is
-sufficiently constrainted that the organization does not get any surprises), and
+sufficiently constrained that the organization does not get any surprises), and
 is often involved in defining a chargeback towards the rest of the organization.
 
 I tend to make a distinction between showback (show the organization how much a
@@ -359,10 +359,10 @@ or tax-driven requirement for charging usage to the organization), as the latter
 is more a company decision on how to approach this, whereas the showback is the
 actual, factual cost. Showback is needed to support conscious decisions on next
 steps or consumption patterns, whereas chargeback might be necessary for
-tax-reasons in larger corporations where IT is considered as part of a different
+tax reasons in larger corporations where IT is considered as part of a different
 legal entity.
 
-Addressing cost, licenses and T&Cs is not to be underestimated. Many vendors
+Addressing cost, licenses, and T&Cs is not to be underestimated. Many vendors
 make this very difficult, as that allows for many interpretations during license
 audits that can give a nice bonus to the vendor if he can show that his
 interpretation is more appropriate than how you thought that the contract or
@@ -376,7 +376,7 @@ can often provide better rates as they can bundle purchases of multiple
 customers and thus negotiate better deals with the main vendor.
 
 The cost also depends on the support contract associated with it, as well as
-depending costs of other technologies (such as capacity requirements) that come
+the costs of other depending technologies (such as capacity requirements) that come
 from its implementation. This is often neglected in SaaS purchases: even though
 you have correctly negotiated a good price for the SaaS service, you might be
 jeopardizing your internet connectivity and need to upgrade the bandwidth, the
@@ -388,7 +388,7 @@ that SaaS service is significant.
 The responsibilities for managing and tracking infrastructure services are large
 and not to be underestimated. It is not a matter of deploying a new service and
 assuming everybody can deal with it, nor are all responsibilities equally
-visible to the end user.
+visible to the end-user.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
