@@ -1,214 +1,345 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Simplicity is a form of art...</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Thu, 30 Dec 2021 12:00:00 +0100</lastBuildDate><item><title>The pleasures of having DTAP</title><link>https://blog.siphos.be/2021/12/the-pleasures-of-having-DTAP/</link><description>&lt;p&gt;No, not Diphtheria, Tetanus, and Pertussis (vaccine), but &lt;em&gt;Development,
+<rss version="2.0"><channel><title>Simplicity is a form of art...</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Thu, 13 Jan 2022 09:00:00 +0100</lastBuildDate><item><title>Ownership and responsibilities for infrastructure services</title><link>https://blog.siphos.be/2022/01/ownership-and-responsibilities-for-infrastructure-services/</link><description>&lt;p&gt;In a perfect world, using infrastructure or technology services would be
+seamless, without impact, without risks. It would auto-update, tailor to
+the user needs, detect when new features are necessary, adapt, etc. But
+while this is undoubtedly what vendors are saying their product delivers,
+the truth is way, waaaay different.&lt;/p&gt;
+&lt;p&gt;Managing infrastructure services implies that the company or organization
+needs to organize itself to deal with all aspects of supporting a service.
+What are these aspects? Well, let's go through those that are top-of-mind
+for me...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Operational support&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When you have a service running, then you need to ensure operational
+support is in place in case there are issues. Be it to resolve a
+malfunction, a security issue, or a performance degradation - you need
+(human) resources to ensure that the service remains running adequately.&lt;/p&gt;
+&lt;p&gt;In many organizations, this is handled in a three- or sometimes 
+even four-level support structure:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;First line&lt;/em&gt; is generally a call center that procedurally validates if
+  an issue is service-bound, or if they can assist the user to correctly
+  or better use the service. &lt;em&gt;First line&lt;/em&gt; often does not require any
+  knowledge of the customer base nor target infrastructure, and is strongly
+  procedure-oriented. They do not have operational duties on the services
+  themselves, and are an important part to weed out unstructured or invalid
+  service requests. They then escalate the issues to &lt;em&gt;second line&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Second line&lt;/em&gt; is an organization that has knowledge on the customer
+  base and the services themselves. They are also often the last line
+  that has a wide view of all services within the company, as subsequent
+  support levels are more specialized. &lt;em&gt;Second line&lt;/em&gt; has the ability to
+  take actions on the services themselves (like restarting services)
+  if this is agreed upon in the past with the main stakeholders, and when
+  this is executed in a controlled manner. If &lt;em&gt;second line&lt;/em&gt; isn't able to
+  resolve an issue, it moves to &lt;em&gt;third line&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Third line&lt;/em&gt; support is generally the team that is operationally involved
+  in the service itself. If the problem lays with a customer portal for
+  instance, then &lt;em&gt;third line support&lt;/em&gt; is often the team that maintains the
+  customer portal. They know the service and its usage in detail, and are
+  in many organizations the last line of support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some organizations even continue this layering, with a fourth line of
+support being a technical expert in a particular component used by the
+service. If the customer portal has problems, and it is within the database,
+and the DBAs of the customer portal team do not have the knowledge to
+resolve it, they might escalate further to a dedicated DBA team (which
+is not assigned to any particular business service but specifically
+organized to be experts in database and database administration).&lt;/p&gt;
+&lt;p&gt;Not all companies have a technology-oriented support team though, and
+many companies will consider this as part of 3rd line support as well,
+if not just to be more aligned with market terminology on support structures.
+Still, organizing and optimizing this third line of support is often
+something that infrastructure service support is heavily involved in.&lt;/p&gt;
+&lt;p&gt;Regardless of the structure approached by the organization, these teams
+will need the knowledge and supporting tools and procedures to do their job.
+You need people that can develop support procedures, create simplified
+automation (for second line to execute), and continuously update that
+information. And if a vendor is involved, then the support line will need to
+have knowledge on how to approach the vendor: what are the procedures and
+processes for raising incidents, what is the priority queue like? Does
+the vendor have certain SLAs that the team should know about?&lt;/p&gt;
+&lt;p&gt;The several layers of support will need continuous training, even if it
+is just refreshing past information. It is also wise to involve these
+support lines in information sharing, like when you know there is a growth
+in database reliance in the business services, or when you know many
+databases are being migrated from one technology to another. Second line
+for instance might be able to use that information, together with their
+cross-organizational knowledge, to better triage issues.&lt;/p&gt;
+&lt;p&gt;Finally, this support structure is often tied to service level agreements that
+the company makes either internally, or with its customers. Hence, the support
+must be guaranteed within those SLAs. That implies that the support must be
+driven through multiple people, as the organization has to provide support
+during off-hours, during holidays, during absence... heck, even during global
+pandemics. I use the "3 FTE per technology" principle: you need three people
+with enough knowledge to support the technology.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Maintenance&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;As mentioned in the support part, teams exist that are responsible for
+the service itself, including patching and updates. This is part of the
+maintenance requirement on services, and infrastructure services are not
+different. Perhaps even more so than business services, infrastructure
+services have a wider impact if they are hit with a bug or with
+performance degradation, as many business services rely on the infrastructure
+to be up and running, highly available, well-performing, and secure.&lt;/p&gt;
+&lt;p&gt;Maintenance tasks for services include, alongside the participation in the
+operational support:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Executing security- and stability patch validation and roll-out (updates)&lt;/li&gt;
+&lt;li&gt;Proactively assessing the state of the service to see if improvements
+  or mitigations are needed, before these result in actual issues&lt;/li&gt;
+&lt;li&gt;Ensuring sufficient capacity is available for now and in the immediate
+  future&lt;/li&gt;
+&lt;li&gt;Resolving performance issues, be it by increasing resources, moving
+  services to different locations or hosts, fine-tuning configuration
+  parameters, offloading workload to different services, etc.&lt;/li&gt;
+&lt;li&gt;Executing planned maintenance activities, which can include upgrades
+  to higher versions. When the service cannot be transparently upgraded,
+  this will involve a thorough alignment with all stakeholders as part of
+  the change management processes.&lt;/li&gt;
+&lt;li&gt;In case of larger, wide-spanning incidents (or even disasters), the teams
+  play an active role in the orchestrated recovery together with all other
+  teams.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Designing and architecting the integrations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To ensure that the services are well supported and can be maintained in
+an efficient manner, there is often a strong focus on the proper design of
+the infrastructure services and their role in the architecture. This
+design does not just include pointing out which components exist where,
+but also how the service integrates within the larger landscape:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;How are administration tasks executed? How do administrators authenticate
+  themselves?&lt;/li&gt;
+&lt;li&gt;Where are the monitoring metrics found and stored? Do you use trend analysis,
+  and in which system?&lt;/li&gt;
+&lt;li&gt;How are the assets related to the service tracked? What is the lifecycle for
+  the individual assets, and how does that impact the maintainability of the
+  service?&lt;/li&gt;
+&lt;li&gt;What is the best way to use the service, and what will not be allowed?&lt;/li&gt;
+&lt;li&gt;How are backups taken, and what does a restore procedure look like? Do you
+  support both in-place restores, side restores, etc.&lt;/li&gt;
+&lt;li&gt;What underlying resource requirements exist? Do you require certain
+  tiered storage, or network performance requirements? If you allow your
+  service to be instantiated by others (rather than maintain a platform
+  yourself), what are the target resources that you allow? Are there
+  minimal resource requirements?&lt;/li&gt;
+&lt;li&gt;How do users interact with the service? Do they access it directly,
+  or do you require intermediate gateways (like reverse proxies)?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Now, design and architecture go beyond integrations. I focus strongly on
+integrations here as it is a part of design and architecture that has strong
+dependencies and relations with other teams and technologies. To work out
+the integration side of a service, you can't do this autonomously without
+assistance from the other service teams. Of course, if those teams have
+everything well documented and architected, and easy to consume, then the
+team responsible for the design and architecture can do a large part of the
+work independently, but having a final validation or confirmation is always
+beneficial.&lt;/p&gt;
+&lt;p&gt;One of the values of a proper integration design is a higher quality of the
+service delivery. If integrations are missed, you'll find that a service 
+might not be ready to be activated in production, and then suddenly there
+is a stronger focus on timely delivery than on quality. Situations where
+firewall rules need to be quickly pushed and opened up because a project
+failed to assess their integrations, resulting in security risks, is
+sadly enough all too common.&lt;/p&gt;
+&lt;p&gt;Larger organizations will often have architects and designers within the teams
+or directorates to support this endeavor.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Secure setup and deployment&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Given that some integrations might result in heightened risks, and
+infrastructure services are often widely used or consumed, the organization
+will need to make sure that the services are designed to be secure.&lt;/p&gt;
+&lt;p&gt;Security of a service is more than just ensuring it is up-to-date. You
+will also need to make sure it is configured correctly (as misconfigurations
+are a frequent occurrence of security incidents), that the authentication
+and authorizations are properly designed (and where needed or possible,
+using multi-factor authentication), that the deployment considers the
+placement and interactions (firewalls, zoning, etc.), that the service
+provides functional (or perhaps even physical) segregation, that the
+data governance is appropriate and aligned with regulatory and company
+requirements, that the service is continuously validated by the security
+tooling available (patch indications, vulnerability management, ...), etc.&lt;/p&gt;
+&lt;p&gt;As services also evolve when they are alive, secure setup and deployment
+is not a one-off (but the initial thoughts and designs are not to be
+underestimated): the teams will need to assess the impact of new
+insights (like security notifications, vulnerabilities, global changes
+by the organization, new threats in the wider IT world) which implies
+that the team has a continuous security and risk focus.&lt;/p&gt;
+&lt;p&gt;In many cases, there is even a coding and development component with
+a service. Not many services can be installed and deployed without requiring
+any integration scripting or even in-depth coding (such as custom plugins).
+And when there is coding, there is the need for secure coding: following
+a Secure Development LifeCycle (SDLC) approach to get assurance about
+the secure state of the developed code.&lt;/p&gt;
+&lt;p&gt;When the deployment uses infrastructure-as-code methods, follows a
+GitOps approach, or similar, then there should also be sufficient attention
+to the secure setup of these pipelines and the platforms on which they
+run. The code (or configurations) hosted should also follow appropriate
+security guidelines&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Robust and reliable services&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Designing for a trustworthy, secure environment is one thing. The other
+major focus area for infrastructure services is the availability,
+robustness, and resilience of the service. While not all services
+require to be up and running 24/7, nowadays it is hard to imagine
+many services to still have significant downtimes.&lt;/p&gt;
+&lt;p&gt;So, you often need to architecture and design for a resilient service,
+which can take a beating if it has to. Organize load- and stress testing.
+Organize disruptive testing if needed, and learn from the results to build
+a better service. Design for a service that you can do technical maintenance
+on without disrupting the customers themselves as much as possible - but
+don't overshoot.&lt;/p&gt;
+&lt;p&gt;If the service is set up in multiple locations, make sure that there is
+independence between these locations (often across different regions) so
+that failures in one region do not affect the other regions. Consider a setup
+as used in many public cloud environments: high availability across availability
+zones in the same region, and regional independence while allowing for
+cross-region usage scenarios for the customers.&lt;/p&gt;
+&lt;p&gt;Assess what can go wrong, and either try to update the architectures and
+designs to be more resilient against these failures, or establish procedures
+and processes to quickly recover. A common focus area here is to recover
+from disasters (using so-called Disaster Recovery Procedures), and there 
+are plenty of disasters to assess: data center failures, large Internet
+outages, ransomware or other cyberattacks, worldwide epidemic outbreaks,
+etc.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Quality assurance at all stages&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The organization has to be able to provide fixes for defects and problems that
+were raised, or to preemptively fix issues before they reach the customers. That
+doesn't mean that the organization needs to be able to develop the fixes itself:
+especially with off-the-shelf products the development is done by the
+independent software vendor (ISV). However, the organization does have the
+responsibility to track and put their weight on this so that the issues are
+indeed properly resolved (and in case of a third-party product, preferably
+through a fix that is applied to the main product, and not a one-off for that
+particular company). Of course, if the service is developed in-house, then the
+development of the fixes has to be guaranteed by the organization as well.&lt;/p&gt;
+&lt;p&gt;To be able to provide secure and reliable services, it is vital to have
+good change management processes and tools in place so that you can
+approach the various stages of quality assurance before reaching production.
+In &lt;a href="https://blog.siphos.be/2021/12/the-pleasures-of-having-DTAP/"&gt;The pleasures of having
+DTAP&lt;/a&gt; I mention
+the benefits of having four environments for the various stages of a development
+lifecycle (development, testing, acceptance, and production) and that is
+perfectly applicable to infrastructure services as well, even when the
+environments for infrastructure services might be isolated from those of the
+more business-oriented development stages: you want to make sure that the
+business-oriented development has production-grade services for its processes,
+and not the intermediate and possibly less reliable in-development infrastructure
+services.&lt;/p&gt;
+&lt;p&gt;Throughout these environments, testing can (should) be introduced to provide
+guidance to the engineers and developers to improve on the service. Testing can
+take several forms: unit testing within the frameworks, integration testing of
+code in larger environments, integration testing of new products in those
+environments, sanity testing with simple use cases to ensure nothing blows
+up (figuratively... hopefully), regression tests to ensure no fixed defects
+creep back in, acceptance tests for specific features or use cases, load
+testing to ensure the product stays up under the expected loads (and the
+individual components or services have the right performance profile), stress testing
+to ensure the product is resilient against higher loads or bursts, destructive
+tests to see the product behaves as expected when unauthorized usage is
+performed, security testing and penetration testing to provide assurance
+on the secure state of the product deployment, etc.&lt;/p&gt;
+&lt;p&gt;In many cases, the QA part is driven by organizational requirements, and not all
+products require the same intensity on the tests and assurance levels. But, by
+introducing the right automation, it is far easier to include multiple test
+scenarios and test types in your pipeline.&lt;/p&gt;
+&lt;p&gt;Products then pass through the various stages according to the change
+management principles and processes that are in effect in the organization.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Strategy and roadmap&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The team responsible for an infrastructure service will also need to consider
+the service in the long term: is the current technology (or set of products)
+still state-of-the-art, mature, and following market practices? Or does the team
+consider the technology to be relatively outdated and in need of an update? When
+would the right time be to address this update?&lt;/p&gt;
+&lt;p&gt;Perhaps the currently used technology is nearing its end-of-sale, end-of-support
+(EOS), or even end-of-life (EOL). In that case, the team has to be ready to
+address these lifecycle stages accordingly, be it through migrations, or
+refactoring of current usages. Perhaps the teams find that it is more sensible
+to get an extended support contract in place, or that they have the ability to
+take the support (including code development) completely internally. Whatever
+the choice is, it has to be made clear for the wider organization, and the
+support team has to be ready to take on its commitments.&lt;/p&gt;
+&lt;p&gt;There is a distinction between the service (or better yet, "capability") that is
+offered, versus the products and technologies that support and realize it.
+Capabilities will be needed by the organization for a long, long time, whereas
+the products that realize these capabilities can have much shorter timeframes.&lt;/p&gt;
+&lt;p&gt;The team will need to consider alternatives for the products, and see when those
+alternatives make sense to address and implement. Perhaps the organization might
+benefit from multiple implementations using different technologies because they
+serve different usage scenarios, and the costs of keeping multiple technologies
+in the air is less than the value it provides. Or perhaps an alternative needs
+to be quickly realizable in case of a sudden exit scenario of the current
+technology (or vendor). In that case, while the alternative doesn't need to be
+up and running, the team must be able to address the change in due time.&lt;/p&gt;
+&lt;p&gt;The need to have a proper roadmap on the capability and products that are being
+used also reflects in the relationship that that team has with the vendor. For
+strategically important products, an organization might even want to participate
+in that vendor's Customer Advisory Board (CAB) or equivalent programs. The
+team should have the time and resources to collaborate with that vendor to build
+a partnership, participate in the conferences and other events, as that provides
+input to the team on the progress and future of that product. Those insights are
+primordial to properly design and organize an internal roadmap.&lt;/p&gt;
+&lt;p&gt;Once the internal roadmap has taken shape, then the responsible teams are
+involved in supporting the organization through updates and upgrades, by
+communicating the need for these upfront (so that the internal customers can
+plan around it), and to track the progress so there are no lingering risks for
+the wide organization.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;More elaborate (internal) customer support&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The support for the infrastructure service often has to extend beyond the
+operational support that I started with in this article. Teams that provide
+certain capabilities within the organization don't do this as a vendor, but as
+part of that organization. So when an internal customer needs help in migrating
+away from a service, the team is still involved in this process.&lt;/p&gt;
+&lt;p&gt;Hence, more elaborate support such as migrations (both towards a new technology,
+service or capability, as well as migration away from it), finding
+suitable alternatives that are not properly handled by the capability (and thus
+might be best provided by a different team), ... helps in building out the trust
+that the wider organization has in IT.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Cost, licenses, and contractual obligations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Many services have certain contractual obligations associated with them, often
+known as the Terms and Conditions of the contract and product usage.
+Infrastructure teams will need to make sure that these T&amp;amp;Cs are known and that
+the organization adheres to them.&lt;/p&gt;
+&lt;p&gt;The cost of an infrastructure service usage also needs to be correctly devised
+and accounted for. Teams have to make sure the product usage remains within the
+allocated licenses (or, if there is no capping in place, that the usage is
+sufficiently constrained that the organization does not get any surprises), and
+is often involved in defining a chargeback towards the rest of the organization.&lt;/p&gt;
+&lt;p&gt;I tend to make a distinction between showback (show the organization how much a
+service costs to the company or usage group) and chargeback (a governance-driven
+or tax-driven requirement for charging usage to the organization), as the latter
+is more a company decision on how to approach this, whereas the showback is the
+actual, factual cost. Showback is needed to support conscious decisions on next
+steps or consumption patterns, whereas chargeback might be necessary for
+tax reasons in larger corporations where IT is considered as part of a different
+legal entity.&lt;/p&gt;
+&lt;p&gt;Addressing cost, licenses, and T&amp;amp;Cs is not to be underestimated. Many vendors
+make this very difficult, as that allows for many interpretations during license
+audits that can give a nice bonus to the vendor if he can show that his
+interpretation is more appropriate than how you thought that the contract or
+license was structured.&lt;/p&gt;
+&lt;p&gt;The cost of a product or technology is not just the cost of the purchase, and
+even that cost is still somewhat variable: many things are open for negotiation,
+and you also don't need to tackle this directly with the vendor, as there is a
+large market of middle parties that facilitate purchasing technologies. These
+can often provide better rates as they can bundle purchases of multiple
+customers and thus negotiate better deals with the main vendor.&lt;/p&gt;
+&lt;p&gt;The cost also depends on the support contract associated with it, as well as
+the costs of other depending technologies (such as capacity requirements) that come
+from its implementation. This is often neglected in SaaS purchases: even though
+you have correctly negotiated a good price for the SaaS service, you might be
+jeopardizing your internet connectivity and need to upgrade the bandwidth, the
+anti-DDoS service, your firewall capabilities, etc. because the consumption of
+that SaaS service is significant.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The responsibilities for managing and tracking infrastructure services are large
+and not to be underestimated. It is not a matter of deploying a new service and
+assuming everybody can deal with it, nor are all responsibilities equally
+visible to the end-user.&lt;/p&gt;
+&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/TODO"&gt;discussion on
+Twitter&lt;/a&gt;.&lt;/p&gt;
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 13 Jan 2022 09:00:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2022-01-13:/2022/01/ownership-and-responsibilities-for-infrastructure-services/</guid><category>Architecture</category><category>RACI</category><category>responsibilities</category></item><item><title>The pleasures of having DTAP</title><link>https://blog.siphos.be/2021/12/the-pleasures-of-having-DTAP/</link><description>&lt;p&gt;No, not Diphtheria, Tetanus, and Pertussis (vaccine), but &lt;em&gt;Development,
 Test, Acceptance, and Production (DTAP)&lt;/em&gt;: different environments that,
 together with a well-working release management process, provide a way to
 get higher quality and reduced risks in production. DTAP is an important
 cornerstone for a larger infrastructure architecture as it provides
 environments that are tailored to the needs of many stakeholders.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;What are these four environments?&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Let's go over the four environments one by one with a small introduction
-to their purpose. I'll cover more specific use cases further down in this
-post.&lt;/p&gt;
-&lt;p&gt;The &lt;em&gt;Development&lt;/em&gt; environment is a functionally complete environment on
-which the development of products or code is done. It should have the same
-technologies in place and very similar setups (deployments) so that
-developers are not facing a too different environment. Too much difference
-might imply different behavior, which is contra-productive. The environment
-is accessible by developers and testers, and is mainly development-oriented.&lt;/p&gt;
-&lt;p&gt;Products or code that are being developed will be visible and used in this
-environment. Developers and engineers hardly have any threshold to reach for
-deploying or modifying code here.&lt;/p&gt;
-&lt;p&gt;The &lt;em&gt;Testing&lt;/em&gt; environment is used when the development has reached a phase
-where the product or code has passed a minimum of quality. Unit tests
-succeed, the code builds fine, and the developer has indicated that the
-code or product is ready for wider testing (hence the name).&lt;/p&gt;
-&lt;p&gt;A testing environment generally applies a multitude of tests, most of
-them (hopefully) automated, but with a strong dependency on testers
-(also known as Quality Assurance engineers or QA engineers) to find issues.&lt;/p&gt;
-&lt;p&gt;The automated tests focus on integrations, regression testing, security
-testing, etc., and provide insights into the new builds or products which the
-development team can take up and iterate over to improve the product.&lt;/p&gt;
-&lt;p&gt;The &lt;em&gt;Acceptance&lt;/em&gt; environment is a production-like environment, not
-just for one product, but for the entire business or business unit: the same
-setup, the same infrastructure, the same foundations, the same application
-portfolio, the same integrations, etc. This environment intends to 
-validate that the product is fully ready to be released. It is often
-also abbreviated as the &lt;em&gt;User Acceptance Testing (UAT)&lt;/em&gt; environment.&lt;/p&gt;
-&lt;p&gt;While the testing environment is generally approached by QA engineers, the
-acceptance environment should be more tailored to business testers. When
-developers or engineers introduce a feature, the stakeholders that
-requested that feature use the acceptance environment to accept if the
-coming release fulfills their request or not.&lt;/p&gt;
-&lt;p&gt;As the environment is production-like in its entirety (and not just for
-a single product), it is a prime target for executing performance tests
-as well. Cross-product dependencies and processes (like migrations) are
-validated here too.&lt;/p&gt;
-&lt;p&gt;The &lt;em&gt;Production&lt;/em&gt; environment is the environment in which the product or
-code "goes live", where the customers use it. That does not mean that
-a product put in production is immediately accessible for the customers:
-there is still a difference between deployment (bring to production),
-activation (enable usage), and release (use by customers).&lt;/p&gt;
-&lt;p&gt;While DTAP is well-known in larger organizations, there are some challenges
-or misconceptions that I would like to point out, and which I discuss
-further down:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Environments are more than just the systems where the code is deployed to.
-  Each environment has production services associated with it.&lt;/li&gt;
-&lt;li&gt;A prime challenge to implementing DTAP is the cost associated with it. But
-  it does not need to be as expensive as you think, and DTAP implementations
-  often have a positive business case.&lt;/li&gt;
-&lt;li&gt;Agile methodologists might find DTAP to be old-style. They are correct
-  that many implementations are prohibitive towards fast deployment and
-  release strategies, but that isn't because DTAP is conceptually wrong.&lt;/li&gt;
-&lt;li&gt;Not all environments need the same data. On the contrary, a proper DTAP
-  design likely uses separate datasets in each environment to deal with 
-  the security and regulatory requirements.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Conceptual environments still require production services&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The purpose of each environment is strongly tied to the 'phase' in which
-the code or the product resides in the development lifecycle. That means
-that these environments have a strong focus on that product or code, and
-not on the services that are needed.&lt;/p&gt;
-&lt;p&gt;Indeed, a development environment also entails services that are already
-'in production', like a usable workstation, development services like
-code repositories and build systems, ticketing services, and more. A testing
-environment requires test automation engines, regression test frameworks,
-security tools, and more. All these services are production-ready - and they
-often have their own DTAP environments as well.&lt;/p&gt;
-&lt;p&gt;It is a common misconception that a development-oriented system or service
-has a lower SLA or lower risk profile than production, and infrastructure
-architecture should make clear that there is a difference between the
-systems that host the products or code under review and the systems that
-facilitate the functionality needed within the environment.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Static cost is a major inhibitor for implementing DTAP&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Smaller companies or organizations might be hesitant to introduce DTAP
-environments as it might be cost-prohibitive. While it is true
-that, from a 'static' view, a DTAP environment costs more than a
-production-only environment, you need to consider the impact of implementing
-DTAP in the processes.&lt;/p&gt;
-&lt;p&gt;The main purpose of DTAP is not to make your CFO angry, but to improve the
-quality of your production environment (and usage). Ask yourself: how costly
-is it when your production systems go down, or when your customers complain
-and you need to fix things... Do you update code directly on the server(s)?
-What if a security patch is rolled out and suddenly prevents your
-customer-facing application from working?&lt;/p&gt;
-&lt;p&gt;While DTAP mentions four environments, some companies settle with three, and
-others with five or more. Perhaps your testing and acceptance are done by the
-same people, and you do not have many automated testing facilities at hand.
-Splitting your pre-production environments into multiple environments doesn't
-make sense yet, and you might first want to focus on improving your testing
-maturity in general.&lt;/p&gt;
-&lt;p&gt;If you want to make the case for DTAP, consider the use cases or scenarios that
-have visibly disrupted your business and how/where the environments would have
-helped. In many cases, you'll notice that there is a positive business case
-for a step-wise move towards DTAP.&lt;/p&gt;
-&lt;p&gt;Furthermore, a proper design of these environments will facilitate an
-economical view towards DTAP. &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;You can use pay-as-you-use environments (as is commonly the case in the 
-  public cloud) which you only activate when you do your testing. If you have
-  a 24/7 customer-facing service in production, that doesn't mean that your
-  acceptance environment has to be 24/7. Yes, it should be as much
-  production-like as possible, but if it isn't doing anything outside
-  business hours, then you don't need it running outside business hours.&lt;/li&gt;
-&lt;li&gt;Commercial products often have distinct terms and conditions for
-  non-production usage. You can have databases in production with a
-  premium, gold service level agreement, while having the same database in
-  the other environments with a low, bronze service level agreement
-  towards that vendor: cheaper, but technically the same.&lt;/li&gt;
-&lt;li&gt;Abstraction and virtualization technologies allow for better control
-  of the resources that are being used. For instance, you can have
-  an acceptance environment that is only at 20% of the resources
-  of production for day-to-day validation, and then increase its resources
-  to 100% for load testing periods. If these environments are not in a
-  pay-as-you-use model, shifting resources from one environment to
-  another allows for controlling the costs.&lt;/li&gt;
-&lt;li&gt;Security controls in these environments might be different as well,
-  assuming that these environments have different data needs: if you
-  use fictitious data in development and testing, and anonymized data
-  in acceptance, then the investments on, say, data leakage controls
-  might be different for these environments.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Hence, while DTAP is at first glance a costly approach, the actual case is
-that it is positive for the company.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;DTAP is not inefficient, but some implementations are&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;In a world where "Release fast, release often" is the norm, having a rigid
-DTAP strategy might be contra-productive. However, this is more an
-implementation concern than a conceptual one. If I consider the downsides
-that &lt;a href="https://medium.com/the-liberators/want-to-be-agile-drop-your-dtap-pipeline-7dcb496fe9e3"&gt;Christiaan Verwijs&lt;/a&gt;
-mentions in his post, I feel that I can safely state that this is not due
-to the lifecycle of the code or product, but rather the choices that a
-company has made while assessing and implementing a release strategy.&lt;/p&gt;
-&lt;p&gt;There is no need to bundle and make bulk releases with DTAP. You can
-perfectly design an environment where DevOps teams can release easily
-to production. More so, the bulk release strategy is frequently the result
-of an application design constraint, not a deployment constraint.&lt;/p&gt;
-&lt;p&gt;Development methodologies and DTAP environments do need to be tailored
-to each other. The purpose of DTAP is to facilitate the quality of products
-and code, and thus should be tailored towards efficient and qualitative
-development processes. In many environments, DTAP is synonymous with
-"infrastructure operations" and that's a wrong approach. 
-Operations-oriented teams (like &lt;em&gt;Site Reliability Engineers (SREs)&lt;/em&gt;),
-development-oriented teams, and DevOps teams all have the same benefits from
-DTAP.&lt;/p&gt;
-&lt;p&gt;Some might state that an acceptance environment is no longer suitable in
-the modern age, as they can deploy products and code to production without
-losing the benefits of the acceptance environment. With blue/green
-deployments or canary releases, you can enable business testers and
-stakeholders to validate new features or code before releasing it
-to the wider public.&lt;/p&gt;
-&lt;p&gt;To accomplish this properly, however, the platform that is used will
-balance resources accordingly, and you're conceptually implementing an
-(albeit temporary) acceptance environment in an automated way. This is
-an implementation choice and has to be balanced against the requirements
-that the organization has.&lt;/p&gt;
-&lt;p&gt;For instance, if you work with sensitive data, you might not be allowed
-to use this data during testing. In Europe, the &lt;em&gt;General Data Protection
-Regulation (GDPR)&lt;/em&gt; is a strong regulatory requirement for dealing with
-sensitive data. It isn't a playbook though: companies need to evaluate
-how and where data is used, and perhaps the balance made by the company
-allows, if not with explicit consent, to use data unmodified for
-acceptance testing. But if that isn't the case and your acceptance tests
-need to use sanitized data, then having separate environments is likely
-more sensible (although different implementations exist that allow
-for anonymization in production as well - they're, however, not as easy
-to implement).&lt;/p&gt;
-&lt;p&gt;Plus, DTAP does not imply that production is doing everything in a single
-unit of work: Deploy, Activate and Release. You can still perfectly position
-those tasks in production while having an explicit acceptance environment.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Separate datasets in each environment make sense&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;For regulated companies and organizations, security officers might want
-to use the DTAP distinction to focus on data minimization strategies as well.
-As mentioned before, the GDPR is a strong regulatory requirement whose
-alignment can be facilitated by a well-designed DTAP approach.&lt;/p&gt;
-&lt;p&gt;You can use fictitious data in development and testing, with development
-using datasets that developers use for validating the specific functionality
-they are working on (and preferably share and put alongside the code
-and products), whereas testing uses a coherent but still fictitious
-dataset. I use "coherent" here as an indication that the data should
-be functionally correct and integer: a (fictitious) person record in the
-customer database in the testing environment should be mapped to the
-(fictitious) calls or other interactions that are stored in the support
-database (also in the testing environment) and the (fictitious) portfolio
-that this (fictitious) person has in the product database (in the testing
-environment).&lt;/p&gt;
-&lt;p&gt;Don't underestimate how powerful, but also how challenging a good fictitious
-dataset is.&lt;/p&gt;
-&lt;p&gt;For acceptance testing, perhaps the company decided that anonymized data
-is to be used. Or it uses pseudonymized data (which is a weaker form)
-with additional technical controls to prevent leakage and attacks (including
-inference) that try to deduce the origin of the data.&lt;/p&gt;
-&lt;p&gt;Again, these are choices by the company or organization, which need to be
-taken with the risk and business stakeholders.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;DTAP is a sensible approach for improving quality in products and code.
-While it isn't the holy grail for quality assurance, it has solid
-foundations that many larger companies and organizations feel comfortable
-with. The implementation details make or break how well-adjusted the DTAP
-approach is for modern development processes and regulatory requirements.&lt;/p&gt;
-&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
-email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1476505537047109635"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;
 </description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Thu, 30 Dec 2021 12:00:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2021-12-30:/2021/12/the-pleasures-of-having-DTAP/</guid><category>Architecture</category><category>DTAP</category><category>environments</category><category>zoning</category><category>development</category><category>test</category><category>acceptance</category><category>production</category></item><item><title>Creating an enterprise open source policy</title><link>https://blog.siphos.be/2021/11/creating-an-enterprise-open-source-policy/</link><description>&lt;p&gt;Nowadays it is impossible to ignore, or even prevent open source from being
 active within the enterprise world. Even if a company only wants to use
 commercially backed solutions, many - if not most - of these are built with, and

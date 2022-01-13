@@ -196,6 +196,32 @@ Simplicity is a form of art... - Articles by Sven Vermeulen        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2015/09/getting-su-to-work-in-init-scripts/">Getting su to work in init scripts</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 14 September 2015</span></span>
+                <p><p>While developing an init script which has to switch user, I got a couple of
+errors from SELinux and the system itself:</p>
+<div class="highlight"><pre><span></span><code><span class="go">~# rc-service hadoop-namenode format</span>
+<span class="go">Authenticating root.</span>
+<span class="go"> * Formatting HDFS ...</span>
+<span class="go">su: Authentication service cannot retrieve authentication info</span>
+<span class="gp gp-VirtualEnv">(Ignored)</span>
+</code></pre></div>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/initrc/">initrc</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2015/09/custom-cil-selinux-policies-in-gentoo/">Custom CIL SELinux policies in Gentoo</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 10 September 2015</span></span>
@@ -426,45 +452,6 @@ possible).</p>
                         <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/compression/">compression</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2015/08/why-we-do-confine-firefox/">Why we do confine Firefox</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Tue 11 August 2015</span></span>
-                <p><p>If you're a bit following the SELinux development community you will know
-<a href="http://danwalsh.livejournal.com">Dan Walsh</a>, a <a href="http://people.redhat.com/dwalsh/">Red Hat</a>
-security engineer. Today he <a href="http://danwalsh.livejournal.com/72697.html">blogged</a> 
-about <em>CVE-2015-4495 and SELinux, or why doesn't SELinux confine Firefox</em>. He 
-should've asked why the <em>reference policy</em> or <em>Red Hat/Fedora policy</em> does not
-confine Firefox, because SELinux is, as I've
-<a href="http://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/">mentioned before</a>,
-not the same as its policy.</p>
-<p>In effect, Gentoo's SELinux policy <em>does</em> confine Firefox by default. One of the
-principles we focus on in Gentoo Hardened is to
-<a href="https://wiki.gentoo.org/wiki/Project:SELinux/Development_policy#Develop_desktop_policies">develop desktop policies</a>
-in order to reduce exposure and information leakage of user documents. We might
-not have the manpower to confine all desktop applications, but I do think it is
-worthwhile to at least attempt to do this, even though what Dan Walsh mentioned
-is also correct: desktops are notoriously difficult to use a mandatory access
-control system on.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/firefox/">firefox</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cve/">cve</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/vulnerability/">vulnerability</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/xdg/">xdg</a>
                     </div>
                 </div>
             </div>
