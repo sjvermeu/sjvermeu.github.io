@@ -33,6 +33,6 @@ the attributes are of each concept).
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](https://twitter.com/infrainsight/status/TODO).
+Twitter](https://twitter.com/infrainsight/status/1483002656478093315).
 
 <!-- PELICAN_END_SUMMARY -->
