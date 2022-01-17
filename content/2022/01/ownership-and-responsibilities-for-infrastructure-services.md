@@ -16,6 +16,7 @@ needs to organize itself to deal with all aspects of supporting a service.
 What are these aspects? Well, let's go through those that are top-of-mind
 for me...
 
+<!-- PELICAN_END_SUMMARY -->
 
 **Operational support**
 
@@ -393,4 +394,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1481535279861280769).
 
-<!-- PELICAN_END_SUMMARY -->
