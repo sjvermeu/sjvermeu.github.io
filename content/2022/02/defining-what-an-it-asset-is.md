@@ -183,6 +183,6 @@ as IT assets, rather than attempting to derive a workable definition.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](TODO).
+Twitter](https://twitter.com/infrainsight/status/1492833029907173380).
 
 <!-- PELICAN_END_SUMMARY -->
