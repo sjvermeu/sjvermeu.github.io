@@ -1,6 +1,6 @@
 Title: Comparing performance with sysbench: cpu and fileio
 Date: 2013-04-18 21:31
-Category: Free Software
+Category: Free-Software
 Tags: cpu, hypervisor, io, kvm, performance, sysbench
 Slug: comparing-performance-with-sysbench
 

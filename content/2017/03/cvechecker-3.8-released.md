@@ -1,6 +1,6 @@
 Title: cvechecker 3.8 released
 Date: 2017-03-27 19:00
-Category: Free Software
+Category: Free-Software
 Tags: cvechecker
 Slug: cvechecker-3.8-released
 

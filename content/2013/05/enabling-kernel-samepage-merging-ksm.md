@@ -1,6 +1,6 @@
 Title: Enabling Kernel Samepage Merging (KSM)
 Date: 2013-05-09 03:50
-Category: Free Software
+Category: Free-Software
 Tags: cow, ksm, kvm, linux, virtualization
 Slug: enabling-kernel-samepage-merging-ksm
 

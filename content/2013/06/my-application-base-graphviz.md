@@ -1,6 +1,6 @@
 Title: My application base: graphviz
 Date: 2013-06-09 03:50
-Category: Free Software
+Category: Free-Software
 Tags: dependencies, dot, graphviz, mab, neato, scheduling, visualization, visualize
 Slug: my-application-base-graphviz
 

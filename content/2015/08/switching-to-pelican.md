@@ -1,6 +1,6 @@
 Title: Switching to Pelican
 Date: 2015-08-02 04:09
-Category: Free Software
+Category: Free-Software
 Tags: blog, pelican, wordpress
 Slug: switching-to-pelican
 

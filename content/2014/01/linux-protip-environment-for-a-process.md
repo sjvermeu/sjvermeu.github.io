@@ -1,6 +1,6 @@
 Title: Linux protip: environment for a process
 Date: 2014-01-07 04:31
-Category: Free Software
+Category: Free-Software
 Tags: environ, linux, protip
 Slug: linux-protip-environment-for-a-process
 

@@ -1,6 +1,6 @@
 Title: Playing with gqview
 Date: 2008-08-18 15:48
-Category: Free Software
+Category: Free-Software
 Slug: playing-with-gqview
 
 Some time ago I received a digital camera; however, due to diskspace

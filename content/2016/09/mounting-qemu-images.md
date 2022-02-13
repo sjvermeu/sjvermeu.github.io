@@ -1,6 +1,6 @@
 Title: Mounting QEMU images
 Date: 2016-09-26 19:26
-Category: Free Software
+Category: Free-Software
 Tags: qemu
 Slug: mounting-qemu-images
 

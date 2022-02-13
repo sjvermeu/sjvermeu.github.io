@@ -1,6 +1,6 @@
 Title: Qemu-KVM monitor tips and tricks
 Date: 2013-04-30 03:50
-Category: Free Software
+Category: Free-Software
 Tags: kvm, monitor, qemu
 Slug: qemu-kvm-monitor-tips-and-tricks
 

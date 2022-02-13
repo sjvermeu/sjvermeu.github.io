@@ -1,6 +1,6 @@
 Title: photorec to the rescue
 Date: 2013-04-29 03:50
-Category: Free Software
+Category: Free-Software
 Tags: corruption, photorec, recovery, shred
 Slug: photorec-to-the-rescue
 

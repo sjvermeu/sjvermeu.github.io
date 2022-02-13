@@ -1,6 +1,6 @@
 Title: HP webcam on Linux
 Date: 2010-08-13 18:18
-Category: Free Software
+Category: Free-Software
 Slug: hp-webcam-on-linux
 
 Okay, getting the HP webcam running on Linux wasn't hard at all. Enable

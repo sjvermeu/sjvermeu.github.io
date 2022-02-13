@@ -1,6 +1,6 @@
 Title: My application base: geekie
 Date: 2013-06-05 03:50
-Category: Free Software
+Category: Free-Software
 Tags: geeqie, gimp, gqview, images, mab
 Slug: my-application-base-geekie
 

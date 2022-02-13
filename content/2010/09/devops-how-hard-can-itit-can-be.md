@@ -1,6 +1,6 @@
 Title: devops - how hard can it/it can be
 Date: 2010-09-04 09:17
-Category: Free Software
+Category: Free-Software
 Slug: devops-how-hard-can-itit-can-be
 
 Dieter made a good reference to [devops and the open source

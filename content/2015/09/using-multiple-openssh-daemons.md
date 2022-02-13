@@ -1,6 +1,6 @@
 Title: Using multiple OpenSSH daemons
 Date: 2015-09-06 16:37
-Category: Free Software
+Category: Free-Software
 Tags: openssh, ssh, u2f, selinux
 Slug: using-multiple-openssh-daemons
 

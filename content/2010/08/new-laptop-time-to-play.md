@@ -1,6 +1,6 @@
 Title: New laptop, time to play
 Date: 2010-08-13 01:33
-Category: Free Software
+Category: Free-Software
 Slug: new-laptop-time-to-play
 
 I gave myself a nice treat and bought a new laptop. After some

@@ -254,15 +254,15 @@ ebuilds is that we can simply copy them and commit in order to make a new releas
 <p>So, in case of the patch backporting, the necessary patch files are first moved
 into the <code>files/</code> subdirectory of the package. Then, the live ebuild is updated
 to use the new patches:</p>
-<div class="highlight"><pre><span></span><code><span class="gu">@@ -88,6 +85,8 @@ src_prepare() {</span>
-                epatch &quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&quot;
-                epatch &quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&quot;
-                epatch &quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&quot;
-<span class="gi">+               epatch &quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&quot;</span>
-<span class="gi">+               epatch &quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&quot;</span>
-        fi
+<div class="highlight"><pre><span></span><code><span class="gu">@@ -88,6 +85,8 @@ src_prepare() {</span><span class="w"></span>
+<span class="w"> </span>               epatch &quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&quot;<span class="w"></span>
+<span class="w"> </span>               epatch &quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&quot;<span class="w"></span>
+<span class="w"> </span>               epatch &quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&quot;<span class="w"></span>
+<span class="gi">+               epatch &quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&quot;</span><span class="w"></span>
+<span class="gi">+               epatch &quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&quot;</span><span class="w"></span>
+<span class="w"> </span>       fi<span class="w"></span>
 
-        # rlpkg is more useful than fixfiles
+<span class="w"> </span>       # rlpkg is more useful than fixfiles<span class="w"></span>
 </code></pre></div>
 
 <p>The patches themselves do not apply for the live ebuilds themselves (they are

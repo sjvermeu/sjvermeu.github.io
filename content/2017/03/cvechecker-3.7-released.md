@@ -1,6 +1,6 @@
 Title: cvechecker 3.7 released
 Date: 2017-03-02 10:00
-Category: Free Software
+Category: Free-Software
 Tags: cvechecker
 Slug: cvechecker-3.7-released
 

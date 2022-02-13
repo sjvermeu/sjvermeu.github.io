@@ -1,7 +1,7 @@
 Title: Updated Linux Sea, now with viewport thingie
 Date: 2013-12-16 23:37
 Category: Documentation
-Tags: css, documentation, Gentoo, linux sea, mobile
+Tags: css, documentation, Gentoo, linux-sea, mobile
 Slug: updated-linux-sea-now-with-viewport-thingie
 
 I just pushed out an update to [Linux

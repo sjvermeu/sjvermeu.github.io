@@ -1,6 +1,6 @@
 Title: Executing, but only when you're home
 Date: 2010-01-18 23:48
-Category: Free Software
+Category: Free-Software
 Slug: executing-but-only-when-youre-home
 
 Sometimes you want to execute a particular command, but only when you're

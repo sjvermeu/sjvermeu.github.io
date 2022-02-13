@@ -1,6 +1,6 @@
 Title: Public support channels: irc
 Date: 2013-05-16 03:50
-Category: Free Software
+Category: Free-Software
 Tags: chat, irc, support
 Slug: public-support-channels-irc
 

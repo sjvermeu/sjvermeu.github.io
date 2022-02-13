@@ -1,6 +1,6 @@
 Title: Comparing performance with sysbench: memory, threads and mutexes
 Date: 2013-04-19 04:11
-Category: Free Software
+Category: Free-Software
 Tags: memory, mutex, performance, sysbench, threading, threads
 Slug: comparing-performance-with-sysbench-part-2
 

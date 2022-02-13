@@ -1,6 +1,6 @@
 Title: Using salt-ssh with agent forwarding
 Date: 2016-03-26 19:57
-Category: Free Software
+Category: Free-Software
 Tags: salt
 Slug: using-salt-ssh-with-agent-forwarding
 

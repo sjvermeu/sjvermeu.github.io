@@ -1,6 +1,6 @@
 Title: Creating a poor man central SCAP system
 Date: 2013-09-24 13:35
-Category: Free Software
+Category: Free-Software
 Slug: creating-a-poor-man-central-scap-system
 
 A few weeks ago, I was asked to give some explanation about how SCAP

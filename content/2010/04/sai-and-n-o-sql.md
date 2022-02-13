@@ -1,7 +1,7 @@
 Title: SAI and N-O-SQL
 Date: 2010-04-22 01:02
 Category: Databases
-Tags: Databases, enterprise architecture, nosql
+Tags: Databases, enterprise-architecture, nosql
 Slug: sai-and-n-o-sql
 
 Yesterday (argh, the day before yesterday) I went to a

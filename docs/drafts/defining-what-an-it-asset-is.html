@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head -->
+<head>
+
+        <!-- Required metadata tags -->
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+        <!-- Default metadata -->
+    <meta name="author" content="Sven Vermeulen" />
+    <meta name="description" content="defining-what-an-it-asset-is" />
+    <meta name="keywords" content="asset-management, cobit, itil">
+<meta property="og:site_name" content="Simplicity is a form of art..." />
+<meta property="og:title" content="Defining what an IT asset is" />
+<meta property="og:description" content="One of the main IT processes that a company should strive to have in place is a decent IT asset management system. It facilitates knowing what assets you own, where they are, who the owner is, and provides a foundation for plenty of other IT processes. However, when asking &#34;what …" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://blog.siphos.be/drafts/defining-what-an-it-asset-is.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-13 10:00:00+01:00" />
+<meta property="article:modified_time" content="" />
+<meta property="article:author" content="https://blog.siphos.be/pages/about.html">
+<meta property="article:section" content="Architecture" />
+	<meta property="article:tag" content="asset-management" />
+	<meta property="article:tag" content="cobit" />
+	<meta property="article:tag" content="itil" />
+	<meta property="og:image" content="https://blog.siphos.be/">
+
+        <!-- Site Claim -->
+
+
+        <!-- Title -->
+        <title>
+    Defining what an IT asset is &ndash; Simplicity is a form of art...
+        </title>
+        
+        <!-- Icon -->
+        <link rel="shortcut icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="https://blog.siphos.be/favicon.ico" type="image/x-icon">
+
+        <!-- Search engine -->
+            <meta name="robots" content="" />
+
+        <!-- Feeds -->
+            <link href="https://blog.siphos.be/feed/all.atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Full Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/all.rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Full RSS Feed" />
+
+            <link href="https://blog.siphos.be/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Atom Feed" />
+
+            <link href="https://blog.siphos.be/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... RSS Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/atom.xml" type="application/atom+xml" rel="alternate" title="Simplicity is a form of art... Categories Atom Feed" />
+
+            <link href="https://blog.siphos.be/category/architecture/feed/rss.xml" type="application/rss+xml" rel="alternate" title="Simplicity is a form of art... Categories RSS Feed" />
+
+
+
+        <!-- Styles -->
+        <!--
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/css/bootstrap.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/bootstrap/bootstrap.min.css">
+        <!--
+        <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/pygment/friendly.min.css">
+        <!--
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/extra/admonition.min.css">
+        -->
+        <link rel="stylesheet" href="https://blog.siphos.be/theme/style.css">
+
+        <!-- Google Analytics -->
+
+        <!-- Google Global Site Tag -->
+
+        <!-- Google Tag Manager -->
+
+        <!-- Google Adsense -->
+
+        <!-- Heap Analytic -->
+
+        <!-- Piwik Tracking -->
+
+        <!-- Matomo Tracking -->
+
+</head>
+
+<!-- Body -->
+<body class="d-flex flex-column" data-spy="scroll" data-target="#toc" data-offset="0" style="position: relative;">
+    <!-- Top anchor -->
+    <a href="#" id="backToTop" style="display: none; z-index: 1;" title="Back to top"><span></span></a>
+
+    <!-- Google tag manager -->
+
+    <!-- Navigation -->
+    <nav class="flex-shrink-0 navbar navbar-expand-md navbar-expand-lg navbar-dark bg-dark text-light shadow-sm">
+        <!-- Logo -->
+        <a class="navbar-brand" href="https://blog.siphos.be"></a>
+
+        <!-- Collapse button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon small"></span>
+        </button>
+
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <!-- Page links -->
+            <ul class="navbar-nav mr-auto text-center">
+                <li class="nav-item ">                           
+                    <a class="nav-link" href="https://blog.siphos.be">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M21 13v10h-6v-6h-6v6h-6v-10h-3l12-12 12 12h-3zm-1-5.907v-5.093h-3v2.093l3 3z" fill="currentColor"></path>
+                        </svg>
+                        Home <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/categories.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M16 6h-8v-6h8v6zm-8 12h-8v6h8v-6zm16 0h-8v6h8v-6zm-11-7v-3h-2v3h-8v5h2v-3h14v3h2v-5h-8z" fill="currentColor"></path>
+                        </svg>
+                        Categories
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/tags.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M10.605 0h-10.605v10.609l13.391 13.391 10.609-10.604-13.395-13.396zm-4.191 6.414c-.781.781-2.046.781-2.829.001-.781-.783-.781-2.048 0-2.829.782-.782 2.048-.781 2.829-.001.782.782.781 2.047 0 2.829z" fill="currentColor"></path>
+                        </svg>
+                        Tags
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/archives.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M1.8 9l-.8-4h22l-.8 4h-2.029l.39-2h-17.122l.414 2h-2.053zm18.575-6l.604-2h-17.979l.688 2h16.687zm3.625 8l-2 13h-20l-2-13h24zm-8 4c0-.552-.447-1-1-1h-6c-.553 0-1 .448-1 1s.447 1 1 1h6c.553 0 1-.448 1-1z" fill="currentColor"></path>
+                        </svg>
+                        Archives
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="https://blog.siphos.be/pages/about.html">
+                        <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                            <path d="M20.822 18.096c-3.439-.794-6.64-1.49-5.09-4.418 4.72-8.912 1.251-13.678-3.732-13.678-5.082 0-8.464 4.949-3.732 13.678 1.597 2.945-1.725 3.641-5.09 4.418-3.073.71-3.188 2.236-3.178 4.904l.004 1h23.99l.004-.969c.012-2.688-.092-4.222-3.176-4.935z" fill="currentColor"></path>
+                        </svg>
+                        About
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Search form -->
+            <form class="form-inline text-center" action="https://blog.siphos.be/search.html">
+                <input class="form-control w-100 bg-dark text-light text-center border-0 p-2" type="text" name="q" pattern=".{3,}" title="At least 3 characters" required="" placeholder="Type here to search" aria-label="Search">
+            </form>
+
+            <!-- Social links -->
+            <ul class="navbar-nav text-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Github</title>
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://twitter.com/infrainsight">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Twitter</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm6.066 9.645c.183 4.04-2.83 8.544-8.164 8.544-1.622 0-3.131-.476-4.402-1.291 1.524.18 3.045-.244 4.252-1.189-1.256-.023-2.317-.854-2.684-1.995.451.086.895.061 1.298-.049-1.381-.278-2.335-1.522-2.304-2.853.388.215.83.344 1.301.359-1.279-.855-1.641-2.544-.889-3.835 1.416 1.738 3.533 2.881 5.92 3.001-.419-1.796.944-3.527 2.799-3.527.825 0 1.572.349 2.096.907.654-.128 1.27-.368 1.824-.697-.215.671-.67 1.233-1.263 1.589.581-.07 1.135-.224 1.649-.453-.384.578-.87 1.084-1.433 1.489z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.linkedin.com/in/svenvermeulen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <title>Linkedin</title>
+                            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-2 16h-2v-6h2v6zm-1-6.891c-.607 0-1.1-.496-1.1-1.109 0-.612.492-1.109 1.1-1.109s1.1.497 1.1 1.109c0 .613-.493 1.109-1.1 1.109zm8 6.891h-1.998v-2.861c0-1.881-2.002-1.722-2.002 0v2.861h-2v-6h2v1.093c.872-1.616 4-1.736 4 1.548v3.359z" fill="currentColor"></path>
+                        </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Full page -->
+    <div class="flex-shrink-0 flex-grow-1">
+
+        <!-- Header -->
+        <header class="bg-dark text-light shadow-sm pt-3 pb-2">
+	<div class="container">
+		<h3 id="defining-what-an-it-asset-is">Defining what an IT asset is</h3>
+		<p style="font-size:larger;">defining-what-an-it-asset-is</p>
+        <div class="row mx-auto mt-3">
+            <div class="col-xs-12 col-sm-12 col-md-6 text-left" style="padding: 0">
+                <a href="https://blog.siphos.be/pages/about.html" class="card-link">Sven Vermeulen</a>
+                <span class="card-link text-success">
+                    <span class="post-date" title="Post date">Thu 13 January 2022</span>
+                    <span class="text-info modified-date" title="Updated date">
+                            Thu 13 January 2022
+                    </span>
+                </span>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
+                <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/asset-management/">asset-management</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/cobit/">cobit</a>
+                    <a class="badge badge-info" href="https://blog.siphos.be/tag/itil/">itil</a>
+            </div>
+        </div>
+	</div>
+        </header>
+
+        <!-- Main -->
+        <main class="py-3">
+                <div class="container">
+                    <!-- Sharing -->
+
+                    <!-- Content -->
+    <!-- 2 columns layout -->
+    <!-- single column layout -->
+        <!-- Sharing -->
+
+        <!-- Share post -->
+
+        <!-- Article -->
+        <div>
+            <p>One of the main IT processes that a company should strive to have in place
+is a decent IT asset management system. It facilitates knowing what assets
+you own, where they are, who the owner is, and provides a foundation for
+plenty of other IT processes.</p>
+<p>However, when asking "what is an IT asset", it gets kinda fuzzy...</p>
+<p><strong>Searching for a definition</strong></p>
+<p>When I went on to search for a definition of an "IT asset", my first
+thought was to check on the more common reference frameworks out there.
+Surely, if they tout the benefits of a well-functioning IT asset management
+system and process, they'll declare what an IT asset is, right?</p>
+<p>While many of these frameworks aren't publically readable, they do have
+enough material online to hopefully provide me with the necessary insights.</p>
+<p>The first focus I had was on ITIL, formerly known as the Information
+Technology Infrastructure Library but nowadays just existing as its own
+term. There are quite a few articles on the <a href="https://www.itil-docs.com/blogs/asset-management">ITIL Docs</a>
+site on IT asset management, but while they do have some breadcrumbs,
+they do not offer a full definition:</p>
+<ul>
+<li>as financial management of IT assets is an important sub-process,
+  I can derive that assets are either expected to have a financial
+  value, or that such economical assets are a large subset of the
+  IT assets in general</li>
+<li>assets always have a lifecycle to follow (although I am not certain
+  if this will truly help in deriving a definition)</li>
+<li>assets support the IT in the strategic and financial decision making</li>
+</ul>
+<p>I found a <a href="https://itil.it.utah.edu/downloads/ITILv2_Terms_and_Definitions_r2.0_0808.pdf">Terms and Definitions</a>
+extract that has an asset defined as:</p>
+<blockquote>
+<p>"Component of a business process. Assets can include people, accomodation
+(facilities), computer systems, networks, paper records, fax machines, etc."</p>
+</blockquote>
+<p>Of course, that definition is too broad for IT asset management.</p>
+<p>The <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1800-5.pdf">NIST 1800-5 IT Asset Management publication</a>
+focuses on technologies that are needed to ensure a smooth business operation,
+and includes: computers, mobile devices, operating systems, applications,
+data, and network resources. It later on mentions that IT assets include items
+such as servers, desktops, laptops, and network appliances. And when it
+touches upon the value of IT asset management, it too mentions that it is
+about informed business-driven decision making.</p>
+<p>TODO Add CObIT blurb</p>
+<p><a href="https://www.techopedia.com/definition/16946/it-asset">Techopedia</a> has it
+defined as "a piece of software or hardware within an information technology
+environment".</p>
+<p><strong>Deriving my own definition</strong></p>
+<p>From the search, I think I have some grasp of what an IT asset is. Or at
+least, how I look at it. I think there are two main attributes that define
+if something in an IT environment is an asset or not.</p>
+<p>First, it has to offer or realize an IT value to the environment. In many
+cases, IT value is seen as automating a business process, or a part of a
+business process.</p>
+<p>Second, the asset has to have a value of its own. That value contributes to the
+company's worth. This is generally an economical value, but can also be 
+intangible like intellectual property.</p>
+<p>Through these two attributes, I would create the following definition:</p>
+<p>TODO Definition</p>
+<p>Furthermore, in some processes, a dinstinction is made between regular
+IT assets and more critical or important assets. In most cases, I read that
+it focuses on the impact that a defect or unavailability of the asset has
+to the organization. So, a critical IT asset gets the following definition:</p>
+<p>TODO Definition</p>
+<p><strong>Classifying the assets</strong></p>
+<p>Now, while this does provide some definition of what an IT asset is, this is
+merely the start of an IT asset management approach. The next thing that,
+in my opinion, should take place, is to classify for your own organization
+what you consider to be IT assets (and thus want/need to follow the IT
+asset management processes for). We've had examples mentioned earlier, like
+software, operating systems, servers. But there are plenty more assets
+out there.</p>
+<p>For instance, a leased line you have between yourself and a third party.
+Leased lines are network lines with a certain quality associated with them and
+which you lease from a network provider. Quality includes line performance, 
+expected availability, recovery capabilities, etc. Such lines have economical
+value, and they offer support to the IT processes that use that network.</p>
+<p>To create a classification, you might want to start from the conceptual
+data model that I've <a href="TODO">shared previously</a>, or rather take from existing
+classification models. The <a href="https://www.ungm.org/Public/UNSPSC">United Nations Standard Products and Services
+Code (UNSPSC)</a> has a class list 
+published which you can use to tailor your own classification.</p>
+<p>Now, the classification to use shouldn't limit itself to IT asset management.
+It is often better to first work out this model for the company in general
+(including for other processes like solution build and configuration
+management), and then derive what classes should be part of the IT asset
+management process.</p>
+<p>A well maintained classification will also make it easier for the company
+to work out how to improve the asset management processes, as they then
+have more tangible solutions to focus on.</p>
+<p><strong>Conclusions</strong></p>
+<p>While there does not seem to be a common definition of what an IT asset is,
+even working out our own definition is only a first step. After the definition,
+building out a good classification system helps out to make IT asset management
+more tangible for the organization. And most online resources use such classes
+(like servers, desktops, operating systems, ...) to clarify what they consider
+as IT assets anyway, rather than attempting to derive a workable definition.</p>
+<p>TODO Closure</p>
+        </div>
+
+        <!-- Neighbors -->
+
+        <!-- Google Adsense -->
+
+    <!-- Releated posts -->
+
+    <!-- Comments -->
+                </div>
+        </main>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="flex-shrink-0 bg-dark text-light small py-1">
+        <div class="container text-center">
+            &copy;  <a href="https://blog.siphos.be">Simplicity is a form of art...</a> by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>. Powered by <a href="http://getpelican.com">Pelican</a>, <a href="http://python.org">Python</a>, <a href="https://getbootstrap.com">Bootstrap 4</a><br>
+            <!-- Do not remove below license sentence -->
+            License: <a href="https://spdx.org/licenses/CC-BY-4.0.html">CC-BY-4.0</a>, based on <a href="https://github.com/vuquangtrong/simplify-theme">Simplify Bootstrap Theme</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/jquery/jquery-3.4.1.min.js"></script>
+    <!--
+    <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.3.1/bootstrap.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/bootstrap/bootstrap.min.js"></script>
+    <!--
+    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+    -->
+    <script type="text/javascript" src="https://blog.siphos.be/theme/style.js"></script>
+
+    <!-- Sharing -->
+
+    <!-- JSON LD -->
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "BlogPosting",
+    "name": "Defining what an IT asset is",
+    "headline": "Defining what an IT asset is",
+    "datePublished": "2022-01-13 10:00:00+01:00",
+    "dateModified": "",
+    "author": {
+        "@type": "Person",
+        "name": "Sven Vermeulen",
+        "url": "https://blog.siphos.be/pages/about.html"
+    },
+    "image": "https://blog.siphos.be/favicon.ico",
+    "url": "https://blog.siphos.be/drafts/defining-what-an-it-asset-is.html",
+    "description": "One of the main IT processes that a company should strive to have in place is a decent IT asset management system. It facilitates knowing what assets you own, where they are, who the owner is, and provides a foundation for plenty of other IT processes. However, when asking "what …"
+}
+</script>
+    <!-- Disqus count -->
+</body>
+
+</html>

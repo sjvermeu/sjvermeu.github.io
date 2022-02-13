@@ -1,6 +1,6 @@
 Title: Template was specified incorrectly
 Date: 2016-03-27 13:32
-Category: Free Software
+Category: Free-Software
 Tags: salt
 Slug: template-was-specified-incorrectly
 

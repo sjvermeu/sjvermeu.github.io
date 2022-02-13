@@ -1,6 +1,6 @@
 Title: My application base: bash and kiss tools
 Date: 2013-06-06 03:50
-Category: Free Software
+Category: Free-Software
 Tags: bash, dash, mab, scripting
 Slug: my-application-base-bash-and-kiss-tools
 

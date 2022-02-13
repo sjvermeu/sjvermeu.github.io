@@ -1,6 +1,6 @@
 Title: Switching OpenSSH to ed25519 keys
 Date: 2015-08-19 18:26
-Category: Free Software
+Category: Free-Software
 Tags: openssh, ssh, gentoo
 Slug: switching-openssh-to-ed25519-keys
 

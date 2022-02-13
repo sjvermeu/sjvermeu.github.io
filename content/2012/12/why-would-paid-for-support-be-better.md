@@ -1,6 +1,6 @@
 Title: Why would paid-for support be better?
 Date: 2012-12-31 22:46
-Category: Free Software
+Category: Free-Software
 Slug: why-would-paid-for-support-be-better
 
 Last Saturday evening, I sent an e-mail to a low-volume mailinglist

@@ -1,6 +1,6 @@
 Title: My application base: Obnam
 Date: 2015-08-05 22:35
-Category: Free Software
+Category: Free-Software
 Tags: mab, backup, obnam
 Slug: my-application-base-obnam
 

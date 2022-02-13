@@ -1,7 +1,7 @@
 Title: Using extended attributes for custom information
 Date: 2013-06-02 03:50
-Category: Free Software
-Tags: attributes, expiration, extended attributes, linux, xattr
+Category: Free-Software
+Tags: attributes, expiration, extended-attributes, linux, xattr
 Slug: using-extended-attributes-for-custom-information
 
 One of the things I have been meaning to implement on my system is a way

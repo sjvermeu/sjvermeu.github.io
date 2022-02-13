@@ -1,6 +1,6 @@
 Title: Trying out imapsync
 Date: 2016-03-13 12:57
-Category: Free Software
+Category: Free-Software
 Tags: imapsync
 Slug: trying-out-imapsync
 

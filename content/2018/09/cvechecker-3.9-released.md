@@ -1,6 +1,6 @@
 Title: cvechecker 3.9 released
 Date: 2018-09-09 13:20
-Category: Free Software
+Category: Free-Software
 Tags: cvechecker
 Slug: cvechecker-3.9-released
 

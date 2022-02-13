@@ -1,6 +1,6 @@
 Title: hex2passwd, a password generator
 Date: 2008-09-25 19:34
-Category: Free Software
+Category: Free-Software
 Slug: hex2passwd-a-password-generator
 
 I know that repeatable password generators are less secure than random

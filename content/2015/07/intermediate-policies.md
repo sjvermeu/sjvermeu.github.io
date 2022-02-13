@@ -1,7 +1,7 @@
 Title: Intermediate policies
 Date: 2015-07-05 18:17
 Category: SELinux
-Tags: community, contributions, policy development, selinux
+Tags: community, contributions, policy-development, selinux
 Slug: intermediate-policies
 
 When developing SELinux policies for new software (or existing ones

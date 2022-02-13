@@ -1,6 +1,6 @@
 Title: D-Bus, quick recap
 Date: 2014-06-29 19:16
-Category: Free Software
+Category: Free-Software
 Tags: dbus, linux
 Slug: d-bus-quick-recap
 

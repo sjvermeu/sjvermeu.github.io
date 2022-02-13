@@ -1,6 +1,6 @@
 Title: My application base: LibreOffice
 Date: 2013-06-08 03:50
-Category: Free Software
+Category: Free-Software
 Tags: excel, libreoffice, mab, openoffice, word
 Slug: my-application-base-libreoffice
 

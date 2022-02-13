@@ -1,6 +1,6 @@
 Title: PostgreSQL with central authentication and authorization
 Date: 2015-05-25 12:07
-Category: Free Software
+Category: Free-Software
 Tags: postgresql
 Slug: postgresql-with-central-authentication-and-authorization
 

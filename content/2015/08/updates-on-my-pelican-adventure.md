@@ -1,6 +1,6 @@
 Title: Updates on my Pelican adventure
 Date: 2015-08-16 19:50
-Category: Free Software
+Category: Free-Software
 Tags: blog, pelican, wordpress
 Slug: updates-on-my-pelican-adventure
 

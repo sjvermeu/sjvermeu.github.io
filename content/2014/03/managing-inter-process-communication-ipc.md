@@ -1,6 +1,6 @@
 Title: Managing Inter-Process Communication (IPC)
 Date: 2014-03-30 12:50
-Category: Free Software
+Category: Free-Software
 Tags: ipc, ipcrm, ipcs, linux, msg, sem, shmem
 Slug: managing-inter-process-communication-ipc
 

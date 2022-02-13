@@ -23,7 +23,7 @@
 <meta property="article:published_time" content="2015-08-05 22:35:00+02:00" />
 <meta property="article:modified_time" content="" />
 <meta property="article:author" content="https://blog.siphos.be/pages/about.html">
-<meta property="article:section" content="Free Software" />
+<meta property="article:section" content="Free-Software" />
 	<meta property="article:tag" content="mab" />
 	<meta property="article:tag" content="backup" />
 	<meta property="article:tag" content="obnam" />
@@ -206,7 +206,7 @@
                 </span>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-6 text-right" style="padding: 0">
-                <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free software</a>
+                <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free-software</a>
                     <a class="badge badge-info" href="https://blog.siphos.be/tag/mab/">mab</a>
                     <a class="badge badge-info" href="https://blog.siphos.be/tag/backup/">backup</a>
                     <a class="badge badge-info" href="https://blog.siphos.be/tag/obnam/">obnam</a>
@@ -254,13 +254,13 @@ with obnam. So, how does it work?</p>
 I tell which directories need to be backed up, as well as which subdirectories
 or files (through expressions) can be left alone. For instance, I don't want
 obnam to backup ISO files as those have been downloaded anyway.</p>
-<div class="highlight"><pre><span></span><code><span class="k">[config]</span>
-<span class="na">repository</span> <span class="o">=</span> <span class="s">/srv/backup</span>
-<span class="na">root</span> <span class="o">=</span> <span class="s">/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home</span>
-<span class="na">exclude</span> <span class="o">=</span> <span class="s">\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*</span>
-<span class="na">exclude-caches</span> <span class="o">=</span> <span class="s">yes</span>
+<div class="highlight"><pre><span></span><code><span class="k">[config]</span><span class="w"></span>
+<span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">/srv/backup</span><span class="w"></span>
+<span class="na">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home</span><span class="w"></span>
+<span class="na">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*</span><span class="w"></span>
+<span class="na">exclude-caches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">yes</span><span class="w"></span>
 
-<span class="na">keep</span> <span class="o">=</span> <span class="s">8h,14d,10w,12m,10y</span>
+<span class="na">keep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">8h,14d,10w,12m,10y</span><span class="w"></span>
 </code></pre></div>
 
 <p>The <code>root</code> parameter tells obnam which directories (and subdirectories) to

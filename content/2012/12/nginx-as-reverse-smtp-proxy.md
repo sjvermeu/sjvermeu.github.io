@@ -1,6 +1,6 @@
 Title: nginx as reverse SMTP proxy
 Date: 2012-12-06 00:03
-Category: Free Software
+Category: Free-Software
 Slug: nginx-as-reverse-smtp-proxy
 
 I've noticed that not that many resources are online telling you how you

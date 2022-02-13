@@ -1,7 +1,7 @@
 Title: Limiting file access with SELinux alone?
 Date: 2013-12-31 21:18
 Category: SELinux
-Tags: access, acl, file access, Gentoo, selinux
+Tags: access, acl, file-access, Gentoo, selinux
 Slug: limiting-file-access-with-selinux-alone
 
 While writing a small script to handle simple certificate authority

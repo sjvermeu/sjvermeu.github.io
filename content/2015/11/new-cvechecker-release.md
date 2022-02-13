@@ -1,6 +1,6 @@
 Title: New cvechecker release
 Date: 2015-11-07 11:07
-Category: Free Software
+Category: Free-Software
 Tags: cvechecker
 Slug: new-cvechecker-release
 

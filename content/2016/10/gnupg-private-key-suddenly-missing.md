@@ -1,6 +1,6 @@
 Title: GnuPG: private key suddenly missing?
 Date: 2016-10-12 18:56
-Category: Free Software
+Category: Free-Software
 Tags: gnupg
 Slug: gnupg-private-key-suddenly-missing
 

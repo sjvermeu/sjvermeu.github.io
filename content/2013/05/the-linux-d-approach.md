@@ -1,6 +1,6 @@
 Title: The Linux ".d" approach
 Date: 2013-05-08 03:50
-Category: Free Software
+Category: Free-Software
 Slug: the-linux-d-approach
 
 Many services on a Linux system use a `*.d` directory approach to make

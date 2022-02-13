@@ -1,7 +1,7 @@
 Title: Can Gentoo play a role in a RHEL-only environment?
 Date: 2014-01-09 04:13
 Category: Gentoo
-Tags: Gentoo, linux, vappliance, virtual appliance
+Tags: Gentoo, linux, vappliance, virtual-appliance
 Slug: can-gentoo-play-a-role-in-a-rhel-only-environment
 
 Sounds like a stupid question, as the answer is already in the title. If

@@ -1,7 +1,7 @@
 Title: Use change management when you are using SELinux to its fullest
 Date: 2015-04-30 20:58
 Category: SELinux
-Tags: change management, policy, selinux
+Tags: change-management, policy, selinux
 Slug: use-change-management-when-you-are-using-selinux-to-its-fullest
 
 If you are using SELinux on production systems (with which I mean

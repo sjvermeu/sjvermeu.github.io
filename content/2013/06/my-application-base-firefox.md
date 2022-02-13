@@ -1,6 +1,6 @@
 Title: My application base: firefox
 Date: 2013-06-07 03:50
-Category: Free Software
+Category: Free-Software
 Tags: browser, firefox, mab
 Slug: my-application-base-firefox
 

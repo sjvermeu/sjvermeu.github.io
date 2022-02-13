@@ -1,6 +1,6 @@
 Title: Comparing performance with sysbench: performance analysis
 Date: 2013-04-19 16:22
-Category: Free Software
+Category: Free-Software
 Tags: performance, sysbench
 Slug: comparing-performance-with-sysbench-part-3
 

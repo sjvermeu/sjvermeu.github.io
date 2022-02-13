@@ -1,6 +1,6 @@
 Title: qemu monitor cd change
 Date: 2010-08-30 21:38
-Category: Free Software
+Category: Free-Software
 Slug: qemu-monitor-cd-change
 
 I've been playing around with kvm (which uses qemu) to try out other

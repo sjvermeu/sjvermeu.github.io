@@ -1,6 +1,6 @@
 Title: My application base: freemind
 Date: 2013-06-04 03:50
-Category: Free Software
+Category: Free-Software
 Tags: freemind, java, mab, mindmanager, mindmap, structure, xmind
 Slug: my-application-base-freemind
 
