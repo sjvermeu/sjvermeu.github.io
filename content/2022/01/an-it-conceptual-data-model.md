@@ -9,6 +9,8 @@ This time a much shorter post, as I've been asked to share this information
 recently and found that it, by itself, is already useful enough to publish. It
 is a conceptual data model for IT services.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **The IT model, and why it is useful**
 
 A conceptual data model for IT services supports several IT processes, with a
@@ -35,4 +37,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1483002656478093315).
 
-<!-- PELICAN_END_SUMMARY -->
