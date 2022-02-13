@@ -1,5 +1,5 @@
 Title: Defining what an IT asset is
-Date: 2022-01-13 13:00
+Date: 2022-02-13 13:00
 Category: Architecture
 Tags: asset-management,cobit,itil
 Slug: defining-what-an-it-asset-is
