@@ -198,6 +198,146 @@ Simplicity is a form of art... - Architecture category        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2022/05/containers-are-the-new-iaas/">Containers are the new IaaS</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 21 May 2022</span></span>
+                <p><p>At work, as with many other companies, we're actively investing in new
+platforms, including container platforms and public cloud. We use Kubernetes
+based container platforms both on-premise and in the cloud, but are also very
+adamant that the container platforms should only be used for application
+workload that is correctly designed for cloud-native deployments: we do not
+want to see vendors packaging full operating systems in a container and
+then shouting they are now container-ready.</p>
+<p>Sadly, we notice more and more vendors abusing containerization to wrap their
+products in and selling it as 'cloud-ready' or 'container-ready'. For many
+vendors, containers allow them to bundle everything as if it were an
+appliance, but without calling it an appliance - in our organization, we
+have specific requirements on appliances to make sure they aren't just
+pre-build systems that lack the integration, security, maintainability and
+supportability capabilities that we would expect from an appliance.</p>
+<p>Even developers are occasionally tempted to enlarge container images with a
+whole slew of middleware and other services, making it more monolithic
+solutions than micro-services, just running inside a container because they
+can. I don't feel that this evolution is beneficial (or at least not yet),
+because the maintainability and supportability of these images can be very
+troublesome.</p>
+<p>This evolution is similar to the initial infrastructure-as-a-service
+offerings, where the focus was on virtual machines: you get a platform on top
+of which your virtual machines run, but you remain responsible for the virtual
+machine and its content. But unlike virtual machines, where many organizations
+have standardized management and support services for, containers are often
+shielded away or ignored. But the same requirements should be applied to
+containers just as to virtual machines.</p>
+<p>Let me highlight a few of these, based on my <a href="https://blog.siphos.be/2021/09/process-view-of-infrastructure/">Process view of
+infrastructure</a>.</p>
+<p><strong>Cost and licensing</strong></p>
+<p>Be it on a virtual machine or in a container, the costs and licensing of the
+products involved must be accounted for. For virtual machines, this is often
+done through license management tooling that facilitates tracking of software
+deployments and consumption. These tools often use agents running on the
+virtual machines (and a few run at the hypervisor level so no in-VM agents are
+needed).</p>
+<p>Most software products also use licensing metrics that are tailored to
+(virtual) hardware (like processors) or deployments (aka nodes, i.e. a
+per-operating-system count). Software vendors often have the right to audit
+software usage, to make sure companies do not abuse their terms and
+conditions. </p>
+<p>Now let's tailor that to a container environment, where platforms like
+Kubernetes can dynamically scale up the number of deployments based on the
+needs. Unlike more static virtual machine-based deployments, we now have a
+more dynamic environment. How do you measure software usage here? Running
+software license agents inside containers isn't a good practice. Instead, we
+should do license scanning in the images up-front, and tag resources
+accordingly. But not many license management tooling is already
+container-aware, let alone aligned with a different way of working.</p>
+<p>But "our software license management tooling is not container-ready yet" is
+not an adequate answer to software license audits, nor will the people in the
+organization that are responsible for license management be happy with such
+situations.</p>
+<p><strong>Product lifecycle</strong></p>
+<p>Next to the licensing part, companies also want to track which software
+versions are being used: not just for vulnerability management purposes, but
+also to make sure the software remains supported and fit for purpose.</p>
+<p>On virtual machines, regular software scanning and inventory setup can be done
+to report on the software usage. And while on container environments this can
+be easily done at the image level (which software and versions are available in
+which containers) this often provides a pre-deployment view, and doesn't tell
+us if a certain container is being used or not, nor if additional deployments
+have been triggered since the container is launched.</p>
+<p>Again, deploying in-container scanning capabilities seems to be
+contra-productive here. Having an end-to-end solution that detects and
+registers software titles and products based on the container images, and then
+provides insights into runtime deployments (and history) seems to be a better match.</p>
+<p><strong>Authorization management (and access control)</strong></p>
+<p>When support teams need to gain access to the runtime environment (be it for
+incident handling, problem management, or other operational tasks) most
+companies will already have a somewhat finer-grained authorization system in
+place: you don't want to grant full system administrator rights if they aren't
+needed.</p>
+<p>For containers, this is often not that easy to accomplish: the design of
+container platforms is tailored to situations where you don't want to
+standardize on in-container access: runtimes are ephemeral, and support is
+handled through logging and metric, with adaptation to the container images
+and rolling out new versions. If containers are starting to get used for more
+classical workloads, authorization management will become a more active field
+to work out.</p>
+<p>Consider a database management system within the container alongside the
+vendor software. Managing this database might become a nightmare, especially
+if it is only locally accessible (within the container or pod). And before you
+yell how horrible such a setup would be for a container platform... yes, but
+it is still a reality for some.</p>
+<p><strong>Auditing</strong></p>
+<p>Auditing is a core part of any security strategy, logging who did what, when,
+from where, on what, etc. For classical environments, audit logging, reporting
+and analysis are based upon static environment details: IP addresses,
+usernames, process names, etc.</p>
+<p>In a container environment, especially when using container orchestration,
+these classical details are not as useful. Sure, they will point to the
+container platform, but IP addresses are often shared or dynamically assigned.
+Usernames are dynamically generated or are pooled resources. Process
+identifiers are not unique either.</p>
+<p>Auditing for container platforms needs to consider the container-specific
+details, like namespaces. But that means that all the components involved in
+the auditing processes (including the analysis frameworks, AI models, etc.)
+need to be aware of these new information types.</p>
+<p>In the case of monolithic container usage, this can become troublesome as the
+in-container logging often has no knowledge of the container-specific nature,
+which can cause problems when trying to correlate information.</p>
+<p><strong>Conclusion</strong></p>
+<p>I only touched upon a few processes here. Areas such as quality assurance and
+vulnerability management are also challenges for instance, as is data
+governance. None of the mentioned processes are impossible to solve, but
+require new approaches and supporting services, which make the total cost of
+ownership of these environments higher than your business or management might
+expect.</p>
+<p>The rise of monolithic container usage is something to carefully consider. In
+the company I work for, we are strongly against this evolution as the enablers
+we would need to put in place are not there yet, and would require significant
+investments. It is much more beneficial to stick to container platforms for
+the more cloud-native setups, and even in those situations dealing with ISV
+products can be more challenging than when it is only for internally developed
+products.</p>
+<p>Feedback? Comments? Don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
+email</a>, or join the <a href="https://twitter.com/infrainsight/status/TODO">discussion on
+Twitter</a>.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/kubernetes/">kubernetes</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/container/">container</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/iaas/">iaas</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/infrastructure/">infrastructure</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/virtual-machine/">virtual-machine</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2022/02/defining-what-an-it-asset-is/">Defining what an IT asset is</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 13 February 2022</span></span>
@@ -206,155 +346,6 @@ is a decent IT asset management system. It facilitates knowing what assets
 you own, where they are, who the owner is, and provides a foundation for
 numerous other IT processes.</p>
 <p>However, when asking "what is an IT asset", it gets kind off fuzzy...</p>
-<p><strong>Searching for a definition</strong></p>
-<p>When I went on to search for a definition of an "IT asset", my first
-thought was to check on the more common reference frameworks out there.
-Surely, if they tout the benefits of a well-functioning IT asset management
-system and process, they will declare what an IT asset is, right?</p>
-<p>Many of these frameworks do not have their resources publicly available. They do have
-enough material online to provide me with the necessary insights.</p>
-<p>The first focus I had was on ITIL, formerly known as the Information
-Technology Infrastructure Library. There are quite a few articles on the <a href="https://www.itil-docs.com/blogs/asset-management">ITIL
-Docs</a> site on IT asset
-management, but while they do have some breadcrumbs, they do not offer a full
-definition:</p>
-<ul>
-<li>as financial management of IT assets is an important sub-process,
-  I can derive that assets are either expected to have a financial
-  value, or that such economical assets are a large subset of the
-  IT assets in general</li>
-<li>assets always have a lifecycle to follow (although I am uncertain
-  if this will help in deriving a definition)</li>
-<li>assets support the IT in the strategic and financial decision-making</li>
-</ul>
-<p>I found a <a href="https://itil.it.utah.edu/downloads/ITILv2_Terms_and_Definitions_r2.0_0808.pdf">Terms and Definitions</a>
-extract that has an asset defined as:</p>
-<blockquote>
-<p>"[An IT asset is a] component of a business process. Assets can include
-people, accommodation (facilities), computer systems, networks, paper records,
-fax machines, etc."</p>
-</blockquote>
-<p>Of course, that definition is too broad for IT asset management.</p>
-<p>The <a href="https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1800-5.pdf">NIST 1800-5 IT Asset Management publication</a>
-focuses on technologies that ensure a smooth business operation.
-It includes computers, mobile devices, operating systems, applications,
-data, and network resources. It later mentions that IT assets include items
-such as servers, desktops, laptops, and network appliances. And when it
-touches upon the value of IT asset management, it too mentions that it is
-about informed business-driven decision-making.</p>
-<p>In <a href="https://www.isaca.org/resources/cobit">ISACA's CObIT</a>, IT assets are
-frequently mentioned. Here as well, there is a strong indication that they
-relate to a financial part and a value delivery part. For instance, in the
-objective "Ensured Benefits Delivery", we find:</p>
-<blockquote>
-<p>"Create and maintain portfolios of I&amp;T-enabled investment programs, IT
-services and IT assets, which form the basis for the current IT budget and
-support the I&amp;T tactical and strategic plans"</p>
-</blockquote>
-<p>There is an entire objective called "Managed Assets" which covers the bulk of
-the IT asset management practice. It again refers to the assets, but focuses
-less on the definition of what an IT asset is, and more on what it supports.
-For instance:</p>
-<blockquote>
-<p>"Manage I&amp;T assets [...] to make sure that their use delivers value at optimal
-cost, they remain operational (fit for purpose), and they are accounted for
-and physically protected."</p>
-</blockquote>
-<p>In the practice of managing an inventory, the references are towards IT assets
-that are "required to deliver services and that are owned or controlled by the
-organization with an expectation of future benefit".</p>
-<p><a href="https://www.techopedia.com/definition/16946/it-asset">Techopedia</a> has it
-defined as "a piece of software or hardware within an information technology
-environment."</p>
-<p>On <a href="https://en.wikipedia.org/wiki/Asset_(computer_security)">Wikipedia's "Asset (computer
-security)"</a> page, 
-the definition refers to the ISO/IEC 13335-1:2004 publication, and summarizes it
-as "any data, device, or other component of the environment that supports
-information-related activities." It also refers to an older ENISA page
-(archived), and looking at the current <a href="https://www.enisa.europa.eu/topics/threat-risk-management/risk-management/current-risk/risk-management-inventory/glossary">ENISA
-Glossary</a>
-it covers the following definition:</p>
-<blockquote>
-<p>"[An IT asset is] anything that has value to the organization, its business
-operations and their continuity, including Information resources that support
-the organization's mission."</p>
-</blockquote>
-<p>ENISA appears to quote ISO/IEC PDTR 13335-1 as well.</p>
-<p><strong>Deriving a definition</strong></p>
-<p>From the search, I think I have some grasp of what an IT asset is. Or at
-least, how I look at it. Two main attributes exist that define if something in
-an IT environment is an asset or not.</p>
-<p>First, it has to offer or realize an IT value to the environment. Often, 
-IT value is about automating (a part of a) business process.</p>
-<p>Second, the asset has to have a value of its own. That value is typically 
-economical, but can also be intangible, like intellectual property.</p>
-<p>Through these two attributes, I would create the following definition:</p>
-<blockquote>
-<p>An IT asset is anything that provides visible IT value towards the
-organization, and has an intrinsic value on its own. A visible IT value is
-generally in support of IT automation. An intrinsic value can be economical,
-but also a capital asset like intellectual property tied to the IT asset
-itself.</p>
-</blockquote>
-<p>Some processes make a distinction between regular IT assets and more critical
-(or important) assets. In most cases, I read that it focuses on the impact that
-a defect or unavailability of the asset has on the organization. So, a critical
-IT asset gets the following definition:</p>
-<blockquote>
-<p>A critical (or important) IT asset is an IT asset that directly realizes a
-(business or IT) service, where the business impact (in case of exploited risk
-or unavailability) is non-trivial.</p>
-</blockquote>
-<p>This distinction is visible in CObIT for instance, which is the framework that
-I'm most used to working with. CObIT has different activities related to
-critical/important IT assets compared to general IT assets. A computer mouse
-might be an IT asset, but it is not a critical/important asset. Or, at least, I
-hope your company isn't going to feel it if one mouse is malfunctioning.</p>
-<p>While having a definition to work with is essential to confirm the scope for
-the activities a company needs to attend to, the next step isn't to run off
-and tag everything that seems to fit the definition. Instead, I recommend
-first starting by classifying the IT assets.</p>
-<p><strong>Classifying the assets</strong></p>
-<p>Next you want to classify for your organization what you consider to be IT
-assets. This clarifies which types you want to follow the IT asset management
-processes for. We've had examples mentioned earlier, like software, operating
-systems, servers, but there are plenty more assets out there.</p>
-<p>For instance, a leased line you have between yourself and a third party is an IT
-asset. Leased lines are network lines with a certain quality associated with
-them and which you lease from a network provider. Their quality attributes
-include line performance, expected availability, recovery capabilities, etc.
-Such lines have economical value, and they offer support to the IT processes
-that use that network.</p>
-<p>To create a classification, you might want to start with the conceptual
-data model that I've <a href="https://blog.siphos.be/2022/01/an-it-conceptual-data-model/">shared
-previously</a>. You can, of
-course, also use an existing classification model. The <a href="https://www.ungm.org/Public/UNSPSC">United Nations Standard
-Products and
-Services Code (UNSPSC)</a> has a class list
-published which you can use to tailor your classification.</p>
-<p>The classification shouldn't limit itself to IT asset management.
-It is often better to work out this model for the company in general first
-(including requirements from other processes like solution build and
-configuration management) and then derive what classes should be part of the IT
-asset management process.</p>
-<p>A well-maintained classification will also make it easier for the company
-to work out how to improve the asset management processes. It enables the search
-for more tangible solutions, a more structured analysis of the current
-situation, and easier discussions with the stakeholders.</p>
-<p><strong>Conclusions</strong></p>
-<p>While there does not appear to be a commonly accepted definition of what an IT
-asset is, most frameworks do have similar concepts attributed to IT assets.
-Common concepts are the value the assets deliver to the organization, and the
-value the assets hold themselves. Trying to create a good definition helps in
-trying to grasp at what level an IT asset should exist.</p>
-<p>Yet, working out a definition is only a first step. After the definition,
-building out a good classification system helps to make IT asset management
-more tangible for the organization. Most online resources use such classes
-(like servers, desktops, operating systems, ...) to clarify what they consider
-as IT assets, rather than attempting to derive a workable definition.</p>
-<p>Feedback? Comments? Don't hesitate to <a href="mailto:sven.vermeulen@siphos.be">drop me an
-email</a>, or join the <a href="https://twitter.com/infrainsight/status/1492833029907173380">discussion on
-Twitter</a>.</p>
 </p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
@@ -578,29 +569,6 @@ their threat models.</p>
                         <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/vulnerability/">vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/09/naming-conventions/">Naming conventions</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 15 September 2021</span></span>
-                <p><p>Naming conventions. Picking the right naming convention is easy if you are all
-by yourself, but hard when you need to agree upon the conventions in a larger
-group. Everybody has an opinion on naming conventions, and once you decide
-on it, you do expect everybody to follow through on it.</p>
-<p>Let's consider why naming conventions are (not) important and consider a few
-examples to help in creating a good naming convention yourself.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/naming/">naming</a>
                     </div>
                 </div>
             </div>

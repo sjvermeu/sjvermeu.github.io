@@ -197,6 +197,31 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2015/08/switching-openssh-to-ed25519-keys/">Switching OpenSSH to ed25519 keys</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 19 August 2015</span></span>
+                <p><p>With Mike's <a href="http://comments.gmane.org/gmane.linux.gentoo.devel/96896">news item</a>
+on OpenSSH's deprecation of the <a href="https://en.wikipedia.org/wiki/Digital_Signature_Algorithm">DSA algorithm</a>
+for the public key authentication, I started switching the few keys I still had
+using DSA to the suggested <a href="http://ed25519.cr.yp.to/">ED25519</a> algorithm. Of
+course, I wouldn't be a security-interested party if I did not do some additional
+investigation into the DSA versus Ed25519 discussion.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free-software</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/openssh/">openssh</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ssh/">ssh</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2015/08/updates-on-my-pelican-adventure/">Updates on my Pelican adventure</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 16 August 2015</span></span>
@@ -441,36 +466,6 @@ modules directly.</p>
                         <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/cil/">cil</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2015/07/restricting-even-root-access-to-a-folder/">Restricting even root access to a folder</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sat 11 July 2015</span></span>
-                <p><p>In a
-<a href="http://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/comment-page-1/#comment-143323">comment</a>
-Robert asked how to use SELinux to prevent even root access to a
-directory. The trivial solution would be not to assign an administrative
-role to the root account (which is definitely possible, but you want
-some way to gain administrative access otherwise ;-)</p>
-<p>Restricting root is one of the commonly referred features of a MAC
-(Mandatory Access Control) system. With a well designed user management
-and sudo environment, it is fairly trivial - but if you need to start
-from the premise that a user has direct root access, it requires some
-thought to implement it correctly. The main "issue" is not that it is
-difficult to implement policy-wise, but that most users will start from
-a pre-existing policy (such as the reference policy) and build on top of
-that.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
                     </div>
                 </div>
             </div>

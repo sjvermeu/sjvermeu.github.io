@@ -12,6 +12,8 @@ numerous other IT processes.
 
 However, when asking "what is an IT asset", it gets kind off fuzzy...
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Searching for a definition**
 
 When I went on to search for a definition of an "IT asset", my first
@@ -185,4 +187,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1492833029907173380).
 
-<!-- PELICAN_END_SUMMARY -->

@@ -196,6 +196,34 @@ Simplicity is a form of art... - Articles by Sven Vermeulen        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2014/11/no-more-depends-for-selinux-policy-package-dependencies/">No more DEPENDs for SELinux policy package dependencies</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 02 November 2014</span></span>
+                <p><p>I just finished updating 102 packages. The change? Removing the
+following from the ebuilds:</p>
+<div class="highlight"><pre><span></span><code>DEPEND=&quot;selinux? ( sec-policy/selinux-${packagename} )&quot;
+</code></pre></div>
+
+<p>In the past, we needed this construction in both DEPEND and RDEPEND.
+Recently however, the SELinux eclass got updated with some logic to
+relabel files after the policy package is deployed …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/depend/">depend</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ebuild/">ebuild</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/rdepend/">rdepend</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2014/10/using-multiple-priorities-with-modules/">Using multiple priorities with modules</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 31 October 2014</span></span>
@@ -405,31 +433,6 @@ Lately, breakage has been reported with …</p></p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/hardened/">hardened</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/irc/">irc</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/meeting/">meeting</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/">Segmentation fault when emerging packages after libpcre upgrade?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 09 July 2014</span></span>
-                <p><p>SELinux users might be facing failures when emerge is merging a package
-to the file system, with an error that looks like so:</p>
-<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; Setting SELinux security labels
-/usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &quot;${file_contexts_path}&quot; -r &quot;${D}&quot; &quot;${D}&quot;
- * ERROR: dev-libs/libpcre-8.35::gentoo …</code></pre></div></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/file_contexts/">file_contexts</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/fix/">fix</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/libselinux/">libselinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/pcre/">pcre</a>
                     </div>
                 </div>
             </div>
