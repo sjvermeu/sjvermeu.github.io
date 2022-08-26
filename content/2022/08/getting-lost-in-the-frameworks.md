@@ -79,6 +79,7 @@ to be, and at what pace.
 The maturity model approach that I grew up with is [ISACA's
 CMMI](https://cmmiinstitute.com/) or *Capability Maturity Model Integration*.
 CMMI prescribes five maturity levels:
+
 - Incomplete (work may or may not be completed, no established goals, processes
   are only partially defined)
 - Initial (unpredictable and reactive, work gets completed but often delayed
@@ -99,6 +100,7 @@ But CMMI isn't the only one out there. Process maturity can also be evaluated
 by OMG's [Business Process Maturity Model
 (BPMM)](https://www.omg.org/spec/BPMM/1.0/About-BPMM/) which also defines
 five maturity levels:
+
 - Level 1 isn't explicitly defined further, let's keep it at *Initial*
 - Managed
 - Standardized
@@ -107,6 +109,7 @@ five maturity levels:
 
 What about the [TMMi model](https://www.tmmi.org/tmmi-model/), which has - 
 you guessed it - five maturity levels:
+
 - Initial
 - Managed
 - Defined
@@ -120,6 +123,7 @@ ISO/IEC 15504, aka the *Software Process Improvement and Capability
  Determination (SPICE)* methodology. It has five (well, six if you also
 count the "you have not even started" level) maturity models for the
 processes as well:
+
 - Incomplete (level 0)
 - Performed
 - Managed
@@ -145,6 +149,7 @@ need to take care and know that these resources are opinionated.
 
 Personally, I try to learn from the publicly available resources in the
 following order:
+
 1. Get access to as many public resources from the framework owner as possible.
    While this often only gives a general feeling on the framework, it is defined
    by the framework owner itself and the least opinionated (well, the framework
