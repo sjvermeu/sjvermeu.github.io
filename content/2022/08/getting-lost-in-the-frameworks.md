@@ -3,7 +3,7 @@ Date: 2022-08-26 13:00
 Category: Architecture
 Tags: framework,CMMI,ISO
 Slug: getting-lost-in-the-frameworks
-Status: draft
+Status: published
 
 The IT world is littered with frameworks, best practices, reference
 architectures and more. In an ever-lasting attempt to standardize IT,
@@ -34,7 +34,7 @@ integration, economical comparisons, and more.
 **The downsides of frameworks and specifications**
 
 An often cited downside of standardization (and thus also reflecting the use
-of frameworks or specifications) is that it stiffles innovation, and if the
+of frameworks or specifications) is that it stifles innovation, and if the
 framework or specification addresses the end product itself, it might result
 in the company struggling to find a unique selling proposal.
 
@@ -151,7 +151,7 @@ following order:
    itself is opinionated, but the resources about it will try to give a full
    feeling on what the framework is about).
 2. Learn more from online resources that are attempting to combine knowledge
-   from multiple sources (like wikipedia), and from sources that are specialized
+   from multiple sources (like Wikipedia), and from sources that are specialized
    in the domain itself without being commercially affiliated with one specific
    framework.
 3. Learn more from academic research on the matter (through [Google
@@ -180,8 +180,6 @@ Always keep in mind what you want to reach and why.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](https://twitter.com/infrainsight/status/1527975405730336768).
+Twitter](https://twitter.com/infrainsight/status/TODO).
 
-
-
- 
+<!-- PELICAN_END_SUMMARY -->

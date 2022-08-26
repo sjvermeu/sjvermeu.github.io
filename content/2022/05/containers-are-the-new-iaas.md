@@ -13,6 +13,8 @@ workload that is correctly designed for cloud-native deployments: we do not
 want to see vendors packaging full operating systems in a container and
 then shouting they are now container-ready.
 
+<!-- PELICAN_END_SUMMARY -->
+
 Sadly, we notice more and more vendors abusing containerization to wrap their
 products in and selling it as 'cloud-ready' or 'container-ready'. For many
 vendors, containers allow them to bundle everything as if it were an
@@ -151,4 +153,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1527975405730336768).
 
-<!-- PELICAN_END_SUMMARY -->
