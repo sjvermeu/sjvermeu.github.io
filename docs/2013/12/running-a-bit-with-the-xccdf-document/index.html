@@ -260,8 +260,9 @@ information of those results.</p>
 <p>With <a href="http://www.open-scap.org">openscap</a> (available as
 <em>app-forensics/openscap</em> in Gentoo), we can generate a guide of the
 XCCDF document as follows:</p>
-<div class="highlight"><pre><span></span><code>~$ oscap xccdf generate guide test-xccdf.xml &gt; guide-test-xccdf.html
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ oscap xccdf generate guide test-xccdf.xml &gt; guide-test-xccdf.html
+</pre></div>
+
 
 <p>The
 <a href="http://dev.gentoo.org/~swift/blog/201312/18/guide-test-xccdf.html">result</a>
@@ -279,8 +280,9 @@ although I had to do some manual cleanups in the output to have it
 render a PDF here using FOP (there are other methods to create PDFs too)
 such as removing the <code>&lt;preface&gt;</code> part.</p>
 <p>Let's try evaluating the XCCDF document on the system:</p>
-<div class="highlight"><pre><span></span><code>~$ oscap xccdf eval test-xccdf.xml
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ oscap xccdf eval test-xccdf.xml
+</pre></div>
+
 
 <p>Nothing happened. That is because there are no rules that are by default
 selected (all rules in the document have <code>selected="false"</code>) and we have
@@ -288,7 +290,7 @@ not passed on a profile. I don't know if there is a way to automatically
 make a particular profile default, so let's try it with the
 <em>xccdf_org.gentoo.dev.swift_profile_default</em> (which I always use as
 the default profile name for all my XCCDF documents):</p>
-<div class="highlight"><pre><span></span><code>~$ export PROFILE=&quot;xccdf_org.gentoo.dev.swift_profile_default&quot;
+<div class="highlight"><pre><span></span>~$ export PROFILE=&quot;xccdf_org.gentoo.dev.swift_profile_default&quot;
 ~$ oscap xccdf eval --profile ${PROFILE} test-xccdf.xml
 
 Title   There should be no /dev/ROOT in /etc/fstab
@@ -302,7 +304,8 @@ Result  notapplicable
 Title   rc_sys should be defined in /etc/rc.conf
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  notapplicable
-</code></pre></div>
+</pre></div>
+
 
 <p>At least we have output now, but still no results. In fact, all rules
 have <em>notapplicable</em> as a result. What gives?</p>
@@ -317,7 +320,7 @@ dictionary</em> element which is saved as
 <a href="http://dev.gentoo.org/~swift/blog/201312/18/gentoo-cpe.txt">gentoo-cpe.xml</a>.</p>
 <p>In the dictionary, the coupling between cpe:/o:gentoo:linux and a scripted
 check called gentoo-platform.sh is made. Let's now give this info to oscap:</p>
-<div class="highlight"><pre><span></span><code>~$ oscap xccdf eval --profile ${PROFILE} --cpe gentoo-cpe.xml test-xccdf.xml
+<div class="highlight"><pre><span></span>~$ oscap xccdf eval --profile ${PROFILE} --cpe gentoo-cpe.xml test-xccdf.xml
 Title   There should be no /dev/ROOT in /etc/fstab
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-root
 Result  pass
@@ -337,17 +340,19 @@ No definition with ID: (null) in definition model. [oval_probe.c:338]
 No definition with ID: (null) in result model. [oval_agent.c:184]
 No definition with ID: (null) in definition model. [oval_probe.c:338]
 No definition with ID: (null) in result model. [oval_agent.c:184]
-</code></pre></div>
+</pre></div>
+
 
 <p>Great; we now see that openscap ran the tests and gave feedback. It also
 gave a few errors. These can be ignored now - it is openscap that tries
 to interpret the shell scripts as OVAL scripts (I'll talk about OVAL in
 a later post). After changing my system to be non-compliant, I see that
 openscap detects that as well:</p>
-<div class="highlight"><pre><span></span><code>Title   rc_sys should be defined in /etc/rc.conf
+<div class="highlight"><pre><span></span>Title   rc_sys should be defined in /etc/rc.conf
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  fail
-</code></pre></div>
+</pre></div>
+
 
 <p>Now, by itself the rule might give us enough clues as to what is wrong,
 but sometimes you might want to get the output of the scripts as well.
@@ -361,7 +366,7 @@ argument list, the results of the XCCDF evaluation is also saved as
 <p>The oscap command has many more options, which I will not discuss in
 more detail now, but are important to know (for instance, you can save
 the XCCDF results in XML format for future processing).</p>
-<div class="highlight"><pre><span></span><code>~$ oscap xccdf eval -h
+<div class="highlight"><pre><span></span>~$ oscap xccdf eval -h
  oscap -&gt; xccdf -&gt; eval
 
 Perform evaluation driven by XCCDF file and use OVAL as checking engine
@@ -396,7 +401,8 @@ Options:
                                    (only applicable when datastream-id AND xccdf-id are not specified)
    --remediate                   - Automatically execute XCCDF fix elements for failed rules.
                                    Use of this option is always at your own risk.
-</code></pre></div>
+</pre></div>
+
 
 <p>In my next post, I'll talk a bit more about remediation.</p>
 <p>This post is part of a series on SCAP content:</p>

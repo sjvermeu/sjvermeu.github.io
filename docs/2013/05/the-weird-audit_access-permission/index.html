@@ -238,8 +238,9 @@ when they are triggered. For the DAC-related capabilities, policy
 developers often notice that these capabilities are triggered without a
 real need for them. So in the majority of cases, the policy developer
 wants to disable auditing of this:</p>
-<div class="highlight"><pre><span></span><code>dontaudit &lt;somedomain&gt; self:capability { dac_read_search dac_override };
-</code></pre></div>
+<div class="highlight"><pre><span></span>dontaudit &lt;somedomain&gt; self:capability { dac_read_search dac_override };
+</pre></div>
+
 
 <p>When applications wants to search through directories not owned by the
 user as which the application runs, <em>both</em> capabilities will be checked
@@ -256,7 +257,7 @@ get information about files, but other than that don't do anything with
 the files. When this occurs and the domain does not have read, write or
 execute permissions on the target, then the denial is shown even when
 the application doesn't really read, write or execute the file.</p>
-<div class="highlight"><pre><span></span><code>#include &lt;stdio.h&gt;
+<div class="highlight"><pre><span></span>#include &lt;stdio.h&gt;
 #include &lt;unistd.h&gt;
 
 int main(int argc, char ** argv) {
@@ -271,7 +272,8 @@ $ check /var/lib/logrotate.status
 $ tail -1 /var/log/audit.log
 ...
 type=AVC msg=audit(1367400559.273:5224): avc:  denied  { read } for  pid=12270 comm=&quot;test&quot; name=&quot;logrotate.status&quot; dev=&quot;dm-3&quot; ino=2849 scontext=staff_u:staff_r:staff_t tcontext=system_u:object_r:logrotate_var_lib_t tclass=file
-</code></pre></div>
+</pre></div>
+
 
 <p>This gives the impression that the application is doing nasty stuff,
 even when it is merely checking permissions. One way would be to

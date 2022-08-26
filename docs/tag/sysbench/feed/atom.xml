@@ -8,7 +8,7 @@ the benchmark application to look at the differences between the guest
 and host on my main laptop, and saw a major performance regression with
 the &lt;em&gt;memory&lt;/em&gt; workload test. Let's view this again, using parameters more
 optimized to view the regressions:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=memory --memory-total-size=32M --memory-block-size=64 run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=memory --memory-total-size=32M --memory-block-size=64 run
 Host:
   Operations performed: 524288 (2988653.44 ops/sec)
   32.00 MB transferred (182.41 MB/sec)
@@ -25,12 +25,13 @@ Host:
 Guest:
   Operations performed: 1 (   89.27 ops/sec)
   32.00 MB transferred (2856.77 MB/sec)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;From looking at the code (gotta love Gentoo for making this obvious ;-)
 we know that the memory workload, with a single thread, does something
 like the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;total_bytes = 0;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;total_bytes = 0;
 repeat until total_bytes &amp;gt;= memory-total-size:
   thread_mutex_lock()
   total_bytes += memory-block-size
@@ -42,7 +43,8 @@ repeat until total_bytes &amp;gt;= memory-total-size:
     write somevalue at pointer
     pointer++
   (stop event timer)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Given that the regression is most noticeable when the memory-block-size
 is very small, the part of the code whose execution count is much
@@ -52,14 +54,15 @@ increment and the start/stop of event timer.&lt;/p&gt;
 impacted. In the above case, we have 524288 executions. However, if we
 run the mutex workload this number of times, we see that this hardly has
 any effect:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=mutex --mutex-num=1 --mutex-locks=524288 --mutex-loops=0 run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=mutex --mutex-num=1 --mutex-locks=524288 --mutex-loops=0 run
 Host:      total time:        0.0275s
 Guest:     total time:        0.0286s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The code for the mutex workload, knowing that we run with one thread,
 looks like this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;mutex_locks = 524288
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mutex_locks = 524288
 (start event timer)
 do
   lock = get_mutex()
@@ -69,17 +72,19 @@ do
   mutex_locks--
 until mutex_locks = 0;
 (stop event timer)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;To check if the timer might be the culprit, let's look for a benchmark
 that mainly does timer checks. The &lt;em&gt;cpu&lt;/em&gt; workload can be used, when we
 tell sysbench that the prime to check is 3 (as its internal loop runs
 from 3 till the given number, and when the given number is 3 it skips
 the loop completely) and we ask for 524288 executions.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=cpu --cpu-max-prime=3 --max-requests=524288 run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=cpu --cpu-max-prime=3 --max-requests=524288 run
 Host:  total time:  0.1640s
 Guest: total time: 21.0306s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Gotcha! Now, the event timer (again from looking at the code) contains
 two parts: getting the current time (using &lt;code&gt;clock_gettime()&lt;/code&gt;) and
@@ -87,7 +92,7 @@ logging the start/stop (which is done in memory structures). Let's make
 a small test application that gets the current time (using the real-time
 clock as the sysbench application does) and see if we get similar
 results:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat test.c
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ cat test.c
 #include &amp;lt;stdio.h&amp;gt;
 #include &amp;lt;time.h&amp;gt;
 
@@ -102,34 +107,38 @@ $ gcc -lrt -o test test.c
 $ time ./test
 Host:  0m0.019s
 Guest: 0m5.030s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So given that the &lt;code&gt;clock_gettime()&lt;/code&gt; is ran twice in the sysbench, we
 already have 10 seconds of overhead on the guest (and only 0,04s on the
 host). When such time-related functions are slow, it is wise to take a
 look at the clock source configured on the system. On Linux, you can
 check this by looking at &lt;code&gt;/sys/devices/system/clocksource/*&lt;/code&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cd /sys/devices/system/clocksource/clocksource0
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd /sys/devices/system/clocksource/clocksource0
 # cat current_clocksource
 kvm-clock
 # cat available_clocksource
 kvm-clock tsc hpet acpi_pm
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Although kvm-clock is supposed to be the best clock source, let's switch
 to the tsc clock:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# echo tsc &amp;gt; current_clocksource
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo tsc &amp;gt; current_clocksource
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;If we rerun our test application, we get a much more appreciative
 result:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ time ./test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ time ./test
 Host:  0m0.019s
 Guest: 0m0.024s
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So, what does that mean for our previous benchmark results?&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=cpu --cpu-max-prime=20000 run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=cpu --cpu-max-prime=20000 run
 Host:            35,3049 sec
 Guest (before):  36,5582 sec
 Guest (now):     35,6416 sec
@@ -148,7 +157,8 @@ $ sysbench --test=threads --num-threads=128 --max-time=10s run
 Host:            9765 executions
 Guest (before):   512 executions
 Guest (now):      529 executions
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So we notice that this small change has nice effects on some of the
 tests. The CPU benchmark improves from 3,55% overhead to 0,95%; fileio
@@ -167,7 +177,7 @@ how important it is to&lt;/p&gt;
     how your users will experience the system&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;That's it for the sysbench benchmark for now (the MySQL part will need
-to wait until a later stage).&lt;/p&gt;</content><category term="Free-Software"></category><category term="performance"></category><category term="sysbench"></category></entry><entry><title>Comparing performance with sysbench: memory, threads and mutexes</title><link href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench-part-2/" rel="alternate"></link><published>2013-04-19T04:11:00+02:00</published><updated>2013-04-19T04:11:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-19:/2013/04/comparing-performance-with-sysbench-part-2/</id><summary type="html">&lt;p&gt;In the previous post, I gave some feedback on the cpu and fileio
+to wait until a later stage).&lt;/p&gt;</content><category term="performance"></category><category term="sysbench"></category></entry><entry><title>Comparing performance with sysbench: memory, threads and mutexes</title><link href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench-part-2/" rel="alternate"></link><published>2013-04-19T04:11:00+02:00</published><updated>2013-04-19T04:11:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-19:/2013/04/comparing-performance-with-sysbench-part-2/</id><summary type="html">&lt;p&gt;In the previous post, I gave some feedback on the cpu and fileio
 workload tests that &lt;a href="http://sysbench.sf.net"&gt;sysbench&lt;/a&gt; can handle. Next
 on the agenda are the &lt;em&gt;memory&lt;/em&gt;, &lt;em&gt;threads&lt;/em&gt; and &lt;em&gt;mutex&lt;/em&gt; workloads.&lt;/p&gt;
 &lt;p&gt;When using the &lt;em&gt;memory&lt;/em&gt; workload, &lt;strong&gt;sysbench&lt;/strong&gt; will allocate a buffer
@@ -180,20 +190,22 @@ on the agenda are the &lt;em&gt;memory&lt;/em&gt;, &lt;em&gt;threads&lt;/em&gt; 
 1kbyte) and each execution will read or write to this memory
 (&lt;em&gt;--memory-oper&lt;/em&gt;, defaults to write) in a random or sequential manner
 (&lt;em&gt;--memory-access-mode&lt;/em&gt;, defaults to &lt;strong&gt;seq&lt;/strong&gt;uential).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=memory --memory-block-size=1M --memory-total-size=10G run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=memory --memory-block-size=1M --memory-total-size=10G run
 Host throughput, 1M:  3959,78 MB/sec
 Guest throughput, 1M: 3079,29 MB/sec
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The guest has a lower throughput (about 77% of the host), which is lower
 than what most online posts provide on KVM performance. We'll get back
 to that later. Let's look at the default block size of 1k (meaning that
 the benchmark will do a lot more executions before it reaches the total
 memory (in load):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=memory --memory-total-size=1G run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=memory --memory-total-size=1G run
 Host throughput, 1k:  1702,59 MB/sec
 Guest throughput, 1k:   23,67 MB/sec
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This is a lot worse: the guest' throughput is only 1,4% of the host
 throughput! The &lt;code&gt;qemu-kvm&lt;/code&gt; process on the host is also taking up a lot
@@ -214,20 +226,22 @@ the more frequent thread operations are needed. In the last run we did
 (although no yields were performed). Something similar can be simulated
 using a single lock, single thread and a very high number of operations
 and no yields:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=threads --num-threads=1 --thread-yields=0 --max-requests=1000000 --thread-locks=1 run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=threads --num-threads=1 --thread-yields=0 --max-requests=1000000 --thread-locks=1 run
 Host runtime:    0,3267 s  (event:    0,2278)
 Guest runtime:  40,7672 s  (event:   30,6084)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This means that the guest "throughput" problems from the memory
 identified above seem to be related to this rather than memory-specific
 regressions. To verify if the scheduler itself also shows regressions,
 we can run more threads concurrently. For instance, running 128 threads
 simultaneously, using the otherwise default settings, during 10 seconds:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=threads --num-threads=128 --max-time=10s run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=threads --num-threads=128 --max-time=10s run
 Host:   9765 executions (events)
 Guest:   512 executions (events)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Here we get only 5% throughput.&lt;/p&gt;
 &lt;p&gt;Let's focus on the mutex again, as sysbench has an additional mutex
@@ -240,16 +254,17 @@ the performance issues above, then we would notice that the mutex
 operations are a major performance regression on my system.&lt;/p&gt;
 &lt;p&gt;Let's run that workload with a single thread (default), no loops and a
 single mutex.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=mutex --mutex-num=1 --mutex-locks=50000000 --mutex-loops=1 run
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=mutex --mutex-num=1 --mutex-locks=50000000 --mutex-loops=1 run
 Host (duration):   2600,57 ms
 Guest (duration):  2571,44 ms
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In this example, we see that the mutex operations are almost at the same
 speed (99%) of the host, so pure mutex operations are not likely to be
 the cause of the performance regressions earlier on. So what does give
 the performance problems? Well, that investigation will be for the third
-and last post in this series ;-)&lt;/p&gt;</content><category term="Free-Software"></category><category term="memory"></category><category term="mutex"></category><category term="performance"></category><category term="sysbench"></category><category term="threading"></category><category term="threads"></category></entry><entry><title>Comparing performance with sysbench: cpu and fileio</title><link href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench/" rel="alternate"></link><published>2013-04-18T21:31:00+02:00</published><updated>2013-04-18T21:31:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/comparing-performance-with-sysbench/</id><summary type="html">&lt;p&gt;Being busy with virtualization and additional security measures, I
+and last post in this series ;-)&lt;/p&gt;</content><category term="memory"></category><category term="mutex"></category><category term="performance"></category><category term="sysbench"></category><category term="threading"></category><category term="threads"></category></entry><entry><title>Comparing performance with sysbench: cpu and fileio</title><link href="https://blog.siphos.be/2013/04/comparing-performance-with-sysbench/" rel="alternate"></link><published>2013-04-18T21:31:00+02:00</published><updated>2013-04-18T21:31:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/comparing-performance-with-sysbench/</id><summary type="html">&lt;p&gt;Being busy with virtualization and additional security measures, I
 frequently come in contact with people asking me what the performance
 impact is. Now, you won't find the performance impact of SELinux here as
 I have no guests nor hosts that run without SELinux. But I did want to
@@ -273,7 +288,7 @@ guests run with the boot options given below, meaning 1.5Gb of memory, 2
 virtual CPUs of the KVM64 type. The CFLAGS for both are given below as
 well, together with the expanded set given by &lt;strong&gt;gcc \${CFLAGS} -E -v -
 &lt;/dev&gt;&amp;amp;1 | grep cc1&lt;/strong&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/usr/bin/qemu-kvm -monitor stdio -nographic -gdb tcp::1301   
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/usr/bin/qemu-kvm -monitor stdio -nographic -gdb tcp::1301   
  -vnc 127.0.0.1:14   
  -net nic,model=virtio,macaddr=00:11:22:33:44:b3,vlan=0   
  -net vde,vlan=0   
@@ -288,7 +303,8 @@ CFLAGS=&amp;quot;-march=core2 -O2 -pipe&amp;quot;
 CFLAGS=&amp;quot;-march=x86-64 -O2 -pipe&amp;quot;
 #CFLAGS=&amp;quot;-fno-strict-overflow -march=x86-64 -fPIE -O2   
         -fstack-protector-all&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;I am aware that the CFLAGS between the two are not the same (duh), and I
 know as well that the expansion given above isn't entirely accurate. But
@@ -321,8 +337,9 @@ performance benchmarks.&lt;/p&gt;
 &lt;p&gt;So the testing is done using &lt;strong&gt;sysbench&lt;/strong&gt;, which is capable of running
 CPU, I/O, memory, threading, mutex and MySQL tests. The first run of it
 that I did was a single-thread run for CPU performance testing.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=cpu --cpu-max-prime=20000 run
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=cpu --cpu-max-prime=20000 run
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This test verifies prime numbers by dividing the number with
 sequentially increasing numbers and verifying that the remainder (modulo
@@ -334,7 +351,7 @@ of the number (so for 17, this is 4). This algorithm is very simple, so
 you should also take into account that during the compilation of the
 benchmark, the compiler might already have optimized some of it.&lt;/p&gt;
 &lt;p&gt;Let's look at the numbers.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Run     Stat     Host      Guest
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Run     Stat     Host      Guest
 1.1    total   35,4331   37,0528
      e.total   35,4312   36,8917
 1.2    total   35,1482   36,1951
@@ -346,7 +363,8 @@ avg    total   35,3049   36,5582
      e.total   35,3029   36,3987
 med    total   35,3334   36,4266
      e.total   35,3314   36,2640
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;On average (I did three runs on each system), the guest took 3,55% more
 time to finish the test than the host (&lt;code&gt;total&lt;/code&gt;). If we look at the pure
@@ -355,7 +373,7 @@ calculation (so not the remaining overhead of the inner workings -
 run that wasn't the fastest nor the slowest of the three) has the guest
 taking 3,09% more time (total) and 2,64% more time (e.total).&lt;/p&gt;
 &lt;p&gt;Let's look at the two-thread results.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Run     Stat     Host      Guest
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Run     Stat     Host      Guest
 1.1    total   17,5185   18,0905
      e.total   35,0296   36,0217
 1.2    total   17,8084   18,1070
@@ -367,7 +385,8 @@ avg    total   17,5185   18,0965
      e.total   35,0296   36,0310
 med    total   17,8084   18,0921
      e.total   35,6131   36,0194
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With these figures, we notice that the guest average total run time
 takes 1,67% more time to complete, and the event time only 1,23%. I was
@@ -396,21 +415,24 @@ likely interested in random reads (data, for selects) and sequential
 writes (into transaction logs). A file server usually has random
 read/write. In the below test, I'll use a combined &lt;strong&gt;r&lt;/strong&gt;a&lt;strong&gt;nd&lt;/strong&gt;om
 &lt;strong&gt;r&lt;/strong&gt;ead/&lt;strong&gt;w&lt;/strong&gt;rite.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sysbench --test=fileio --file-total-size=6G prepare
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sysbench --test=fileio --file-total-size=6G prepare
 $ sysbench --test=fileio --file-total-size=6G --file-test-mode=rndrw --max-time=300 --max-requests=0 --file-extra-flags=direct run
 $ sysbench --test=fileio --file-total-size=6G cleanup
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the output, the throughput seems to be most important:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Operations performed:  4348 Read, 2898 Write, 9216 Other = 16462 Total
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Operations performed:  4348 Read, 2898 Write, 9216 Other = 16462 Total
 Read 67.938Mb  Written 45.281Mb  Total transferred 113.22Mb  (1.8869Mb/sec)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the above case, the throughput is 1,8869 Mbps. So let's look at the
 (averaged) results:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Host:  1,8424 Mbps
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Host:  1,8424 Mbps
 Guest: 1,5591 Mbps
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The above figures (which are an average of 3 runs) tell us that the
 guest has a throughput of about 84,75% (so we take about 15% performance
@@ -418,11 +440,12 @@ hit on random read/write I/O). Now I used sysbench here for some I/O
 validation of guest between host, but other usages apply as well. For
 instance, let's look at the impact of &lt;code&gt;data=ordered&lt;/code&gt; versus
 &lt;code&gt;data=journal&lt;/code&gt; (taken on the host):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;6G, data=ordered, barrier=1: 1,8435 Mbps
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;6G, data=ordered, barrier=1: 1,8435 Mbps
 6G, data=ordered, barrier=0: 2,1328 Mbps
 6G, data=journal, barrier=1: 599,85 Kbps
 6G, data=journal, barrier=0: 767,93 Kbps
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;From the figures, we can see that the &lt;code&gt;data=journal&lt;/code&gt; option slows down
 the throughput to a final figure about 30% of the original throughput
@@ -433,4 +456,4 @@ far as I can tell (but finding a good source on this is difficult) - LVM
 &lt;em&gt;by default&lt;/em&gt; disables barriers (but does honor the &lt;code&gt;barrier=1&lt;/code&gt; mount
 option if you provide it).&lt;/p&gt;
 &lt;p&gt;That's about it for now - the next post will be about the memory and
-threads tests within sysbench.&lt;/p&gt;</content><category term="Free-Software"></category><category term="cpu"></category><category term="hypervisor"></category><category term="io"></category><category term="kvm"></category><category term="performance"></category><category term="sysbench"></category></entry></feed>
+threads tests within sysbench.&lt;/p&gt;</content><category term="cpu"></category><category term="hypervisor"></category><category term="io"></category><category term="kvm"></category><category term="performance"></category><category term="sysbench"></category></entry></feed>

@@ -277,7 +277,7 @@ to get to the userland. On my system, the exploit fails with the
 following (start of) oops (without affecting the system further) when it
 tries to close the file descriptor returned from the syscall that
 invokes the decrement:</p>
-<div class="highlight"><pre><span></span><code>[ 1926.226678] PAX: please report this to pageexec@freemail.hu
+<div class="highlight"><pre><span></span>[ 1926.226678] PAX: please report this to pageexec@freemail.hu
 [ 1926.227019] BUG: unable to handle kernel paging request at 0000000381f5815c
 [ 1926.227019] IP: [] sw_perf_event_destroy+0x1a/0xa0
 [ 1926.227019] PGD 58a7c000 
@@ -289,11 +289,13 @@ invokes the decrement:</p>
 [ 1926.227019] RIP: 0010:[]  [] sw_perf_event_destroy+0x1a/0xa0
 [ 1926.227019] RSP: 0018:ffff880058a03e08  EFLAGS: 00010246
 ...
-</code></pre></div>
+</pre></div>
+
 
 <p>The exploit also finds that the decrement didn't succeed:</p>
-<div class="highlight"><pre><span></span><code>test: semtex.c:76: main: Assertion &#39;i&lt;0x0100000000/4&#39; failed.
-</code></pre></div>
+<div class="highlight"><pre><span></span>test: semtex.c:76: main: Assertion &#39;i&lt;0x0100000000/4&#39; failed.
+</pre></div>
+
 
 <p>A second mitigation is that
 <a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf">KERNEXEC</a>
@@ -305,8 +307,9 @@ feature prevents the execution of binaries that are not located in a
 root-owned directory and owned by a trusted group (which on my system is
 10 = wheel). So users attempting to execute such code will fail with a
 <em>Permission denied</em> error, and the following is shown in the logs:</p>
-<div class="highlight"><pre><span></span><code>[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
-</code></pre></div>
+<div class="highlight"><pre><span></span>[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
+</pre></div>
+
 
 <p>However, even though a nicely hardened system should be fairly immune
 against the currently circling public exploit, it should be noted that

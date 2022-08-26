@@ -227,8 +227,9 @@
 Well, actually, it froze. Literally, if you consider my root file
 system. When the system tried to remount the root file system
 read-write, it gave me this:</p>
-<div class="highlight"><pre><span></span><code>mount: / not mounted or bad option
-</code></pre></div>
+<div class="highlight"><pre><span></span>mount: / not mounted or bad option
+</pre></div>
+
 
 <p>So I did the first thing that always helps me, and that is to disable
 the initramfs booting and boot straight from the kernel. Now for those
@@ -246,8 +247,9 @@ But I digress. Back to the situation.</p>
 is to investigate why it fails. I reboot back with the initramfs, get my
 read-only root file system and start looking around. In my <strong>dmesg</strong>
 output, I notice the following:</p>
-<div class="highlight"><pre><span></span><code>EXT4-fs (md3): Cannot change data mode on remount
-</code></pre></div>
+<div class="highlight"><pre><span></span>EXT4-fs (md3): Cannot change data mode on remount
+</pre></div>
+
 
 <p>So that's weird, not? What is this data mode? Well, the <a href="https://www.kernel.org/doc/Documentation/filesystems/ext4.txt">data
 mode</a>

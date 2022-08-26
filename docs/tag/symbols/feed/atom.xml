@@ -2,14 +2,14 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - symbols</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/symbols/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2014-03-24T21:14:00+01:00</updated><entry><title>Hidden symbols and dynamic linking</title><link href="https://blog.siphos.be/2014/03/hidden-symbols-and-dynamic-linking/" rel="alternate"></link><published>2014-03-24T21:14:00+01:00</published><updated>2014-03-24T21:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-24:/2014/03/hidden-symbols-and-dynamic-linking/</id><summary type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
 ebuild which caused the following stacktrace to occur every time the
 &lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~ # semanage
 Traceback (most recent call last):
   File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
     import seobject
-  File &amp;quot;/usr/lib64/python2.7 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
+  File &amp;quot;/usr/lib64/python2.7 …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;A few weeks ago, we introduced an error in the (\~arch) &lt;code&gt;libselinux&lt;/code&gt;
 ebuild which caused the following stacktrace to occur every time the
 &lt;strong&gt;semanage&lt;/strong&gt; command was invoked:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~ # semanage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~ # semanage
 Traceback (most recent call last):
   File &amp;quot;/usr/lib/python-exec/python2.7/semanage&amp;quot;, line 27, in 
     import seobject
@@ -22,7 +22,8 @@ Traceback (most recent call last):
   File &amp;quot;/usr/lib64/python2.7/site-packages/sepolgen/access.py&amp;quot;, line 35, in 
     from selinux import audit2why
 ImportError: /usr/lib64/python2.7/site-packages/selinux/audit2why.so: undefined symbol: sepol_set_policydb
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Usually this error means that a needed library (a &lt;code&gt;.so&lt;/code&gt; file) is
 missing, or is not part of the &lt;code&gt;/etc/ld.so.conf&lt;/code&gt; list of directories to
@@ -34,12 +35,13 @@ I looked at the &lt;code&gt;audit2why.c&lt;/code&gt; code and see if/where
 &lt;em&gt;sepol_set_policydb&lt;/em&gt; is needed, as well as at the &lt;code&gt;libsepol&lt;/code&gt; sources
 to see where it is defined. And yes, the call is (of course) needed, but
 the definition made me wonder if this wasn't a bug:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;int hidden sepol_set_policydb(policydb_t * p)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;int hidden sepol_set_policydb(policydb_t * p)
 {
         policydb = p;
         return 0;
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Hidden? But, that means that the function symbol is not available for
 dynamic linking... So if that is the case, shouldn't &lt;code&gt;audit2why.c&lt;/code&gt; not
@@ -52,5 +54,5 @@ introduced), and I learned a bit more about symbols (and the &lt;em&gt;hidden&lt
 statement).&lt;/p&gt;
 &lt;p&gt;Bonus: if you need to check what symbols are available in a binary /
 shared library, use &lt;strong&gt;nm&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ nm -D /path/to/binary
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Gentoo"></category><category term="elf"></category><category term="hidden"></category><category term="selinux"></category><category term="symbols"></category></entry></feed>
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ nm -D /path/to/binary
+&lt;/pre&gt;&lt;/div&gt;</content><category term="elf"></category><category term="hidden"></category><category term="selinux"></category><category term="symbols"></category></entry></feed>

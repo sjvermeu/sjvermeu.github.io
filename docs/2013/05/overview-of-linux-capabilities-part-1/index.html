@@ -247,8 +247,9 @@ want to know which SELinux domains are "granted" a particular
 capability, you can look this up using <strong>sesearch</strong>. The capability is
 either in the <em>capability</em> or <em>capability2</em> class, and is named after
 the capability itself, without the <code>CAP_</code> prefix:</p>
-<div class="highlight"><pre><span></span><code>$ sesearch -c capability -p chown -A
-</code></pre></div>
+<div class="highlight"><pre><span></span>$ sesearch -c capability -p chown -A
+</pre></div>
+
 
 <dl>
 <dt>CAP_CHOWN</dt>
@@ -295,14 +296,15 @@ However, when you start confining those applications, it becomes
 apparent that they require this capability. Another example is when you
 run user applications, as root, like when trying to play a movie or
 music file with <strong>mplayer</strong> when this file is owned by a regular user:</p>
-<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_read_search } for
+<div class="highlight"><pre><span></span>type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_read_search } for
 pid=8153 comm=&quot;mplayer&quot; capability=2  scontext=staff_u:sysadm_r:mplayer_t
 tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
 
 type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_override } for
 pid=8153 comm=&quot;mplayer&quot; capability=1  scontext=staff_u:sysadm_r:mplayer_t
 tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
-</code></pre></div>
+</pre></div>
+
 
 <p>Notice the time stamp: both checks are triggered at the same time. What
 happens is that the Linux security hooks first check for

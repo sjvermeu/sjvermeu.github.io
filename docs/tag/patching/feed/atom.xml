@@ -13,11 +13,12 @@ wait for a new release.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Getting the patches&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;To capture the patches, I used &lt;code&gt;git&lt;/code&gt; together with the commit id:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ git format-patch -n -1 73b7ff41&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="go"&gt;~$ git format-patch -n -1 73b7ff41&lt;/span&gt;
 &lt;span class="go"&gt;0001-Only-invoke-RPM-on-RPM-enabled-Linux-distributions.patch&lt;/span&gt;
 &lt;span class="go"&gt;~$ git format-patch -n -1 4fbc6623&lt;/span&gt;
 &lt;span class="go"&gt;0001-Set-self.sename-to-sename-after-calling-semanage_seu.patch&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The two generated patch files contain all information about the commit. Thanks
 to the &lt;code&gt;epatch&lt;/code&gt; support in the &lt;code&gt;eutils.eclass&lt;/code&gt;, these patch files are
@@ -29,36 +30,39 @@ ebuilds is that we can simply copy them and commit in order to make a new releas
 &lt;p&gt;So, in case of the patch backporting, the necessary patch files are first moved
 into the &lt;code&gt;files/&lt;/code&gt; subdirectory of the package. Then, the live ebuild is updated
 to use the new patches:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gu"&gt;@@ -88,6 +85,8 @@ src_prepare() {&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&amp;quot;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&amp;quot;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&amp;quot;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt; &lt;/span&gt;       fi&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="gu"&gt;@@ -88,6 +85,8 @@ src_prepare() {&lt;/span&gt;
+                epatch &amp;quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&amp;quot;
+                epatch &amp;quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&amp;quot;
+                epatch &amp;quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&amp;quot;
+&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&amp;quot;&lt;/span&gt;
+&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&amp;quot;&lt;/span&gt;
+        fi
 
-&lt;span class="w"&gt; &lt;/span&gt;       # rlpkg is more useful than fixfiles&lt;span class="w"&gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+        # rlpkg is more useful than fixfiles
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The patches themselves do not apply for the live ebuilds themselves (they are
 ignored there) as we want the live ebuilds to be as close to the upstream
 project as possible. But because the ebuilds are immediately usable for
 releases, we add the necessary information there first.&lt;/p&gt;
 &lt;p&gt;Next, the new release is created:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="go"&gt;~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;&lt;strong&gt;Testing the changes&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The new release is then tested. I have a couple of scripts that I use
 for automated testing. So first I update these scripts to also try out
 the functionality that was failing before. On existing systems, these
 tests should fail:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Running task semanage (Various semanage related operations).
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Running task semanage (Various semanage related operations).
   ...
     Executing step &amp;quot;perm_port_on   : Marking portage_t as a permissive domain                              &amp;quot; -&amp;gt; ok
     Executing step &amp;quot;perm_port_off  : Removing permissive mark from portage_t                               &amp;quot; -&amp;gt; ok
     Executing step &amp;quot;selogin_modify : Modifying a SELinux login definition                                  &amp;quot; -&amp;gt; failed
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Then, on a test system where the new package has been installed, the same
 testset is executed (together with all other tests) to validate if the problem
@@ -79,7 +83,7 @@ sufficiently quick after each other).&lt;/p&gt;
 for package maintenance (such as &lt;code&gt;epatch&lt;/code&gt; for patching, live ebuilds that
 can be immediately used for releases and the ability to just cherry pick
 patches towards our repository) we can serve updates with just a few minutes
-of work.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="ebuild"></category><category term="patching"></category></entry><entry><title>How far reaching vulnerabilities can go</title><link href="https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/" rel="alternate"></link><published>2013-04-09T19:39:00+02:00</published><updated>2013-04-09T19:39:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-09:/2013/04/how-far-reaching-vulnerabilities-can-go/</id><summary type="html">&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
+of work.&lt;/p&gt;</content><category term="gentoo"></category><category term="ebuild"></category><category term="patching"></category></entry><entry><title>How far reaching vulnerabilities can go</title><link href="https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/" rel="alternate"></link><published>2013-04-09T19:39:00+02:00</published><updated>2013-04-09T19:39:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-09:/2013/04/how-far-reaching-vulnerabilities-can-go/</id><summary type="html">&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
 significant security vulnerability. The PostgreSQL team announced it up
 front and communicated how they would deal with the vulnerability (which
 basically comes down to saying that it is severe, that the public
@@ -124,4 +128,4 @@ forgotten, very active community) database platform. But I do hope that
 these products take up their responsibility and release updated versions
 or patches for their installations to their customers &lt;em&gt;very&lt;/em&gt; soon.&lt;/p&gt;
 &lt;p&gt;Perhaps I should ask our security operational team to take a scan to
-actively follow-up on these...&lt;/p&gt;</content><category term="Security"></category><category term="firewall"></category><category term="patching"></category><category term="postgresql"></category><category term="security"></category></entry></feed>
+actively follow-up on these...&lt;/p&gt;</content><category term="firewall"></category><category term="patching"></category><category term="postgresql"></category><category term="security"></category></entry></feed>

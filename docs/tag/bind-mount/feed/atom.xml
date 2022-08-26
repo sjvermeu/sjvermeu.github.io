@@ -11,8 +11,9 @@ access to &lt;code&gt;/sys&lt;/code&gt; is not something I like to see for a chr
 &lt;p&gt;Luckily, all other accesses are not needed, so I was able to create a
 static &lt;code&gt;/sys/fs/selinux&lt;/code&gt; directory structure in the chroot, and then
 just mount the SELinux file system on that:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In hindsight, I probably could just have created a &lt;code&gt;/selinux&lt;/code&gt; location
 as that location, although deprecated, is still checked by the SELinux
@@ -21,16 +22,18 @@ libraries.&lt;/p&gt;
 Luckily it was purely for read operations, so I was first contemplating
 of copying the data and doing a &lt;strong&gt;chmod -R a-w
 /var/chroot/etc/selinux&lt;/strong&gt;, but then considered a bind-mount:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Alas, bad luck - the read-only flag is ignored during the mount, and the
 bind-mount is still read-write. A &lt;a href="http://lwn.net/Articles/281157/"&gt;simple article on
 lwn.net&lt;/a&gt; informed me about the
 solution: I need to do a remount afterwards to enable the read-only
 state:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o remount,ro /var/chroot/etc/selinux
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# mount -o remount,ro /var/chroot/etc/selinux
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Great! And because my brain isn't what it used to be, I just make a
-quick blog for future reference ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="bind-mount"></category><category term="bindmount"></category><category term="mount"></category><category term="read-only"></category><category term="ro"></category><category term="selinux"></category></entry></feed>
+quick blog for future reference ;-)&lt;/p&gt;</content><category term="bind-mount"></category><category term="bindmount"></category><category term="mount"></category><category term="read-only"></category><category term="ro"></category><category term="selinux"></category></entry></feed>

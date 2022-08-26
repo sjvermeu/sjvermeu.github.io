@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - RDEPEND</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/rdepend/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2014-11-02T14:51:00+01:00</updated><entry><title>No more DEPENDs for SELinux policy package dependencies</title><link href="https://blog.siphos.be/2014/11/no-more-depends-for-selinux-policy-package-dependencies/" rel="alternate"></link><published>2014-11-02T14:51:00+01:00</published><updated>2014-11-02T14:51:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-11-02:/2014/11/no-more-depends-for-selinux-policy-package-dependencies/</id><summary type="html">&lt;p&gt;I just finished updating 102 packages. The change? Removing the
 following from the ebuilds:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
 relabel files after the policy package is deployed …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just finished updating 102 packages. The change? Removing the
 following from the ebuilds:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DEPEND=&amp;quot;selinux? ( sec-policy/selinux-${packagename} )&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to
@@ -21,4 +23,4 @@ rebuild. In the past, getting &lt;code&gt;USE="selinux"&lt;/code&gt; (through th
 profiles) would rebuild all packages that have a DEPEND dependency to
 the SELinux policy package. No more - only packages that depend on the
 SELinux libraries (like &lt;code&gt;libselinux&lt;/code&gt;) or utilities rebuild. The rest
-will just pull in the proper policy package.&lt;/p&gt;</content><category term="Gentoo"></category><category term="DEPEND"></category><category term="ebuild"></category><category term="Gentoo"></category><category term="RDEPEND"></category><category term="selinux"></category></entry></feed>
+will just pull in the proper policy package.&lt;/p&gt;</content><category term="DEPEND"></category><category term="ebuild"></category><category term="Gentoo"></category><category term="RDEPEND"></category><category term="selinux"></category></entry></feed>

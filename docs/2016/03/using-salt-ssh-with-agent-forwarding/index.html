@@ -246,17 +246,18 @@ passwords). I would like to use SSH agent forwarding.</p>
 <p>Luckily, salt does support that, it just <a href="https://github.com/saltstack/salt/pull/31328/commits/024439186a0c51c0ac1242b38d6584d2abd1a534">forgot to document</a>
 it. Basically, what you need to do is update the roster file with the <code>priv:</code> parameter
 set to <code>agent-forwarding</code>:</p>
-<div class="highlight"><pre><span></span><code>myminion:
+<div class="highlight"><pre><span></span>myminion:
   host: myminion.example.com
   priv: agent-forwarding
-</code></pre></div>
+</pre></div>
+
 
 <p>It will use the <code>known_hosts</code> file of the currently logged on user (the one executing
 the <code>salt-ssh</code> command) so make sure that the system's key is already known.</p>
-<div class="highlight"><pre><span></span><code>~$ salt-ssh myminion test.ping
+<div class="highlight"><pre><span></span>~$ salt-ssh myminion test.ping
 myminion:
     True
-</code></pre></div>
+</pre></div>
         </div>
 
         <!-- Neighbors -->

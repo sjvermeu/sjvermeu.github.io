@@ -27,7 +27,7 @@
 &lt;p&gt;&lt;strong&gt;The OVAL XML structure&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The &lt;a href="https://blog.siphos.be/static/2018/oval.xml"&gt;full example&lt;/a&gt; contains a few more entries than those we declare next, in order to be complete. The most important definitions though are documented below.&lt;/p&gt;
 &lt;p&gt;Let's start with the definition. As stated, it will refer to tests that need to match for the definition to be valid.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;definitions&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;definitions&amp;gt;
   &amp;lt;definition id=&amp;quot;oval:com.example.oval:def:1&amp;quot; version=&amp;quot;1&amp;quot; class=&amp;quot;compliance&amp;quot;&amp;gt;
     &amp;lt;metadata&amp;gt;
       &amp;lt;title&amp;gt;libdefaults.forwardable in /etc/krb5.conf must be set to true&amp;lt;/title&amp;gt;
@@ -44,11 +44,12 @@
     &amp;lt;/criteria&amp;gt;
   &amp;lt;/definition&amp;gt;
 &amp;lt;/definitions&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The first thing to keep in mind is the (weird) identification structure. Just like with XCCDF, it is not sufficient to have your own id convention. You need to start an id with &lt;code&gt;oval:&lt;/code&gt; followed by the reverse domain definition (here &lt;code&gt;com.example.oval&lt;/code&gt;), followed by the type (&lt;code&gt;def&lt;/code&gt; for definition) and a sequence number.&lt;/p&gt;
 &lt;p&gt;Also, take a look at the criteria. Here, two tests need to be compliant (hence the &lt;code&gt;AND&lt;/code&gt; operator). However, more complex operations can be done as well. It is even allowed to nest multiple criteria, and refer to previous definitions, like so (taken from the &lt;a href="https://raw.githubusercontent.com/GovReady/ubuntu-scap/master/ssg-rhel6-oval.xml"&gt;ssg-rhel6-oval.xml file&lt;/a&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;criteria comment=&amp;quot;package hal removed or service haldaemon is not configured to start&amp;quot; operator=&amp;quot;OR&amp;quot;&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;criteria comment=&amp;quot;package hal removed or service haldaemon is not configured to start&amp;quot; operator=&amp;quot;OR&amp;quot;&amp;gt;
   &amp;lt;extend_definition comment=&amp;quot;hal removed&amp;quot; definition_ref=&amp;quot;oval:ssg:def:211&amp;quot;/&amp;gt;
   &amp;lt;criteria operator=&amp;quot;AND&amp;quot; comment=&amp;quot;service haldaemon is not configured to start&amp;quot;&amp;gt;
     &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 0&amp;quot; test_ref=&amp;quot;oval:ssg:tst:212&amp;quot;/&amp;gt;
@@ -60,10 +61,11 @@
     &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 6&amp;quot; test_ref=&amp;quot;oval:ssg:tst:218&amp;quot;/&amp;gt;
   &amp;lt;/criteria&amp;gt;
 &amp;lt;/criteria&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Next, let's look at the tests.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;tests&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;tests&amp;gt;
   &amp;lt;unix:file_test id=&amp;quot;oval:com.example.oval:tst:1&amp;quot; version=&amp;quot;1&amp;quot; check_existence=&amp;quot;all_exist&amp;quot; check=&amp;quot;all&amp;quot; comment=&amp;quot;/etc/redhat-release exists&amp;quot;&amp;gt;
     &amp;lt;unix:object object_ref=&amp;quot;oval:com.example.oval:obj:1&amp;quot; /&amp;gt;
   &amp;lt;/unix:file_test&amp;gt;
@@ -72,12 +74,13 @@
     &amp;lt;ind:state state_ref=&amp;quot;oval:com.example.oval:ste:2&amp;quot; /&amp;gt;
   &amp;lt;/ind:textfilecontent54_test&amp;gt;
 &amp;lt;/tests&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;There are two tests defined here. The first test just checks if &lt;code&gt;/etc/redhat-release&lt;/code&gt; exists. If not, then the test will fail and the definition itself will result to false (as in, not compliant). This isn't actually a proper definition, because you want the test to not run when it is on a different platform, but for the sake of example and simplicity, let's keep it as is.&lt;/p&gt;
 &lt;p&gt;The second test will check for the value of the &lt;code&gt;forwardable&lt;/code&gt; key in &lt;code&gt;/etc/krb5.conf&lt;/code&gt;. For it, it refers to an object and a state. The test states that all objects must exist (&lt;code&gt;check_existence="all_exist"&lt;/code&gt;) and that all objects must match the state (&lt;code&gt;check="all"&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;The object definition looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;objects&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;objects&amp;gt;
   &amp;lt;unix:file_object id=&amp;quot;oval:com.example.oval:obj:1&amp;quot; comment=&amp;quot;The /etc/redhat-release file&amp;quot; version=&amp;quot;1&amp;quot;&amp;gt;
     &amp;lt;unix:filepath&amp;gt;/etc/redhat-release&amp;lt;/unix:filepath&amp;gt;
   &amp;lt;/unix:file_object&amp;gt;
@@ -87,28 +90,31 @@
     &amp;lt;ind:instance datatype=&amp;quot;int&amp;quot; operation=&amp;quot;equals&amp;quot;&amp;gt;1&amp;lt;/ind:instance&amp;gt;
   &amp;lt;/ind:textfilecontent54_object&amp;gt;
 &amp;lt;/objects&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The first object is a simple file reference. The second is a text file content object. More specifically, it matches the line inside &lt;code&gt;/etc/krb5.conf&lt;/code&gt; which has &lt;code&gt;forwardable = true&lt;/code&gt; or &lt;code&gt;forwardable = false&lt;/code&gt; in it. An expression is made on it, so that we can refer to the subexpression as part of the test.&lt;/p&gt;
 &lt;p&gt;This test looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;states&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;states&amp;gt;
   &amp;lt;ind:textfilecontent54_state id=&amp;quot;oval:com.example.oval:ste:2&amp;quot; version=&amp;quot;1&amp;quot;&amp;gt;
     &amp;lt;ind:subexpression datatype=&amp;quot;string&amp;quot;&amp;gt;true&amp;lt;/ind:subexpression&amp;gt;
   &amp;lt;/ind:textfilecontent54_state&amp;gt;
 &amp;lt;/states&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This test refers to a subexpression, and wants it to be &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Testing the checks with Open-SCAP&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The Open-SCAP tool is able to test OVAL statements directly. For instance, with the above definition in a file called &lt;code&gt;oval.xml&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap oval eval --results oval-results.xml oval.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap oval eval --results oval-results.xml oval.xml
 Definition oval:com.example.oval:def:1: true
 Evaluation done.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The output of the command shows that the definition was evaluated successfully. If you want more information, open up the &lt;code&gt;oval-results.xml&lt;/code&gt; file which contains all the details about the test. This results file is also very useful while developing OVAL as it shows the entire result of objects, tests and so forth.&lt;/p&gt;
 &lt;p&gt;For instance, the &lt;code&gt;/etc/redhat-release&lt;/code&gt; file was only checked to see if it exists, but the results file shows what other parameters can be verified with it as well:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;unix-sys:file_item id=&amp;quot;1233781&amp;quot; status=&amp;quot;exists&amp;quot;&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;unix-sys:file_item id=&amp;quot;1233781&amp;quot; status=&amp;quot;exists&amp;quot;&amp;gt;
   &amp;lt;unix-sys:filepath&amp;gt;/etc/redhat-release&amp;lt;/unix-sys:filepath&amp;gt;
   &amp;lt;unix-sys:path&amp;gt;/etc&amp;lt;/unix-sys:path&amp;gt;
   &amp;lt;unix-sys:filename&amp;gt;redhat-release&amp;lt;/unix-sys:filename&amp;gt;
@@ -133,29 +139,32 @@ Evaluation done.
   &amp;lt;unix-sys:oexec datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:oexec&amp;gt;
   &amp;lt;unix-sys:has_extended_acl datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:has_extended_acl&amp;gt;
 &amp;lt;/unix-sys:file_item&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now, this is just on OVAL level. The final step is to link it in the XCCDF file.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Referring to OVAL in XCCDF&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The XCCDF Rule entry allows for a &lt;code&gt;check&lt;/code&gt; element, which refers to an automated check for compliance.&lt;/p&gt;
 &lt;p&gt;For instance, the above rule could be referred to like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;Rule id=&amp;quot;xccdf_com.example_rule_krb5-forwardable-true&amp;quot;&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;Rule id=&amp;quot;xccdf_com.example_rule_krb5-forwardable-true&amp;quot;&amp;gt;
   &amp;lt;title&amp;gt;Enable forwardable tickets on RHEL systems&amp;lt;/title&amp;gt;
   ...
   &amp;lt;check system=&amp;quot;http://oval.mitre.org/XMLSchema/oval-definitions-5&amp;quot;&amp;gt;
     &amp;lt;check-content-ref href=&amp;quot;oval.xml&amp;quot; name=&amp;quot;oval:com.example.oval:def:1&amp;quot; /&amp;gt;
   &amp;lt;/check&amp;gt;
 &amp;lt;/Rule&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this set in the Rule, Open-SCAP can validate it while checking the configuration baseline:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --oval-results --results xccdf-results.xml xccdf.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf eval --oval-results --results xccdf-results.xml xccdf.xml
 ...
 Title   Enable forwardable kerberos tickets in krb5.conf libdefaults
 Rule    xccdf_com.example_rule_krb5-forwardable-tickets
 Ident   RHEL7-01007
 Result  pass
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;A huge advantage here is that, alongside the detailed results of the run, there is also better human readable output as it shows the title of the Rule being checked.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;The detailed capabilities of OVAL&lt;/strong&gt;&lt;/p&gt;
@@ -168,7 +177,7 @@ Result  pass
 &lt;li&gt;&lt;code&gt;xmlfilecontent_test&lt;/code&gt; which is a specialized test toward XML files&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Keep in mind though that, as we have seen above, INI files specifically have no specialization available. It would be nice if CISecurity would develop support for common textual data formats, such as CSV (although that one is easily interpretable with the existing ones), JSON, YAML and INI.&lt;/p&gt;
-&lt;p&gt;The &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/unix-definitions-schema.md"&gt;unix&lt;/a&gt; one contains tests specific to Unix and Unix-like operating systems (so yes, it is also useful for Linux), and together with the &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/linux-definitions-schema.md"&gt;linux&lt;/a&gt; one a wide range of configurations can be checked. This includes support for generic extended attributes (&lt;code&gt;fileextendedattribute_test&lt;/code&gt;) as well as SELinux specific rules (&lt;code&gt;selinuxboolean_test&lt;/code&gt; and &lt;code&gt;selinuxsecuritycontext_test&lt;/code&gt;), network interface settings (&lt;code&gt;interface_test&lt;/code&gt;), runtime processes (&lt;code&gt;process58_test&lt;/code&gt;), kernel parameters (&lt;code&gt;sysctl_test&lt;/code&gt;), installed software tests (such as &lt;code&gt;rpminfo_test&lt;/code&gt; for RHEL and other RPM enabled operating systems) and more.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="oval"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting a rule</title><link href="https://blog.siphos.be/2018/01/documenting-a-rule/" rel="alternate"></link><published>2018-01-24T20:40:00+01:00</published><updated>2018-01-24T20:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-24:/2018/01/documenting-a-rule/</id><summary type="html">&lt;p&gt;In the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first post&lt;/a&gt; I talked about why configuration documentation is important. In the &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second post&lt;/a&gt; I looked into a good structure for configuration documentation of a technological service, and ended with an XCCDF template in which this documentation can be structured.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/unix-definitions-schema.md"&gt;unix&lt;/a&gt; one contains tests specific to Unix and Unix-like operating systems (so yes, it is also useful for Linux), and together with the &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/linux-definitions-schema.md"&gt;linux&lt;/a&gt; one a wide range of configurations can be checked. This includes support for generic extended attributes (&lt;code&gt;fileextendedattribute_test&lt;/code&gt;) as well as SELinux specific rules (&lt;code&gt;selinuxboolean_test&lt;/code&gt; and &lt;code&gt;selinuxsecuritycontext_test&lt;/code&gt;), network interface settings (&lt;code&gt;interface_test&lt;/code&gt;), runtime processes (&lt;code&gt;process58_test&lt;/code&gt;), kernel parameters (&lt;code&gt;sysctl_test&lt;/code&gt;), installed software tests (such as &lt;code&gt;rpminfo_test&lt;/code&gt; for RHEL and other RPM enabled operating systems) and more.&lt;/p&gt;</content><category term="xccdf"></category><category term="oval"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting a rule</title><link href="https://blog.siphos.be/2018/01/documenting-a-rule/" rel="alternate"></link><published>2018-01-24T20:40:00+01:00</published><updated>2018-01-24T20:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-24:/2018/01/documenting-a-rule/</id><summary type="html">&lt;p&gt;In the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first post&lt;/a&gt; I talked about why configuration documentation is important. In the &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second post&lt;/a&gt; I looked into a good structure for configuration documentation of a technological service, and ended with an XCCDF template in which this documentation can be structured.&lt;/p&gt;
 &lt;p&gt;The next step is to document the rules themselves, i.e. the actual content of a configuration baseline.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;In the &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;first post&lt;/a&gt; I talked about why configuration documentation is important. In the &lt;a href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/"&gt;second post&lt;/a&gt; I looked into a good structure for configuration documentation of a technological service, and ended with an XCCDF template in which this documentation can be structured.&lt;/p&gt;
 &lt;p&gt;The next step is to document the rules themselves, i.e. the actual content of a configuration baseline.&lt;/p&gt;
@@ -213,7 +222,7 @@ Result  pass
 &lt;p&gt;&lt;strong&gt;Documenting a rule in XCCDF&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;In XCCDF, a rule is defined through the &lt;code&gt;Rule&lt;/code&gt; XML entity, and is placed within a &lt;code&gt;Group&lt;/code&gt;. The Group entities are used to structure the document, while the &lt;code&gt;Rule&lt;/code&gt; entities document specific configuration directives.&lt;/p&gt;
 &lt;p&gt;The postgres related rule of above could be written as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;Rule id=&amp;quot;xccdf_com.example_rule_pgsql-selinux-context&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;Rule id=&amp;quot;xccdf_com.example_rule_pgsql-selinux-context&amp;quot;
       role=&amp;quot;full&amp;quot;
       selected=&amp;quot;1&amp;quot;
       weight=&amp;quot;5.1&amp;quot;
@@ -248,7 +257,8 @@ Result  pass
   &amp;lt;/fix&amp;gt;
   &amp;lt;ident system=&amp;quot;http://example.com/configbaseline&amp;quot;&amp;gt;pgsql-01032&amp;lt;/ident&amp;gt;
 &amp;lt;/Rule&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Although this is lots of XML, it is easy to see what each element declares. The &lt;a href="https://csrc.nist.gov/CSRC/media/Publications/nistir/7275/rev-4/final/documents/nistir-7275r4_updated-march-2012_clean.pdf"&gt;NIST IR 7275 document&lt;/a&gt; is a very good resource to continuously consult in order to find the right elements and their interpretation.&lt;/p&gt;
 &lt;p&gt;There is one element added that is "specific" to the content of this blog post series and not the XCCDF standard, namely the identification. As mentioned in an earlier post, organizations might have their own taxonomy for technical service identification, and requirements on how to number or identify rules. In the above example, the rule is identified as &lt;code&gt;pgsql-01032&lt;/code&gt;.&lt;/p&gt;
@@ -290,13 +300,14 @@ Result  pass
 &lt;p&gt;&lt;strong&gt;Generating the guide&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;To close off this post, let's finish with how to generate the guide based on an XCCDF document. Personally, I use two approaches for this.&lt;/p&gt;
 &lt;p&gt;The first one is to rely on Open-SCAP. With Open-SCAP, you can generate guides easily:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf generate guide xccdf.xml &amp;gt; ConfigBaseline.html
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf generate guide xccdf.xml &amp;gt; ConfigBaseline.html
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The second one, which I use more often, is a custom XSL style sheet, which also introduces the knowledge and interpretations of what this blog post series brings up (including the organizational identification). The end result is similar (the same content) but uses a structure/organization that is more in line with expectations.&lt;/p&gt;
 &lt;p&gt;For instance, in my company, the information security officers want to have a tabular overview of all the rules in a configuration baseline. So the XSL style sheet generates such a tabular overview, and uses in-documenting linking to the more elaborate descriptions of all the rules.&lt;/p&gt;
 &lt;p&gt;An &lt;a href="https://blog.siphos.be/static/2018/xccdf.xsl"&gt;older version&lt;/a&gt; is online for those interested. It uses JavaScript as well (in case you are security sensitive you might want to look into it) to allow collapsing rule documentation for faster online viewing.&lt;/p&gt;
-&lt;p&gt;The custom XSL has an additional advantage, namely that there is no dependency on Open-SCAP to generate the guides (even though it is perfectly possible to copy the XSL and continue). I can successfully generate the guide using &lt;a href="https://www.microsoft.com/en-us/download/details.aspx?id=21714"&gt;Microsoft's msxml&lt;/a&gt; utility, using xsltproc, etc depending on the platform I'm on.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Structuring a configuration baseline</title><link href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/" rel="alternate"></link><published>2018-01-17T09:10:00+01:00</published><updated>2018-01-17T09:10:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-17:/2018/01/structuring-a-configuration-baseline/</id><summary type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and technology agnostic.&lt;/p&gt;
+&lt;p&gt;The custom XSL has an additional advantage, namely that there is no dependency on Open-SCAP to generate the guides (even though it is perfectly possible to copy the XSL and continue). I can successfully generate the guide using &lt;a href="https://www.microsoft.com/en-us/download/details.aspx?id=21714"&gt;Microsoft's msxml&lt;/a&gt; utility, using xsltproc, etc depending on the platform I'm on.&lt;/p&gt;</content><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Structuring a configuration baseline</title><link href="https://blog.siphos.be/2018/01/structuring-a-configuration-baseline/" rel="alternate"></link><published>2018-01-17T09:10:00+01:00</published><updated>2018-01-17T09:10:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-17:/2018/01/structuring-a-configuration-baseline/</id><summary type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and technology agnostic.&lt;/p&gt;
 &lt;p&gt;If you haven't read the blog post on &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;documenting configuration changes&lt;/a&gt;, it might be a good idea to do so as it declares the scope of configuration baselines and why I think XCCDF is a good match for this.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;A good configuration baseline has a readable structure that allows all stakeholders to quickly see if the baseline is complete, as well as find a particular setting regardless of the technology. In this blog post, I'll cover a possible structure of the baseline which attempts to be sufficiently complete and technology agnostic.&lt;/p&gt;
 &lt;p&gt;If you haven't read the blog post on &lt;a href="https://blog.siphos.be/2018/01/documenting-configuration-changes/"&gt;documenting configuration changes&lt;/a&gt;, it might be a good idea to do so as it declares the scope of configuration baselines and why I think XCCDF is a good match for this.&lt;/p&gt;
@@ -373,7 +384,7 @@ Result  pass
 &lt;p&gt;The regular data management related settings look into both the end user data handling (as far as this is infrastructurally related - this isn't meant to become a secure development guide) as well as service-internal data handling. When the technology is meant to handle data (like a database or LDAP) then certain related settings could be both in the service specific settings chapter or in this one. Personally, I tend to prefer that technology-specific and non-reusable settings are in the former, while the data and information handling chapter covers the integration and technology-agnostic data handling.&lt;/p&gt;
 &lt;p&gt;If the service handles sensitive information, it is very likely that additional constraints or requirements were put in place beyond the "traditional" cryptographic requirements. Although such requirements are often implemented on the application level (like tagging the data properly and then, based on the tags, handle specific fine-grained access controls, archival and data retention), more and more technologies provide out-of-the-box (or at least reusable) methods that can be configured.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;An XCCDF template&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;To support the above structure, I've made an &lt;a href="https://blog.siphos.be/static/2018/xccdf-template.xml"&gt;XCCDF template&lt;/a&gt; that might be a good start for documenting the configuration baseline of a technology. It also structures the chapters a bit more with various sections, but those are definitely not mandatory to use as it strongly depends on the technology being documented, the maturity of the organization, etc.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting configuration changes</title><link href="https://blog.siphos.be/2018/01/documenting-configuration-changes/" rel="alternate"></link><published>2018-01-07T21:20:00+01:00</published><updated>2018-01-07T21:20:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-07:/2018/01/documenting-configuration-changes/</id><summary type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very crucial.&lt;/p&gt;
+&lt;p&gt;To support the above structure, I've made an &lt;a href="https://blog.siphos.be/static/2018/xccdf-template.xml"&gt;XCCDF template&lt;/a&gt; that might be a good start for documenting the configuration baseline of a technology. It also structures the chapters a bit more with various sections, but those are definitely not mandatory to use as it strongly depends on the technology being documented, the maturity of the organization, etc.&lt;/p&gt;</content><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Documenting configuration changes</title><link href="https://blog.siphos.be/2018/01/documenting-configuration-changes/" rel="alternate"></link><published>2018-01-07T21:20:00+01:00</published><updated>2018-01-07T21:20:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2018-01-07:/2018/01/documenting-configuration-changes/</id><summary type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very crucial.&lt;/p&gt;
 &lt;p&gt;In this blog post series, I'm going to look into using the &lt;em&gt;Extensible Configuration Checklist Description Format (XCCDF)&lt;/em&gt; as the way to document these. This first post is an introduction to XCCDF functionally, and what I position it for.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;IT teams are continuously under pressure to set up and maintain infrastructure services quickly, efficiently and securely. As an infrastructure architect, my main concerns are related to the manageability of these services and the secure setup. And within those realms, a properly documented configuration setup is in my opinion very crucial.&lt;/p&gt;
 &lt;p&gt;In this blog post series, I'm going to look into using the &lt;em&gt;Extensible Configuration Checklist Description Format (XCCDF)&lt;/em&gt; as the way to document these. This first post is an introduction to XCCDF functionally, and what I position it for.&lt;/p&gt;
@@ -440,7 +451,7 @@ Result  pass
 &lt;p&gt;In the past I've &lt;a href="http://blog.siphos.be/tag/xccdf/"&gt;blogged about XCCDF&lt;/a&gt; already, but that was with a previous blog technology and the migration wasn't as successful as I originally thought. XML snippets were all removed, and I'm too lazy to go back to my backups from 2013 and individually correct blogs.&lt;/p&gt;
 &lt;p&gt;A good resource on XCCDF is the &lt;a href="https://csrc.nist.gov/CSRC/media/Publications/nistir/7275/rev-4/final/documents/nistir-7275r4_updated-march-2012_clean.pdf"&gt;NIST IR-7275 publication (PDF)&lt;/a&gt; which covers the XCCDF standard in much detail.&lt;/p&gt;
 &lt;p&gt;The Center for Internet Security (CISecurity) maintains more than a hundred &lt;a href="https://www.cisecurity.org/cis-benchmarks/"&gt;CIS Benchmarks&lt;/a&gt;, all available for free as PDFs, and are often based on XCCDF (available to subscribed members).&lt;/p&gt;
-&lt;p&gt;In the next blog post, I'll talk about the in-document structure of a good configuration baseline.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Putting OVAL at work</title><link href="https://blog.siphos.be/2013/08/putting-oval-at-work/" rel="alternate"></link><published>2013-08-01T15:01:00+02:00</published><updated>2013-08-01T15:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/putting-oval-at-work/</id><summary type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
+&lt;p&gt;In the next blog post, I'll talk about the in-document structure of a good configuration baseline.&lt;/p&gt;</content><category term="xccdf"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Putting OVAL at work</title><link href="https://blog.siphos.be/2013/08/putting-oval-at-work/" rel="alternate"></link><published>2013-08-01T15:01:00+02:00</published><updated>2013-08-01T15:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/putting-oval-at-work/</id><summary type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
 you might get the feeling of "How does this work". The underlying
 interfaces, like OVAL and XCCDF, might seem a bit daunting to implement.&lt;/p&gt;
 &lt;p&gt;This is correct, but you need to remember that the standards are
@@ -504,4 +515,4 @@ integrate with XCCDF as well. The idea you'll need to focus on then is
 the same as with OVAL: what is your source, how do you store it, you
 need interpreters that can "play" it, and on the reporting side you'll
 need to store the results so you can combine them later in your
-reporting.&lt;/p&gt;</content><category term="Security"></category><category term="baseline"></category><category term="benchmark"></category><category term="oval"></category><category term="security"></category><category term="xccdf"></category></entry></feed>
+reporting.&lt;/p&gt;</content><category term="baseline"></category><category term="benchmark"></category><category term="oval"></category><category term="security"></category><category term="xccdf"></category></entry></feed>

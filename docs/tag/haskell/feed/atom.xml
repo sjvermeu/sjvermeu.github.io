@@ -30,9 +30,10 @@ better working. So I enabled &lt;code&gt;dev-haskell/*&lt;/code&gt; in my
 packages... which also failed. Then I ran &lt;code&gt;haskell-updater&lt;/code&gt; multiple
 times, but that also failed. After a while, I had to run the following
 set of commands (in random order) just to get everything to build fine:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge -u $(qlist -IC dev-haskell) --keep-going
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# emerge -u $(qlist -IC dev-haskell) --keep-going
 ~# for n in $(qlist -IC dev-haskell); do emerge -u $n; done
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;It took quite some reruns, but it finally got through. I never thought I
 had this much Haskell-related packages installed on my system (89
@@ -62,4 +63,4 @@ is theming, as well as seeing how good the migration goes (it isn't
 because there are no errors otherwise that the migration is successful
 of course) so that I know how much manual labor I have to take into
 consideration when I finally switch (right now, I'm still running
-Wordpress).&lt;/p&gt;</content><category term="Gentoo"></category><category term="blog"></category><category term="Gentoo"></category><category term="haskell"></category><category term="pandoc"></category><category term="pelican"></category><category term="wordpress"></category></entry></feed>
+Wordpress).&lt;/p&gt;</content><category term="blog"></category><category term="Gentoo"></category><category term="haskell"></category><category term="pandoc"></category><category term="pelican"></category><category term="wordpress"></category></entry></feed>

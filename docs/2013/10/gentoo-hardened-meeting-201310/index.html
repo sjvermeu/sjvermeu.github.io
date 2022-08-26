@@ -267,10 +267,11 @@ It seems to be used for multiple, exclusive things, like limiting builds
 on PaX kernels or limiting run-time behavior on PaX kernels. To build
 Gentoo images, developers need to set <code>pax_kernel</code> on some packages and
 disable it on others in order for the image to build properly.</p>
-<div class="highlight"><pre><span></span><code>&lt;@blueness&gt; USE=pax_kernel in the case of userland should apply patches etc, that fix the code
+<div class="highlight"><pre><span></span>&lt;@blueness&gt; USE=pax_kernel in the case of userland should apply patches etc, that fix the code
             so that it won&#39;t trip pax protection eg mprotect
 &lt;@blueness&gt; in the case of kernel modules, it can&#39;t mean that obviously!
-</code></pre></div>
+</pre></div>
+
 
 <p>One of the mentioned problems is that some ebuilds only enable pax
 markings when <code>pax_kernel</code> is set. However, that shouldn't be done

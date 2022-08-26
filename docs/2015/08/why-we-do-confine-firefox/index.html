@@ -263,18 +263,20 @@ pictures are marked as <code>xdg_pictures_home_t</code>, etc.</p>
 <p>With those types defined, we grant the regular user domains full access to
 those types, but start removing access to user content from applications. Rules
 such as the following are commented out or removed from the policies:</p>
-<div class="highlight"><pre><span></span><code># userdom_manage_user_home_content_dirs(mozilla_t)
+<div class="highlight"><pre><span></span># userdom_manage_user_home_content_dirs(mozilla_t)
 # userdom_manage_user_home_content_files(mozilla_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>Instead, we add in a call to a template we have defined ourselves:</p>
-<div class="highlight"><pre><span></span><code>userdom_user_content_access_template(mozilla, { mozilla_t mozilla_plugin_t })
-</code></pre></div>
+<div class="highlight"><pre><span></span>userdom_user_content_access_template(mozilla, { mozilla_t mozilla_plugin_t })
+</pre></div>
+
 
 <p>This call makes access to user content optional through SELinux booleans. For
 instance, for the <code>mozilla_t</code> domain (which is used for Firefox), the following
 booleans are created:</p>
-<div class="highlight"><pre><span></span><code># Read generic (user_home_t) user content
+<div class="highlight"><pre><span></span># Read generic (user_home_t) user content
 mozilla_read_generic_user_content       -&gt;      true
 
 # Read all user content
@@ -285,7 +287,8 @@ mozilla_manage_generic_user_content     -&gt;      false
 
 # Manage all user content
 mozilla_manage_all_user_content         -&gt;      false
-</code></pre></div>
+</pre></div>
+
 
 <p>As you can see, the default setting is that Firefox can read user content, but
 only non-specific types. So <code>ssh_home_t</code>, which is used for the SSH related

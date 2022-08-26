@@ -234,10 +234,11 @@
             <p>Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:</p>
-<div class="highlight"><pre><span></span><code>audit: audit_backlog=321 &gt; audit_backlog_limit=320
+<div class="highlight"><pre><span></span>audit: audit_backlog=321 &gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-</code></pre></div>
+</pre></div>
+
 
 <!-- PELICAN_END_SUMMMARY -->
 
@@ -247,8 +248,9 @@ might be either ignored, sent through the kernel logging infrastructure
 or even have the system panic. And if the messages are sent to the
 kernel log then they might show up, but even that log has its
 limitations, which can lead to output similar to the following:</p>
-<div class="highlight"><pre><span></span><code>__ratelimit: 53 callbacks suppressed
-</code></pre></div>
+<div class="highlight"><pre><span></span>__ratelimit: 53 callbacks suppressed
+</pre></div>
+
 
 <p>In this post, I want to give some pointers in configuring the audit
 subsystem as well as understand these messages...</p>
@@ -256,10 +258,11 @@ subsystem as well as understand these messages...</p>
 <p>If you take a look at the audit processes running on the system, you'll
 notice that (assuming Linux auditing is used of course) two processes
 are running:</p>
-<div class="highlight"><pre><span></span><code># ps -ef | grep audit
+<div class="highlight"><pre><span></span># ps -ef | grep audit
 root      1483     1  0 10:11 ?        00:00:00 /sbin/auditd
 root      1486     2  0 10:11 ?        00:00:00 [kauditd]
-</code></pre></div>
+</pre></div>
+
 
 <p>The <code>/sbin/auditd</code> daemon is the user-space audit daemon. It <a href="http://man7.org/linux/man-pages/man3/audit_open.3.html">registers
 itself</a> with the
@@ -301,9 +304,10 @@ chapter</a>
 worth reading, but many others exist as well.</p>
 <p>There is a useful command related to the subject of the audit backlog
 queue. It queries the audit subsystem for its current status:</p>
-<div class="highlight"><pre><span></span><code># auditctl -s
+<div class="highlight"><pre><span></span># auditctl -s
 AUDIT_STATUS: enabled=1 flag=1 pid=1483 rate_limit=0 backlog_limit=8192 lost=3 backlog=0
-</code></pre></div>
+</pre></div>
+
 
 <p>The command displays not only the audit state (enabled or not) but also
 the settings for rate limits (on the audit backlog) and backlog limit.
@@ -319,10 +323,11 @@ but is usually left at the default (which is 1, being to switch to the
 kernel log subsystem).</p>
 <p>Before that is done, the message is displayed which reveals the cause of
 the failure handling:</p>
-<div class="highlight"><pre><span></span><code>audit: audit_backlog=321 &gt; audit_backlog_limit=320
+<div class="highlight"><pre><span></span>audit: audit_backlog=321 &gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-</code></pre></div>
+</pre></div>
+
 
 <p>In this case, the backlog queue was set to contain at most 320 entries
 (which is low for a production system) and more messages were being
@@ -335,17 +340,19 @@ limit exceeded" if that was the limitation that was triggered.</p>
 the system, then the "dropped" messages are sent to the kernel log
 subsystem. The calls however are also governed through a configurable
 limitation: it uses a rate limit which can be set through <code>sysctl</code>:</p>
-<div class="highlight"><pre><span></span><code># sysctl -a | grep kernel.printk_rate
+<div class="highlight"><pre><span></span># sysctl -a | grep kernel.printk_rate
 kernel.printk_ratelimit = 5
 kernel.printk_ratelimit_burst = 10
-</code></pre></div>
+</pre></div>
+
 
 <p>In the above example, this system allows one message every 5 seconds,
 but does allow a burst of up to 10 messages at once. When the rate
 limitation kicks in, then the kernel will log (at most one per second)
 the number of suppressed events:</p>
-<div class="highlight"><pre><span></span><code>[40676.545099] __ratelimit: 246 callbacks suppressed
-</code></pre></div>
+<div class="highlight"><pre><span></span>[40676.545099] __ratelimit: 246 callbacks suppressed
+</pre></div>
+
 
 <p>Although this limit is kernel-wide, not all kernel log events are
 governed through it. It is the caller subsystem (in our case, the audit

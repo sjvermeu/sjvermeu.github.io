@@ -8,13 +8,14 @@ conditionally granted based on the value of a &lt;em&gt;SELinux boolean&lt;/em&g
 &lt;p&gt;To find the list of SELinux booleans that are available on your system,
 you can use the &lt;strong&gt;getsebool -a&lt;/strong&gt; method, or &lt;strong&gt;semanage boolean -l&lt;/strong&gt;. The
 latter also displays the description of the boolean:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage boolean -l | grep user_ping
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage boolean -l | grep user_ping
 user_ping                      (on   ,   on)  Control users use of ping and traceroute
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;You can easily query the SELinux policy to see what this boolean
 triggers:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# sesearch -b user_ping -A -C
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# sesearch -b user_ping -A -C
 Found 22 semantic av rules:
 ET allow ping_t staff_t : process sigchld ; [ user_ping ]
 ET allow ping_t staff_t : fd use ; [ user_ping ]
@@ -22,16 +23,18 @@ ET allow ping_t staff_t : fifo_file { ioctl read write getattr lock append open 
 ET allow ping_t user_t : process sigchld ; [ user_ping ]
 ET allow ping_t user_t : fd use ; [ user_ping ]
 ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;However, often you want to know if a particular access is allowed and,
 if it is conditionally allowed, which boolean enables it. In the case of
 user ping, we want to know if (and when) a user domain (&lt;code&gt;user_t&lt;/code&gt;) is
 allowed to transition to the ping domain (&lt;code&gt;ping_t&lt;/code&gt;):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# sesearch -s user_t -t ping_t -c process -p transition -ACTS
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# sesearch -s user_t -t ping_t -c process -p transition -ACTS
 Found 1 semantic av rules:
 ET allow user_t ping_t : process transition ; [ user_ping ]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So there you go - it is allowed if the &lt;code&gt;user_ping&lt;/code&gt; SELinux boolean is
-enabled.&lt;/p&gt;</content><category term="SELinux"></category><category term="boolean"></category><category term="query"></category><category term="selinux"></category><category term="sesearch"></category></entry></feed>
+enabled.&lt;/p&gt;</content><category term="boolean"></category><category term="query"></category><category term="selinux"></category><category term="sesearch"></category></entry></feed>

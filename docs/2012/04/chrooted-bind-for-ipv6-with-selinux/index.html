@@ -236,28 +236,32 @@ help with DNS troubleshooting. Then we're editing /etc/conf.d/named to
 set the CHROOT variable. I also set CHROOT_NOMOUNT so that Gentoo
 doesn't bind-mount the information in the chroot but instead uses the
 files in the chroot.</p>
-<div class="highlight"><pre><span></span><code>CHROOT=&quot;/var/named/chroot&quot;
+<div class="highlight"><pre><span></span>CHROOT=&quot;/var/named/chroot&quot;
 CHROOT_NOMOUNT=&quot;1&quot;
-</code></pre></div>
+</pre></div>
+
 
 <p>Now we need to either temporarily add some privileges in SELinux, or run
 the portage_t domain in permissive mode. If you go for privileges, then
 add the following:</p>
-<div class="highlight"><pre><span></span><code>allow portage_t var_t:chr_file { create getattr setattr };
-</code></pre></div>
+<div class="highlight"><pre><span></span>allow portage_t var_t:chr_file { create getattr setattr };
+</pre></div>
+
 
 <p>If you however want to temporarily run the portage_t domain in
 permissive mode, do that as follows:</p>
-<div class="highlight"><pre><span></span><code>~# semanage permissive -a portage_t
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# semanage permissive -a portage_t
+</pre></div>
+
 
 <p>We are doing this because we are now going to ask the BIND ebuild to
 prepare the chroot for us. Doing so however requires portage to work on
 our live file system (and not in the regular "sandbox" mode). SELinux
 however forces portage in the portage_t domain and only gives it the
 privileges it needs for building and installing software.</p>
-<div class="highlight"><pre><span></span><code>~# emerge --config bind
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# emerge --config bind
+</pre></div>
+
 
 <p>When done, remove the previous SELinux allow rules again (or set the
 portage_t domain back in enforcing mode, through <strong>semanage permissive
@@ -265,12 +269,13 @@ portage_t domain back in enforcing mode, through <strong>semanage permissive
 default, all files are labeled by SELinux as var_t in that location
 because it isn't aware that it needs to see /var/named/chroot as a
 "root" location.</p>
-<div class="highlight"><pre><span></span><code>~# setfiles -r /var/named/chroot /etc/selinux/strict/contexts/files/file_contexts /var/named/chroot
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# setfiles -r /var/named/chroot /etc/selinux/strict/contexts/files/file_contexts /var/named/chroot
+</pre></div>
+
 
 <p>So far so good. Now let's create a simple named.conf file (in
 /var/named/chroot/etc/bind):</p>
-<div class="highlight"><pre><span></span><code>options {
+<div class="highlight"><pre><span></span>options {
   directory &quot;/var/bind&quot;;
   pid-file &quot;/var/run/named/named.pid&quot;;
   statistics-file &quot;/var/run/named/named.stats&quot;;
@@ -291,12 +296,13 @@ view &quot;local&quot; {
   zone &quot;genfic.com&quot; { type master; file &quot;pri/com.genfic&quot;; };
   zone &quot;1.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa&quot; { type master; file &quot;pri/inv.com.genfic&quot;; };
 };
-</code></pre></div>
+</pre></div>
+
 
 <p>The zone files referenced in the configuration file are located in
 /var/named/chroot/var/bind (in a subdirectory called pri - which I use
 for "primary"). The regular one would look similar to this:</p>
-<div class="highlight"><pre><span></span><code>$TTL 1h ;
+<div class="highlight"><pre><span></span>$TTL 1h ;
 $ORIGIN genfic.com.
 @       IN      SOA     ns.genfic.com. ns.genfic.com. (
                         2012041101
@@ -317,10 +323,11 @@ www             IN      CNAME   genfic.com.;
 mail            IN      AAAA    2001:db8:81:21::b0:0738:8ad5;
 mail2           IN      AAAA    2001:db8:81:22::50:5e9f:e569;
 ; (...)
-</code></pre></div>
+</pre></div>
+
 
 <p>while the one for reverse lookups looks like so:</p>
-<div class="highlight"><pre><span></span><code>$TTL 1h ;
+<div class="highlight"><pre><span></span>$TTL 1h ;
 @       IN      SOA     1.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa ns.genfic.com. (
                         2012041101
                         1d
@@ -336,26 +343,30 @@ $ORIGIN 1.8.0.0.8.b.d.0.1.0.0.2.ip6.arpa.
 1.e.f.5.d.a.8.9.c.a.0.0.0.0.0.0.1.2.0.0         IN      PTR     ns.genfic.com.
 8.d.3.e.1.0.b.6.e.a.0.0.0.0.0.0.2.2.0.0         IN      PTR     ns2.genfic.com.
 ; (...)
-</code></pre></div>
+</pre></div>
+
 
 <p>We can now start the init script:</p>
-<div class="highlight"><pre><span></span><code>~# rc-service named start
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# rc-service named start
+</pre></div>
+
 
 <p>On the slave, don't set the allow-transfer directive and set its type to
 "slave". In each zone, you will need to tell where the master is:</p>
-<div class="highlight"><pre><span></span><code>zone &quot;genfic.com&quot; {
+<div class="highlight"><pre><span></span>zone &quot;genfic.com&quot; {
   type slave;
   masters { 2001:db8:81:21::ac:98ad:5fe1; }
   file &quot;sec/com.genfic&quot;;
 };
-</code></pre></div>
+</pre></div>
+
 
 <p>By default, the SELinux policy for BIND does not allow BIND to write
 stuff in its directories. On the slave system, you will need to change
 this. A SELinux boolean here does the trick:</p>
-<div class="highlight"><pre><span></span><code>~# setsebool -P named_write_master_zones on;
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# setsebool -P named_write_master_zones on;
+</pre></div>
+
 
 <p>There ya go ;-) Okay, all very condensely written, but it should give
 some feedback on how to proceed. I'm adding this information to the new

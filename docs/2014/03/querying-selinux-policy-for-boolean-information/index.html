@@ -236,13 +236,14 @@ conditionally granted based on the value of a <em>SELinux boolean</em>.</p>
 <p>To find the list of SELinux booleans that are available on your system,
 you can use the <strong>getsebool -a</strong> method, or <strong>semanage boolean -l</strong>. The
 latter also displays the description of the boolean:</p>
-<div class="highlight"><pre><span></span><code>~# semanage boolean -l | grep user_ping
+<div class="highlight"><pre><span></span>~# semanage boolean -l | grep user_ping
 user_ping                      (on   ,   on)  Control users use of ping and traceroute
-</code></pre></div>
+</pre></div>
+
 
 <p>You can easily query the SELinux policy to see what this boolean
 triggers:</p>
-<div class="highlight"><pre><span></span><code>~# sesearch -b user_ping -A -C
+<div class="highlight"><pre><span></span>~# sesearch -b user_ping -A -C
 Found 22 semantic av rules:
 ET allow ping_t staff_t : process sigchld ; [ user_ping ]
 ET allow ping_t staff_t : fd use ; [ user_ping ]
@@ -250,16 +251,18 @@ ET allow ping_t staff_t : fifo_file { ioctl read write getattr lock append open 
 ET allow ping_t user_t : process sigchld ; [ user_ping ]
 ET allow ping_t user_t : fd use ; [ user_ping ]
 ...
-</code></pre></div>
+</pre></div>
+
 
 <p>However, often you want to know if a particular access is allowed and,
 if it is conditionally allowed, which boolean enables it. In the case of
 user ping, we want to know if (and when) a user domain (<code>user_t</code>) is
 allowed to transition to the ping domain (<code>ping_t</code>):</p>
-<div class="highlight"><pre><span></span><code>~# sesearch -s user_t -t ping_t -c process -p transition -ACTS
+<div class="highlight"><pre><span></span>~# sesearch -s user_t -t ping_t -c process -p transition -ACTS
 Found 1 semantic av rules:
 ET allow user_t ping_t : process transition ; [ user_ping ]
-</code></pre></div>
+</pre></div>
+
 
 <p>So there you go - it is allowed if the <code>user_ping</code> SELinux boolean is
 enabled.</p>

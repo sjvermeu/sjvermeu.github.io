@@ -302,14 +302,14 @@ in Gentoo thanks to the efforts of Jason Zaman.</p>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 12 October 2016</span></span>
                 <p><p>After updating my workstation, I noticed that keychain reported that it could
 not load one of the GnuPG keys I passed it on.</p>
-<div class="highlight"><pre><span></span><code> * keychain 2.8.1 ~ http://www.funtoo.org
+<div class="highlight"><pre><span></span> * keychain 2.8.1 ~ http://www.funtoo.org
  * Found existing ssh-agent: 2167
  * Found existing gpg-agent: 2194
  * Warning: can't find 0xB7BD4B0DE76AC6A4; skipping
  * Known ssh key: /home/swift/.ssh/id_dsa
  * Known ssh key: /home/swift/.ssh/id_ed25519
  * Known gpg key: 0x22899E947878B0CE
-</code></pre></div>
+</pre></div>
 <p>I did not modify my key store at all, so what happened?</p>
 </p>
                 <div class="flex-row mx-auto mt-3 small">
@@ -409,19 +409,19 @@ similarities between the two.</p>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 27 March 2016</span></span>
                 <p><p>After reorganizing my salt configuration, I received the following error:</p>
-<div class="highlight"><pre><span></span><code>[ERROR   ] Template was specified incorrectly: False
-</code></pre></div>
+<div class="highlight"><pre><span></span>[ERROR   ] Template was specified incorrectly: False
+</pre></div>
 <p>Enabling some debugging on the command gave me a slight pointer why this occurred:</p>
-<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
+<div class="highlight"><pre><span></span>[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
 [DEBUG   ] No contents loaded for env: testing
 [DEBUG   ] compile template: False
 [ERROR   ] Template was specified incorrectly: False
-</code></pre></div>
+</pre></div>
 <p>I was using a single top file as recommended by Salt, but apparently it was still
 looking for top files in the other environments.</p>
 <p>Yet, if I split the top files across the environments, I got the following warning:</p>
-<div class="highlight"><pre><span></span><code>[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
-</code></pre></div>
+<div class="highlight"><pre><span></span>[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+</pre></div>
 <p>So what's all this about?</p>
 </p>
                 <div class="flex-row mx-auto mt-3 small">

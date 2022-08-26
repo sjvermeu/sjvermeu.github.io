@@ -236,10 +236,11 @@ that, once someone sees one of your passwords, he can deduce all
 passwords.</p>
 <p>An example would be the above-given algorithm, which yields for the
 following sites:</p>
-<div class="highlight"><pre><span></span><code>bugs.gentoo.org, user foobar, password raboofbgo
+<div class="highlight"><pre><span></span>bugs.gentoo.org, user foobar, password raboofbgo
 forums.gentoo.org, user bleh, password helbfgo
 www.sourceforge.net, user mynick, password kcinymwsn
-</code></pre></div>
+</pre></div>
+
 
 <p>I'm sure you can find the password for other sites I would show you, so
 this kind of passwords are not that secure.</p>
@@ -249,7 +250,7 @@ over again. With the tool you can make your mneumonic a bit more secure
 as it uses hashfunctions to create a pseudorandom sequence and a
 character mapping to convert the hash result into a possible password.</p>
 <p>An example for the above sites / mneumonic would yield:</p>
-<div class="highlight"><pre><span></span><code>For bugs.gentoo.org, user foobar
+<div class="highlight"><pre><span></span>For bugs.gentoo.org, user foobar
 $ echo raboofbgo | sha1sum | hex2passwd -n 8
 XqXgOYce
 For forums.gentoo.org, user bleh
@@ -258,7 +259,8 @@ l8U.tdzg
 For www.sourceforge.net, user mynick
 $ echo kcinymwsn | sha1sum | hex2passwd -n 8
 70z4Bu3k
-</code></pre></div>
+</pre></div>
+
 
 <p>Of course, the tool offers some more flexibility, such as choosing your
 own character maps or scrambling the maps before you use them. In any

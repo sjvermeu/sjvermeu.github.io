@@ -2,16 +2,18 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - umount</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/umount/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2013-08-23T13:46:00+02:00</updated><entry><title>Umounting IPv6 NFS(v4) mounts</title><link href="https://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/" rel="alternate"></link><published>2013-08-23T13:46:00+02:00</published><updated>2013-08-23T13:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/umounting-ipv6-nfsv4-mounts/</id><summary type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
 trying to umount the share, it said that it couldn't find the mount in
 &lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
 trying to umount the share, it said that it couldn't find the mount in
 &lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and the umount works
-correctly again.&lt;/p&gt;</content><category term="Misc"></category><category term="ip6"></category><category term="ipv6"></category><category term="linux"></category><category term="nfs4"></category><category term="nfsv4"></category><category term="umount"></category></entry></feed>
+correctly again.&lt;/p&gt;</content><category term="ip6"></category><category term="ipv6"></category><category term="linux"></category><category term="nfs4"></category><category term="nfsv4"></category><category term="umount"></category></entry></feed>

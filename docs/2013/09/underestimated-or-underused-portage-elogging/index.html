@@ -248,7 +248,7 @@ about something useful or important (usually <code>elog</code>), a potential iss
 that might occur (<code>ewarn</code>) or even a problem that was found (<code>eerror</code>).
 Let's look at a snippet of the <code>app-admin/eselect-postgresql-1.0.10</code>
 package:</p>
-<div class="highlight"><pre><span></span><code>pkg_postinst() {
+<div class="highlight"><pre><span></span>pkg_postinst() {
     ewarn &quot;If you are updating from app-admin/eselect-postgresql-0.4 or older, run:&quot;
     ewarn
     ewarn &quot;    eselect postgresql update&quot;
@@ -258,7 +258,8 @@ package:</p>
     elog &quot;    eselect postgresql list&quot;
     elog &quot;    eselect postgresql set &quot;
 }
-</code></pre></div>
+</pre></div>
+
 
 <p>Here, the developer warns the administrator that, if an upgrade of the
 package from version 0.4 or older occurred, an additional action needs
@@ -266,16 +267,17 @@ to be taken. For others, he informs the administrators how to mark the
 proper active PostgreSQL slot (using the <code>elog</code> methods).</p>
 <p>Portage will save this information by default in <code>/var/log/portage/elog</code>
 as separate files for each deployment:</p>
-<div class="highlight"><pre><span></span><code>~$ ls /var/log/portage/elog/*eselect-postgres*
+<div class="highlight"><pre><span></span>~$ ls /var/log/portage/elog/*eselect-postgres*
 /var/log/portage/elog/app-admin:eselect-postgresql-1.0.10:20130818-184756.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-131631.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-200851.log
-</code></pre></div>
+</pre></div>
+
 
 <p>If <code>FEATURES="split-elog"</code> is set in your <code>make.conf</code> file, then the
 elog files will be stored in separate category subdirectories. Below is
 the content of such a single file:</p>
-<div class="highlight"><pre><span></span><code>~$ cat /var/log/portage/elog/app-admin\:eselect-postgresql-1.0.10\:20130818-184756.log
+<div class="highlight"><pre><span></span>~$ cat /var/log/portage/elog/app-admin\:eselect-postgresql-1.0.10\:20130818-184756.log
 INFO: setup
 Package:    app-admin/eselect-postgresql-1.0.10
 Repository: gentoo
@@ -292,7 +294,8 @@ LOG: postinst
 You should set your desired PostgreSQL slot:
     eselect postgresql list
     eselect postgresql set &lt;slot&gt;
-</code></pre></div>
+</pre></div>
+
 
 <p>In the file, package information is provided, and each set of logging
 paragraphs is accompanied with information where in the build process
@@ -310,11 +313,12 @@ build logs? In that case, you need to define <code>PORT_LOGDIR</code> in your
 <code>make.conf</code> file. This variable has to point to a location where Portage
 (which usually runs as the <code>portage</code> Linux user) has write access to and
 where it is allowed to store the build logs:</p>
-<div class="highlight"><pre><span></span><code>~$ grep PORT_LOGDIR /etc/portage/make.conf 
+<div class="highlight"><pre><span></span>~$ grep PORT_LOGDIR /etc/portage/make.conf 
 PORT_LOGDIR=&quot;/var/log/portage&quot;
 ~$ ls -ldZ /var/log/portage/
 drwxrwsr-x. 3 portage portage system_u:object_r:portage_log_t 679936 Sep 24 13:12 /var/log/portage/
-</code></pre></div>
+</pre></div>
+
 
 <p>With the variable set, build logs will be provided for each emerge (and
 unmerge) operation of the package. These logs contain everything shown

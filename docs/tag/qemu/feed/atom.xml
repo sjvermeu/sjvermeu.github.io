@@ -29,15 +29,17 @@ or a &lt;a href="https://forums.gentoo.org/viewtopic-t-822672.html"&gt;related t
 Forums.&lt;/p&gt;
 &lt;p&gt;Luckily, storage is cheap (even SSD disks), so I quickly converted the qcow2 images
 into raw images:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ qemu-img convert root.qcow2 root.raw
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ qemu-img convert root.qcow2 root.raw
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With the image now available in raw format, I can use the loop devices to mount
 the image(s) on my system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# losetup /dev/loop0 root.raw
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# losetup /dev/loop0 root.raw
 ~# kpartx -a /dev/loop0
 ~# mount /dev/mapper/loop0p1 /mnt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The &lt;code&gt;kpartx&lt;/code&gt; command will detect the partitions and ensure that those are
 available: the first partition becomes available at &lt;code&gt;/dev/loop0p1&lt;/code&gt;, the
@@ -46,22 +48,25 @@ second &lt;code&gt;/dev/loop0p2&lt;/code&gt; and so forth.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Placing a new password hash in the shadow file&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A google search quickly revealed that the following command generates
 a shadow-compatible hash for a password:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ openssl passwd -1 MyMightyPassword
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ openssl passwd -1 MyMightyPassword
 $1$BHbMVz9i$qYHmULtXIY3dqZkyfW/oO.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The challenge wasn't to find the hash though, but to edit it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# vim /mnt/etc/shadow
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# vim /mnt/etc/shadow
 vim: Permission denied
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The image that I downloaded used SELinux (of course), which meant that the &lt;code&gt;shadow&lt;/code&gt;
 file was labeled with &lt;code&gt;shadow_t&lt;/code&gt; which I am not allowed to access. And I didn't
 want to put SELinux in permissive mode just for this (sometimes I /do/ have some
 time left, apparently).&lt;/p&gt;
 &lt;p&gt;So I remounted the image, but now with the &lt;code&gt;context=&lt;/code&gt; mount option, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o context=&amp;quot;system_u:object_r:var_t:s0: /dev/loop0p1 /mnt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# mount -o context=&amp;quot;system_u:object_r:var_t:s0: /dev/loop0p1 /mnt
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now all files are labeled with &lt;code&gt;var_t&lt;/code&gt; which I do have permissions to edit. But
 I also need to take care that the files that I edited get the proper label again.
@@ -70,14 +75,15 @@ file in the root of the partition. Red Hat based distributions will pick this up
 and force a file system relabeling operation.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Unmounting the file system&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;After making the changes, I can now unmount the file system again:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# umount /mnt
 ~# kpart -d /dev/loop0
 ~# losetup -d /dev/loop0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With that done, I had root access to the image and could start testing out
 my own set of commands.&lt;/p&gt;
-&lt;p&gt;It did trigger my interest in the cloud-init setup though...&lt;/p&gt;</content><category term="Free-Software"></category><category term="qemu"></category></entry><entry><title>Qemu-KVM monitor tips and tricks</title><link href="https://blog.siphos.be/2013/04/qemu-kvm-monitor-tips-and-tricks/" rel="alternate"></link><published>2013-04-30T03:50:00+02:00</published><updated>2013-04-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-30:/2013/04/qemu-kvm-monitor-tips-and-tricks/</id><summary type="html">&lt;p&gt;When running KVM guests, the &lt;a href="https://en.wikibooks.org/wiki/QEMU/Monitor"&gt;Qemu/KVM
+&lt;p&gt;It did trigger my interest in the cloud-init setup though...&lt;/p&gt;</content><category term="qemu"></category></entry><entry><title>Qemu-KVM monitor tips and tricks</title><link href="https://blog.siphos.be/2013/04/qemu-kvm-monitor-tips-and-tricks/" rel="alternate"></link><published>2013-04-30T03:50:00+02:00</published><updated>2013-04-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-30:/2013/04/qemu-kvm-monitor-tips-and-tricks/</id><summary type="html">&lt;p&gt;When running KVM guests, the &lt;a href="https://en.wikibooks.org/wiki/QEMU/Monitor"&gt;Qemu/KVM
 monitor&lt;/a&gt; is a nice interface
 to interact with the VM and do specific maintenance tasks on. If you run
 the KVM guests with VNC, then you can get to this monitor through
@@ -95,7 +101,7 @@ handle the VMs.&lt;/p&gt;
 can enable it on the monitor using &lt;strong&gt;change vnc&lt;/strong&gt; while getting details
 is done using &lt;strong&gt;info vnc&lt;/strong&gt;. To disable VNC again, use &lt;strong&gt;change vnc
 none&lt;/strong&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) info vnc
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(qemu) info vnc
 Server: disabled
 (qemu) change vnc 127.0.0.1:20
 (qemu) change vnc password
@@ -105,7 +111,8 @@ Server:
      address: 127.0.0.1:5920
         auth: vnc
 Client: none
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Similarly, if you need to enable remote debugging, you can use the
 &lt;strong&gt;gdbserver&lt;/strong&gt; option.&lt;/p&gt;
@@ -116,13 +123,14 @@ enter &lt;strong&gt;info&lt;/strong&gt; to get an overview of all supported comm
 &lt;p&gt;To easily manage block devices, you can see the current state of devices
 using &lt;strong&gt;info block&lt;/strong&gt; and then use &lt;strong&gt;change &amp;lt;blockdevice&amp;gt;
 &amp;lt;path&amp;gt;&lt;/strong&gt; to update it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) info block
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(qemu) info block
 virtio0: removable=0 io-status=ok file=/srv/virt/gentoo/hardened2selinux/selinux-base.img ro=0 drv=qcow2 encrypted=0 bps=0 bps_rd=0 bps_wr=0 iops=0 iops_rd=0 iops_wr=0
 ide1-cd0: removable=1 locked=0 tray-open=0 io-status=ok [not inserted]
 floppy0: removable=1 locked=0 tray-open=0 [not inserted]
 sd0: removable=1 locked=0 tray-open=0 [not inserted]
 (qemu) change ide1-cd0 /srv/virt/media/systemrescuecd-x86-2.2.0.iso
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;To powerdown the system, use &lt;strong&gt;system_powerdown&lt;/strong&gt;. If that fails, you
 can use &lt;strong&gt;quit&lt;/strong&gt; to immediately shut down (terminate) the VM. To reset
@@ -134,9 +142,9 @@ migrations&lt;/a&gt; between systems.&lt;/p&gt;
 &lt;strong&gt;loadvm&lt;/strong&gt;. This is interesting when you want to do potentially harmful
 changes on the system and want to easily revert back if things got
 broken.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) savevm 20130419
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(qemu) savevm 20130419
 (qemu) info snapshots
      ID        TAG                 VM SIZE                DATE       VM CLOCK
      1         20130419               224M 2013-04-19 12:05:16   00:00:17.294
 (qemu) loadvm 20130419
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Free-Software"></category><category term="kvm"></category><category term="monitor"></category><category term="qemu"></category></entry></feed>
+&lt;/pre&gt;&lt;/div&gt;</content><category term="kvm"></category><category term="monitor"></category><category term="qemu"></category></entry></feed>

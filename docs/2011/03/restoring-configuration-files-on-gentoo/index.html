@@ -232,17 +232,18 @@ actually restore configuration files with it.</p>
 <code>/etc/config-archive</code>. To restore a configuration file to a previous
 version, first find out what versions there are in the version control
 system:</p>
-<div class="highlight"><pre><span></span><code>~$ rlog -zLT /etc/config-archive/etc/protocols,v
+<div class="highlight"><pre><span></span>~$ rlog -zLT /etc/config-archive/etc/protocols,v
 ...
-</code></pre></div>
+</pre></div>
+
 
 <p>The output of the <strong>rlog</strong> command should allow you to find the revision
 you are interested in. The -zLT option displays date/time in the current
 timezone (instead of UTC). Once you have found the revision you are
 looking for, restore the file by redirecting the output of the <strong>co</strong>
 command:</p>
-<div class="highlight"><pre><span></span><code>~$ co -p -r1.1.1 /etc/config-archive/etc/protocols,v &gt; /etc/protocols
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ co -p -r1.1.1 /etc/config-archive/etc/protocols,v &gt; /etc/protocols
+</pre></div>
         </div>
 
         <!-- Neighbors -->

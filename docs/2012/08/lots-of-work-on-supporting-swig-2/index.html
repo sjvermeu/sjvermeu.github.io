@@ -246,7 +246,7 @@ build again).</p>
 looks like swig-1 supported the C shorthand notation for structures
 whereas swig-2 sees the name of the structure as its class (note that I
 just got it to build, I still need to see if things still work):</p>
-<div class="highlight"><pre><span></span><code>  typedef struct apol_ip {...} apol_ip_t;
+<div class="highlight"><pre><span></span>  typedef struct apol_ip {...} apol_ip_t;
   %extend apol_ip_t {
 -   apol_ip_t(const char * str) {
 +   apol_ip(const char * str) {
@@ -255,7 +255,8 @@ just got it to build, I still need to see if things still work):</p>
 +   ~apol_ip() {
   ...
 }
-</code></pre></div>
+</pre></div>
+
 
 <p>Without this, I got "Illegal destructor" errors (not related to the
 illegal destructor fix made to swig itself) and "Method apol_ip_t
@@ -269,7 +270,7 @@ method <code>get_size</code> in the swig interface, generate a function called
 function, giving an error like "Conflicting types for
 apol_vector_get_size" followed by a "previous declaration was here:".</p>
 <p>Swig supports the <code>%rename</code> method for this, so I had to do:</p>
-<div class="highlight"><pre><span></span><code>  typedef struct apol_vector {} apol_vector_t;
+<div class="highlight"><pre><span></span>  typedef struct apol_vector {} apol_vector_t;
 + %rename(apol_vector_get_size) apol_vector_wrap_get_size;
 + %rename(apol_vector_get_capacity) apol_vector_wrap_get_capacity;
 ...
@@ -278,7 +279,8 @@ apol_vector_get_size" followed by a "previous declaration was here:".</p>
 ...
 - size_t get_capacity() {
 + size_t wrap_get_capacity() {
-</code></pre></div>
+</pre></div>
+
 
 <p>The patch that I had to add to finally get it to build again is 7019
 lines (229 Kbyte). Too much manual labour. Now let's hope this really

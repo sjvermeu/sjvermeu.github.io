@@ -242,7 +242,7 @@ all, we define a <em>role attribute</em> called <code>incrontab_roles</code>. Ev
 that gets this attribute assigned will be able to transition to the
 <code>incrontab_t</code> domain.</p>
 <p>We can accomplish this by editing the <code>incron.te</code> file:</p>
-<div class="highlight"><pre><span></span><code>policy_module(incron, 0.2)
+<div class="highlight"><pre><span></span>policy_module(incron, 0.2)
 
 # Declare the incrontab_roles attribute
 attribute_role incrontab_roles;
@@ -253,12 +253,13 @@ type incrontab_exec_t;
 application_domain(incrontab_t, incrontab_exec_t)
 # Allow incrontab_t for all incrontab_roles 
 role incrontab_roles types incrontab_t;
-</code></pre></div>
+</pre></div>
+
 
 <p>Next, we need something where we can allow user domains to call
 incrontab. This will be done through an interface. Let's look at
 <code>incron.if</code> with one such interface in it: the <em>incron_role</em> interface.</p>
-<div class="highlight"><pre><span></span><code>## inotify-based cron-like daemon
+<div class="highlight"><pre><span></span>## inotify-based cron-like daemon
 
 #########################################
 ## &lt;summary&gt;
@@ -288,7 +289,8 @@ interface(`incron_role&#39;,`
         ps_process_pattern($2, incrontab_t)
         allow $2 incrontab_t:process signal;
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>The comments in the file are somewhat special: if the comments start
 with two hashes (<code>##</code>) then it is taken into account while building the
@@ -301,27 +303,30 @@ Most of the time, you can use <code>signal_perms</code> here but from looking at
 the application we see that the application is setuid root, so we don't
 want to grant too many privileges by default if they are not needed.</p>
 <p>With this interface file created, we can rebuild the module and load it.</p>
-<div class="highlight"><pre><span></span><code># make -f /usr/share/selinux/strict/include/Makefile incron.pp
+<div class="highlight"><pre><span></span># make -f /usr/share/selinux/strict/include/Makefile incron.pp
 # semodule -i incron.pp
-</code></pre></div>
+</pre></div>
+
 
 <p>But how to assign this interface to users? Well, what we want to do is
 something like the following:</p>
-<div class="highlight"><pre><span></span><code>incron_role(user_r, user_t)
-</code></pre></div>
+<div class="highlight"><pre><span></span>incron_role(user_r, user_t)
+</pre></div>
+
 
 <p>When interfaces are part of the policy provided by the distribution, the
 definitions of it are stored in the proper location and you can easily
 add it. For instance, in Gentoo, if you want to allow the <code>user_r</code> role
 and <code>user_t</code> domain the <em>cron_role</em> access (and assuming it doesn't
 have so already), then you can call <strong>selocal</strong> as follows:</p>
-<div class="highlight"><pre><span></span><code># selocal -a &quot;cron_role(user_r, user_t)&quot; -c &quot;Granting user_t cron access&quot; -Lb
-</code></pre></div>
+<div class="highlight"><pre><span></span># selocal -a &quot;cron_role(user_r, user_t)&quot; -c &quot;Granting user_t cron access&quot; -Lb
+</pre></div>
+
 
 <p>However, because the interface is currently not known yet, we need to
 create a second small policy that does this. Create a file (called
 <code>localuser.te</code> or so) with the following content:</p>
-<div class="highlight"><pre><span></span><code>policy_module(localuser, 0.1)
+<div class="highlight"><pre><span></span>policy_module(localuser, 0.1)
 
 gen_require(`
         type user_t;
@@ -329,18 +334,20 @@ gen_require(`
 &#39;)
 
 incron_role(user_r, user_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>Now build the policies and load them. We'll now just build and load all
 the policies in the current directory (which will be the incron and
 localuser ones):</p>
-<div class="highlight"><pre><span></span><code># make -f /usr/share/selinux/strict/include/Makefile
+<div class="highlight"><pre><span></span># make -f /usr/share/selinux/strict/include/Makefile
 # semodule -i *.pp
-</code></pre></div>
+</pre></div>
+
 
 <p>You can now verify that the user is allowed to transition to the
 <code>incrontab_t</code> domain:</p>
-<div class="highlight"><pre><span></span><code># seinfo -ruser_r -x | grep incron
+<div class="highlight"><pre><span></span># seinfo -ruser_r -x | grep incron
          incrontab_t
 # sesearch -s user_t -t incrontab_exec_t -AdCTS
 Found 1 semantic av rules:
@@ -348,7 +355,8 @@ Found 1 semantic av rules:
 
 Found 1 semantic te rules:
    type_transition user_t incrontab_exec_t : process incrontab_t;
-</code></pre></div>
+</pre></div>
+
 
 <p>Great, let's get to our first failure to resolve... in the next post ;-)</p>
         </div>

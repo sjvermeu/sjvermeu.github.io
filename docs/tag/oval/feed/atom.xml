@@ -27,7 +27,7 @@
 &lt;p&gt;&lt;strong&gt;The OVAL XML structure&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The &lt;a href="https://blog.siphos.be/static/2018/oval.xml"&gt;full example&lt;/a&gt; contains a few more entries than those we declare next, in order to be complete. The most important definitions though are documented below.&lt;/p&gt;
 &lt;p&gt;Let's start with the definition. As stated, it will refer to tests that need to match for the definition to be valid.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;definitions&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;definitions&amp;gt;
   &amp;lt;definition id=&amp;quot;oval:com.example.oval:def:1&amp;quot; version=&amp;quot;1&amp;quot; class=&amp;quot;compliance&amp;quot;&amp;gt;
     &amp;lt;metadata&amp;gt;
       &amp;lt;title&amp;gt;libdefaults.forwardable in /etc/krb5.conf must be set to true&amp;lt;/title&amp;gt;
@@ -44,11 +44,12 @@
     &amp;lt;/criteria&amp;gt;
   &amp;lt;/definition&amp;gt;
 &amp;lt;/definitions&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The first thing to keep in mind is the (weird) identification structure. Just like with XCCDF, it is not sufficient to have your own id convention. You need to start an id with &lt;code&gt;oval:&lt;/code&gt; followed by the reverse domain definition (here &lt;code&gt;com.example.oval&lt;/code&gt;), followed by the type (&lt;code&gt;def&lt;/code&gt; for definition) and a sequence number.&lt;/p&gt;
 &lt;p&gt;Also, take a look at the criteria. Here, two tests need to be compliant (hence the &lt;code&gt;AND&lt;/code&gt; operator). However, more complex operations can be done as well. It is even allowed to nest multiple criteria, and refer to previous definitions, like so (taken from the &lt;a href="https://raw.githubusercontent.com/GovReady/ubuntu-scap/master/ssg-rhel6-oval.xml"&gt;ssg-rhel6-oval.xml file&lt;/a&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;criteria comment=&amp;quot;package hal removed or service haldaemon is not configured to start&amp;quot; operator=&amp;quot;OR&amp;quot;&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;criteria comment=&amp;quot;package hal removed or service haldaemon is not configured to start&amp;quot; operator=&amp;quot;OR&amp;quot;&amp;gt;
   &amp;lt;extend_definition comment=&amp;quot;hal removed&amp;quot; definition_ref=&amp;quot;oval:ssg:def:211&amp;quot;/&amp;gt;
   &amp;lt;criteria operator=&amp;quot;AND&amp;quot; comment=&amp;quot;service haldaemon is not configured to start&amp;quot;&amp;gt;
     &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 0&amp;quot; test_ref=&amp;quot;oval:ssg:tst:212&amp;quot;/&amp;gt;
@@ -60,10 +61,11 @@
     &amp;lt;criterion comment=&amp;quot;haldaemon runlevel 6&amp;quot; test_ref=&amp;quot;oval:ssg:tst:218&amp;quot;/&amp;gt;
   &amp;lt;/criteria&amp;gt;
 &amp;lt;/criteria&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Next, let's look at the tests.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;tests&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;tests&amp;gt;
   &amp;lt;unix:file_test id=&amp;quot;oval:com.example.oval:tst:1&amp;quot; version=&amp;quot;1&amp;quot; check_existence=&amp;quot;all_exist&amp;quot; check=&amp;quot;all&amp;quot; comment=&amp;quot;/etc/redhat-release exists&amp;quot;&amp;gt;
     &amp;lt;unix:object object_ref=&amp;quot;oval:com.example.oval:obj:1&amp;quot; /&amp;gt;
   &amp;lt;/unix:file_test&amp;gt;
@@ -72,12 +74,13 @@
     &amp;lt;ind:state state_ref=&amp;quot;oval:com.example.oval:ste:2&amp;quot; /&amp;gt;
   &amp;lt;/ind:textfilecontent54_test&amp;gt;
 &amp;lt;/tests&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;There are two tests defined here. The first test just checks if &lt;code&gt;/etc/redhat-release&lt;/code&gt; exists. If not, then the test will fail and the definition itself will result to false (as in, not compliant). This isn't actually a proper definition, because you want the test to not run when it is on a different platform, but for the sake of example and simplicity, let's keep it as is.&lt;/p&gt;
 &lt;p&gt;The second test will check for the value of the &lt;code&gt;forwardable&lt;/code&gt; key in &lt;code&gt;/etc/krb5.conf&lt;/code&gt;. For it, it refers to an object and a state. The test states that all objects must exist (&lt;code&gt;check_existence="all_exist"&lt;/code&gt;) and that all objects must match the state (&lt;code&gt;check="all"&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;The object definition looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;objects&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;objects&amp;gt;
   &amp;lt;unix:file_object id=&amp;quot;oval:com.example.oval:obj:1&amp;quot; comment=&amp;quot;The /etc/redhat-release file&amp;quot; version=&amp;quot;1&amp;quot;&amp;gt;
     &amp;lt;unix:filepath&amp;gt;/etc/redhat-release&amp;lt;/unix:filepath&amp;gt;
   &amp;lt;/unix:file_object&amp;gt;
@@ -87,28 +90,31 @@
     &amp;lt;ind:instance datatype=&amp;quot;int&amp;quot; operation=&amp;quot;equals&amp;quot;&amp;gt;1&amp;lt;/ind:instance&amp;gt;
   &amp;lt;/ind:textfilecontent54_object&amp;gt;
 &amp;lt;/objects&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The first object is a simple file reference. The second is a text file content object. More specifically, it matches the line inside &lt;code&gt;/etc/krb5.conf&lt;/code&gt; which has &lt;code&gt;forwardable = true&lt;/code&gt; or &lt;code&gt;forwardable = false&lt;/code&gt; in it. An expression is made on it, so that we can refer to the subexpression as part of the test.&lt;/p&gt;
 &lt;p&gt;This test looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;states&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;states&amp;gt;
   &amp;lt;ind:textfilecontent54_state id=&amp;quot;oval:com.example.oval:ste:2&amp;quot; version=&amp;quot;1&amp;quot;&amp;gt;
     &amp;lt;ind:subexpression datatype=&amp;quot;string&amp;quot;&amp;gt;true&amp;lt;/ind:subexpression&amp;gt;
   &amp;lt;/ind:textfilecontent54_state&amp;gt;
 &amp;lt;/states&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This test refers to a subexpression, and wants it to be &lt;code&gt;true&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Testing the checks with Open-SCAP&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The Open-SCAP tool is able to test OVAL statements directly. For instance, with the above definition in a file called &lt;code&gt;oval.xml&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap oval eval --results oval-results.xml oval.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap oval eval --results oval-results.xml oval.xml
 Definition oval:com.example.oval:def:1: true
 Evaluation done.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The output of the command shows that the definition was evaluated successfully. If you want more information, open up the &lt;code&gt;oval-results.xml&lt;/code&gt; file which contains all the details about the test. This results file is also very useful while developing OVAL as it shows the entire result of objects, tests and so forth.&lt;/p&gt;
 &lt;p&gt;For instance, the &lt;code&gt;/etc/redhat-release&lt;/code&gt; file was only checked to see if it exists, but the results file shows what other parameters can be verified with it as well:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;unix-sys:file_item id=&amp;quot;1233781&amp;quot; status=&amp;quot;exists&amp;quot;&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;unix-sys:file_item id=&amp;quot;1233781&amp;quot; status=&amp;quot;exists&amp;quot;&amp;gt;
   &amp;lt;unix-sys:filepath&amp;gt;/etc/redhat-release&amp;lt;/unix-sys:filepath&amp;gt;
   &amp;lt;unix-sys:path&amp;gt;/etc&amp;lt;/unix-sys:path&amp;gt;
   &amp;lt;unix-sys:filename&amp;gt;redhat-release&amp;lt;/unix-sys:filename&amp;gt;
@@ -133,29 +139,32 @@ Evaluation done.
   &amp;lt;unix-sys:oexec datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:oexec&amp;gt;
   &amp;lt;unix-sys:has_extended_acl datatype=&amp;quot;boolean&amp;quot;&amp;gt;false&amp;lt;/unix-sys:has_extended_acl&amp;gt;
 &amp;lt;/unix-sys:file_item&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now, this is just on OVAL level. The final step is to link it in the XCCDF file.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Referring to OVAL in XCCDF&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The XCCDF Rule entry allows for a &lt;code&gt;check&lt;/code&gt; element, which refers to an automated check for compliance.&lt;/p&gt;
 &lt;p&gt;For instance, the above rule could be referred to like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;Rule id=&amp;quot;xccdf_com.example_rule_krb5-forwardable-true&amp;quot;&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;Rule id=&amp;quot;xccdf_com.example_rule_krb5-forwardable-true&amp;quot;&amp;gt;
   &amp;lt;title&amp;gt;Enable forwardable tickets on RHEL systems&amp;lt;/title&amp;gt;
   ...
   &amp;lt;check system=&amp;quot;http://oval.mitre.org/XMLSchema/oval-definitions-5&amp;quot;&amp;gt;
     &amp;lt;check-content-ref href=&amp;quot;oval.xml&amp;quot; name=&amp;quot;oval:com.example.oval:def:1&amp;quot; /&amp;gt;
   &amp;lt;/check&amp;gt;
 &amp;lt;/Rule&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this set in the Rule, Open-SCAP can validate it while checking the configuration baseline:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --oval-results --results xccdf-results.xml xccdf.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf eval --oval-results --results xccdf-results.xml xccdf.xml
 ...
 Title   Enable forwardable kerberos tickets in krb5.conf libdefaults
 Rule    xccdf_com.example_rule_krb5-forwardable-tickets
 Ident   RHEL7-01007
 Result  pass
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;A huge advantage here is that, alongside the detailed results of the run, there is also better human readable output as it shows the title of the Rule being checked.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;The detailed capabilities of OVAL&lt;/strong&gt;&lt;/p&gt;
@@ -168,7 +177,7 @@ Result  pass
 &lt;li&gt;&lt;code&gt;xmlfilecontent_test&lt;/code&gt; which is a specialized test toward XML files&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Keep in mind though that, as we have seen above, INI files specifically have no specialization available. It would be nice if CISecurity would develop support for common textual data formats, such as CSV (although that one is easily interpretable with the existing ones), JSON, YAML and INI.&lt;/p&gt;
-&lt;p&gt;The &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/unix-definitions-schema.md"&gt;unix&lt;/a&gt; one contains tests specific to Unix and Unix-like operating systems (so yes, it is also useful for Linux), and together with the &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/linux-definitions-schema.md"&gt;linux&lt;/a&gt; one a wide range of configurations can be checked. This includes support for generic extended attributes (&lt;code&gt;fileextendedattribute_test&lt;/code&gt;) as well as SELinux specific rules (&lt;code&gt;selinuxboolean_test&lt;/code&gt; and &lt;code&gt;selinuxsecuritycontext_test&lt;/code&gt;), network interface settings (&lt;code&gt;interface_test&lt;/code&gt;), runtime processes (&lt;code&gt;process58_test&lt;/code&gt;), kernel parameters (&lt;code&gt;sysctl_test&lt;/code&gt;), installed software tests (such as &lt;code&gt;rpminfo_test&lt;/code&gt; for RHEL and other RPM enabled operating systems) and more.&lt;/p&gt;</content><category term="Security"></category><category term="xccdf"></category><category term="oval"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Doing a content check with OVAL</title><link href="https://blog.siphos.be/2013/12/doing-a-content-check-with-oval/" rel="alternate"></link><published>2013-12-24T04:25:00+01:00</published><updated>2013-12-24T04:25:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-24:/2013/12/doing-a-content-check-with-oval/</id><summary type="html">&lt;p&gt;Let's create an OVAL check to see if &lt;code&gt;/etc/inittab&lt;/code&gt;'s single user
+&lt;p&gt;The &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/unix-definitions-schema.md"&gt;unix&lt;/a&gt; one contains tests specific to Unix and Unix-like operating systems (so yes, it is also useful for Linux), and together with the &lt;a href="https://github.com/OVALProject/Language/blob/master/docs/linux-definitions-schema.md"&gt;linux&lt;/a&gt; one a wide range of configurations can be checked. This includes support for generic extended attributes (&lt;code&gt;fileextendedattribute_test&lt;/code&gt;) as well as SELinux specific rules (&lt;code&gt;selinuxboolean_test&lt;/code&gt; and &lt;code&gt;selinuxsecuritycontext_test&lt;/code&gt;), network interface settings (&lt;code&gt;interface_test&lt;/code&gt;), runtime processes (&lt;code&gt;process58_test&lt;/code&gt;), kernel parameters (&lt;code&gt;sysctl_test&lt;/code&gt;), installed software tests (such as &lt;code&gt;rpminfo_test&lt;/code&gt; for RHEL and other RPM enabled operating systems) and more.&lt;/p&gt;</content><category term="xccdf"></category><category term="oval"></category><category term="scap"></category><category term="baseline"></category></entry><entry><title>Doing a content check with OVAL</title><link href="https://blog.siphos.be/2013/12/doing-a-content-check-with-oval/" rel="alternate"></link><published>2013-12-24T04:25:00+01:00</published><updated>2013-12-24T04:25:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-24:/2013/12/doing-a-content-check-with-oval/</id><summary type="html">&lt;p&gt;Let's create an OVAL check to see if &lt;code&gt;/etc/inittab&lt;/code&gt;'s single user
 definitions only refer to &lt;code&gt;/sbin/sulogin&lt;/code&gt; or &lt;code&gt;/sbin/rc single&lt;/code&gt;. First,
 the skeleton:&lt;/p&gt;
 &lt;p&gt;(XML content lost during blog conversion)&lt;/p&gt;
@@ -218,14 +227,15 @@ information about a definition. In this case, it refers to a &lt;strong&gt;CCE
 (Common Configuration Enumeration)&lt;/strong&gt; entry. You can find all official
 CCE entries &lt;a href="https://nvd.nist.gov/cce/index.cfm"&gt;online as well&lt;/a&gt;. This
 particular one, CCE-4241-6, sais:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;CCE-4241-6  Platform: rhel5     Date: (C)2011-10-07   (M)2013-11-28
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;CCE-4241-6  Platform: rhel5     Date: (C)2011-10-07   (M)2013-11-28
 
 The requirement for a password to boot into single-user mode should be configured correctly.
 
 Parameter: enabled/disabled
 
 Technical Mechanism: via /etc/inittab
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;By requiring &lt;strong&gt;sulogin&lt;/strong&gt; or &lt;strong&gt;rc single&lt;/strong&gt; in &lt;code&gt;inittab&lt;/code&gt;, Gentoo Linux
 will ask for the root password before granting a shell, thereby
@@ -321,7 +331,7 @@ XCCDF/OVAL.&lt;/p&gt;
 &lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/remediation-through-scap/"&gt;Remediation through
     SCAP&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/what-is-oval/"&gt;What is OVAL?&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="oval"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>What is OVAL?</title><link href="https://blog.siphos.be/2013/12/what-is-oval/" rel="alternate"></link><published>2013-12-22T04:40:00+01:00</published><updated>2013-12-22T04:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-22:/2013/12/what-is-oval/</id><summary type="html">&lt;p&gt;Time to discuss &lt;strong&gt;OVAL (Open Vulnerability Assessment Language)&lt;/strong&gt;. In
+&lt;/ol&gt;</content><category term="openscap"></category><category term="oval"></category><category term="scap"></category><category term="xccdf"></category></entry><entry><title>What is OVAL?</title><link href="https://blog.siphos.be/2013/12/what-is-oval/" rel="alternate"></link><published>2013-12-22T04:40:00+01:00</published><updated>2013-12-22T04:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-22:/2013/12/what-is-oval/</id><summary type="html">&lt;p&gt;Time to discuss &lt;strong&gt;OVAL (Open Vulnerability Assessment Language)&lt;/strong&gt;. In
 all the &lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;previous
 posts&lt;/a&gt;
 I focused the checking of rules (does the system comply with the given
@@ -387,12 +397,17 @@ and optionally a &lt;em&gt;state&lt;/em&gt; to which the object should (or shoul
 match.&lt;/p&gt;
 &lt;p&gt;Consider the test we made with SCE to see if a platform is a Gentoo
 Linux system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#!/bin/sh
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2
+3
+4
+5&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
 
-# If /etc/gentoo-release exists then the system is a Gentoo Linux system.
-test -f /etc/gentoo-release &amp;amp;&amp;amp; exit ${XCCDF_RESULT_PASS};
-exit ${XCCDF_RESULT_FAIL};
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class="c1"&gt;# If /etc/gentoo-release exists then the system is a Gentoo Linux system.&lt;/span&gt;
+&lt;span class="nb"&gt;test&lt;/span&gt; -f /etc/gentoo-release &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_PASS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
 &lt;p&gt;In OVAL, this would be structured as follows (pseudo-OVAL):&lt;/p&gt;
 &lt;dl&gt;
@@ -459,7 +474,7 @@ OVAL, and have the XCCDF document updated to only use OVAL statements.&lt;/p&gt;
     document&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/remediation-through-scap/"&gt;Remediation through
     SCAP&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="oval"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>Putting OVAL at work</title><link href="https://blog.siphos.be/2013/08/putting-oval-at-work/" rel="alternate"></link><published>2013-08-01T15:01:00+02:00</published><updated>2013-08-01T15:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/putting-oval-at-work/</id><summary type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
+&lt;/ol&gt;</content><category term="openscap"></category><category term="oval"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>Putting OVAL at work</title><link href="https://blog.siphos.be/2013/08/putting-oval-at-work/" rel="alternate"></link><published>2013-08-01T15:01:00+02:00</published><updated>2013-08-01T15:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/putting-oval-at-work/</id><summary type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
 you might get the feeling of "How does this work". The underlying
 interfaces, like OVAL and XCCDF, might seem a bit daunting to implement.&lt;/p&gt;
 &lt;p&gt;This is correct, but you need to remember that the standards are
@@ -523,4 +538,4 @@ integrate with XCCDF as well. The idea you'll need to focus on then is
 the same as with OVAL: what is your source, how do you store it, you
 need interpreters that can "play" it, and on the reporting side you'll
 need to store the results so you can combine them later in your
-reporting.&lt;/p&gt;</content><category term="Security"></category><category term="baseline"></category><category term="benchmark"></category><category term="oval"></category><category term="security"></category><category term="xccdf"></category></entry></feed>
+reporting.&lt;/p&gt;</content><category term="baseline"></category><category term="benchmark"></category><category term="oval"></category><category term="security"></category><category term="xccdf"></category></entry></feed>

@@ -28,7 +28,7 @@ any) and files, etc.&lt;/p&gt;
 &lt;p&gt;So let's take a look at the content of the &lt;em&gt;incron&lt;/em&gt; package. On Gentoo,
 we can use &lt;strong&gt;qlist incron&lt;/strong&gt; for this. In the output of &lt;strong&gt;qlist&lt;/strong&gt;, I
 added comments to show you how contexts can be (easily) deduced.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Application binary for managing user crontabs. We want to give this a specific
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Application binary for managing user crontabs. We want to give this a specific
 # context because we want the application (which will manage the incrontabs in
 # /var/spool/incron) in a specific domain
 /usr/bin/incrontab  ## incrontab_exec_t
@@ -54,12 +54,13 @@ added comments to show you how contexts can be (easily) deduced.&lt;/p&gt;
 # those users the sysadm_r role, we need to give this file a different
 # context as well.
 /etc/init.d/incrond ## incrond_initrc_exec_t
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this information at hand, and the behavior of the application we
 know from the previous post, can lead to the following &lt;code&gt;incron.fc&lt;/code&gt; file,
 which defines the file contexts for the application.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/incron.d(/.*)?     gen_context(system_u:object_r:incron_spool_t,s0)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/etc/incron.d(/.*)?     gen_context(system_u:object_r:incron_spool_t,s0)
 
 /etc/rc\.d/init\.d/incrond      --      gen_context(system_u:object_r:incrond_initrc_exec_t,s0)
 
@@ -68,7 +69,8 @@ which defines the file contexts for the application.&lt;/p&gt;
 /usr/sbin/incrond       --      gen_context(system_u:object_r:incrond_exec_t,s0)
 
 /var/spool/incron(/.*)?         gen_context(system_u:object_r:incron_spool_t,s0)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The syntax of this file closely follows the syntax that &lt;strong&gt;semanage
 fcontext&lt;/strong&gt; takes - at least for the regular expressions in the
@@ -83,7 +85,7 @@ matches whatever class the path matches.&lt;/p&gt;
 would look like so. I added in inline comments here to explain why
 certain lines are prepared, but generally this is omitted when the
 policy is &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;upstreamed&lt;/a&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(incron, 0.1)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(incron, 0.1)
 # The above line declares that this file is a SELinux policy file. Its name
 # is incron, so the file should saved as incron.te
 
@@ -117,7 +119,8 @@ application_domain(incrontab_t, incrontab_exec_t)
 # it will be used for regular files.
 type incron_spool_t;
 files_type(incron_spool_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Knowing which interface calls, like &lt;em&gt;init_daemon_domain&lt;/em&gt; and
 &lt;em&gt;application_domain&lt;/em&gt;, we should use is not obvious at first. Most of
@@ -145,13 +148,15 @@ included). However, with the information currently at hand, we have our
 first policy module ready for building. Save the type enforcement rules
 in &lt;code&gt;incron.te&lt;/code&gt; and the file contexts in &lt;code&gt;incron.fc&lt;/code&gt; and you can then
 build the SELinux policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
 # semodule -i incron.pp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;On Gentoo, you can then relabel the files and directories offered
 through the package using &lt;strong&gt;rlpkg&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# rlpkg incron
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# rlpkg incron
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Next is to start looking at the &lt;strong&gt;incrontab&lt;/strong&gt; application.&lt;/p&gt;</content><category term="SELinux"></category><category term="fc"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category><category term="skeleton"></category><category term="te"></category></entry></feed>
+
+&lt;p&gt;Next is to start looking at the &lt;strong&gt;incrontab&lt;/strong&gt; application.&lt;/p&gt;</content><category term="fc"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category><category term="skeleton"></category><category term="te"></category></entry></feed>

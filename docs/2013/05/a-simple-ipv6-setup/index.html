@@ -243,38 +243,43 @@ I'm concerned, it is working... and that is all that matters (for now).
 I'll have to look deeper into the IPv6 stuff to understand it all better
 though.</p>
 <p>On the client side, <strong>dhcpcd</strong> is ran with the following options:</p>
-<div class="highlight"><pre><span></span><code>dhcpcd_eth0=&quot;-t 5 -L --ipv6ra_own&quot;
-</code></pre></div>
+<div class="highlight"><pre><span></span>dhcpcd_eth0=&quot;-t 5 -L --ipv6ra_own&quot;
+</pre></div>
+
 
 <p>I had to enable <code>--ipv6ra_own</code> to get it to obtain its global address,
 otherwise it only got its link local one (<code>fe80::</code> something). I also
 added a hook into <code>/lib/dhcpcd/dhcpcd-hooks</code> to get it to trigger a
 hostname update for IPv6.</p>
-<div class="highlight"><pre><span></span><code>$ cat 28-set-ip6-address 
+<div class="highlight"><pre><span></span>$ cat 28-set-ip6-address 
 if $ifup; then export new_ip_address=${ra1_prefix%%/64}; fi
-</code></pre></div>
+</pre></div>
+
 
 <p>SELinux-policy wise, I had to enable <code>dhcpc_t</code> to write to the hostname
 proc file and set the system hostname. The first one (21) is needed
 because of the <code>--ipv6ra_own</code> parameter.</p>
-<div class="highlight"><pre><span></span><code># selocal -l | grep dhcpc_t
+<div class="highlight"><pre><span></span># selocal -l | grep dhcpc_t
 21: allow dhcpc_t self:rawip_socket create_socket_perms; # dhcpclient
 22: kernel_rw_kernel_sysctl(dhcpc_t) # set hostname
 23: allow dhcpc_t self:capability sys_admin; # set hostname
-</code></pre></div>
+</pre></div>
+
 
 <p>Finally, in <code>/etc/dhcpcd.conf</code>, I removed the <em>nohook lookup-hostname</em>
 and set the <em>force_hostname</em> one:</p>
-<div class="highlight"><pre><span></span><code>#nohook lookup-hostname
+<div class="highlight"><pre><span></span>#nohook lookup-hostname
 env force_hostname=YES
-</code></pre></div>
+</pre></div>
+
 
 <p>On the server side, I use the following configuration of dnsmasq
 (snippet):</p>
-<div class="highlight"><pre><span></span><code>dhcp-range=2001:db8:81:e2::,ra-only
+<div class="highlight"><pre><span></span>dhcp-range=2001:db8:81:e2::,ra-only
 enable-ra
 dhcp-option=option6:dns-server,[2001:db8:81:e2::26b5:365b:5072]
-</code></pre></div>
+</pre></div>
+
 
 <p>As you can see, I use the documentation prefix for now (since it is
 meant for internal communication only, and makes it easier to copy/paste
@@ -282,19 +287,20 @@ into documentation ;-) but when I am going to use full IPv6 access to
 the Internet, this prefix will of course change.</p>
 <p>Finally, I enabled IPv6 forwarding on the <code>tap0</code> interface because
 otherwise I continuously got the following messages on the clients:</p>
-<div class="highlight"><pre><span></span><code>May 12 18:43:07 test dhcpcd[3869]: eth0: adding default route via fe80::d848:19ff:fe0d:55c2
+<div class="highlight"><pre><span></span>May 12 18:43:07 test dhcpcd[3869]: eth0: adding default route via fe80::d848:19ff:fe0d:55c2
 May 12 18:43:07 test dhcpcd[3869]: eth0: fe80::d848:19ff:fe0d:55c2 is no longer a router
 May 12 18:43:07 test dhcpcd[3869]: eth0: deleting default route via fe80::d848:19ff:fe0d:55c2
 May 12 18:43:13 test dhcpcd[3869]: eth0: fe80::d848:19ff:fe0d:55c2 is unreachable, expiring it
-</code></pre></div>
+</pre></div>
+
 
 <p>To enable IPv6 forwarding, you can use sysctl but I added it in the
 script that sets up the tap0 interface:</p>
-<div class="highlight"><pre><span></span><code>tunctl -b -u swift -t tap0
+<div class="highlight"><pre><span></span>tunctl -b -u swift -t tap0
 ifconfig tap0 add 2001:db8:81:e2::26b5:365b:5072/64
 vde_switch --numports 16 --mod 777 --group users --tap tap0 -d
 echo 1 &gt; /proc/sys/net/ipv6/conf/tap0/forwarding
-</code></pre></div>
+</pre></div>
         </div>
 
         <!-- Neighbors -->

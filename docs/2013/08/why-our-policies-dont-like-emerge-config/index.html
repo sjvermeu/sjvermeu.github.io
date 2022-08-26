@@ -258,8 +258,9 @@ code in Portage, something I'd rather not do (introduces additional
 complexity and maintenance).</p>
 <p>Another possibility would be to have administrators explicitly state
 that no transition should occur, like so:</p>
-<div class="highlight"><pre><span></span><code>~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
+</pre></div>
+
 
 <p>With a minor addition to the policy, this gave me a good hope... until I
 noticed that <strong>emerge</strong> underlyingly calls <strong>ebuild</strong> and <strong>ebuild.sh</strong>,

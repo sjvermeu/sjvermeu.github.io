@@ -240,17 +240,19 @@ such questions. If you're interested, the script is also available on my
 <a href="https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowtree">github
 small.coding</a>
 project.</p>
-<div class="highlight"><pre><span></span><code>~# seshowtree user roles/unprivuser.te &gt; output.txt
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# seshowtree user roles/unprivuser.te &gt; output.txt
+</pre></div>
+
 
 <p>In the resulting output, I search for the <code>cgroup_t</code> and work my way up,
 which gives:</p>
-<div class="highlight"><pre><span></span><code>userdom_unpriv_user_template(user)
+<div class="highlight"><pre><span></span>userdom_unpriv_user_template(user)
 . userdom_common_user_template($1)
 . . fs_rw_cgroup_files($1_t)
 . . . rw_files_pattern($1, cgroup_t, cgroup_t)
 . . . . allow $1 $3:file rw_file_perms;
-</code></pre></div>
+</pre></div>
+
 
 <p>So in this case, the user forgot to look into
 <code>userdom_common_user_template</code>, which is called by
@@ -259,8 +261,9 @@ course, that still doesn't explain why the privileges are assigned in
 the first place. As the policy file itself does not contain the
 necessary comments to deduce this, I had to ask the git repository for
 more information:</p>
-<div class="highlight"><pre><span></span><code>~$ git annotate userdomain.if
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ git annotate userdomain.if
+</pre></div>
+
 
 <p>In the end, it was a commit from 2010, informing me that "Common users
 can read and write cgroup files (access governed by dac)". So the

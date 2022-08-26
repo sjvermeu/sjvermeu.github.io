@@ -231,7 +231,7 @@ additional checks before handing off the mail to the back-end.</p>
 <p>In the below example, a back-end mail server is running on localhost (in
 my case it's a Postfix back-end, but that doesn't matter). Mails
 received by Nginx will be forwarded to this server.</p>
-<div class="highlight"><pre><span></span><code>user nginx nginx;
+<div class="highlight"><pre><span></span>user nginx nginx;
 worker_processes 1;
 
 error_log /var/log/nginx/error_log debug;
@@ -279,7 +279,8 @@ mail {
                 smtp_auth none;
         }
 }
-</code></pre></div>
+</pre></div>
+
 
 <p>If you first look at the <em>mail</em> setting, you notice that I include an
 <em>auth_http</em> directive. This is needed by Nginx as it will consult this

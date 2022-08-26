@@ -229,8 +229,9 @@ I just found out that Unix domain sockets are files. Even when they're
 not.</p>
 <p>I have been looking at a weird SELinux denial I had occuring on my
 system:</p>
-<div class="highlight"><pre><span></span><code>avc:  denied  { read write } for  pid=10012 comm=&quot;hostname&quot;
-</code></pre></div>
+<div class="highlight"><pre><span></span>avc:  denied  { read write } for  pid=10012 comm=&quot;hostname&quot;
+</pre></div>
+
 
 <p>path="socket:[318867]" dev=sockfs ino=318867 <br>
    scontext=system_u:system_r:hostname_t <br>
@@ -243,20 +244,22 @@ nothing in my policy that would allow the <code>hostname_t</code> domain to conn
 to a unix_stream_socket of <code>dhcpc_t</code>. But moreover I was intrigued why
 the given path was no real path, even though it has an inode.</p>
 <p>So I dug up <strong>lsof</strong>, which returned the following on this socket:</p>
-<div class="highlight"><pre><span></span><code># lsof -p 10017
+<div class="highlight"><pre><span></span># lsof -p 10017
 COMMAND   PID USER   FD      TYPE             DEVICE SIZE/OFF   NODE NAME
 ...
 dhcpcd  10017 root    3u     unix 0x0000000000000000      0t0 318867 socket
 dhcpcd  10017 root    4w      REG              252,3        6 268749 /var/run/dhcpcd-eth1.pid
 dhcpcd  10017 root    5u     unix 0x0000000000000000      0t0 318869 socket
-</code></pre></div>
+</pre></div>
+
 
 <p>Still no luck in figuring out what that is. And even <code>/proc/net/unix</code>
 didn't give anything back:</p>
-<div class="highlight"><pre><span></span><code># grep 318867 /proc/net/unix
+<div class="highlight"><pre><span></span># grep 318867 /proc/net/unix
 Num               RefCount Protocol Flags    Type St Inode Path
 0000000000000000: 00000002 00000000 00000000 0001 01 318867
-</code></pre></div>
+</pre></div>
+
 
 <p>So I started looking at Unix domain sockets, what they are, how they are
 used, etc. And I learned that</p>

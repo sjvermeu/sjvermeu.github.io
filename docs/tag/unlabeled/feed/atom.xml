@@ -9,23 +9,25 @@ first question to ask is how it got there.&lt;/p&gt;
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
 domain is removed from the system (or updated and the update does not
 contain the &lt;code&gt;screen_t&lt;/code&gt; definition anymore):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test ~ # ps -eZ | grep screen
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;test ~ # ps -eZ | grep screen
 root:sysadm_r:sysadm_screen_t    5047 ?        00:00:00 screen
 test ~ # semodule -r screen
 test ~ # ps -eZ | grep screen
 system_u:object_r:unlabeled_t    5047 ?        00:00:00 screen
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In permissive mode, this will be visible easily; in enforcing mode, the
 domains you are running in might not be allowed to do anything with
 &lt;code&gt;unlabeled_t&lt;/code&gt; files, directories and processes, so &lt;strong&gt;ps&lt;/strong&gt; might not show
 it even though it still exists:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test audit # ps -eZ | grep 5047
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;test audit # ps -eZ | grep 5047
 test audit # ls -dZ /proc/5047
 ls: cannot access /proc/5047: Permission denied
 test audit # tail audit.log | grep unlabeled
 type=AVC msg=audit(1368698097.494:27806): avc:  denied  { getattr } for  pid=4137 comm=&amp;quot;bash&amp;quot; path=&amp;quot;/proc/5047&amp;quot; dev=&amp;quot;proc&amp;quot; ino=6677 scontext=root:sysadm_r:sysadm_t tcontext=system_u:object_r:unlabeled_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Notice that, if you reload the module, the process becomes visible
 again. That is because the process context itself (&lt;code&gt;screen_t&lt;/code&gt;) is
@@ -35,4 +37,4 @@ retained, but because the policy doesn't know it anymore, it shows it as
 (should be), it uses &lt;code&gt;unlabeled_t&lt;/code&gt;. The SELinux policy then defines how
 this &lt;code&gt;unlabeled_t&lt;/code&gt; domain is handled. Processes getting into
 &lt;code&gt;unlabeled_t&lt;/code&gt; is not that common though as there is no supported
-transition to it. The above one is one way that this still can occur.&lt;/p&gt;</content><category term="SELinux"></category><category term="policy"></category><category term="selinux"></category><category term="unlabeled"></category></entry></feed>
+transition to it. The above one is one way that this still can occur.&lt;/p&gt;</content><category term="policy"></category><category term="selinux"></category><category term="unlabeled"></category></entry></feed>

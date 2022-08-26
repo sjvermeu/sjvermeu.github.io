@@ -251,9 +251,10 @@ dates supported for z/OS data sets. And to implement this, I am
 considering to use extended attributes.</p>
 <p>The idea is simple: when working with a file, I want to be able to
 immediately set an expiration date to it:</p>
-<div class="highlight"><pre><span></span><code>$ strace -o strace.log ...
+<div class="highlight"><pre><span></span>$ strace -o strace.log ...
 $ expdate +7d strace.log
-</code></pre></div>
+</pre></div>
+
 
 <p>This would set an extended attribute named <code>user.expiration</code> with the
 value being the number of seconds since epoch (which you can obtain

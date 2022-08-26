@@ -49,7 +49,7 @@ code will create the hash of the password (and user name) to use as the
 field. It then also stores the site password in the local session
 storage in the browser. The code is triggered through the &lt;em&gt;onSubmit&lt;/em&gt;
 handler of the form.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;function storeAppPassword() {
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;function storeAppPassword() {
   var sitepw = document.getElementById(&amp;#39;password&amp;#39;);
   var siteus = document.getElementById(&amp;#39;login&amp;#39;);
   var userpw = document.getElementById(&amp;#39;userpassword&amp;#39;);
@@ -57,7 +57,8 @@ handler of the form.&lt;/p&gt;
   sessionStorage.setItem(&amp;#39;userpassword&amp;#39;, userpw.value);
   sitepw.value = hex_sha1(siteus.value + userpw.value);
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now I need to make sure that the fields that need to be encrypted (the
 various user ids and passwords that are stored on the site) are
@@ -65,7 +66,7 @@ encrypted before they are sent to the server, and decrypted after having
 received them by the browser. For instance, if the fields are within a
 form, the following javascript function could be triggered on the
 &lt;em&gt;onSubmit&lt;/em&gt; handler again:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;function encryptFields() {
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;function encryptFields() {
   var useridFld = document.getElementById(&amp;#39;userid&amp;#39;);
   var passwordFld = document.getElementById(&amp;#39;password&amp;#39;);
   var notesFld = document.getElementById(&amp;#39;notes&amp;#39;);
@@ -75,12 +76,14 @@ form, the following javascript function could be triggered on the
   passwordFld.value = Aes.Ctr.encrypt(passwordFld.value, pw, 256);
   notesFld.value = Aes.Ctr.encrypt(notesFld.value, pw, 256);
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Similarly, to decrypt the fields (inside the same form), that part of
 the code would become:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;useridFld.value = Aes.Ctr.decrypt(useridFld.value, pw, 256);
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;useridFld.value = Aes.Ctr.decrypt(useridFld.value, pw, 256);
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Decryption of the fields can be called by a simple javascript call at
 the end of the page.&lt;/p&gt;
@@ -108,4 +111,4 @@ static key.&lt;/p&gt;
 please add in-browser encryption for those of us that want to make
 *really* sure that no sensitive data is sent over unencrypted (I don't
 count SSL/TLS as that "ends" at the remote side while this one is full
-end-to-end encryption).&lt;/p&gt;</content><category term="Security"></category><category term="aes"></category><category term="encryption"></category><category term="javascript"></category><category term="password"></category><category term="passwordmanagement"></category></entry></feed>
+end-to-end encryption).&lt;/p&gt;</content><category term="aes"></category><category term="encryption"></category><category term="javascript"></category><category term="password"></category><category term="passwordmanagement"></category></entry></feed>

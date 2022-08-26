@@ -15,14 +15,15 @@ enforcement&lt;/a&gt; part
 of the SELinux mandatory access control system.&lt;/p&gt;
 &lt;p&gt;Constraints on the other hand work on the user, role and type part of a
 context. Consider this piece of constraint code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;constrain file all_file_perms (
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;constrain file all_file_perms (
   u1 == u2
   or u1 == system_u
   or u2 == system_u
   or t1 != ubac_constrained_type
   or t2 != ubac_constrained_type
 );
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This particular constraint definition tells the SELinux subsystem that,
 when an operation against a &lt;em&gt;file&lt;/em&gt; class is performed (any operation, as
@@ -44,7 +45,7 @@ be taken or not.&lt;/p&gt;
 &lt;p&gt;Constraints are currently difficult to query though. There is &lt;strong&gt;seinfo
 --constrain&lt;/strong&gt; which gives all constraints, using the Reverse Polish
 Notation - not something easily readable by users:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ seinfo --constrain
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ seinfo --constrain
 constrain { sem } { create destroy getattr setattr read write associate unix_read unix_write  } 
 (  u1 u2 ==  u1 system_u ==  ||  u2 system_u ==  ||  t1 { screen_var_run_t gnome_xdg_config_home_t admin_crontab_t 
 links_input_xevent_t gpg_pinentry_tmp_t virt_content_t print_spool_t crontab_tmp_t httpd_user_htaccess_t ssh_keysign_t 
@@ -101,7 +102,8 @@ session_dbusd_home_t gpg_agent_t xauth_tmp_t xscreensaver_tmpfs_t iceauth_t mpla
 gpg_pinentry_tmpfs_t pan_xproperty_t ssh_xproperty_t xdm_xproperty_t java_xproperty_t sysadm_sudo_t qemu_xproperty_t 
 root_xproperty_t user_xproperty_t mail_home_t xserver_t java_input_xevent_t user_screen_t wireshark_input_xevent_t } !=  ||  t1 
  ==  || );
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;There RPN notation however isn't the only reason why constraints are
 difficult to read. The other reason is that &lt;strong&gt;seinfo&lt;/strong&gt; does not know
@@ -117,9 +119,10 @@ that is me ;-) is interested in.&lt;/p&gt;
 &lt;p&gt;For instance, to generate a graph of the constraints related to file
 reads, limited to the &lt;code&gt;user_t&lt;/code&gt; and &lt;code&gt;staff_t&lt;/code&gt; types if huge lists would
 otherwise be shown:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ seshowconstraint file read &amp;quot;user_t staff_t&amp;quot; &amp;gt; constraint-file.dot
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ seshowconstraint file read &amp;quot;user_t staff_t&amp;quot; &amp;gt; constraint-file.dot
 ~$ dot -Tsvg -O constraint-file.dot
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This generates the following graph:&lt;/p&gt;
 &lt;p&gt;!SELinux constraint flow&lt;a href="http://dev.gentoo.org/~swift/blog/201405/constraint-flow.svg"&gt;&lt;/a&gt;&lt;/p&gt;
@@ -132,4 +135,4 @@ taking the name up in the policy, so that denials based on constraints
 can at least give feedback to the user which constraint is holding an
 access back (rather than just a denial that the user doesn't know why).
 Hopefully such patches can be made available in the kernel and user
-space utilities soon.&lt;/p&gt;</content><category term="SELinux"></category><category term="constrain"></category><category term="constraints"></category><category term="dot"></category><category term="graphviz"></category><category term="seinfo"></category><category term="selinux"></category></entry></feed>
+space utilities soon.&lt;/p&gt;</content><category term="constrain"></category><category term="constraints"></category><category term="dot"></category><category term="graphviz"></category><category term="seinfo"></category><category term="selinux"></category></entry></feed>

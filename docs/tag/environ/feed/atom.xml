@@ -7,7 +7,7 @@ a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt
 file. The file however shows the environment variables on one line, with
 a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it
 with newlines instead:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ sed -e &amp;quot;s:\x0:\n:g&amp;quot; /proc/144320/environ
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sed -e &amp;quot;s:\x0:\n:g&amp;quot; /proc/144320/environ
 TERM=xterm
 SHELL=/bin/bash
 OLDPWD=/home/swift/docs
@@ -19,7 +19,8 @@ MAIL=/var/mail/root
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin
 PWD=/var/db/pkg/eix
 ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The trick is to use &lt;code&gt;\x0&lt;/code&gt; (hexcode 0) for the null character, which the
-&lt;strong&gt;sed&lt;/strong&gt; command then replaces with a newline.&lt;/p&gt;</content><category term="Free-Software"></category><category term="environ"></category><category term="linux"></category><category term="protip"></category></entry></feed>
+&lt;strong&gt;sed&lt;/strong&gt; command then replaces with a newline.&lt;/p&gt;</content><category term="environ"></category><category term="linux"></category><category term="protip"></category></entry></feed>

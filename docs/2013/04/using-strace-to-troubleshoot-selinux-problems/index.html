@@ -246,16 +246,17 @@ policy-wise) and then run the offending application through <strong>strace</stro
 (or attach to the running process if it is a daemon). For instance, to
 debug a <a href="https://bugs.gentoo.org/show_bug.cgi?id=463222">tmux issue</a> we
 had with the policy not that long ago:</p>
-<div class="highlight"><pre><span></span><code># setsebool allow_ptrace on
+<div class="highlight"><pre><span></span># setsebool allow_ptrace on
 # strace -o strace.log -f -s 256 tmux
-</code></pre></div>
+</pre></div>
+
 
 <p>The resulting log file (strace.log) might seem daunting at first to look
 at. What you see are the system calls that the process is performing,
 together with their options but also the return code of each call. This
 is especially important as SELinux, if it denies something, often
 returns something like EACCESS (Permission Denied).</p>
-<div class="highlight"><pre><span></span><code>7313  futex(0x349e016f080, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+<div class="highlight"><pre><span></span>7313  futex(0x349e016f080, FUTEX_WAKE_PRIVATE, 2147483647) = 0
 7313  futex(0x5aad58fd84, FUTEX_WAKE_PRIVATE, 2147483647) = 0
 7313  stat(&quot;/&quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
 7313  stat(&quot;/home&quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
@@ -263,7 +264,8 @@ returns something like EACCESS (Permission Denied).</p>
 7313  stat(&quot;/home/swift/.pki&quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}) = 0
 7313  stat(&quot;/home/swift/.pki/nssdb&quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}) = 0
 7313  statfs(&quot;/home/swift/.pki/nssdb&quot;, 0x3c3cab6fa50) = -1 EACCES (Permission denied)
-</code></pre></div>
+</pre></div>
+
 
 <p>Most (if not all) of the methods shown in a strace log are documented
 through manpages, so you can quickly find out that <code>futex()</code> is about
@@ -271,21 +273,23 @@ fast user-space locking, <code>stat()</code> (<strong>man 2 stat</strong> to see
 about the method instead of the application) is about getting file
 status and <code>statfs()</code> is for getting file system statistics.</p>
 <p>The most common permission issues you'll find are file related:</p>
-<div class="highlight"><pre><span></span><code>7313  open(&quot;/proc/filesystems&quot;, O_RDONLY) = -1 EACCES (Permission denied)
-</code></pre></div>
+<div class="highlight"><pre><span></span>7313  open(&quot;/proc/filesystems&quot;, O_RDONLY) = -1 EACCES (Permission denied)
+</pre></div>
+
 
 <p>In the above case, you notice that the application is trying to open the
 <code>/proc/filesystems</code> file read-only. In the SELinux logs, this might be
 displayed as follows:</p>
-<div class="highlight"><pre><span></span><code>audit.log:type=AVC msg=audit(1365794728.180:3192): avc:  denied  { read } for  
+<div class="highlight"><pre><span></span>audit.log:type=AVC msg=audit(1365794728.180:3192): avc:  denied  { read } for  
 pid=860 comm=&quot;nacl_helper_boo&quot; name=&quot;filesystems&quot; dev=&quot;proc&quot; ino=4026532034 
 scontext=staff_u:staff_r:chromium_naclhelper_t tcontext=system_u:object_r:proc_t tclass=file
-</code></pre></div>
+</pre></div>
+
 
 <p>Now the case of <strong>tmux</strong> before was not an obvious one. In the end, I
 compared the strace output's of two runs (one in enforcing and one in
 permissive) to find what the difference would be. This is the result:</p>
-<div class="highlight"><pre><span></span><code>Enforcing:
+<div class="highlight"><pre><span></span>Enforcing:
 
 10905 fcntl(9, F_GETFL) = 0x8000 (flags O_RDONLY|O_LARGEFILE) 
 10905 fcntl(9, F_SETFL, O_RDONLY|O_NONBLOCK|O_LARGEFILE) = 0
@@ -294,7 +298,8 @@ Permissive:
 
 10905 fcntl(9, F_GETFL) = 0x8002 (flags O_RDWR|O_LARGEFILE) 
 10905 fcntl(9, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
-</code></pre></div>
+</pre></div>
+
 
 <p>You notice the difference? In enforcing-mode, one of the flags on the
 file descriptor has <code>O_RDONLY</code> whereas the one in permissive mode as
@@ -302,10 +307,11 @@ file descriptor has <code>O_RDONLY</code> whereas the one in permissive mode as
 read-only whereas in permissive-mode is read-write. What we then do in
 the strace logs is to see where this file descriptor (with id=9) comes
 from:</p>
-<div class="highlight"><pre><span></span><code>10905 dup(0)     = 9
+<div class="highlight"><pre><span></span>10905 dup(0)     = 9
 10905 dup(1)     = 10
 10905 dup(2)     = 11
-</code></pre></div>
+</pre></div>
+
 
 <p>As the man-pages sais, <code>dup()</code> duplicates a file descriptor. And
 because, by convention, the first three file descriptors of an
@@ -322,7 +328,7 @@ some investigation, we found out that using <strong>newrole</strong> to switch r
 changes the flags of the standard input (as then provided by
 <strong>newrole</strong>) from <code>O_RDWR</code> to <code>O_RDONLY</code> (code snippet from <code>newrole.c</code>
 - look at the first call to <code>open()</code>):</p>
-<div class="highlight"><pre><span></span><code>/* Close the tty and reopen descriptors 0 through 2 */
+<div class="highlight"><pre><span></span>/* Close the tty and reopen descriptors 0 through 2 */
 if (ttyn) {
         if (close(fd) || close(0) || close(1) || close(2)) {
                 fprintf(stderr, _(&quot;Could not close descriptors.\n&quot;));
@@ -341,7 +347,8 @@ if (ttyn) {
                 goto err_close_pam;
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp; ~O_NONBLOCK);
 }
-</code></pre></div>
+</pre></div>
+
 
 <p>Such obscure problems are much easier to detect and troubleshoot thanks
 to tools like <strong>strace</strong>.</p>

@@ -243,26 +243,29 @@ local rules in a single module set.</p>
 <p>So when I wanted to give a presentation on Tor, I had to allow the
 torbrowser to connect to an unreserved port. The torbrowser runs in the
 mozilla domain, so all I did was:</p>
-<div class="highlight"><pre><span></span><code>~# selocal -a &quot;corenet_tcp_connect_all_unreserved_ports(mozilla_t)&quot; -b -L
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# selocal -a &quot;corenet_tcp_connect_all_unreserved_ports(mozilla_t)&quot; -b -L
+</pre></div>
+
 
 <p>At the end of the presentation, I removed the line from the policy:</p>
-<div class="highlight"><pre><span></span><code>~# selocal -l | grep mozilla_t
+<div class="highlight"><pre><span></span>~# selocal -l | grep mozilla_t
 19. corenet_tcp_connect_all_unreserved_ports(mozilla_t)
 ~# selocal -d 19 -b -L
-</code></pre></div>
+</pre></div>
+
 
 <p>I can also add in comments in case I would forget why I added it in the
 first place:</p>
-<div class="highlight"><pre><span></span><code>~# selocal -a &quot;allow mplayer_t self:udp_socket create_socket_perms;&quot;   
+<div class="highlight"><pre><span></span>~# selocal -a &quot;allow mplayer_t self:udp_socket create_socket_perms;&quot;   
  -c &quot;MPlayer plays HTTP resources&quot; -b -L
-</code></pre></div>
+</pre></div>
+
 
 <p>This then also comes up when listing the current local policy rules:</p>
-<div class="highlight"><pre><span></span><code>~# selocal -l
+<div class="highlight"><pre><span></span>~# selocal -l
 ...
 40: allow mplayer_t self:udp_socket create_socket_perms; # MPlayer plays HTTP resources
-</code></pre></div>
+</pre></div>
         </div>
 
         <!-- Neighbors -->

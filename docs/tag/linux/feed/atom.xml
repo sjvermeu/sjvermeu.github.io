@@ -119,7 +119,7 @@ which are quite reusable across many distributions).&lt;/p&gt;
 the DAC permissions are very simple to implement, and have been proven to be
 well suitable for many secured systems. &lt;/p&gt;
 &lt;p&gt;So no, unless you do massive engineering, I do not believe it is possible to
-substitute DAC with SELinux-only controls.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="refpolicy"></category><category term="linux"></category><category term="dac"></category><category term="lsm"></category></entry><entry><title>D-Bus and SELinux</title><link href="https://blog.siphos.be/2014/06/d-bus-and-selinux/" rel="alternate"></link><published>2014-06-30T20:07:00+02:00</published><updated>2014-06-30T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-30:/2014/06/d-bus-and-selinux/</id><summary type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
+substitute DAC with SELinux-only controls.&lt;/p&gt;</content><category term="selinux"></category><category term="refpolicy"></category><category term="linux"></category><category term="dac"></category><category term="lsm"></category></entry><entry><title>D-Bus and SELinux</title><link href="https://blog.siphos.be/2014/06/d-bus-and-selinux/" rel="alternate"></link><published>2014-06-30T20:07:00+02:00</published><updated>2014-06-30T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-30:/2014/06/d-bus-and-selinux/</id><summary type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
 D-Bus&lt;/a&gt; comes the
 inevitable related post about SELinux with D-Bus.&lt;/p&gt;
 &lt;p&gt;Some users might not know that D-Bus is an SELinux-aware application.
@@ -155,10 +155,11 @@ service also inherits the &lt;code&gt;dnsmasq_t&lt;/code&gt; label.&lt;/p&gt;
 &lt;p&gt;The necessary permission checks for the &lt;code&gt;sysadm_t&lt;/code&gt; user domain to send
 messages to the dnsmasq service, and the dnsmasq service itself to
 register it as a service:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
 allow sysadm_t dnsmasq_t:dbus send_msg;
 allow dnsmasq_t sysadm_t:dbus send_msg;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;For the &lt;code&gt;sysadm_t&lt;/code&gt; domain, the two rules are needed as we usually not
 only want to send a message to a D-Bus service, but also receive a reply
@@ -166,21 +167,23 @@ only want to send a message to a D-Bus service, but also receive a reply
 inverse direction).&lt;/p&gt;
 &lt;p&gt;However, with the following XML snippet inside its service configuration
 file, owning a certain resource is checked against a different label:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;busconfig&amp;gt;
   &amp;lt;selinux&amp;gt;
     &amp;lt;associate
       own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;
       context=&amp;quot;system_u:object_r:dnsmasq_dbus_t:s0&amp;quot; /&amp;gt;
   &amp;lt;/selinux&amp;gt;
 &amp;lt;/busconfig&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this, the rules would become as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
 allow dnsmasq_t self:dbus send_msg;
 allow sysadm_t dnsmasq_t:dbus send_msg;
 allow dnsmasq_t sysadm_t:dbus send_msg;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Note that &lt;em&gt;only&lt;/em&gt; the access for acquiring a service based on a name
 (i.e. owning a service) is checked based on the different label. Sending
@@ -193,7 +196,7 @@ D-Bus to only allow services with a correct label. This ensures that
 other domains that might have enough privileges to interact with D-Bus
 and own a service cannot own these particular services. After all, other
 services don't usually have the privileges (policy-wise) to
-&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="SELinux"></category><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>D-Bus, quick recap</title><link href="https://blog.siphos.be/2014/06/d-bus-quick-recap/" rel="alternate"></link><published>2014-06-29T19:16:00+02:00</published><updated>2014-06-29T19:16:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-29:/2014/06/d-bus-quick-recap/</id><summary type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
+&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>D-Bus, quick recap</title><link href="https://blog.siphos.be/2014/06/d-bus-quick-recap/" rel="alternate"></link><published>2014-06-29T19:16:00+02:00</published><updated>2014-06-29T19:16:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-29:/2014/06/d-bus-quick-recap/</id><summary type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
 some sort of IPC, but higher level than the POSIX IPC methods. After
 some reading, I think I start to understand how it works and how
 administrators can work with it. So a quick write-down is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
@@ -217,17 +220,18 @@ messages through &lt;strong&gt;dbus-send&lt;/strong&gt;. For instance, the follo
 invokes the &lt;code&gt;org.freedesktop.ConsoleKit.Manager.Stop&lt;/code&gt; method provided by
 the object at &lt;code&gt;/org/freedesktop/ConsoleKit&lt;/code&gt; owned by the
 service/application at &lt;code&gt;org.freedesktop.ConsoleKit&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ dbus-send --system --print-reply 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ dbus-send --system --print-reply 
   --dest=org.freedesktop.ConsoleKit 
   /org/freedesktop/ConsoleKit/Manager 
   org.freedesktop.ConsoleKit.Manager.Stop
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;What I found most interesting however was to query the busses. You can
 do this with &lt;strong&gt;dbus-send&lt;/strong&gt; although it is much easier to use tools such
 as &lt;strong&gt;d-feet&lt;/strong&gt; or &lt;strong&gt;qdbus&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;To list current services on the system bus:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# qdbus --system
 :1.1
  org.freedesktop.ConsoleKit
 :1.10
@@ -246,21 +250,23 @@ as &lt;strong&gt;d-feet&lt;/strong&gt; or &lt;strong&gt;qdbus&lt;/strong&gt;.&lt
 :1.8
 :1.9
 org.freedesktop.DBus
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The numbers are generated by D-Bus itself, the namespace-like strings
 are taken by the objects. To see what is provided by a particular
 service:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# qdbus --system org.freedesktop.PolicyKit1
 /
 /org
 /org/freedesktop
 /org/freedesktop/PolicyKit1
 /org/freedesktop/PolicyKit1/Authority
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The methods made available through one of these:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1 /org/freedesktop/PolicyKit1/Authority
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# qdbus --system org.freedesktop.PolicyKit1 /org/freedesktop/PolicyKit1/Authority
 method QDBusVariant org.freedesktop.DBus.Properties.Get(QString interface_name, QString property_name)
 method QVariantMap org.freedesktop.DBus.Properties.GetAll(QString interface_name)
 ...
@@ -271,12 +277,13 @@ method void org.freedesktop.PolicyKit1.Authority.AuthenticationAgentResponse(QSt
 method void org.freedesktop.PolicyKit1.Authority.CancelCheckAuthorization(QString cancellation_id)
 signal void org.freedesktop.PolicyKit1.Authority.Changed()
 ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Access to methods and interfaces is governed through XML files in
 &lt;code&gt;/etc/dbus-1/system.d&lt;/code&gt; (or &lt;code&gt;session.d&lt;/code&gt; depending on the bus). Let's look
 at &lt;code&gt;/etc/dbus-1/system.d/dnsmasq.conf&lt;/code&gt; as an example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;busconfig&amp;gt;
         &amp;lt;policy user=&amp;quot;root&amp;quot;&amp;gt;
                 &amp;lt;allow own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
                 &amp;lt;allow send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
@@ -290,7 +297,8 @@ at &lt;code&gt;/etc/dbus-1/system.d/dnsmasq.conf&lt;/code&gt; as an example:&lt;
                 &amp;lt;deny send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
         &amp;lt;/policy&amp;gt;
 &amp;lt;/busconfig&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The configuration mentions that only the root Linux user can 'assign' a
 service/application to the &lt;code&gt;uk.org.thekelleys.dnsmasq&lt;/code&gt; name, and root
@@ -299,17 +307,17 @@ that no-one can own and send to this service/application name. As a
 result, only the Linux root user can interact with this object.&lt;/p&gt;
 &lt;p&gt;D-Bus also supports starting of services when a method is invoked
 (instead of running this service immediately). This is configured
-through &lt;code&gt;*.service&lt;/code&gt; files inside &lt;code&gt;/usr/share/dbus-1/system-services/&lt;/code&gt;.&lt;/p&gt;</content><category term="Free-Software"></category><category term="dbus"></category><category term="linux"></category></entry><entry><title>What is that net-pf-## thingie?</title><link href="https://blog.siphos.be/2014/04/what-is-that-net-pf-thingie/" rel="alternate"></link><published>2014-04-01T19:46:00+02:00</published><updated>2014-04-01T19:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-01:/2014/04/what-is-that-net-pf-thingie/</id><summary type="html">&lt;p&gt;When checking audit logs, you might come across applications that
+through &lt;code&gt;*.service&lt;/code&gt; files inside &lt;code&gt;/usr/share/dbus-1/system-services/&lt;/code&gt;.&lt;/p&gt;</content><category term="dbus"></category><category term="linux"></category></entry><entry><title>What is that net-pf-## thingie?</title><link href="https://blog.siphos.be/2014/04/what-is-that-net-pf-thingie/" rel="alternate"></link><published>2014-04-01T19:46:00+02:00</published><updated>2014-04-01T19:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-01:/2014/04/what-is-that-net-pf-thingie/</id><summary type="html">&lt;p&gt;When checking audit logs, you might come across applications that
 request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt;##&lt;/code&gt; being an integer.
 Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
 what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
 &lt;p&gt;The answer can be found in &lt;code&gt;/usr/src/linux/include/linux/socket.h&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF_ATMPVC …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When checking audit logs, you might come across applications that
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#define AF_ATMPVC …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When checking audit logs, you might come across applications that
 request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt;##&lt;/code&gt; being an integer.
 Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
 what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
 &lt;p&gt;The answer can be found in &lt;code&gt;/usr/src/linux/include/linux/socket.h&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF_ATMPVC       8       /* ATM PVCs                     */
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#define AF_ATMPVC       8       /* ATM PVCs                     */
 #define AF_X25          9       /* Reserved for X.25 project    */
 #define AF_INET6        10      /* IP version 6                 */
 #define AF_ROSE         11      /* Amateur Radio X.25 PLP       */
@@ -321,10 +329,11 @@ what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
 #define AF_ISDN         34      /* mISDN sockets                */
 #define AF_PHONET       35      /* Phonet sockets               */
 #define AF_IEEE802154   36      /* IEEE802154 sockets           */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So next time you get such a weird module load request, check &lt;code&gt;socket.h&lt;/code&gt;
-for more information.&lt;/p&gt;</content><category term="Free-Software"></category><category term="linux"></category><category term="module_request"></category><category term="net-pf"></category></entry><entry><title>Managing Inter-Process Communication (IPC)</title><link href="https://blog.siphos.be/2014/03/managing-inter-process-communication-ipc/" rel="alternate"></link><published>2014-03-30T12:50:00+02:00</published><updated>2014-03-30T12:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-30:/2014/03/managing-inter-process-communication-ipc/</id><summary type="html">&lt;p&gt;As a Linux administrator, you'll eventually need to concern you about
+for more information.&lt;/p&gt;</content><category term="linux"></category><category term="module_request"></category><category term="net-pf"></category></entry><entry><title>Managing Inter-Process Communication (IPC)</title><link href="https://blog.siphos.be/2014/03/managing-inter-process-communication-ipc/" rel="alternate"></link><published>2014-03-30T12:50:00+02:00</published><updated>2014-03-30T12:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-30:/2014/03/managing-inter-process-communication-ipc/</id><summary type="html">&lt;p&gt;As a Linux administrator, you'll eventually need to concern you about
 &lt;em&gt;Inter-Process Communication (IPC)&lt;/em&gt;. The IPC primitives that most POSIX
 operating systems provide are semaphores, shared memory and message
 queues. On Linux, the first utility that helps you with those primitives
@@ -350,15 +359,16 @@ a common resource.&lt;/p&gt;
 (such as dmix) use IPC semaphores to allow multiple ALSA applications to
 connect to and use the sound subsystem. When an ALSA-enabled application
 is using the sound system, you'll see that a semaphore is active:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -s
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ipcs -s
 ------ Semaphore Arrays --------
 key        semid      owner      perms      nsems     
 0x0056a4d5 32768      swift      660        1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;More information about a particular semaphore can be obtained using
 &lt;strong&gt;ipcs -s -i SEMID&lt;/strong&gt; where &lt;code&gt;SEMID&lt;/code&gt; is the value in the &lt;em&gt;semid&lt;/em&gt; column:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -s -i 32768
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ipcs -s -i 32768
 Semaphore Array semid=32768
 uid=1001         gid=18  cuid=1001       cgid=100
 mode=0660, access_perms=0660
@@ -367,7 +377,8 @@ otime = Sun Mar 30 12:33:46 2014
 ctime = Sun Mar 30 12:33:38 2014  
 semnum     value      ncount     zcount     pid       
 0          0          0          0          32061
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;As with all IPC resources, we have information about the owner of the
 semaphore (&lt;code&gt;uid&lt;/code&gt; and &lt;code&gt;gid&lt;/code&gt;), the creator of the semaphore (&lt;code&gt;cuid&lt;/code&gt; and
@@ -385,18 +396,19 @@ to the shared memory, so that one process that wants to update a part of
 the shared memory takes a semaphore (a sort-of lock), makes the updates,
 and then increments the semaphore again.&lt;/p&gt;
 &lt;p&gt;You can see the currently defined shared memory using &lt;strong&gt;ipcs -m&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -m
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ipcs -m
 ------ Shared Memory Segments --------
 key        shmid      owner      perms      bytes      nattch     status      
 0x00000000 655370     swift      600        393216     2          dest
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Again, more information can be obtained through &lt;strong&gt;-i SHMID&lt;/strong&gt;. An
 interesting value to look at as well is the creator PID (just in case
 the process still runs, or through the audit logs) and the last PID used
 to operate on the shared memory (which also might no longer exist, but
 is still an important value to investigate).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -m -p
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ipcs -m -p
 ------ Shared Memory Creator/Last-op PIDs --------
 shmid      owner      cpid       lpid      
 655370     swift      6147       6017
@@ -404,7 +416,8 @@ shmid      owner      cpid       lpid
 ~$ ps -ef | grep -E &amp;#39;(6147|6017)&amp;#39;
 root      6017  6016  0 09:49 tty1     00:01:30 /usr/bin/X -nolisten tcp :0 -auth /home/swift/.serverauth.6000
 swift     6147     1  2 09:50 tty1     00:05:10 firefox
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In this case, the shared memory is most likely used to handle the UI of
 firefox towards the X server.&lt;/p&gt;
@@ -433,7 +446,7 @@ resource is created. Unlike the key, which can be used for multiple IPC
 resources, the identifier is unique. This is why the identifier is used
 in the &lt;strong&gt;ipcs -i&lt;/strong&gt; command rather than the key. Also, that means that if
 applications would properly document their IPC usage then we would
-easily know what an IPC resource is used for.&lt;/p&gt;</content><category term="Free-Software"></category><category term="ipc"></category><category term="ipcrm"></category><category term="ipcs"></category><category term="linux"></category><category term="msg"></category><category term="sem"></category><category term="shmem"></category></entry><entry><title>Can Gentoo play a role in a RHEL-only environment?</title><link href="https://blog.siphos.be/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/" rel="alternate"></link><published>2014-01-09T04:13:00+01:00</published><updated>2014-01-09T04:13:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-09:/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/</id><summary type="html">&lt;p&gt;Sounds like a stupid question, as the answer is already in the title. If
+easily know what an IPC resource is used for.&lt;/p&gt;</content><category term="ipc"></category><category term="ipcrm"></category><category term="ipcs"></category><category term="linux"></category><category term="msg"></category><category term="sem"></category><category term="shmem"></category></entry><entry><title>Can Gentoo play a role in a RHEL-only environment?</title><link href="https://blog.siphos.be/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/" rel="alternate"></link><published>2014-01-09T04:13:00+01:00</published><updated>2014-01-09T04:13:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-09:/2014/01/can-gentoo-play-a-role-in-a-rhel-only-environment/</id><summary type="html">&lt;p&gt;Sounds like a stupid question, as the answer is already in the title. If
 a company has only RedHat Enterprise Linux as allowed / supported Linux
 platform (be it for a support model requirement, ISV certification,
 management tooling support or what not) how could or would Gentoo still
@@ -478,7 +491,7 @@ Prefix&lt;/a&gt;, multi-tenancy
 on the web application level through the
 &lt;a href="http://www.gentoo.org/proj/en/webapps/index.xml"&gt;webapp-config&lt;/a&gt; tool
 while all necessary software is readily available in the Portage tree.&lt;/p&gt;
-&lt;p&gt;All you need is some imagination...&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="linux"></category><category term="vappliance"></category><category term="virtual-appliance"></category></entry><entry><title>Linux protip: environment for a process</title><link href="https://blog.siphos.be/2014/01/linux-protip-environment-for-a-process/" rel="alternate"></link><published>2014-01-07T04:31:00+01:00</published><updated>2014-01-07T04:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-07:/2014/01/linux-protip-environment-for-a-process/</id><summary type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
+&lt;p&gt;All you need is some imagination...&lt;/p&gt;</content><category term="Gentoo"></category><category term="linux"></category><category term="vappliance"></category><category term="virtual-appliance"></category></entry><entry><title>Linux protip: environment for a process</title><link href="https://blog.siphos.be/2014/01/linux-protip-environment-for-a-process/" rel="alternate"></link><published>2014-01-07T04:31:00+01:00</published><updated>2014-01-07T04:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-07:/2014/01/linux-protip-environment-for-a-process/</id><summary type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
 a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt;/code&gt;
 file. The file however shows the environment variables on one line, with
 a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Just a quick pro-tip: if you need to know the environment variables for
@@ -486,7 +499,7 @@ a process, you can see them in that process' &lt;code&gt;/proc/${PID}/environ&lt
 file. The file however shows the environment variables on one line, with
 a null character as separator. With a simple &lt;strong&gt;sed&lt;/strong&gt; you can show it
 with newlines instead:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ sed -e &amp;quot;s:\x0:\n:g&amp;quot; /proc/144320/environ
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sed -e &amp;quot;s:\x0:\n:g&amp;quot; /proc/144320/environ
 TERM=xterm
 SHELL=/bin/bash
 OLDPWD=/home/swift/docs
@@ -498,25 +511,28 @@ MAIL=/var/mail/root
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin
 PWD=/var/db/pkg/eix
 ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The trick is to use &lt;code&gt;\x0&lt;/code&gt; (hexcode 0) for the null character, which the
-&lt;strong&gt;sed&lt;/strong&gt; command then replaces with a newline.&lt;/p&gt;</content><category term="Free-Software"></category><category term="environ"></category><category term="linux"></category><category term="protip"></category></entry><entry><title>Umounting IPv6 NFS(v4) mounts</title><link href="https://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/" rel="alternate"></link><published>2013-08-23T13:46:00+02:00</published><updated>2013-08-23T13:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/umounting-ipv6-nfsv4-mounts/</id><summary type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
+&lt;strong&gt;sed&lt;/strong&gt; command then replaces with a newline.&lt;/p&gt;</content><category term="environ"></category><category term="linux"></category><category term="protip"></category></entry><entry><title>Umounting IPv6 NFS(v4) mounts</title><link href="https://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/" rel="alternate"></link><published>2013-08-23T13:46:00+02:00</published><updated>2013-08-23T13:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/umounting-ipv6-nfsv4-mounts/</id><summary type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
 trying to umount the share, it said that it couldn't find the mount in
 &lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
 trying to umount the share, it said that it couldn't find the mount in
 &lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and the umount works
-correctly again.&lt;/p&gt;</content><category term="Misc"></category><category term="ip6"></category><category term="ipv6"></category><category term="linux"></category><category term="nfs4"></category><category term="nfsv4"></category><category term="umount"></category></entry><entry><title>Using extended attributes for custom information</title><link href="https://blog.siphos.be/2013/06/using-extended-attributes-for-custom-information/" rel="alternate"></link><published>2013-06-02T03:50:00+02:00</published><updated>2013-06-02T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-02:/2013/06/using-extended-attributes-for-custom-information/</id><summary type="html">&lt;p&gt;One of the things I have been meaning to implement on my system is a way
+correctly again.&lt;/p&gt;</content><category term="ip6"></category><category term="ipv6"></category><category term="linux"></category><category term="nfs4"></category><category term="nfsv4"></category><category term="umount"></category></entry><entry><title>Using extended attributes for custom information</title><link href="https://blog.siphos.be/2013/06/using-extended-attributes-for-custom-information/" rel="alternate"></link><published>2013-06-02T03:50:00+02:00</published><updated>2013-06-02T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-02:/2013/06/using-extended-attributes-for-custom-information/</id><summary type="html">&lt;p&gt;One of the things I have been meaning to implement on my system is a way
 to properly "remove" old files from the system. Currently, I do this
 through frequently listing all files, going through them and deleting
 those I feel I no longer need (in any case, I can …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the things I have been meaning to implement on my system is a way
@@ -537,9 +553,10 @@ dates supported for z/OS data sets. And to implement this, I am
 considering to use extended attributes.&lt;/p&gt;
 &lt;p&gt;The idea is simple: when working with a file, I want to be able to
 immediately set an expiration date to it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ strace -o strace.log ...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ strace -o strace.log ...
 $ expdate +7d strace.log
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This would set an extended attribute named &lt;code&gt;user.expiration&lt;/code&gt; with the
 value being the number of seconds since epoch (which you can obtain
@@ -557,7 +574,7 @@ their last modification time. Setting the expiration dates manually
 after creating the files is prone to be forgotten after a while. And
 perhaps introduce the flexibility of setting an &lt;code&gt;user.expire_after&lt;/code&gt;
 attribute is well, telling that the file can be removed if it hasn't
-been touched (modification time) in at least XX number of days.&lt;/p&gt;</content><category term="Free-Software"></category><category term="attributes"></category><category term="expiration"></category><category term="extended-attributes"></category><category term="linux"></category><category term="xattr"></category></entry><entry><title>Looking at the local Linux kernel privilege escalation</title><link href="https://blog.siphos.be/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/" rel="alternate"></link><published>2013-05-17T03:50:00+02:00</published><updated>2013-05-17T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-17:/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/</id><summary type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
+been touched (modification time) in at least XX number of days.&lt;/p&gt;</content><category term="attributes"></category><category term="expiration"></category><category term="extended-attributes"></category><category term="linux"></category><category term="xattr"></category></entry><entry><title>Looking at the local Linux kernel privilege escalation</title><link href="https://blog.siphos.be/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/" rel="alternate"></link><published>2013-05-17T03:50:00+02:00</published><updated>2013-05-17T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-17:/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/</id><summary type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
 escalation, which has received the
 &lt;a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2094"&gt;CVE-2013-2094&lt;/a&gt;
 ID.
@@ -602,7 +619,7 @@ to get to the userland. On my system, the exploit fails with the
 following (start of) oops (without affecting the system further) when it
 tries to close the file descriptor returned from the syscall that
 invokes the decrement:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
 [ 1926.227019] BUG: unable to handle kernel paging request at 0000000381f5815c
 [ 1926.227019] IP: [] sw_perf_event_destroy+0x1a/0xa0
 [ 1926.227019] PGD 58a7c000 
@@ -614,11 +631,13 @@ invokes the decrement:&lt;/p&gt;
 [ 1926.227019] RIP: 0010:[]  [] sw_perf_event_destroy+0x1a/0xa0
 [ 1926.227019] RSP: 0018:ffff880058a03e08  EFLAGS: 00010246
 ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The exploit also finds that the decrement didn't succeed:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;A second mitigation is that
 &lt;a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf"&gt;KERNEXEC&lt;/a&gt;
@@ -630,8 +649,9 @@ feature prevents the execution of binaries that are not located in a
 root-owned directory and owned by a trusted group (which on my system is
 10 = wheel). So users attempting to execute such code will fail with a
 &lt;em&gt;Permission denied&lt;/em&gt; error, and the following is shown in the logs:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;However, even though a nicely hardened system should be fairly immune
 against the currently circling public exploit, it should be noted that
@@ -651,7 +671,7 @@ SELinux (since the shell code is ran with ring0 privileges it can access
 and modify the SELinux state information in the kernel).&lt;/p&gt;
 &lt;p&gt;Many thanks to Brad for the excellent write-up, and to the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo
 Hardened&lt;/a&gt; team for providing the
-grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="Security"></category><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry><entry><title>Enabling Kernel Samepage Merging (KSM)</title><link href="https://blog.siphos.be/2013/05/enabling-kernel-samepage-merging-ksm/" rel="alternate"></link><published>2013-05-09T03:50:00+02:00</published><updated>2013-05-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-09:/2013/05/enabling-kernel-samepage-merging-ksm/</id><summary type="html">&lt;p&gt;When using virtualization extensively, you will pretty soon hit the
+grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry><entry><title>Enabling Kernel Samepage Merging (KSM)</title><link href="https://blog.siphos.be/2013/05/enabling-kernel-samepage-merging-ksm/" rel="alternate"></link><published>2013-05-09T03:50:00+02:00</published><updated>2013-05-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-09:/2013/05/enabling-kernel-samepage-merging-ksm/</id><summary type="html">&lt;p&gt;When using virtualization extensively, you will pretty soon hit the
 limits of your system (at least, the resources on it). When the
 virtualization is used primarily for testing (such as in my case), the
 limit is memory. So it makes sense to seek memory optimization
@@ -694,13 +714,14 @@ those projects.&lt;/p&gt;
 (all configured to take at most 1.5 Gb of memory). Together, they take
 just a little over 1 Gb of memory (sum of their resident set sizes).
 When I consult KSM, I get the following information:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep -H &amp;#39;&amp;#39; /sys/kernel/mm/ksm/pages_*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; # grep -H &amp;#39;&amp;#39; /sys/kernel/mm/ksm/pages_*
 /sys/kernel/mm/ksm/pages_shared:48911
 /sys/kernel/mm/ksm/pages_sharing:90090
 /sys/kernel/mm/ksm/pages_to_scan:100
 /sys/kernel/mm/ksm/pages_unshared:123002
 /sys/kernel/mm/ksm/pages_volatile:1035
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The &lt;code&gt;pages_shared&lt;/code&gt; tells me that 48911 pages are shared (which means
 about 191 Mb) through 90090 references (&lt;code&gt;pages_sharing&lt;/code&gt; - meaning the
@@ -713,7 +734,7 @@ marked with the &lt;code&gt;MADV_MERGEABLE&lt;/code&gt; advise flag but are not 
 processes.&lt;/p&gt;
 &lt;p&gt;If you want to use KSM yourself, configure your kernel with &lt;code&gt;CONFIG_KSM&lt;/code&gt;
 and start KSM by echo'ing the value "1" into &lt;code&gt;/sys/kernel/mm/ksm/run&lt;/code&gt;.
-That's all there is to it.&lt;/p&gt;</content><category term="Free-Software"></category><category term="cow"></category><category term="ksm"></category><category term="kvm"></category><category term="linux"></category><category term="virtualization"></category></entry><entry><title>Overview of Linux capabilities, part 3</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-3/" rel="alternate"></link><published>2013-05-06T03:50:00+02:00</published><updated>2013-05-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-06:/2013/05/overview-of-linux-capabilities-part-3/</id><summary type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+That's all there is to it.&lt;/p&gt;</content><category term="cow"></category><category term="ksm"></category><category term="kvm"></category><category term="linux"></category><category term="virtualization"></category></entry><entry><title>Overview of Linux capabilities, part 3</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-3/" rel="alternate"></link><published>2013-05-06T03:50:00+02:00</published><updated>2013-05-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-06:/2013/05/overview-of-linux-capabilities-part-3/</id><summary type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;I&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/"&gt;talked&lt;/a&gt;
@@ -839,7 +860,7 @@ for the &lt;code&gt;SECBIT_KEEP_CAPS&lt;/code&gt; security bit, the others are p
 when &lt;em&gt;fork()&lt;/em&gt; is used).&lt;/p&gt;
 &lt;p&gt;As a user or admin, you can also see capability-related information
 through the &lt;code&gt;/proc&lt;/code&gt; file system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep ^Cap /proc/$$/status
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; # grep ^Cap /proc/$$/status
 CapInh: 0000000000000000
 CapPrm: 0000001fffffffff
 CapEff: 0000001fffffffff
@@ -850,7 +871,8 @@ CapInh: 0000000000000000
 CapPrm: 0000000000000000
 CapEff: 0000000000000000
 CapBnd: 0000001fffffffff
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The capabilities listed therein are bitmasks for the various
 capabilities. The mask &lt;code&gt;1FFFFFFFFF&lt;/code&gt; holds 37 positions, which match the
@@ -861,7 +883,7 @@ capabilities of running processes in a more human readable format. But
 another tool provided by the &lt;code&gt;sys-libs/libcap&lt;/code&gt; is interested as well to
 look at: &lt;strong&gt;capsh&lt;/strong&gt;. The tool offers many capability-related features,
 including decoding the &lt;code&gt;status&lt;/code&gt; fields:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ capsh --decode=0000001fffffffff
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ capsh --decode=0000001fffffffff
 0x0000001fffffffff=cap_chown,cap_dac_override,cap_dac_read_search,
 cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,
 cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,
@@ -871,11 +893,12 @@ cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,
 cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,
 cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,
 cap_syslog,35,36
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Next to fancy decoding, &lt;strong&gt;capsh&lt;/strong&gt; can also launch a shell with reduced
 capabilities. This makes it a good utility for jailing chroots even
-more.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="capsh"></category><category term="libcap"></category><category term="linux"></category></entry><entry><title>Overview of Linux capabilities, part 2</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/" rel="alternate"></link><published>2013-05-05T03:50:00+02:00</published><updated>2013-05-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-05:/2013/05/overview-of-linux-capabilities-part-2/</id><summary type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+more.&lt;/p&gt;</content><category term="capabilities"></category><category term="capsh"></category><category term="libcap"></category><category term="linux"></category></entry><entry><title>Overview of Linux capabilities, part 2</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/" rel="alternate"></link><published>2013-05-05T03:50:00+02:00</published><updated>2013-05-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-05:/2013/05/overview-of-linux-capabilities-part-2/</id><summary type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
 capabilities&lt;/a&gt;
 and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
 them&lt;/a&gt;,
@@ -942,7 +965,7 @@ govern correctly, but this post would be rather dull (given that the
 definitions of the above capabilities can be found from the manual page)
 if I wouldn't talk a bit more about its feasibility. Take a look at the
 following C application code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#include &amp;lt;errno.h&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#include &amp;lt;errno.h&amp;gt;
 #include &amp;lt;stdio.h&amp;gt;
 #include &amp;lt;string.h&amp;gt;
 #include &amp;lt;sys/capability.h&amp;gt;
@@ -958,20 +981,22 @@ int main(int argc, char ** argv) {
     printf(&amp;quot;setresuid(): %s\n&amp;quot;, strerror(errno));
   execve(&amp;quot;/bin/sh&amp;quot;, NULL, NULL);
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;At first sight, it looks like an application to get root privileges
 (&lt;em&gt;setresuid()&lt;/em&gt;) and then spawn a shell. If that application would be
 given &lt;code&gt;CAP_SETUID&lt;/code&gt; and &lt;code&gt;CAP_SETGID&lt;/code&gt; effectively, it would allow anyone
 who executed it to automatically get a root shell, wouldn't it?&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gcc -o test -lcap test.c
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gcc -o test -lcap test.c
 # setcap cap_setuid,cap_setgid+ep test
 $ ./test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  =
 setresuid() failed: Operation not permitted
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So what happened? After all, the two capabilities are set with the &lt;em&gt;+ep&lt;/em&gt;
 flags given. Then why aren't these capabilities enabled? Well, this
@@ -979,21 +1004,23 @@ binary was stored on a file system that is mounted with the &lt;em&gt;nosuid&lt;
 option. As a result, this capability is &lt;em&gt;not&lt;/em&gt; enabled and the
 application didn't work. If I move the file to another file system that
 doesn't have the &lt;em&gt;nosuid&lt;/em&gt; option:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ /usr/local/bin/test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  = cap_setgid,cap_setuid+ep
 setresuid() failed: Operation not permitted
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So the capabilities now do get enabled, so why does this still fail?
 This now is due to SELinux:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&amp;quot;test&amp;quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&amp;quot;test&amp;quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;And if you enable grSecurity's TPE, we can't even start the binary to
 begin with:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ./test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./test
 -bash: ./test: Permission denied
 $ /lib/ld-linux-x86-64.so.2 /home/test/test
 /home/test/test: error while loading shared libraries: /home/test/test: failed to map segment from shared object: Permission denied
@@ -1001,17 +1028,19 @@ $ /lib/ld-linux-x86-64.so.2 /home/test/test
 # dmesg
 ...
 [ 5579.567842] grsec: From 192.168.100.1: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/test/test by /home/test/test[bash:4221] uid/euid:1002/1002 gid/egid:100/100, parent /bin/bash[bash:4195] uid/euid:1002/1002 gid/egid:100/100
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;When all these "security obstacles" are not enabled, then the call
 succeeds:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ /usr/local/bin/test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  = cap_setgid,cap_setuid+ep
 setresuid() failed: Success
 root@hpl tmp #
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This again shows how important it is to regularly review
 capability-enabled files on the file system, as this is a major security
@@ -1019,10 +1048,10 @@ problem that cannot be detected by only looking for setuid binaries, but
 also that securing a system is not limited to one or a few settings: one
 always has to take the entire setup into consideration, hardening the
 system so it becomes more difficult for malicious users to abuse it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# filecap -a
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# filecap -a
 file                 capabilities
 /usr/local/bin/test     setgid, setuid
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="grsecurity"></category><category term="linux"></category><category term="nosuid"></category><category term="selinux"></category><category term="tpe"></category></entry><entry><title>Overview of Linux capabilities, part 1</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/" rel="alternate"></link><published>2013-05-04T03:50:00+02:00</published><updated>2013-05-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-04:/2013/05/overview-of-linux-capabilities-part-1/</id><summary type="html">&lt;p&gt;In the
+&lt;/pre&gt;&lt;/div&gt;</content><category term="capabilities"></category><category term="grsecurity"></category><category term="linux"></category><category term="nosuid"></category><category term="selinux"></category><category term="tpe"></category></entry><entry><title>Overview of Linux capabilities, part 1</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/" rel="alternate"></link><published>2013-05-04T03:50:00+02:00</published><updated>2013-05-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-04:/2013/05/overview-of-linux-capabilities-part-1/</id><summary type="html">&lt;p&gt;In the
 &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;,
 I talked about capabilities and how they can be used to allow processes
@@ -1048,8 +1077,9 @@ want to know which SELinux domains are "granted" a particular
 capability, you can look this up using &lt;strong&gt;sesearch&lt;/strong&gt;. The capability is
 either in the &lt;em&gt;capability&lt;/em&gt; or &lt;em&gt;capability2&lt;/em&gt; class, and is named after
 the capability itself, without the &lt;code&gt;CAP_&lt;/code&gt; prefix:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sesearch -c capability -p chown -A
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sesearch -c capability -p chown -A
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;dl&gt;
 &lt;dt&gt;CAP_CHOWN&lt;/dt&gt;
@@ -1096,14 +1126,15 @@ However, when you start confining those applications, it becomes
 apparent that they require this capability. Another example is when you
 run user applications, as root, like when trying to play a movie or
 music file with &lt;strong&gt;mplayer&lt;/strong&gt; when this file is owned by a regular user:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_read_search } for
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_read_search } for
 pid=8153 comm=&amp;quot;mplayer&amp;quot; capability=2  scontext=staff_u:sysadm_r:mplayer_t
 tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
 
 type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_override } for
 pid=8153 comm=&amp;quot;mplayer&amp;quot; capability=1  scontext=staff_u:sysadm_r:mplayer_t
 tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Notice the time stamp: both checks are triggered at the same time. What
 happens is that the Linux security hooks first check for
@@ -1122,7 +1153,7 @@ rather to properly close the file descriptor or flushing caches, etc.&lt;/p&gt;
 &lt;p&gt;BTW, on my system, only 5 SELinux domains hold the &lt;em&gt;lease&lt;/em&gt; capability.&lt;/p&gt;
 &lt;p&gt;There are 37 capabilities known by the Linux kernel at this time. The
 above list has 9 file related ones. So perhaps next I can talk about
-process capabilities.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Restricting and granting capabilities</title><link href="https://blog.siphos.be/2013/05/restricting-and-granting-capabilities/" rel="alternate"></link><published>2013-05-03T03:50:00+02:00</published><updated>2013-05-03T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-03:/2013/05/restricting-and-granting-capabilities/</id><summary type="html">&lt;p&gt;As
+process capabilities.&lt;/p&gt;</content><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Restricting and granting capabilities</title><link href="https://blog.siphos.be/2013/05/restricting-and-granting-capabilities/" rel="alternate"></link><published>2013-05-03T03:50:00+02:00</published><updated>2013-05-03T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-03:/2013/05/restricting-and-granting-capabilities/</id><summary type="html">&lt;p&gt;As
 &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro"&gt;capabilities&lt;/a&gt;
 are a way for running processes with some privileges, without having the
 need to grant them root privileges, it is important to understand that
@@ -1155,7 +1186,7 @@ instead (&lt;em&gt;+p&lt;/em&gt;). That doesn't mean that the capability is in e
 rather that it is in a sort-of permitted set. Applications that are
 granted a certain permission this way can either use this capability if
 the user is allowed to have it, or won't otherwise.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setcap cap_net_raw+p anotherping
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# setcap cap_net_raw+p anotherping
 
 # vim /etc/pam.d/system-login
 ... add in something like
@@ -1164,17 +1195,19 @@ auth     required     pam_cap.so
 # vim /etc/security/capability.conf
 ... add in something like
 cap_net_raw           user1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The logic used with capabilities can be described as follows (it is not
 as difficult as it looks):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;        pI&amp;#39; = pI
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;        pI&amp;#39; = pI
   (***) pP&amp;#39; = fP | (fI &amp;amp; pI)
         pE&amp;#39; = pP&amp;#39; &amp;amp; fE          [NB. fE is 0 or ~0]
 
   I=Inheritable, P=Permitted, E=Effective // p=process, f=file
   &amp;#39; indicates post-exec().
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So, for instance, the second line reads "The permitted set of
 capabilities of the newly forked process is set to the permitted set of
@@ -1185,19 +1218,21 @@ inherited capabilities of the parent process."&lt;/p&gt;
 particular capabilities set. With &lt;strong&gt;filecap&lt;/strong&gt; you can list which
 capabilities are in the effective set of files found on the file system
 (for instance, &lt;em&gt;+ep&lt;/em&gt;).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# filecap 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# filecap 
 file                 capabilities
 /bin/anotherping     net_raw
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Similarly, with &lt;strong&gt;pscap&lt;/strong&gt; you can see the capabilities set on running
 processes.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# pscap -a
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# pscap -a
 ppid  pid   name        command           capabilities
 6148  6152  root        bash              full
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;It might be wise to take this up in the daily audit reports.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Capabilities, a short intro</title><link href="https://blog.siphos.be/2013/05/capabilities-a-short-intro/" rel="alternate"></link><published>2013-05-02T03:50:00+02:00</published><updated>2013-05-02T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-02:/2013/05/capabilities-a-short-intro/</id><summary type="html">&lt;p&gt;Capabilities. You probably have heard of them already, but when you
+
+&lt;p&gt;It might be wise to take this up in the daily audit reports.&lt;/p&gt;</content><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Capabilities, a short intro</title><link href="https://blog.siphos.be/2013/05/capabilities-a-short-intro/" rel="alternate"></link><published>2013-05-02T03:50:00+02:00</published><updated>2013-05-02T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-02:/2013/05/capabilities-a-short-intro/</id><summary type="html">&lt;p&gt;Capabilities. You probably have heard of them already, but when you
 start developing SELinux policies, you'll notice that you come in closer
 contact with them than before. This is because SELinux, when
 applications want to do something "root-like", checks the capability of
@@ -1230,35 +1265,39 @@ restricted privileges of the user plus one capability, namely the
 &lt;p&gt;Let's take this &lt;strong&gt;ping&lt;/strong&gt; example to the next level: copy the binary
 (possibly relabel it as &lt;code&gt;ping_exec_t&lt;/code&gt; if you run with SELinux), make
 sure it does not hold the setuid and try it out:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cp ping anotherping
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cp ping anotherping
 # chcon -t ping_exec_t anotherping
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now as a regular user:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ping -c 1 127.0.0.1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ping -c 1 127.0.0.1
 PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
 64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.057 ms
 
 $ anotherping -c 1 127.0.0.1
 ping: icmp open socket: Operation not permitted
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Let's assign the binary with the &lt;code&gt;CAP_NET_RAW&lt;/code&gt; capability flag:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setcap cap_net_raw+ep anotherping
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# setcap cap_net_raw+ep anotherping
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;And tadaa:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ anotherping -c 1 127.0.0.1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ anotherping -c 1 127.0.0.1
 PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
 64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.054 ms
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;What &lt;strong&gt;setcap&lt;/strong&gt; did was place an extended attribute to the file, which
 is a binary representation of the capabilities assigned to the
 application. The additional information (&lt;code&gt;+ep&lt;/code&gt;) means that the
 capability is &lt;em&gt;p&lt;/em&gt;ermitted and &lt;em&gt;e&lt;/em&gt;ffective.&lt;/p&gt;
 &lt;p&gt;So long for the primer, I'll talk about the various capabilities in a
-later post.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category><category term="ping"></category><category term="selinux"></category></entry><entry><title>Simple drawing for I/O positioning</title><link href="https://blog.siphos.be/2013/04/simple-drawing-for-io-positionin/" rel="alternate"></link><published>2013-04-18T01:00:00+02:00</published><updated>2013-04-18T01:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/simple-drawing-for-io-positionin/</id><summary type="html">&lt;p&gt;Instead of repeatedly trying to create an overview of the various layers
+later post.&lt;/p&gt;</content><category term="capabilities"></category><category term="linux"></category><category term="ping"></category><category term="selinux"></category></entry><entry><title>Simple drawing for I/O positioning</title><link href="https://blog.siphos.be/2013/04/simple-drawing-for-io-positionin/" rel="alternate"></link><published>2013-04-18T01:00:00+02:00</published><updated>2013-04-18T01:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/simple-drawing-for-io-positionin/</id><summary type="html">&lt;p&gt;Instead of repeatedly trying to create an overview of the various layers
 involved with I/O operations within Linux on whatever white-board is in
 the vicinity, I decided to draw one up in &lt;a href="http://www.draw.io"&gt;Draw.io&lt;/a&gt;
 that I can then update as I learn more from this fascinating world. The
@@ -1271,4 +1310,4 @@ guidance to what is handled where, so they are definitely not complete.&lt;/p&gt
 &lt;p&gt;So for those interested (or those that know more of it than I ever will
 and prepared to help me out):&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://blog.siphos.be/wp-content/uploads/2013/04/io-layers.png"&gt;&lt;img alt="io-layers" src="http://blog.siphos.be/wp-content/uploads/2013/04/io-layers-231x300.png"&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;I hope it isn't too far from the truth.&lt;/p&gt;</content><category term="Documentation"></category><category term="io"></category><category term="linux"></category></entry></feed>
+&lt;p&gt;I hope it isn't too far from the truth.&lt;/p&gt;</content><category term="io"></category><category term="linux"></category></entry></feed>

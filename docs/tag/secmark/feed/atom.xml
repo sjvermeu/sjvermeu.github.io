@@ -35,7 +35,7 @@ take on one system can be made based on the context of the process on
 the other system.&lt;/p&gt;
 &lt;p&gt;So no, SELinux cannot be used to route traffic, but it plays very nicely
 with various networking controls to make proper decisions on its access
-control enforcement.&lt;/p&gt;</content><category term="SELinux"></category><category term="ipsec"></category><category term="netlabel"></category><category term="networking"></category><category term="secmark"></category><category term="selinux"></category></entry><entry><title>SECMARK and SELinux</title><link href="https://blog.siphos.be/2013/05/secmark-and-selinux/" rel="alternate"></link><published>2013-05-13T03:50:00+02:00</published><updated>2013-05-13T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-13:/2013/05/secmark-and-selinux/</id><summary type="html">&lt;p&gt;When using SECMARK, the administrator configures the &lt;strong&gt;iptables&lt;/strong&gt; or
+control enforcement.&lt;/p&gt;</content><category term="ipsec"></category><category term="netlabel"></category><category term="networking"></category><category term="secmark"></category><category term="selinux"></category></entry><entry><title>SECMARK and SELinux</title><link href="https://blog.siphos.be/2013/05/secmark-and-selinux/" rel="alternate"></link><published>2013-05-13T03:50:00+02:00</published><updated>2013-05-13T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-13:/2013/05/secmark-and-selinux/</id><summary type="html">&lt;p&gt;When using SECMARK, the administrator configures the &lt;strong&gt;iptables&lt;/strong&gt; or
 &lt;strong&gt;netfilter&lt;/strong&gt; rules to add a label to the packet data structure (on the
 host itself) that can be governed through SELinux policies. Unlike peer
 labeling, here the labels assigned to the network traffic is completely
@@ -44,23 +44,26 @@ locally defined. Consider the following command …&lt;/p&gt;</summary><content 
 host itself) that can be governed through SELinux policies. Unlike peer
 labeling, here the labels assigned to the network traffic is completely
 locally defined. Consider the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# iptables -t mangle -A INPUT -p tcp --src 192.168.1.2 --dport 443
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# iptables -t mangle -A INPUT -p tcp --src 192.168.1.2 --dport 443
   -j SECMARK --selctx system_u:object_r:myauth_packet_t
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this command, packets that originate from the &lt;em&gt;192.168.1.2&lt;/em&gt; host
 and arrive on port 443 (typically used for HTTPS traffic) are marked as
 &lt;code&gt;myauth_packet_t&lt;/code&gt;. SELinux policy writers can then allow domains to
 receive this type of packets (or send) through the &lt;em&gt;packet&lt;/em&gt; class:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Allow sockets with mydomain_t context to receive packets labeled myauth_packet_t
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Allow sockets with mydomain_t context to receive packets labeled myauth_packet_t
 allow mydomain_t myauth_packet_t:packet recv;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The SELinux policy modules enable this through the
 &lt;em&gt;corenet_sendrecv_&amp;lt;type&amp;gt;_{client,server}_packets&lt;/em&gt; interfaces:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_sendrecv_http_client_packets(mybrowser_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_sendrecv_http_client_packets(mybrowser_t)
 # allow mybrowser_t http_client_packet_t:packet { send recv };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;As a common rule, packets are marked as client packets or server
 packets, depending on the role of the &lt;em&gt;domain&lt;/em&gt;. In the above example,
@@ -76,4 +79,4 @@ labeled as &lt;code&gt;http_client_packet_t&lt;/code&gt; whereas on the target t
 contexts with &lt;strong&gt;iptables&lt;/strong&gt; yourself (there is no default labeling), so
 knowing about the above convention is important.&lt;/p&gt;
 &lt;p&gt;Again, Paul Moore has &lt;a href="http://paulmoore.livejournal.com/4281.html"&gt;more
-information&lt;/a&gt; about this.&lt;/p&gt;</content><category term="SELinux"></category><category term="policy"></category><category term="secmark"></category><category term="selinux"></category></entry></feed>
+information&lt;/a&gt; about this.&lt;/p&gt;</content><category term="policy"></category><category term="secmark"></category><category term="selinux"></category></entry></feed>

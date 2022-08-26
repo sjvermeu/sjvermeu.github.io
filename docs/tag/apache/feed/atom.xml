@@ -18,16 +18,18 @@ the first thing to look at is to see if this risk can be reduced. Of
 course, using an intrusion detection system like
 &lt;a href="https://wiki.gentoo.org/wiki/AIDE"&gt;AIDE&lt;/a&gt; helps, but even with Gentoo's
 &lt;strong&gt;qcheck&lt;/strong&gt; command you can test the integrity of the files:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# qcheck www-servers/apache
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# qcheck www-servers/apache
 Checking www-servers/apache-2.2.24 ...
   * 424 out of 424 files are good
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;If the binary is modified, this would result in something equivalent to:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Checking www-servers/apache-2.2.24 ...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Checking www-servers/apache-2.2.24 ...
  MD5-DIGEST: /usr/sbin/apache2
   * 423 out of 424 files are good
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;I don't know if the modified binary would otherwise work just fine, I
 have not been able to find exact details on the infected binary to (in a
@@ -40,8 +42,9 @@ the proper SELinux context on the file (if it overwrites the existing
 binary, then the context is retained, otherwise it gets the default
 context of &lt;code&gt;bin_t&lt;/code&gt;). If the context is wrong, then starting Apache
 results in:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This is because the modified binary stays in the calling domain context
 (&lt;code&gt;initrc_t&lt;/code&gt;). If you use a targeted policy, then this will not present
@@ -55,7 +58,7 @@ articles I read, the malware can do a reverse connect. That means that
 the domain will attempt to connect to an IP address provided by the
 attacker (in a specifically crafted URL). For SELinux, this means that
 the &lt;em&gt;name_connect&lt;/em&gt; permission is checked:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sesearch -s httpd_t -c tcp_socket -p name_connect -ACTS
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sesearch -s httpd_t -c tcp_socket -p name_connect -ACTS
 Found 20 semantic av rules:
    allow nsswitch_domain dns_port_t : tcp_socket { name_connect } ; 
 DT allow httpd_t port_type : tcp_socket { name_connect } ; [ httpd_can_network_connect ]
@@ -77,7 +80,8 @@ DT allow httpd_t pop_port_t : tcp_socket { name_connect } ; [ httpd_can_sendmail
 DT allow nsswitch_domain ocsp_port_t : tcp_socket { name_connect } ; [ allow_kerberos ]
 DT allow httpd_t gds_db_port_t : tcp_socket { name_connect } ; [ httpd_can_network_connect_db ]
 DT allow httpd_t gopher_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So by default, the Apache (&lt;code&gt;httpd_t&lt;/code&gt;) domain is allowed to connect to
 DNS port (to resolve hostnames). All other &lt;em&gt;name_connect&lt;/em&gt; calls depend
@@ -99,11 +103,12 @@ access to the shared memory. However, if this shared memory would need
 to be accessed by third party applications (the malware seems to grant
 read/write rights on everybody to this segment) SELinux will prevent
 this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sesearch -t httpd_t -c shm -ACTS
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sesearch -t httpd_t -c shm -ACTS
 Found 2 semantic av rules:
    allow unconfined_domain_type domain : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ; 
    allow httpd_t httpd_t : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Only unconfined domains and the &lt;code&gt;httpd_t&lt;/code&gt; domain itself have access to
 &lt;code&gt;httpd_t&lt;/code&gt; labeled shared memory.&lt;/p&gt;
@@ -114,4 +119,4 @@ this.&lt;/p&gt;
 &lt;p&gt;For now, it seems that a good system integrity approach is the most
 effective until we know more about how the malware-infected binary is
 written to the system in the first place (as this is better protected by
-MAC controls like SELinux).&lt;/p&gt;</content><category term="Security"></category><category term="apache"></category><category term="cdorked"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category></entry></feed>
+MAC controls like SELinux).&lt;/p&gt;</content><category term="apache"></category><category term="cdorked"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category></entry></feed>

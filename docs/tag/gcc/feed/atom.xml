@@ -21,8 +21,9 @@ crazy, I start seeing a pattern here.&lt;/p&gt;
 &lt;p&gt;Anyway, it turns out that PaX/grSec and asan do not get along yet (ASAN
 assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened
@@ -95,4 +96,4 @@ Integrity&lt;/a&gt;
 subproject.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Media&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;If you don't do it already, start following
-&lt;a href="https://twitter.com/GentooHardened"&gt;@GentooHardened&lt;/a&gt; ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="asan"></category><category term="gcc"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="integrity"></category><category term="irc"></category><category term="meeting"></category><category term="pax"></category><category term="selinux"></category><category term="uderef"></category></entry></feed>
+&lt;a href="https://twitter.com/GentooHardened"&gt;@GentooHardened&lt;/a&gt; ;-)&lt;/p&gt;</content><category term="asan"></category><category term="gcc"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="integrity"></category><category term="irc"></category><category term="meeting"></category><category term="pax"></category><category term="selinux"></category><category term="uderef"></category></entry></feed>

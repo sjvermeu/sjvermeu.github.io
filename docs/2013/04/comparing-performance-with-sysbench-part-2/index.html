@@ -243,20 +243,22 @@ on the agenda are the <em>memory</em>, <em>threads</em> and <em>mutex</em> workl
 1kbyte) and each execution will read or write to this memory
 (<em>--memory-oper</em>, defaults to write) in a random or sequential manner
 (<em>--memory-access-mode</em>, defaults to <strong>seq</strong>uential).</p>
-<div class="highlight"><pre><span></span><code>$ sysbench --test=memory --memory-block-size=1M --memory-total-size=10G run
+<div class="highlight"><pre><span></span>$ sysbench --test=memory --memory-block-size=1M --memory-total-size=10G run
 Host throughput, 1M:  3959,78 MB/sec
 Guest throughput, 1M: 3079,29 MB/sec
-</code></pre></div>
+</pre></div>
+
 
 <p>The guest has a lower throughput (about 77% of the host), which is lower
 than what most online posts provide on KVM performance. We'll get back
 to that later. Let's look at the default block size of 1k (meaning that
 the benchmark will do a lot more executions before it reaches the total
 memory (in load):</p>
-<div class="highlight"><pre><span></span><code>$ sysbench --test=memory --memory-total-size=1G run
+<div class="highlight"><pre><span></span>$ sysbench --test=memory --memory-total-size=1G run
 Host throughput, 1k:  1702,59 MB/sec
 Guest throughput, 1k:   23,67 MB/sec
-</code></pre></div>
+</pre></div>
+
 
 <p>This is a lot worse: the guest' throughput is only 1,4% of the host
 throughput! The <code>qemu-kvm</code> process on the host is also taking up a lot
@@ -277,20 +279,22 @@ the more frequent thread operations are needed. In the last run we did
 (although no yields were performed). Something similar can be simulated
 using a single lock, single thread and a very high number of operations
 and no yields:</p>
-<div class="highlight"><pre><span></span><code>$ sysbench --test=threads --num-threads=1 --thread-yields=0 --max-requests=1000000 --thread-locks=1 run
+<div class="highlight"><pre><span></span>$ sysbench --test=threads --num-threads=1 --thread-yields=0 --max-requests=1000000 --thread-locks=1 run
 Host runtime:    0,3267 s  (event:    0,2278)
 Guest runtime:  40,7672 s  (event:   30,6084)
-</code></pre></div>
+</pre></div>
+
 
 <p>This means that the guest "throughput" problems from the memory
 identified above seem to be related to this rather than memory-specific
 regressions. To verify if the scheduler itself also shows regressions,
 we can run more threads concurrently. For instance, running 128 threads
 simultaneously, using the otherwise default settings, during 10 seconds:</p>
-<div class="highlight"><pre><span></span><code>$ sysbench --test=threads --num-threads=128 --max-time=10s run
+<div class="highlight"><pre><span></span>$ sysbench --test=threads --num-threads=128 --max-time=10s run
 Host:   9765 executions (events)
 Guest:   512 executions (events)
-</code></pre></div>
+</pre></div>
+
 
 <p>Here we get only 5% throughput.</p>
 <p>Let's focus on the mutex again, as sysbench has an additional mutex
@@ -303,10 +307,11 @@ the performance issues above, then we would notice that the mutex
 operations are a major performance regression on my system.</p>
 <p>Let's run that workload with a single thread (default), no loops and a
 single mutex.</p>
-<div class="highlight"><pre><span></span><code>$ sysbench --test=mutex --mutex-num=1 --mutex-locks=50000000 --mutex-loops=1 run
+<div class="highlight"><pre><span></span>$ sysbench --test=mutex --mutex-num=1 --mutex-locks=50000000 --mutex-loops=1 run
 Host (duration):   2600,57 ms
 Guest (duration):  2571,44 ms
-</code></pre></div>
+</pre></div>
+
 
 <p>In this example, we see that the mutex operations are almost at the same
 speed (99%) of the host, so pure mutex operations are not likely to be

@@ -245,7 +245,7 @@ access to the shadow file).</p>
 <p>In <code>pam_unix_passwd.c</code>, the <em>_unix_run_verify_binary()</em> method is
 called but only if the <em>get_account_info()</em> method returns
 <code>PAM_UNIX_RUN_HELPER</code>.</p>
-<div class="highlight"><pre><span></span><code>static int _unix_verify_shadow(pam_handle_t *pamh, const char *user, unsigned int ctrl)
+<div class="highlight"><pre><span></span>static int _unix_verify_shadow(pam_handle_t *pamh, const char *user, unsigned int ctrl)
 {
 ...
         retval = get_account_info(pamh, user, &amp;pwent, &amp;spent);
@@ -255,12 +255,13 @@ called but only if the <em>get_account_info()</em> method returns
                 if (retval == PAM_AUTH_ERR || retval == PAM_USER_UNKNOWN)
                         return retval;
         }
-</code></pre></div>
+</pre></div>
+
 
 <p>In <code>passverify.c</code> this method will check the password entry file and, if
 the entry is a shadow file, will return <code>PAM_UNIX_RUN_HELPER</code> if the
 current user id is not root, or if SELinux is enabled:</p>
-<div class="highlight"><pre><span></span><code>PAMH_ARG_DECL(int get_account_info,
+<div class="highlight"><pre><span></span>PAMH_ARG_DECL(int get_account_info,
         const char *name, struct passwd **pwd, struct spwd **spwdent)
 {
         /* UNIX passwords area */
@@ -278,16 +279,18 @@ current user id is not root, or if SELinux is enabled:</p>
                         if (geteuid() || SELINUX_ENABLED)
                                 return PAM_UNIX_RUN_HELPER;
 #endif
-</code></pre></div>
+</pre></div>
+
 
 <p>The <code>SELINUX_ENABLED</code> is a C macro defined in the same file:</p>
-<div class="highlight"><pre><span></span><code>#ifdef WITH_SELINUX
+<div class="highlight"><pre><span></span>#ifdef WITH_SELINUX
 #include 
 #define SELINUX_ENABLED is_selinux_enabled()&gt;0
 #else
 #define SELINUX_ENABLED 0
 #endif
-</code></pre></div>
+</pre></div>
+
 
 <p>And this is where my "aha" moment came forth: the Courier authdaemon
 runs as root, so its user id is 0. The <em>geteuid()</em> method will return 0,

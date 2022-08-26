@@ -264,12 +264,13 @@ push incron in the existing <em>cron</em> policy. After all, it defines the
 contexts for all these and probably doesn't need any additional
 tweaking. And this seems to work at first, but a few tests reveal that
 the behavior is not that optimal.</p>
-<div class="highlight"><pre><span></span><code># chcon -t crond_exec_t /usr/sbin/incrond
+<div class="highlight"><pre><span></span># chcon -t crond_exec_t /usr/sbin/incrond
 # chcon -t crontab_exec_t /usr/bin/incrontab
 # chcon -R -t system_cron_spool_t /etc/incron.d
 # chcon -t cron_log_t /var/log/cron.log
 # chcon -R -t cron_spool_t /var/spool/incron
-</code></pre></div>
+</pre></div>
+
 
 <p>System tables work somewhat, but all commands are executed in the
 <code>crond_t</code> domain, not in a <code>system_cronjob_t</code> or related domain.<br>

@@ -258,22 +258,25 @@ on my kernel configuration already, and Internet sources are not clear which one
 needed, so let's assume for now both are.</p>
 <p>Next, the PAM module needs to be installed. On Gentoo, this is a matter of installing
 the <code>pam\_u2f</code> package, as the necessary dependencies will be pulled in automatically:</p>
-<div class="highlight"><pre><span></span><code>~# emerge pam_u2f
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# emerge pam_u2f
+</pre></div>
+
 
 <p>Next, for each user, a registration has to be made. This registration is needed for the
 U2F components to be able to correctly authenticate the use of a U2F key for a particular
 user. This is done with <code>pamu2fcfg</code>:</p>
-<div class="highlight"><pre><span></span><code>~$ pamu2fcfg -u&lt;username&gt; &gt; ~/.config/Yubico/u2f_keys
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ pamu2fcfg -u&lt;username&gt; &gt; ~/.config/Yubico/u2f_keys
+</pre></div>
+
 
 <p>The U2F USB key must be plugged in when the command is executed, as a succesful keypress (on the
 U2F device) is needed to complete the operation.</p>
 <p>Finally, enable the use of the <code>pam\_u2f</code> module in PAM. On my system, this is done
 through the <code>/etc/pam.d/system-local-login</code> PAM configuration file used by all
 local logon services.</p>
-<div class="highlight"><pre><span></span><code>auth     required     pam_u2f.so
-</code></pre></div>
+<div class="highlight"><pre><span></span>auth     required     pam_u2f.so
+</pre></div>
+
 
 <p><strong>Consider the problems you might face</strong></p>
 <p>When fiddling with PAM, it is important to keep in mind what could fail. During the setup, it
@@ -293,10 +296,11 @@ rebooted in single user mode.</p>
 the proper rights to handle U2F, and because PAM just works in the address space (and thus SELinux
 domain) of the application, the necessary privileges need to be added to these services. My initial
 investigation revealed the following necessary policy rules (refpolicy-style);</p>
-<div class="highlight"><pre><span></span><code>udev_search_pids(...)
+<div class="highlight"><pre><span></span>udev_search_pids(...)
 udev_read_db(...)
 dev_rw_generic_usb_dev(...)
-</code></pre></div>
+</pre></div>
+
 
 <p>The first two rules are needed because the operation to trigger the USB key uses the udev tables
 to find out where the key is located/attached, before it interacts with it. This interaction is then

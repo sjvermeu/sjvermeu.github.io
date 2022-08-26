@@ -59,9 +59,10 @@ SELinux policy, or disable SELinux (actually switch it to permissive
 mode) if the Linux kernel has this enabled. By allowing users to load a
 new policy, they can basically create a SELinux policy module that
 grants them the necessary accesses towards the file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow sysadm_t ca_misc_file_t:file manage_file_perms;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow sysadm_t ca_misc_file_t:file manage_file_perms;
 allow sysadm_t ca_misc_file_t:dir manage_dir_perms;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So in order to prevent this, we have to make sure that these users can
 either not manipulate the SELinux policy - or make sure users on the
@@ -78,10 +79,11 @@ the context of a file. If the &lt;code&gt;ca_private_key_t&lt;/code&gt; type wou
 declared properly, then the type might be assigned an attribute that
 domains have privileges against. Consider the &lt;code&gt;file_type&lt;/code&gt; attribute,
 granted to file types (at least the name makes sense ;-)&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -tca_private_key_t -x
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# seinfo -tca_private_key_t -x
   ca_private_key_t
     file_type
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The moment a domain has been granted read access to the &lt;code&gt;file_type&lt;/code&gt;
 files, then it has read access to the &lt;code&gt;ca_private_key_t&lt;/code&gt; type. In other
@@ -170,4 +172,4 @@ attack). Welcome to the world of security ;-)&lt;/p&gt;
 &lt;p&gt;In any case, in the next post I'll focus on the SELinux policy I wrote
 up for the simple script I created. But all the above is just to show
 that SELinux is not the answer - it is merely a part in an entire
-security architecture. A flexible, powerful part... but still a part.&lt;/p&gt;</content><category term="SELinux"></category><category term="access"></category><category term="acl"></category><category term="file-access"></category><category term="Gentoo"></category><category term="selinux"></category></entry></feed>
+security architecture. A flexible, powerful part... but still a part.&lt;/p&gt;</content><category term="access"></category><category term="acl"></category><category term="file-access"></category><category term="Gentoo"></category><category term="selinux"></category></entry></feed>

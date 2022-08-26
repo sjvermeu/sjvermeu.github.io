@@ -41,18 +41,20 @@ pictures are marked as &lt;code&gt;xdg_pictures_home_t&lt;/code&gt;, etc.&lt;/p&
 &lt;p&gt;With those types defined, we grant the regular user domains full access to
 those types, but start removing access to user content from applications. Rules
 such as the following are commented out or removed from the policies:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# userdom_manage_user_home_content_dirs(mozilla_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# userdom_manage_user_home_content_dirs(mozilla_t)
 # userdom_manage_user_home_content_files(mozilla_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Instead, we add in a call to a template we have defined ourselves:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;userdom_user_content_access_template(mozilla, { mozilla_t mozilla_plugin_t })
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;userdom_user_content_access_template(mozilla, { mozilla_t mozilla_plugin_t })
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This call makes access to user content optional through SELinux booleans. For
 instance, for the &lt;code&gt;mozilla_t&lt;/code&gt; domain (which is used for Firefox), the following
 booleans are created:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Read generic (user_home_t) user content
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Read generic (user_home_t) user content
 mozilla_read_generic_user_content       -&amp;gt;      true
 
 # Read all user content
@@ -63,7 +65,8 @@ mozilla_manage_generic_user_content     -&amp;gt;      false
 
 # Manage all user content
 mozilla_manage_all_user_content         -&amp;gt;      false
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;As you can see, the default setting is that Firefox can read user content, but
 only non-specific types. So &lt;code&gt;ssh_home_t&lt;/code&gt;, which is used for the SSH related
@@ -117,4 +120,4 @@ policies.&lt;/p&gt;
 &lt;p&gt;I am glad that we at least try to confine desktop applications more, and
 that Gentoo Hardened users who use SELinux are at least somewhat more protected
 from the vulnerability (even with the default case) and that our investment for
-this is sound.&lt;/p&gt;</content><category term="SELinux"></category><category term="gentoo"></category><category term="selinux"></category><category term="policy"></category><category term="firefox"></category><category term="cve"></category><category term="vulnerability"></category><category term="xdg"></category></entry></feed>
+this is sound.&lt;/p&gt;</content><category term="gentoo"></category><category term="selinux"></category><category term="policy"></category><category term="firefox"></category><category term="cve"></category><category term="vulnerability"></category><category term="xdg"></category></entry></feed>

@@ -248,7 +248,7 @@ distributed authorization.</p>
 authentication and authorization. When a <code>CREATE ROLE</code> (or
 <code>CREATE USER</code>) command is issued with a password, it is stored in the
 <code>pg_catalog.pg_authid</code> table:</p>
-<div class="highlight"><pre><span></span><code>postgres# select rolname, rolpassword from pg_catalog.pg_authid;
+<div class="highlight"><pre><span></span>postgres# select rolname, rolpassword from pg_catalog.pg_authid;
     rolname     |             rolpassword             
 ----------------+-------------------------------------
  postgres_admin | 
@@ -262,17 +262,19 @@ authentication and authorization. When a <code>CREATE ROLE</code> (or
  sean           | 
  hdpreport      | 
  postgres       | md5c127bc9fc185daf0e06e785876e38484
-</code></pre></div>
+</pre></div>
+
 
 <p>this cannot be moved outside):</p>
-<div class="highlight"><pre><span></span><code>postgres# \l db_hadoop
+<div class="highlight"><pre><span></span>postgres# \l db_hadoop
                                    List of databases
    Name    |   Owner   | Encoding |  Collate   |   Ctype    |     Access privileges     
 -----------+-----------+----------+------------+------------+---------------------------
  db_hadoop | hdc_owner | UTF8     | en_US.utf8 | en_US.utf8 | hdc_owner=CTc/hdc_owner  +
            |           |          |            |            | hdc_reader=c/hdc_owner   +
            |           |          |            |            | hdc_readwrite=c/hdc_owner
-</code></pre></div>
+</pre></div>
+
 
 <p>Furthermore, PostgreSQL has some additional access controls through its
 <code>pg_hba.conf</code> file, in which the access towards the PostgreSQL service
@@ -301,10 +303,11 @@ services, so the same goes for PostgreSQL. And with the
 package integrating multiple services with LDAP is a breeze. So the
 first step is to have PostgreSQL use PAM for authentication. This is
 handled through its <code>pg_hba.conf</code> file:</p>
-<div class="highlight"><pre><span></span><code># TYPE  DATABASE        USER    ADDRESS         METHOD          [OPTIONS]
+<div class="highlight"><pre><span></span># TYPE  DATABASE        USER    ADDRESS         METHOD          [OPTIONS]
 local   all             all                     md5
 host    all             all     all             pam             pamservice=postgresql
-</code></pre></div>
+</pre></div>
+
 
 <p>This will have PostgreSQL use the <code>postgresql</code> PAM service for
 authentication. The PAM configuration is thus in
@@ -318,9 +321,10 @@ now). This is done together with the authorization handling.</p>
 <p>Every service on the systems I maintain has dedicated groups in which
 for instance its administrators are listed. For instance, for the
 PostgreSQL services:</p>
-<div class="highlight"><pre><span></span><code># getent group gpgsqladmin
+<div class="highlight"><pre><span></span># getent group gpgsqladmin
 gpgsqladmin:x:413843:swift,dmvsl
-</code></pre></div>
+</pre></div>
+
 
 <p>A local batch job (ran through cron) queries this group (which I call
 the <em>masterlist</em>, as well as queries which users in PostgreSQL are
@@ -328,7 +332,7 @@ assigned the <code>postgres_admin</code> role (which is a superuser role like
 postgres and is used as the intermediate role to assign to
 administrators of a PostgreSQL service), known as the <em>slavelist</em>.
 Delta's are then used to add the user or remove it.</p>
-<div class="highlight"><pre><span></span><code># Note: membersToAdd / membersToRemove / _psql are custom functions
+<div class="highlight"><pre><span></span># Note: membersToAdd / membersToRemove / _psql are custom functions
 #       so do not vainly search for them on your system ;-)
 for member in $(membersToAdd ${masterlist} ${slavelist}) ; do
   _psql &quot;CREATE USER ${member} LOGIN INHERIT;&quot; postgres
@@ -339,7 +343,8 @@ for member in $(membersToRemove ${masterlist} ${slavelist}) ; do
   _psql &quot;REVOKE postgres_admin FROM ${member};&quot; postgres
   _psql &quot;DROP USER ${member};&quot; postgres
 done
-</code></pre></div>
+</pre></div>
+
 
 <p>The <code>postgres_admin</code> role is created whenever I create a PostgreSQL
 instance. Likewise, for databases, a number of roles are added as well.
@@ -347,9 +352,10 @@ For instance, for the <code>db_hadoop</code> database, the <code>hdc_owner</code
 <code>hdc_reader</code> and <code>hdc_readwrite</code> roles are created with the right set of
 privileges. Users are then granted this role if they belong to the right
 group in the LDAP. For instance:</p>
-<div class="highlight"><pre><span></span><code># getent group gpgsqlhdc_own
+<div class="highlight"><pre><span></span># getent group gpgsqlhdc_own
 gpgsqlhdc_own:x:413850:hadoop,johan,christov,sean
-</code></pre></div>
+</pre></div>
+
 
 <p>With this simple approach, granting users access to a database is a
 matter of adding the user to the right group (like <code>gpgsqlhdc_ro</code> for

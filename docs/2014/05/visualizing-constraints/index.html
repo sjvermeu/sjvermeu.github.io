@@ -247,14 +247,15 @@ enforcement</a> part
 of the SELinux mandatory access control system.</p>
 <p>Constraints on the other hand work on the user, role and type part of a
 context. Consider this piece of constraint code:</p>
-<div class="highlight"><pre><span></span><code>constrain file all_file_perms (
+<div class="highlight"><pre><span></span>constrain file all_file_perms (
   u1 == u2
   or u1 == system_u
   or u2 == system_u
   or t1 != ubac_constrained_type
   or t2 != ubac_constrained_type
 );
-</code></pre></div>
+</pre></div>
+
 
 <p>This particular constraint definition tells the SELinux subsystem that,
 when an operation against a <em>file</em> class is performed (any operation, as
@@ -276,7 +277,7 @@ be taken or not.</p>
 <p>Constraints are currently difficult to query though. There is <strong>seinfo
 --constrain</strong> which gives all constraints, using the Reverse Polish
 Notation - not something easily readable by users:</p>
-<div class="highlight"><pre><span></span><code>~$ seinfo --constrain
+<div class="highlight"><pre><span></span>~$ seinfo --constrain
 constrain { sem } { create destroy getattr setattr read write associate unix_read unix_write  } 
 (  u1 u2 ==  u1 system_u ==  ||  u2 system_u ==  ||  t1 { screen_var_run_t gnome_xdg_config_home_t admin_crontab_t 
 links_input_xevent_t gpg_pinentry_tmp_t virt_content_t print_spool_t crontab_tmp_t httpd_user_htaccess_t ssh_keysign_t 
@@ -333,7 +334,8 @@ session_dbusd_home_t gpg_agent_t xauth_tmp_t xscreensaver_tmpfs_t iceauth_t mpla
 gpg_pinentry_tmpfs_t pan_xproperty_t ssh_xproperty_t xdm_xproperty_t java_xproperty_t sysadm_sudo_t qemu_xproperty_t 
 root_xproperty_t user_xproperty_t mail_home_t xserver_t java_input_xevent_t user_screen_t wireshark_input_xevent_t } !=  ||  t1 
  ==  || );
-</code></pre></div>
+</pre></div>
+
 
 <p>There RPN notation however isn't the only reason why constraints are
 difficult to read. The other reason is that <strong>seinfo</strong> does not know
@@ -349,9 +351,10 @@ that is me ;-) is interested in.</p>
 <p>For instance, to generate a graph of the constraints related to file
 reads, limited to the <code>user_t</code> and <code>staff_t</code> types if huge lists would
 otherwise be shown:</p>
-<div class="highlight"><pre><span></span><code>~$ seshowconstraint file read &quot;user_t staff_t&quot; &gt; constraint-file.dot
+<div class="highlight"><pre><span></span>~$ seshowconstraint file read &quot;user_t staff_t&quot; &gt; constraint-file.dot
 ~$ dot -Tsvg -O constraint-file.dot
-</code></pre></div>
+</pre></div>
+
 
 <p>This generates the following graph:</p>
 <p>!SELinux constraint flow<a href="http://dev.gentoo.org/~swift/blog/201405/constraint-flow.svg"></a></p>

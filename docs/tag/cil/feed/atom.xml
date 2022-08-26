@@ -22,7 +22,7 @@ the &lt;a href="https://packages.gentoo.org/package/app-misc/screen"&gt;screen&l
 provided by the &lt;a href="https://packages.gentoo.org/package/sec-policy/selinux-screen"&gt;sec-policy/selinux-screen&lt;/a&gt;
 package.&lt;/p&gt;
 &lt;p&gt;The package itself is pretty straight forward:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Copyright 1999-2015 Gentoo Foundation&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Copyright 1999-2015 Gentoo Foundation&lt;/span&gt;
 &lt;span class="c1"&gt;# Distributed under the terms of the GNU General Public License v2&lt;/span&gt;
 &lt;span class="c1"&gt;# $Id$&lt;/span&gt;
 &lt;span class="nv"&gt;EAPI&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;5&amp;quot;&lt;/span&gt;
@@ -39,7 +39,8 @@ inherit selinux-policy-2
 &lt;span class="k"&gt;else&lt;/span&gt;
         &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The real workhorse lays within a &lt;a href="https://devmanual.gentoo.org/eclass-writing/"&gt;Gentoo eclass&lt;/a&gt;,
 something that can be seen as a library for ebuilds. It allows consolidation of functions and
@@ -58,7 +59,7 @@ policies on the system, and proper dependencies can be built in.&lt;/p&gt;
 not only about the module name (through the &lt;code&gt;MODS&lt;/code&gt; variable) but also about the
 policy files themselves. These files are put in the &lt;code&gt;files/&lt;/code&gt; location of the ebuild,
 and referred to through the &lt;code&gt;POLICY_FILES&lt;/code&gt; variable:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Copyright 1999-2015 Gentoo Foundation&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Copyright 1999-2015 Gentoo Foundation&lt;/span&gt;
 &lt;span class="c1"&gt;# Distributed under the terms of the GNU General Public License v2&lt;/span&gt;
 &lt;span class="c1"&gt;# $Id$&lt;/span&gt;
 &lt;span class="nv"&gt;EAPI&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;5&amp;quot;&lt;/span&gt;
@@ -76,7 +77,8 @@ inherit selinux-policy-2
 &lt;span class="k"&gt;else&lt;/span&gt;
         &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The eclass generally will try to build the policies, converting them into &lt;code&gt;.pp&lt;/code&gt;
 files. With CIL, this is no longer needed. Instead, what we do is copy the &lt;code&gt;.cil&lt;/code&gt;
@@ -85,7 +87,7 @@ files straight into the location where we place the &lt;code&gt;.pp&lt;/code&gt;
 They are loaded with &lt;code&gt;semodule -i&lt;/code&gt; and unloaded with &lt;code&gt;semodule -r&lt;/code&gt; when needed.&lt;/p&gt;
 &lt;p&gt;Enabling CIL in our ebuilds is a small improvement (after the heavy workload
 to support the 2.4 userspace) which allows Gentoo to stay ahead in the SELinux
-world.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="cil"></category><category term="selinux"></category><category term="ebuild"></category><category term="eclass"></category></entry><entry><title>Doing away with interfaces</title><link href="https://blog.siphos.be/2015/08/doing-away-with-interfaces/" rel="alternate"></link><published>2015-08-29T11:30:00+02:00</published><updated>2015-08-29T11:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-29:/2015/08/doing-away-with-interfaces/</id><summary type="html">&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
+world.&lt;/p&gt;</content><category term="gentoo"></category><category term="cil"></category><category term="selinux"></category><category term="ebuild"></category><category term="eclass"></category></entry><entry><title>Doing away with interfaces</title><link href="https://blog.siphos.be/2015/08/doing-away-with-interfaces/" rel="alternate"></link><published>2015-08-29T11:30:00+02:00</published><updated>2015-08-29T11:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-29:/2015/08/doing-away-with-interfaces/</id><summary type="html">&lt;p&gt;CIL is SELinux' Common Intermediate Language, which brings on a whole new set of
 possibilities with policy development. I hardly know CIL but am (slowly)
 learning. Of course, the best way to learn is to try and do lots of things with
 it, but real-life work and time-to-market for now forces me to stick with the
@@ -108,7 +110,7 @@ a way to isolate module-specific code and to have "public" calls.&lt;/p&gt;
 &lt;p&gt;Policy modules are not allowed (by convention) to call types or domains that
 are not defined by the same module. If they want to interact with those modules,
 then they need to call the interface(s):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# module &amp;quot;ntp&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# module &amp;quot;ntp&amp;quot;
 # domtrans: when executing an ntpd_exec_t binary, the resulting process 
 #           runs in ntpd_t
 interface(`ntp_domtrans&amp;#39;,`
@@ -117,14 +119,16 @@ interface(`ntp_domtrans&amp;#39;,`
 
 # module &amp;quot;hal&amp;quot;
 ntp_domtrans(hald_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the above example, the purpose is to have &lt;code&gt;hald_t&lt;/code&gt; be able to execute
 binaries labeled as &lt;code&gt;ntpd_exec_t&lt;/code&gt; and have the resulting process run as the
 &lt;code&gt;ntpd_t&lt;/code&gt; domain.&lt;/p&gt;
 &lt;p&gt;The following would not be allowed inside the hal module:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;domtrans_pattern(hald_t, ntpd_exec_t, ntpd_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;domtrans_pattern(hald_t, ntpd_exec_t, ntpd_t)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This would imply that both &lt;code&gt;hald_t&lt;/code&gt;, &lt;code&gt;ntpd_exec_t&lt;/code&gt; and &lt;code&gt;ntpd_t&lt;/code&gt; are defined
 by the same module, which is not the case.&lt;/p&gt;
@@ -137,15 +141,17 @@ In it, we wanted to allow &lt;code&gt;mozilla_t&lt;/code&gt; to send and receive
 example didn't use an interface-like construction for this, so let's see
 how this would be dealt with.&lt;/p&gt;
 &lt;p&gt;First, the module is slightly adjusted to create a &lt;em&gt;macro&lt;/em&gt; called &lt;code&gt;myhttp_sendrecv_client_packet&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt; &lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt; &lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
   &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
   &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Another module would then call this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt; &lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt; &lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;That's it. When the policy modules are both loaded, then the &lt;code&gt;mozilla_t&lt;/code&gt; domain is able
 to send and receive &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; labeled packets.&lt;/p&gt;
@@ -154,7 +160,7 @@ to send and receive &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; labeled pack
 for the interfaces, CIL is able to use namespaces. It allows to create an almost
 object-like approach for policy development.&lt;/p&gt;
 &lt;p&gt;The above &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; definition could be written as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;myhttp&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;myhttp&lt;/span&gt;
   &lt;span class="c1"&gt;; MyHTTP client packet&lt;/span&gt;
   &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
   &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt; &lt;span class="nv"&gt;object_r&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -166,29 +172,32 @@ object-like approach for policy development.&lt;/p&gt;
     &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
   &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The other module looks as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;mozilla&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;mozilla&lt;/span&gt;
   &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
   &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt; &lt;span class="nv"&gt;myhttp.sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The result is similar, but not fully the same. The packet is no longer called
 &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; but &lt;code&gt;myhttp.client_packet_t&lt;/code&gt;. In other words, a period (&lt;code&gt;.&lt;/code&gt;)
 is used to separate the object name (&lt;code&gt;myhttp&lt;/code&gt;) and the object/type (&lt;code&gt;client_packet_t&lt;/code&gt;)
 as well as interface/macro (&lt;code&gt;sendrecv_client_packet&lt;/code&gt;):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="go"&gt;~$ sesearch -s mozilla_t -c packet -p send -Ad&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="go"&gt;~$ sesearch -s mozilla_t -c packet -p send -Ad&lt;/span&gt;
 &lt;span class="go"&gt;  ...&lt;/span&gt;
 &lt;span class="go"&gt;  allow mozilla_t myhttp.client_packet_t : packet { send recv };&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;And it looks that namespace support goes even further than that, but I still
 need to learn more about it first.&lt;/p&gt;
 &lt;p&gt;Still, I find this a good evolution. With CIL interfaces are no longer separate
 from the module definition: everything is inside the CIL file. I secretly hope
-that tools such as &lt;code&gt;seinfo&lt;/code&gt; would support querying macros as well.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="cil"></category></entry><entry><title>Don't confuse SELinux with its policy</title><link href="https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/" rel="alternate"></link><published>2015-08-03T01:49:00+02:00</published><updated>2015-08-03T01:49:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-03:/2015/08/dont-confuse-selinux-with-its-policy/</id><summary type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
+that tools such as &lt;code&gt;seinfo&lt;/code&gt; would support querying macros as well.&lt;/p&gt;</content><category term="selinux"></category><category term="cil"></category></entry><entry><title>Don't confuse SELinux with its policy</title><link href="https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/" rel="alternate"></link><published>2015-08-03T01:49:00+02:00</published><updated>2015-08-03T01:49:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-03:/2015/08/dont-confuse-selinux-with-its-policy/</id><summary type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
@@ -270,7 +279,7 @@ also shows how very open SELinux itself is, and that most of the users'
 experience with SELinux is based on a singular policy implementation. This is
 a prime reason why having a more open policy ecosystem makes perfect sense.&lt;/p&gt;
 &lt;p&gt;If you don't like a particular car, do you ditch driving at all? No, you try out
-another car. Let's create other cars in the SELinux world as well.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="policy"></category><category term="cil"></category></entry><entry><title>Loading CIL modules directly</title><link href="https://blog.siphos.be/2015/07/loading-cil-modules-directly/" rel="alternate"></link><published>2015-07-15T15:54:00+02:00</published><updated>2015-07-15T15:54:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-07-15:/2015/07/loading-cil-modules-directly/</id><summary type="html">&lt;p&gt;In a &lt;a href="http://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/"&gt;previous
+another car. Let's create other cars in the SELinux world as well.&lt;/p&gt;</content><category term="selinux"></category><category term="policy"></category><category term="cil"></category></entry><entry><title>Loading CIL modules directly</title><link href="https://blog.siphos.be/2015/07/loading-cil-modules-directly/" rel="alternate"></link><published>2015-07-15T15:54:00+02:00</published><updated>2015-07-15T15:54:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-07-15:/2015/07/loading-cil-modules-directly/</id><summary type="html">&lt;p&gt;In a &lt;a href="http://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/"&gt;previous
 post&lt;/a&gt;
 I used the &lt;code&gt;secilc&lt;/code&gt; binary to load an additional test policy. Little did
 I know (and that's actually embarrassing because it was one of the
@@ -288,21 +297,23 @@ modules directly.&lt;/p&gt;
 
 &lt;p&gt;With this I mean that a CIL policy as mentioned in the previous post can
 be loaded like a prebuilt &lt;code&gt;.pp&lt;/code&gt; module:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule -i test.cil
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semodule -i test.cil
 ~# semodule -l | grep test
 test
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;That's all that is to it. Loading the module resulted in the test port
 to be immediately declared and available:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage port -l | grep test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage port -l | grep test
 test_port_t                    tcp      1440
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In hindsight, it makes sense that it is this easy. After all, support
 for the old-style policy language is done by converting it into CIL when
 calling &lt;code&gt;semodule&lt;/code&gt; so it makes sense to immediately put the module (in
-CIL code) ready to be taken up.&lt;/p&gt;</content><category term="SELinux"></category><category term="cil"></category><category term="selinux"></category></entry><entry><title>Where does CIL play in the SELinux system?</title><link href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/" rel="alternate"></link><published>2015-06-13T23:12:00+02:00</published><updated>2015-06-13T23:12:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-13:/2015/06/where-does-cil-play-in-the-selinux-system/</id><summary type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
+CIL code) ready to be taken up.&lt;/p&gt;</content><category term="cil"></category><category term="selinux"></category></entry><entry><title>Where does CIL play in the SELinux system?</title><link href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/" rel="alternate"></link><published>2015-06-13T23:12:00+02:00</published><updated>2015-06-13T23:12:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-13:/2015/06/where-does-cil-play-in-the-selinux-system/</id><summary type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
 with. Currently, policy code is written in a set of three files:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
@@ -373,7 +384,7 @@ modules.&lt;/p&gt;
 &lt;p&gt;Still, that shouldn't prohibit us from playing around with it to
 experiment with the CIL language construct. Consider the following CIL
 SELinux policy code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;; Declare a test_port_t type
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;; Declare a test_port_t type
 (type test_port_t)
 ; Assign the type to the object_r role
 (roletype object_r test_port_t)
@@ -384,27 +395,30 @@ SELinux policy code:&lt;/p&gt;
 
 ; Declare tcp:1440 as test_port_t
 (portcon tcp 1440 (system_u object_r test_port_t ((s0) (s0))))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The code declares a port type (&lt;code&gt;test_port_t&lt;/code&gt;) and uses it for the TCP
 port 1440.&lt;/p&gt;
 &lt;p&gt;In order to use this code, we have to build a policy file which includes
 all currently active CIL code, together with the test code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The result is a &lt;code&gt;policy.29&lt;/code&gt; (the command forces version 29 as the
 current Linux kernel used on this system does not support version 30)
 file, which can now be copied to &lt;code&gt;/etc/selinux/mcs/policy&lt;/code&gt;. Then, after
 having copied the file, load the new policy file using &lt;code&gt;load_policy&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;And lo and behold, the port type is now available:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage port -l | grep 1440
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage port -l | grep 1440
 test_port_t           tcp      1440
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;To verify that it really is available and not just parsed by the
 userspace, let's connect to it and hope for a nice denial message:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -p 1440 localhost
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ssh -p 1440 localhost
 ssh: connect to host localhost port 1440: Permission denied
 
 ~$ sudo ausearch -ts recent
@@ -413,7 +427,7 @@ type=PROCTITLE msg=audit(1434044145.829:296): proctitle=737368002D70003134343000
 type=SOCKADDR msg=audit(1434044145.829:296): saddr=0A0005A0000000000000000000000000000000000000000100000000
 type=SYSCALL msg=audit(1434044145.829:296): arch=c000003e syscall=42 success=no exit=-13 a0=3 a1=6d4d1ce050 a2=1c a3=0 items=0 ppid=2005 pid=18045 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001 egid=1001 sgid=1001 fsgid=1001 tty=pts0 ses=1 comm=&amp;quot;ssh&amp;quot; exe=&amp;quot;/usr/bin/ssh&amp;quot; subj=staff_u:staff_r:ssh_t:s0 key=(null)
 type=AVC msg=audit(1434044145.829:296): avc:  denied  { name_connect } for  pid=18045 comm=&amp;quot;ssh&amp;quot; dest=1440 scontext=staff_u:staff_r:ssh_t:s0 tcontext=system_u:object_r:test_port_t:s0 tclass=tcp_socket permissive=0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="cil"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Live SELinux userspace ebuilds</title><link href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/" rel="alternate"></link><published>2015-06-10T20:07:00+02:00</published><updated>2015-06-10T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-10:/2015/06/live-selinux-userspace-ebuilds/</id><summary type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
+&lt;/pre&gt;&lt;/div&gt;</content><category term="cil"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Live SELinux userspace ebuilds</title><link href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/" rel="alternate"></link><published>2015-06-10T20:07:00+02:00</published><updated>2015-06-10T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-10:/2015/06/live-selinux-userspace-ebuilds/</id><summary type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
 applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux
@@ -447,7 +461,7 @@ This is a new package, which is probably going to have an official
 release with a new userspace release. It allows for building CIL-based
 SELinux policy code, and was one of the drivers for me to create the
 live ebuilds as I'm experimenting with the CIL constructions. So expect
-more on that later.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>CIL and attributes</title><link href="https://blog.siphos.be/2015/02/cil-and-attributes/" rel="alternate"></link><published>2015-02-15T15:49:00+01:00</published><updated>2015-02-15T15:49:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-02-15:/2015/02/cil-and-attributes/</id><summary type="html">&lt;p&gt;I keep on struggling to remember this, so let's make a blog post out of
+more on that later.&lt;/p&gt;</content><category term="cil"></category><category term="Gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>CIL and attributes</title><link href="https://blog.siphos.be/2015/02/cil-and-attributes/" rel="alternate"></link><published>2015-02-15T15:49:00+01:00</published><updated>2015-02-15T15:49:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-02-15:/2015/02/cil-and-attributes/</id><summary type="html">&lt;p&gt;I keep on struggling to remember this, so let's make a blog post out of
 it ;-)&lt;/p&gt;
 &lt;p&gt;When the SELinux policy is being built, recent userspace (2.4 and
 higher) will convert the policy into CIL language, and then build the
@@ -458,18 +472,19 @@ higher) will convert the policy into CIL language, and then build the
 binary policy. When the policy supports type attributes, these are of
 course also made available in the CIL code. For instance the
 &lt;code&gt;admindomain&lt;/code&gt; attribute from the &lt;code&gt;userdomain&lt;/code&gt; module:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
 (typeattribute admindomain)
 (typeattribute userdomain)
 (typeattribute unpriv_userdomain)
 (typeattribute user_home_content_type)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Interfaces provided by the module are also applied. You won't find the
 interface CIL code in &lt;code&gt;/var/lib/selinux/mcs/active/modules&lt;/code&gt; though; the
 code at that location is already "expanded" and filled in. So for the
 &lt;code&gt;sysadm_t&lt;/code&gt; domain we have:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Equivalent of
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Equivalent of
 # gen_require(`
 #   attribute admindomain;
 #   attribute userdomain;
@@ -482,29 +497,32 @@ code at that location is already "expanded" and filled in. So for the
 (typeattributeset cil_gen_require userdomain)
 (typeattributeset userdomain (sysadm_t ))
 ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;However, when checking which domains use the &lt;code&gt;admindomain&lt;/code&gt; attribute,
 notice the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# seinfo -aadmindomain -x
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# seinfo -aadmindomain -x
 ERROR: Provided attribute (admindomain) is not a valid attribute name.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;But don't panic - this has a reason: as long as there is no SELinux rule
 applied towards the &lt;code&gt;admindomain&lt;/code&gt; attribute, then the SELinux policy
 compiler will drop the attribute from the final policy. This can be
 confirmed by adding a single, cosmetic rule, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;## allow admindomain admindomain:process sigchld;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;## allow admindomain admindomain:process sigchld;
 
 ~# seinfo -aadmindomain -x
    admindomain
       sysadm_t
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So there you go. That does mean that if something previously used the
 attribute assignation for any decisions (like "for each domain assigned
 the userdomain attribute, do something") will need to make sure that the
-attribute is really used in a policy rule.&lt;/p&gt;</content><category term="SELinux"></category><category term="attribute"></category><category term="cil"></category><category term="selinux"></category></entry><entry><title>Migrating to SELinux userspace 2.4 (small warning for users)</title><link href="https://blog.siphos.be/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/" rel="alternate"></link><published>2014-10-30T19:44:00+01:00</published><updated>2014-10-30T19:44:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</id><summary type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
+attribute is really used in a policy rule.&lt;/p&gt;</content><category term="attribute"></category><category term="cil"></category><category term="selinux"></category></entry><entry><title>Migrating to SELinux userspace 2.4 (small warning for users)</title><link href="https://blog.siphos.be/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/" rel="alternate"></link><published>2014-10-30T19:44:00+01:00</published><updated>2014-10-30T19:44:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</id><summary type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
 (either globally or for the SELinux utilities in particular) will notice
 that the SELinux userspace will upgrade to version 2.4 (release
 candidate 5 for now). This upgrade comes with a manual step that needs
@@ -515,8 +533,9 @@ candidate 5 for now). This upgrade comes with a manual step that needs
 to be performed after upgrade. The information is mentioned as
 post-installation message of the &lt;code&gt;policycoreutils&lt;/code&gt; package, and
 basically sais that you need to execute:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
 module store (and the semanage related files) to be in
@@ -537,35 +556,39 @@ works, SELinux aware applications still work; the only thing that will
 fail are updates on the SELinux configuration through tools like
 &lt;strong&gt;semanage&lt;/strong&gt; or &lt;strong&gt;setsebool&lt;/strong&gt; - the latter when you want to persist
 boolean changes.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage fcontext -l
 ValueError: SELinux policy is not managed or store cannot be accessed.
 
 ~# setsebool -P allow_ptrace on
 Cannot set persistent booleans without managed policy.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
 migration. Note in the following that there is a warning about 'else'
 blocks that are no longer supported: that's okay, as far as I know (and
 it was mentioned on the upstream mailinglist as well as not something to
 worry about) it does not have any impact.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store
 Migrating from /etc/selinux/mcs/modules/active to /var/lib/selinux/mcs/active
 Attempting to rebuild policy from /var/lib/selinux
 sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
 up. You can also rerun the command multiple times:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
 warning: Policy type mcs has already been migrated, but modules still exist in the old store. Skipping store.
 Attempting to rebuild policy from /var/lib/selinux
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# rm -rf /etc/selinux/mcs/modules
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So... don't worry - the change is small and does not break stuff. And
 for those wondering about CIL I'll talk about it in one of my next
-posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry></feed>
+posts.&lt;/p&gt;</content><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry></feed>

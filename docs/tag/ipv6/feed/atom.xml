@@ -2,19 +2,21 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - ipv6</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/ipv6/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2013-08-23T13:46:00+02:00</updated><entry><title>Umounting IPv6 NFS(v4) mounts</title><link href="https://blog.siphos.be/2013/08/umounting-ipv6-nfsv4-mounts/" rel="alternate"></link><published>2013-08-23T13:46:00+02:00</published><updated>2013-08-23T13:46:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/umounting-ipv6-nfsv4-mounts/</id><summary type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
 trying to umount the share, it said that it couldn't find the mount in
 &lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I had issues umounting my NFSv4 shares on an IPv6-only network. When
 trying to umount the share, it said that it couldn't find the mount in
 &lt;code&gt;/proc/mounts&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# umount /mnt/nfs/portage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The solution: copy &lt;code&gt;/proc/mounts&lt;/code&gt; to &lt;code&gt;/etc/mtab&lt;/code&gt;, and the umount works
-correctly again.&lt;/p&gt;</content><category term="Misc"></category><category term="ip6"></category><category term="ipv6"></category><category term="linux"></category><category term="nfs4"></category><category term="nfsv4"></category><category term="umount"></category></entry><entry><title>A simple IPv6 setup</title><link href="https://blog.siphos.be/2013/05/a-simple-ipv6-setup/" rel="alternate"></link><published>2013-05-20T03:50:00+02:00</published><updated>2013-05-20T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-20:/2013/05/a-simple-ipv6-setup/</id><summary type="html">&lt;p&gt;For internal communication between guests on my workstation, I use IPv6
+correctly again.&lt;/p&gt;</content><category term="ip6"></category><category term="ipv6"></category><category term="linux"></category><category term="nfs4"></category><category term="nfsv4"></category><category term="umount"></category></entry><entry><title>A simple IPv6 setup</title><link href="https://blog.siphos.be/2013/05/a-simple-ipv6-setup/" rel="alternate"></link><published>2013-05-20T03:50:00+02:00</published><updated>2013-05-20T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-20:/2013/05/a-simple-ipv6-setup/</id><summary type="html">&lt;p&gt;For internal communication between guests on my workstation, I use IPv6
 which is set up using the &lt;em&gt;Router Advertisement&lt;/em&gt; "feature" of IPv6. The
 tools I use are &lt;a href="http://www.thekelleys.org.uk/dnsmasq/doc.html"&gt;dnsmasq&lt;/a&gt;
 for DNS/DHCP and router advertisement support, and
@@ -29,38 +31,43 @@ I'm concerned, it is working... and that is all that matters (for now).
 I'll have to look deeper into the IPv6 stuff to understand it all better
 though.&lt;/p&gt;
 &lt;p&gt;On the client side, &lt;strong&gt;dhcpcd&lt;/strong&gt; is ran with the following options:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dhcpcd_eth0=&amp;quot;-t 5 -L --ipv6ra_own&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dhcpcd_eth0=&amp;quot;-t 5 -L --ipv6ra_own&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;I had to enable &lt;code&gt;--ipv6ra_own&lt;/code&gt; to get it to obtain its global address,
 otherwise it only got its link local one (&lt;code&gt;fe80::&lt;/code&gt; something). I also
 added a hook into &lt;code&gt;/lib/dhcpcd/dhcpcd-hooks&lt;/code&gt; to get it to trigger a
 hostname update for IPv6.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ cat 28-set-ip6-address 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ cat 28-set-ip6-address 
 if $ifup; then export new_ip_address=${ra1_prefix%%/64}; fi
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;SELinux-policy wise, I had to enable &lt;code&gt;dhcpc_t&lt;/code&gt; to write to the hostname
 proc file and set the system hostname. The first one (21) is needed
 because of the &lt;code&gt;--ipv6ra_own&lt;/code&gt; parameter.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal -l | grep dhcpc_t
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal -l | grep dhcpc_t
 21: allow dhcpc_t self:rawip_socket create_socket_perms; # dhcpclient
 22: kernel_rw_kernel_sysctl(dhcpc_t) # set hostname
 23: allow dhcpc_t self:capability sys_admin; # set hostname
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Finally, in &lt;code&gt;/etc/dhcpcd.conf&lt;/code&gt;, I removed the &lt;em&gt;nohook lookup-hostname&lt;/em&gt;
 and set the &lt;em&gt;force_hostname&lt;/em&gt; one:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#nohook lookup-hostname
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#nohook lookup-hostname
 env force_hostname=YES
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;On the server side, I use the following configuration of dnsmasq
 (snippet):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dhcp-range=2001:db8:81:e2::,ra-only
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dhcp-range=2001:db8:81:e2::,ra-only
 enable-ra
 dhcp-option=option6:dns-server,[2001:db8:81:e2::26b5:365b:5072]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;As you can see, I use the documentation prefix for now (since it is
 meant for internal communication only, and makes it easier to copy/paste
@@ -68,16 +75,17 @@ into documentation ;-) but when I am going to use full IPv6 access to
 the Internet, this prefix will of course change.&lt;/p&gt;
 &lt;p&gt;Finally, I enabled IPv6 forwarding on the &lt;code&gt;tap0&lt;/code&gt; interface because
 otherwise I continuously got the following messages on the clients:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;May 12 18:43:07 test dhcpcd[3869]: eth0: adding default route via fe80::d848:19ff:fe0d:55c2
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;May 12 18:43:07 test dhcpcd[3869]: eth0: adding default route via fe80::d848:19ff:fe0d:55c2
 May 12 18:43:07 test dhcpcd[3869]: eth0: fe80::d848:19ff:fe0d:55c2 is no longer a router
 May 12 18:43:07 test dhcpcd[3869]: eth0: deleting default route via fe80::d848:19ff:fe0d:55c2
 May 12 18:43:13 test dhcpcd[3869]: eth0: fe80::d848:19ff:fe0d:55c2 is unreachable, expiring it
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;To enable IPv6 forwarding, you can use sysctl but I added it in the
 script that sets up the tap0 interface:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tunctl -b -u swift -t tap0
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tunctl -b -u swift -t tap0
 ifconfig tap0 add 2001:db8:81:e2::26b5:365b:5072/64
 vde_switch --numports 16 --mod 777 --group users --tap tap0 -d
 echo 1 &amp;gt; /proc/sys/net/ipv6/conf/tap0/forwarding
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Documentation"></category><category term="dhcpcd"></category><category term="dnsmasq"></category><category term="ip6"></category><category term="ipv6"></category><category term="ra"></category></entry></feed>
+&lt;/pre&gt;&lt;/div&gt;</content><category term="dhcpcd"></category><category term="dnsmasq"></category><category term="ip6"></category><category term="ipv6"></category><category term="ra"></category></entry></feed>

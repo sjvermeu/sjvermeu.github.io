@@ -16,7 +16,7 @@ possible).&lt;/p&gt;
 
 
 &lt;p&gt;The currently supported packages are:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;app-arch/bloscpack      app-arch/bzip2          app-arch/freeze
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;app-arch/bloscpack      app-arch/bzip2          app-arch/freeze
 app-arch/gzip           app-arch/lha            app-arch/lrzip
 app-arch/lz4            app-arch/lzip           app-arch/lzma
 app-arch/lzop           app-arch/mscompress     app-arch/p7zip
@@ -24,7 +24,8 @@ app-arch/pigz           app-arch/pixz           app-arch/plzip
 app-arch/pxz            app-arch/rar            app-arch/rzip
 app-arch/xar            app-arch/xz-utils       app-arch/zopfli
 app-arch/zpaq
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The script should keep the best compression information: duration, compression
 ratio, compression command, as well as the compressed file itself.&lt;/p&gt;
@@ -72,7 +73,7 @@ more of a high-level selection than anything else.&lt;/p&gt;
 &lt;p&gt;The script can also only run the compressions of a single application (which I
 use when I'm fine-tuning the parameter runs).&lt;/p&gt;
 &lt;p&gt;A run shows something like the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Original file (test.nef) size 20958430 bytes
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Original file (test.nef) size 20958430 bytes
       package name                                                 command      duration                   size compr.Δ effic.:
       ------------                                                 -------      --------                   ---- ------- -------
 app-arch/bloscpack                                               blpk -n 4           0.1               20947097 0.00054 0.00416
@@ -106,20 +107,23 @@ app-arch/bloscpack                                              blpk -n 16      
 The best compression was found with 7za -t7z -m0=PPMd:mem=28.
 The compression delta obtained was 0.11643 within 10.58 seconds.
 This file is now available as test.nef.7z.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the above example, the test file was around 20 MByte. The best compression
 compression command that the script found was:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ 7za -t7z -m0=PPMd:mem=28 a test.nef.7z test.nef
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ 7za -t7z -m0=PPMd:mem=28 a test.nef.7z test.nef
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The resulting file (&lt;code&gt;test.nef.7z&lt;/code&gt;) is 18 MByte, a reduction of 11,64%. The
 compression command took almost 11 seconds to do its thing, which gave an
 efficiency rating of 0,011, which is definitely not a fast one.&lt;/p&gt;
 &lt;p&gt;Some other algorithms don't do bad either with a better efficiency. For
 instance:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;   app-arch/pbzip2                                                  pbzip2           0.6               19287402 0.07973 0.13071
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;   app-arch/pbzip2                                                  pbzip2           0.6               19287402 0.07973 0.13071
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In this case, the &lt;code&gt;pbzip2&lt;/code&gt; command got almost 8% reduction in less than a
 second, which is considerably more efficient than the 11-seconds long &lt;code&gt;7za&lt;/code&gt;
@@ -128,7 +132,7 @@ run.&lt;/p&gt;
 &lt;p&gt;I've pushed the script to my &lt;a href="https://github.com/sjvermeu/small.coding/tree/master/sw_comprbest"&gt;github&lt;/a&gt;
 location. Do a quick review of the code first (to see that I did not include
 anything malicious) and then execute it to see how it works:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ sw_comprbest -h
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sw_comprbest -h
 Usage: sw_comprbest --infile=&amp;lt;inputfile&amp;gt; [--family=&amp;lt;family&amp;gt;[,...]] [--command=&amp;lt;cmd&amp;gt;]
        sw_comprbest -i &amp;lt;inputfile&amp;gt; [-f &amp;lt;family&amp;gt;[,...]] [-c &amp;lt;cmd&amp;gt;]
 
@@ -144,34 +148,38 @@ The output shows
   - The efficiency ratio showing how much reduction (percentage) per second (higher is better)
 
 When the command supports multithreading, we use the number of available cores on the system (as told by /proc/cpuinfo).
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;For instance, to try it out against a PDF file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ sw_comprbest -i MEA6-Sven_Vermeulen-Research_Summary.pdf
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ sw_comprbest -i MEA6-Sven_Vermeulen-Research_Summary.pdf
 Original file (MEA6-Sven_Vermeulen-Research_Summary.pdf) size 117763 bytes
 ...
 The best compression was found with zopfli --deflate.
 The compression delta obtained was 0.00982 within 0.19 seconds.
 This file is now available as MEA6-Sven_Vermeulen-Research_Summary.pdf.deflate.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So in this case, the resulting file is hardly better compressed - the PDF
 itself is already compressed. Let's try it against the uncompressed PDF:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ pdftk MEA6-Sven_Vermeulen-Research_Summary.pdf output test.pdf uncompress
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ pdftk MEA6-Sven_Vermeulen-Research_Summary.pdf output test.pdf uncompress
 ~$ sw_comprbest -i test.pdf
 Original file (test.pdf) size 144670 bytes
 ...
 The best compression was found with lrzip -z.
 The compression delta obtained was 0.27739 within 0.18 seconds.
 This file is now available as test.pdf.lrz.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This is somewhat better:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ls -l MEA6-Sven_Vermeulen-Research_Summary.pdf* test.pdf*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ls -l MEA6-Sven_Vermeulen-Research_Summary.pdf* test.pdf*
 -rw-r--r--. 1 swift swift 117763 Aug  7 14:32 MEA6-Sven_Vermeulen-Research_Summary.pdf
 -rw-r--r--. 1 swift swift 116606 Aug  7 14:32 MEA6-Sven_Vermeulen-Research_Summary.pdf.deflate
 -rw-r--r--. 1 swift swift 144670 Aug  7 14:34 test.pdf
 -rw-r--r--. 1 swift swift 104540 Aug  7 14:35 test.pdf.lrz
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;The resulting file is 11,22% reduced from the original one.&lt;/p&gt;</content><category term="Gentoo"></category><category term="gentoo"></category><category term="compression"></category></entry></feed>
+
+&lt;p&gt;The resulting file is 11,22% reduced from the original one.&lt;/p&gt;</content><category term="gentoo"></category><category term="compression"></category></entry></feed>

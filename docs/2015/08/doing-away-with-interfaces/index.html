@@ -243,7 +243,7 @@ a way to isolate module-specific code and to have "public" calls.</p>
 <p>Policy modules are not allowed (by convention) to call types or domains that
 are not defined by the same module. If they want to interact with those modules,
 then they need to call the interface(s):</p>
-<div class="highlight"><pre><span></span><code># module &quot;ntp&quot;
+<div class="highlight"><pre><span></span># module &quot;ntp&quot;
 # domtrans: when executing an ntpd_exec_t binary, the resulting process 
 #           runs in ntpd_t
 interface(`ntp_domtrans&#39;,`
@@ -252,14 +252,16 @@ interface(`ntp_domtrans&#39;,`
 
 # module &quot;hal&quot;
 ntp_domtrans(hald_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>In the above example, the purpose is to have <code>hald_t</code> be able to execute
 binaries labeled as <code>ntpd_exec_t</code> and have the resulting process run as the
 <code>ntpd_t</code> domain.</p>
 <p>The following would not be allowed inside the hal module:</p>
-<div class="highlight"><pre><span></span><code>domtrans_pattern(hald_t, ntpd_exec_t, ntpd_t)
-</code></pre></div>
+<div class="highlight"><pre><span></span>domtrans_pattern(hald_t, ntpd_exec_t, ntpd_t)
+</pre></div>
+
 
 <p>This would imply that both <code>hald_t</code>, <code>ntpd_exec_t</code> and <code>ntpd_t</code> are defined
 by the same module, which is not the case.</p>
@@ -272,15 +274,17 @@ In it, we wanted to allow <code>mozilla_t</code> to send and receive these packe
 example didn't use an interface-like construction for this, so let's see
 how this would be dealt with.</p>
 <p>First, the module is slightly adjusted to create a <em>macro</em> called <code>myhttp_sendrecv_client_packet</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="p">(</span><span class="nv">macro</span> <span class="nv">myhttp_sendrecv_client_packet</span> <span class="p">((</span><span class="k">type</span> <span class="nv">domain</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nv">macro</span> <span class="nv">myhttp_sendrecv_client_packet</span> <span class="p">((</span><span class="k">type</span> <span class="nv">domain</span><span class="p">))</span>
   <span class="p">(</span><span class="nv">typeattributeset</span> <span class="nv">cil_gen_require</span> <span class="nv">domain</span><span class="p">)</span>
   <span class="p">(</span><span class="nv">allow</span> <span class="nv">domain</span> <span class="nv">myhttp_client_packet_t</span> <span class="p">(</span><span class="nv">packet</span> <span class="p">(</span><span class="nv">send</span> <span class="nv">recv</span><span class="p">)))</span>
 <span class="p">)</span>
-</code></pre></div>
+</pre></div>
+
 
 <p>Another module would then call this:</p>
-<div class="highlight"><pre><span></span><code><span class="p">(</span><span class="nv">call</span> <span class="nv">myhttp_sendrecv_client_packet</span> <span class="p">(</span><span class="nv">mozilla_t</span><span class="p">))</span>
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nv">call</span> <span class="nv">myhttp_sendrecv_client_packet</span> <span class="p">(</span><span class="nv">mozilla_t</span><span class="p">))</span>
+</pre></div>
+
 
 <p>That's it. When the policy modules are both loaded, then the <code>mozilla_t</code> domain is able
 to send and receive <code>myhttp_client_packet_t</code> labeled packets.</p>
@@ -289,7 +293,7 @@ to send and receive <code>myhttp_client_packet_t</code> labeled packets.</p>
 for the interfaces, CIL is able to use namespaces. It allows to create an almost
 object-like approach for policy development.</p>
 <p>The above <code>myhttp_client_packet_t</code> definition could be written as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="p">(</span><span class="k">block</span> <span class="nv">myhttp</span>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">block</span> <span class="nv">myhttp</span>
   <span class="c1">; MyHTTP client packet</span>
   <span class="p">(</span><span class="k">type</span> <span class="nv">client_packet_t</span><span class="p">)</span>
   <span class="p">(</span><span class="nv">roletype</span> <span class="nv">object_r</span> <span class="nv">client_packet_t</span><span class="p">)</span>
@@ -301,23 +305,26 @@ object-like approach for policy development.</p>
     <span class="p">(</span><span class="nv">allow</span> <span class="nv">domain</span> <span class="nv">client_packet_t</span> <span class="p">(</span><span class="nv">packet</span> <span class="p">(</span><span class="nv">send</span> <span class="nv">recv</span><span class="p">)))</span>
   <span class="p">)</span>
 <span class="p">)</span>
-</code></pre></div>
+</pre></div>
+
 
 <p>The other module looks as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="p">(</span><span class="k">block</span> <span class="nv">mozilla</span>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="k">block</span> <span class="nv">mozilla</span>
   <span class="p">(</span><span class="nv">typeattributeset</span> <span class="nv">cil_gen_require</span> <span class="nv">mozilla_t</span><span class="p">)</span>
   <span class="p">(</span><span class="nv">call</span> <span class="nv">myhttp.sendrecv_client_packet</span> <span class="p">(</span><span class="nv">mozilla_t</span><span class="p">))</span>
 <span class="p">)</span>
-</code></pre></div>
+</pre></div>
+
 
 <p>The result is similar, but not fully the same. The packet is no longer called
 <code>myhttp_client_packet_t</code> but <code>myhttp.client_packet_t</code>. In other words, a period (<code>.</code>)
 is used to separate the object name (<code>myhttp</code>) and the object/type (<code>client_packet_t</code>)
 as well as interface/macro (<code>sendrecv_client_packet</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="go">~$ sesearch -s mozilla_t -c packet -p send -Ad</span>
+<div class="highlight"><pre><span></span><span class="go">~$ sesearch -s mozilla_t -c packet -p send -Ad</span>
 <span class="go">  ...</span>
 <span class="go">  allow mozilla_t myhttp.client_packet_t : packet { send recv };</span>
-</code></pre></div>
+</pre></div>
+
 
 <p>And it looks that namespace support goes even further than that, but I still
 need to learn more about it first.</p>

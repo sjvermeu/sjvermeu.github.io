@@ -239,7 +239,7 @@ investigation into the DSA versus Ed25519 discussion.</p>
 
 <p><strong>The issue with DSA</strong></p>
 <p>You might find DSA a bit slower than RSA:</p>
-<div class="highlight"><pre><span></span><code>~$ openssl speed rsa1024 rsa2048 dsa1024 dsa2048
+<div class="highlight"><pre><span></span>~$ openssl speed rsa1024 rsa2048 dsa1024 dsa2048
 ...
                   sign    verify    sign/s verify/s
 rsa 1024 bits 0.000127s 0.000009s   7874.0 111147.6
@@ -247,7 +247,8 @@ rsa 2048 bits 0.000959s 0.000029s   1042.9  33956.0
                   sign    verify    sign/s verify/s
 dsa 1024 bits 0.000098s 0.000103s  10213.9   9702.8
 dsa 2048 bits 0.000293s 0.000339s   3407.9   2947.0
-</code></pre></div>
+</pre></div>
+
 
 <p>As you can see, RSA verification outperforms DSA in verification, while signing
 with DSA is better than RSA. But for what OpenSSH is concerned, this speed
@@ -279,7 +280,7 @@ algorithm. </p>
 <p><strong>The (simple) process of switching</strong></p>
 <p>Switching to Ed25519 is simple. First, generate the (new) SSH key (below
 just an example run):</p>
-<div class="highlight"><pre><span></span><code>~$ ssh-keygen -t ed25519
+<div class="highlight"><pre><span></span>~$ ssh-keygen -t ed25519
 Generating public/private ed25519 key pair.
 Enter file in which to save the key (/home/testuser/.ssh/id_ed25519): 
 Enter passphrase (empty for no passphrase): 
@@ -300,7 +301,8 @@ The key&#39;s randomart image is:
 |oo+o. . . o ....E|
 | oooo.     ..o+=*|
 +----[SHA256]-----+
-</code></pre></div>
+</pre></div>
+
 
 <p>Then, make sure that the <code>~/.ssh/authorized_keys</code> file contains the public key
 (as generated as <code>id_ed25519.pub</code>). Don't remove the other keys yet until the
@@ -308,22 +310,25 @@ communication is validated. For me, all I had to do was to update the file in
 the Salt repository and have the master push the changes to all nodes (starting
 with non-production first of course).</p>
 <p>Next, try to log on to the system using the Ed25519 key:</p>
-<div class="highlight"><pre><span></span><code>~$ ssh -i ~/.ssh/id_ed25519 testuser@testserver
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ ssh -i ~/.ssh/id_ed25519 testuser@testserver
+</pre></div>
+
 
 <p>Make sure that your SSH agent is not running as it might still try to revert
 back to another key if the Ed25519 one does not work. You can validate if the
 connection was using Ed25519 through the <code>auth.log</code> file:</p>
-<div class="highlight"><pre><span></span><code><span class="go">~$ sudo tail -f auth.log</span>
+<div class="highlight"><pre><span></span><span class="go">~$ sudo tail -f auth.log</span>
 <span class="go">Aug 17 21:20:48 localhost sshd[13962]: Accepted publickey for root from \</span>
 <span class="go">  192.168.100.1 port 43152 ssh2: ED25519 SHA256:-------redacted----------------</span>
-</code></pre></div>
+</pre></div>
+
 
 <p>If this communication succeeds, then you can remove the old key from the <code>~/.ssh/authorized_keys</code> files.</p>
 <p>On the client level, you might want to hide <code>~/.ssh/id_dsa</code> from the SSH agent:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Obsolete - keychain ~/.ssh/id_dsa</span>
+<div class="highlight"><pre><span></span><span class="c1"># Obsolete - keychain ~/.ssh/id_dsa</span>
 keychain ~/.ssh/id_ed25519
-</code></pre></div>
+</pre></div>
+
 
 <p>If a server update was forgotten, then the authentication will fail and, depending
 on the configuration, either fall back to the regular authentication or fail

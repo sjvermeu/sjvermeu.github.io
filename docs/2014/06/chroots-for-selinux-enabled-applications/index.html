@@ -243,8 +243,9 @@ access to <code>/sys</code> is not something I like to see for a chroot jail.</p
 <p>Luckily, all other accesses are not needed, so I was able to create a
 static <code>/sys/fs/selinux</code> directory structure in the chroot, and then
 just mount the SELinux file system on that:</p>
-<div class="highlight"><pre><span></span><code>~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
+</pre></div>
+
 
 <p>In hindsight, I probably could just have created a <code>/selinux</code> location
 as that location, although deprecated, is still checked by the SELinux
@@ -253,16 +254,18 @@ libraries.</p>
 Luckily it was purely for read operations, so I was first contemplating
 of copying the data and doing a <strong>chmod -R a-w
 /var/chroot/etc/selinux</strong>, but then considered a bind-mount:</p>
-<div class="highlight"><pre><span></span><code>~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
+</pre></div>
+
 
 <p>Alas, bad luck - the read-only flag is ignored during the mount, and the
 bind-mount is still read-write. A <a href="http://lwn.net/Articles/281157/">simple article on
 lwn.net</a> informed me about the
 solution: I need to do a remount afterwards to enable the read-only
 state:</p>
-<div class="highlight"><pre><span></span><code>~# mount -o remount,ro /var/chroot/etc/selinux
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# mount -o remount,ro /var/chroot/etc/selinux
+</pre></div>
+
 
 <p>Great! And because my brain isn't what it used to be, I just make a
 quick blog for future reference ;-)</p>

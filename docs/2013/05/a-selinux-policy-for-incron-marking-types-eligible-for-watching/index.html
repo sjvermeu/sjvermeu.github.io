@@ -246,17 +246,18 @@ other modules (or admins) can use to mark specific types eligible for
 watching, called <em>incron_notify_file</em>. This interface will assign the
 <code>incron_notify_type</code> attribute to the provided type.</p>
 <p>First, the attribute and its associated privileges:</p>
-<div class="highlight"><pre><span></span><code>attribute incron_notify_type;
+<div class="highlight"><pre><span></span>attribute incron_notify_type;
 ...
 allow incrond_t incron_notify_type:dir list_dir_perms;
 allow incrond_t incron_notify_type:file read_file_perms;
 allow incrond_t incron_notify_type:lnk_file read_lnk_file_perms;
-</code></pre></div>
+</pre></div>
+
 
 <p>That's it. For now, this won't do much as there are no types associated
 with the <code>incron_notify_type</code> attribute, so let's change that by
 introducing the interface:</p>
-<div class="highlight"><pre><span></span><code>########################################
+<div class="highlight"><pre><span></span>########################################
 ## &lt;summary&gt;
 ##      Make the specified type a file or directory
 ##      that incrond can watch on.
@@ -274,23 +275,26 @@ interface(`incron_notify_file&#39;,`
 
         typeattribute $1 incron_notify_type;
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>That's it! If you want <strong>incrond</strong> to watch user content, one can now do
 something like:</p>
-<div class="highlight"><pre><span></span><code>incron_notify_file(home_root_t)
+<div class="highlight"><pre><span></span>incron_notify_file(home_root_t)
 incron_notify_file(user_home_dir_t)
 incron_notify_file(user_home_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>Moreover, we can now also easily check what additional types have been
 marked as such:</p>
-<div class="highlight"><pre><span></span><code>$ seinfo -aincron_notify_type -x
+<div class="highlight"><pre><span></span>$ seinfo -aincron_notify_type -x
    incron_notify_type
       user_home_dir_t
       user_home_t
       home_root_t
-</code></pre></div>
+</pre></div>
+
 
 <p>This attribute approach is commonly used for such setups and is becoming
 more and more a "standard" approach.</p>

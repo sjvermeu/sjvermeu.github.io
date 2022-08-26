@@ -32,12 +32,13 @@ users that are interested can use the stylesheet as linked above to
 create their own PDFs of the documentation.&lt;/p&gt;
 &lt;p&gt;Assuming you have a checkout of the Gentoo documentation, this process
 can be done as follows (example for the AMD64 handbook):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ xsltproc docbook.xsl /path/to/handbook-amd64.xml &amp;gt; /somewhere/handbook-amd64.docbook
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ xsltproc docbook.xsl /path/to/handbook-amd64.xml &amp;gt; /somewhere/handbook-amd64.docbook
 $ cd /somewhere
 $ xsltproc --output handbook-amd64.fo --stringparam paper.type A4   
  /usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl handbook-amd64.docbook
 $ fop handbook-amd64.fo handbook-amd64.pdf
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The docbook stylesheets are offered by the
 &lt;em&gt;app-text/docbook-xsl-stylesheets&lt;/em&gt; package whereas the &lt;strong&gt;fop&lt;/strong&gt; command
@@ -45,7 +46,7 @@ is provided by &lt;em&gt;dev-java/fop&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;I have an example output available (temporarily) at my &lt;a href="http://dev.gentoo.org/~swift/tmp/handbook-amd64.pdf"&gt;dev space (amd64
 handbook)&lt;/a&gt; but I'm
 not going to maintain this for long (so the link might not work in the
-near future).&lt;/p&gt;</content><category term="Gentoo"></category><category term="docbook"></category><category term="Gentoo"></category><category term="guidexml"></category><category term="pdf"></category><category term="xsl"></category></entry><entry><title>Transforming GuideXML to wiki</title><link href="https://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/" rel="alternate"></link><published>2013-02-12T20:12:00+01:00</published><updated>2013-02-12T20:12:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-12:/2013/02/transforming-guidexml-to-wiki/</id><summary type="html">&lt;p&gt;The &lt;a href="http://www.gentoo.org"&gt;Gentoo project&lt;/a&gt; has its own &lt;a href="https://wiki.gentoo.org"&gt;official
+near future).&lt;/p&gt;</content><category term="docbook"></category><category term="Gentoo"></category><category term="guidexml"></category><category term="pdf"></category><category term="xsl"></category></entry><entry><title>Transforming GuideXML to wiki</title><link href="https://blog.siphos.be/2013/02/transforming-guidexml-to-wiki/" rel="alternate"></link><published>2013-02-12T20:12:00+01:00</published><updated>2013-02-12T20:12:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-12:/2013/02/transforming-guidexml-to-wiki/</id><summary type="html">&lt;p&gt;The &lt;a href="http://www.gentoo.org"&gt;Gentoo project&lt;/a&gt; has its own &lt;a href="https://wiki.gentoo.org"&gt;official
 wiki&lt;/a&gt; for some time now, and we are going to
 use it more and more in the next few months. For instance, in the last
 Gentoo Hardened meeting, we already discussed that most user-oriented
@@ -68,8 +69,9 @@ actually) but at least it allows for a more simple migration of
 documents with minor editing afterwards.&lt;/p&gt;
 &lt;p&gt;Currently, using it is as simple as invoking it against the GuideXML
 document you want to transform:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ xsltproc gxml2wiki.xsl /path/to/document.xml
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ xsltproc gxml2wiki.xsl /path/to/document.xml
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The output shown on the screen can then be used as a page. The following
 things still need to be corrected manually:&lt;/p&gt;
@@ -89,4 +91,4 @@ things still need to be corrected manually:&lt;/p&gt;
 &lt;p&gt;The stylesheet currently automatically adds in a link towards a Server
 and security category, but of course you'll need to change that to the
 proper category for the document you are converting.&lt;/p&gt;
-&lt;p&gt;Happy documentation hacking!&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="guidexml"></category><category term="stylesheet"></category><category term="wiki"></category><category term="xml"></category><category term="xsl"></category></entry></feed>
+&lt;p&gt;Happy documentation hacking!&lt;/p&gt;</content><category term="Gentoo"></category><category term="guidexml"></category><category term="stylesheet"></category><category term="wiki"></category><category term="xml"></category><category term="xsl"></category></entry></feed>

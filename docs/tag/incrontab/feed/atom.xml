@@ -3,32 +3,36 @@
 allowed&lt;/a&gt;
 to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at the denials to
 build up the policy.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab --help
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
 (or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Now that our &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/"&gt;regular user is
 allowed&lt;/a&gt;
 to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at the denials to
 build up the policy.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab --help
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
 (or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials. If you are
 developing a policy, it is wise to clear the entire log and reproduce
 the "situation" so you get a proper idea of the scope.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cd /var/log/audit
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd /var/log/audit
 # &amp;gt; audit.log
 # tail -f audit.log | grep AVC
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now let's run &lt;strong&gt;incrontab --help&lt;/strong&gt; again and look at the denials:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368707274.429:28180): avc:  denied  { read write } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=user_u:object_r:user_tty_device_t tclass=chr_file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1368707274.429:28180): avc:  denied  { read write } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=user_u:object_r:user_tty_device_t tclass=chr_file
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;You can start piping this information into &lt;strong&gt;audit2allow&lt;/strong&gt; to generate
 policy statements, but I personally prefer not to use &lt;strong&gt;audit2allow&lt;/strong&gt;
@@ -45,7 +49,7 @@ it the proper access. With &lt;strong&gt;sefindif&lt;/strong&gt; as
 &lt;a href="http://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/"&gt;documented&lt;/a&gt;
 before, we can look for the proper interfaces we need. I look for
 &lt;code&gt;user_tty_device_t&lt;/code&gt; with &lt;code&gt;rw&lt;/code&gt; (commonly used for read-write):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif user_tty_device_t.*rw
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefindif user_tty_device_t.*rw
 system/userdomain.if: template(`userdom_base_user_template&amp;#39;,`
 system/userdomain.if:   allow $1_t user_tty_device_t:chr_file { setattr rw_chr_file_perms };
 system/userdomain.if: interface(`userdom_use_user_ttys&amp;#39;,`
@@ -56,7 +60,8 @@ system/userdomain.if: interface(`userdom_dontaudit_use_user_terminals&amp;#39;,`
 system/userdomain.if:   dontaudit $1 user_tty_device_t:chr_file rw_term_perms;
 system/userdomain.if: interface(`userdom_dontaudit_use_user_ttys&amp;#39;,`
 system/userdomain.if:   dontaudit $1 user_tty_device_t:chr_file rw_file_perms;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Two of these look interesting: &lt;em&gt;userdom_use_user_ttys&lt;/em&gt; and
 &lt;em&gt;userdom_use_user_terminals&lt;/em&gt;. Looking at the API documentation (or
@@ -82,7 +87,7 @@ session or so). When you &lt;em&gt;think&lt;/em&gt; that the target context (in 
 &lt;code&gt;getty_t&lt;/code&gt;) could be a placeholder (so other types are likely to be
 needed as well), make sure you check which attributes are assigned to
 the type:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -tgetty_t -x
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# seinfo -tgetty_t -x
    getty_t
       privfd
       mcssetcats
@@ -90,18 +95,20 @@ the type:&lt;/p&gt;
       mlsfilewrite
       application_domain_type
       domain
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Of the above ones, &lt;code&gt;privfd&lt;/code&gt; is the important one:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif privfd.*use
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefindif privfd.*use
 kernel/domain.if: interface(`domain_use_interactive_fds&amp;#39;,`
 kernel/domain.if:       allow $1 privfd:fd use;
 kernel/domain.if: interface(`domain_dontaudit_use_interactive_fds&amp;#39;,`
 kernel/domain.if:       dontaudit $1 privfd:fd use;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So let's update &lt;code&gt;incron.te&lt;/code&gt; accordingly:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
 type incron_spool_t;
 files_type(incron_spool_t)
 
@@ -112,21 +119,24 @@ files_type(incron_spool_t)
 
 userdom_use_user_terminals(incrontab_t)
 domain_use_interactive_fds(incrontab_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Rebuild the policy and load it in memory.&lt;/p&gt;
 &lt;p&gt;If we now run &lt;strong&gt;incrontab&lt;/strong&gt; we get the online help as we expected. Let's
 now look at the currently installed incrontabs (there shouldn't be any
 of course):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -l
 cannot determine current user
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the denials, we notice:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368708632.060:28192): avc:  denied  { create } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=unix_stream_socket
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1368708632.060:28192): avc:  denied  { create } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=unix_stream_socket
 type=AVC msg=audit(1368708632.060:28194): avc:  denied  { read } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;nsswitch.conf&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=393768 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:etc_t tclass=file
 type=AVC msg=audit(1368708632.062:28196): avc:  denied  { read } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;passwd&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=394223 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:etc_t tclass=file
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Let's first focus on &lt;code&gt;nsswitch.conf&lt;/code&gt; and &lt;code&gt;passwd&lt;/code&gt;. Although both require
 read access to &lt;code&gt;etc_t&lt;/code&gt; files, it might be wrong to just add in
@@ -135,33 +145,37 @@ suggest). For nsswitch, there is a special interface available:
 &lt;em&gt;auth_use_nsswitch&lt;/em&gt;. It is very, very likely that you'll need this
 one, especially if you want to share the policy with others who might
 not have all of the system databases in local files (as &lt;code&gt;etc_t&lt;/code&gt; files).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
 domain_use_interactive_fds(incrontab_t)
 auth_use_nsswitch(incrontab_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Let's retry:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -l
 cannot read table for &amp;#39;user&amp;#39;: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368708893.260:28199): avc:  denied  { search } for  pid=7997 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;spool&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=20 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:var_spool_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So we need to grant search privileges on &lt;code&gt;var_spool_t&lt;/code&gt;. This is offered
 through &lt;em&gt;files_search_spool&lt;/em&gt;. Add it to the policy, rebuild and retry.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -l
 cannot read table for &amp;#39;user&amp;#39;: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368709146.426:28201): avc:  denied  { search } for  pid=8046 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;incron&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=19725 scontext=user_u:user_r:incrontab_t tcontext=root:object_r:incron_spool_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;For this one, no interface exists yet. We might be able to create one
 for ourselves, but as long as other domains don't need it, we can just
 add it locally in our policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t incron_spool_t:dir search_dir_perms;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow incrontab_t incron_spool_t:dir search_dir_perms;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Adding raw allow rules in a policy is, according to the &lt;a href="http://oss.tresys.com/projects/refpolicy/wiki/StyleGuide"&gt;refpolicy
 styleguide&lt;/a&gt;,
@@ -171,10 +185,11 @@ also find that you can use the &lt;em&gt;search_dirs_patter&lt;/em&gt; call. How
 that one only makes sense if you need to do this on top of another
 directory - just look at the definition of &lt;em&gt;search_dirs_pattern&lt;/em&gt;. So
 with this permission set, let's retry.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -l
 no table for user
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Great, we have successfully updated the policy until the commands
 worked. In the next post, we'll enhance it even further while creating
-new incrontabs.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="incrontab"></category><category term="policy"></category><category term="selinux"></category></entry></feed>
+new incrontabs.&lt;/p&gt;</content><category term="incron"></category><category term="incrontab"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

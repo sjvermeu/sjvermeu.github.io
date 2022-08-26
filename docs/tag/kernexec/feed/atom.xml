@@ -44,7 +44,7 @@ to get to the userland. On my system, the exploit fails with the
 following (start of) oops (without affecting the system further) when it
 tries to close the file descriptor returned from the syscall that
 invokes the decrement:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
 [ 1926.227019] BUG: unable to handle kernel paging request at 0000000381f5815c
 [ 1926.227019] IP: [] sw_perf_event_destroy+0x1a/0xa0
 [ 1926.227019] PGD 58a7c000 
@@ -56,11 +56,13 @@ invokes the decrement:&lt;/p&gt;
 [ 1926.227019] RIP: 0010:[]  [] sw_perf_event_destroy+0x1a/0xa0
 [ 1926.227019] RSP: 0018:ffff880058a03e08  EFLAGS: 00010246
 ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The exploit also finds that the decrement didn't succeed:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;A second mitigation is that
 &lt;a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf"&gt;KERNEXEC&lt;/a&gt;
@@ -72,8 +74,9 @@ feature prevents the execution of binaries that are not located in a
 root-owned directory and owned by a trusted group (which on my system is
 10 = wheel). So users attempting to execute such code will fail with a
 &lt;em&gt;Permission denied&lt;/em&gt; error, and the following is shown in the logs:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;However, even though a nicely hardened system should be fairly immune
 against the currently circling public exploit, it should be noted that
@@ -93,4 +96,4 @@ SELinux (since the shell code is ran with ring0 privileges it can access
 and modify the SELinux state information in the kernel).&lt;/p&gt;
 &lt;p&gt;Many thanks to Brad for the excellent write-up, and to the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo
 Hardened&lt;/a&gt; team for providing the
-grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="Security"></category><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry></feed>
+grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry></feed>

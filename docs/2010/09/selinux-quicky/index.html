@@ -232,30 +232,34 @@ been documented sufficiently on the Internet already.</p>
 <p>With <strong>sesearch</strong> you can query through the loaded policy. For instance,
 you want to know why you can execute <strong>sudo</strong> as a user (and not just
 due to the DAC permissions):</p>
-<div class="highlight"><pre><span></span><code>~$ sesearch -s user_t -t sudo_exec_t -p execute -c file -A
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ sesearch -s user_t -t sudo_exec_t -p execute -c file -A
+</pre></div>
+
 
 <p>Of course, this is only one of the three requirements for a transition
 from <code>user_t</code> to <code>user_sudo_t</code>, for that you still need process
 transition and entrypoint:</p>
-<div class="highlight"><pre><span></span><code>~$ sesearch -s user_t -t user_sudo_t -p transition -A 
+<div class="highlight"><pre><span></span>~$ sesearch -s user_t -t user_sudo_t -p transition -A 
 ~$ sesearch -s user_sudo_t -t sudo_exec_t -p entrypoint -A
-</code></pre></div>
+</pre></div>
+
 
 <p>Now, sometimes you find a rule that you didn't expect:</p>
-<div class="highlight"><pre><span></span><code>~$ sesearch -s user_t -t dmesg_exec_t -p execute -A
+<div class="highlight"><pre><span></span>~$ sesearch -s user_t -t dmesg_exec_t -p execute -A
 Found 1 semantic av rules:
   allow user_t application_exec_type : file { ioctl read getattr lock execute execute_no_trans open } ;
-</code></pre></div>
+</pre></div>
+
 
 <p>This is because <code>dmesg_exec_t</code> has the <code>application_exec_type</code> attribute
 set. You can see the list of types that have an attribute set (or vice
 versa) with <strong>seinfo</strong>:</p>
-<div class="highlight"><pre><span></span><code>(Show list of types that have the application_exec_type attribute)
+<div class="highlight"><pre><span></span>(Show list of types that have the application_exec_type attribute)
 ~$ seinfo -aapplication_exec_type -x
 (Show list of attributes given to the dmesg_exec_t type)
 ~$ seinfo -tdmesg_exec_t -x
-</code></pre></div>
+</pre></div>
+
 
 <p>Now, during my browsing through the SELinux activities on my system, I
 noticed that I could run <code>/usr/sbin/dnsmasq</code> as root, without generating
@@ -266,19 +270,20 @@ or perhaps the domain transitions to another domain first without me
 knowing - not, I would see that the process runs as a different domain
 then, which wasn't the case). Luckily, dgrift on <code>#selinux</code> gave me the
 hint of checking the <em>dontaudit</em> rules as well:</p>
-<div class="highlight"><pre><span></span><code>~$ sesearch --dontaudit -s sysadm_t -t dnsmasq_exec_t
+<div class="highlight"><pre><span></span>~$ sesearch --dontaudit -s sysadm_t -t dnsmasq_exec_t
 ...
    dontaudit sysadm_t exec_type : file { execute execute_no_trans } ;
-</code></pre></div>
+</pre></div>
+
 
 <p>So there we had it - it was being denied, just not logged. And because I
 ran in permissive mode, it gets executed anyhow. I disabled the
 dontaudit rules and got the avc denial I was expecting:</p>
-<div class="highlight"><pre><span></span><code>(Disable dontaudit rules)
+<div class="highlight"><pre><span></span>(Disable dontaudit rules)
 ~$ semodule -DB
 (Reenable dontaudit rules)
 ~$ semodule -B
-</code></pre></div>
+</pre></div>
         </div>
 
         <!-- Neighbors -->

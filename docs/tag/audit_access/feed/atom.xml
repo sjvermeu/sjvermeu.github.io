@@ -10,8 +10,9 @@ when they are triggered. For the DAC-related capabilities, policy
 developers often notice that these capabilities are triggered without a
 real need for them. So in the majority of cases, the policy developer
 wants to disable auditing of this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dontaudit &amp;lt;somedomain&amp;gt; self:capability { dac_read_search dac_override };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dontaudit &amp;lt;somedomain&amp;gt; self:capability { dac_read_search dac_override };
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;When applications wants to search through directories not owned by the
 user as which the application runs, &lt;em&gt;both&lt;/em&gt; capabilities will be checked
@@ -28,7 +29,7 @@ get information about files, but other than that don't do anything with
 the files. When this occurs and the domain does not have read, write or
 execute permissions on the target, then the denial is shown even when
 the application doesn't really read, write or execute the file.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#include &amp;lt;stdio.h&amp;gt;
 #include &amp;lt;unistd.h&amp;gt;
 
 int main(int argc, char ** argv) {
@@ -43,7 +44,8 @@ $ check /var/lib/logrotate.status
 $ tail -1 /var/log/audit.log
 ...
 type=AVC msg=audit(1367400559.273:5224): avc:  denied  { read } for  pid=12270 comm=&amp;quot;test&amp;quot; name=&amp;quot;logrotate.status&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=2849 scontext=staff_u:staff_r:staff_t tcontext=system_u:object_r:logrotate_var_lib_t tclass=file
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This gives the impression that the application is doing nasty stuff,
 even when it is merely checking permissions. One way would be to
@@ -60,4 +62,4 @@ effect. The purpose of the permission is to allow policy developers to
 not audit access checks without really dontauditing other, possibly
 malicious, attempts. In other words, checking the access can be
 dontaudited while actually attempting to use the access (reading,
-writing or executing the file) will still result in the proper denial.&lt;/p&gt;</content><category term="SELinux"></category><category term="access"></category><category term="audit"></category><category term="audit_access"></category><category term="selinux"></category></entry></feed>
+writing or executing the file) will still result in the proper denial.&lt;/p&gt;</content><category term="access"></category><category term="audit"></category><category term="audit_access"></category><category term="selinux"></category></entry></feed>

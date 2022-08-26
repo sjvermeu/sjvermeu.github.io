@@ -231,7 +231,7 @@
         <div>
             <p>Today I was attempting to update a local repository, when SSH complained
 about a changed fingerprint, something like the following:</p>
-<div class="highlight"><pre><span></span><code>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+<div class="highlight"><pre><span></span>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
@@ -244,7 +244,8 @@ Add correct host key in /home/user/.ssh/known_hosts to get rid of this message.
 Offending ECDSA key in /home/user/.ssh/known_hosts:9
 ECDSA host key for 192.168.56.101 has changed and you have requested strict checking.
 Host key verification failed.
-</code></pre></div>
+</pre></div>
+
 
 
 
@@ -262,8 +263,9 @@ SSH command shows it in base64 SHA256 by default.</p>
 <p>Luckily, a quick search revealed this <a href="https://superuser.com/questions/929566/sha256-ssh-fingerprint-given-by-the-client-but-only-md5-fingerprint-known-for-se">superuser</a>
 post which told me to connect to the host using the
 <code>FingerprintHash md5</code> option:</p>
-<div class="highlight"><pre><span></span><code>~$ ssh -o FingerprintHash=md5 192.168.56.11
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ ssh -o FingerprintHash=md5 192.168.56.11
+</pre></div>
+
 
 <p>The result is SSH displaying the MD5 hashed fingerprint which I
 can now validate against the documented one. Once I validated that

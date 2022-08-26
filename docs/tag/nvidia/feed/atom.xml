@@ -22,11 +22,12 @@ can be loaded (as unsigned or wrongly signed modules are not allowed on the
 system), was different.&lt;/p&gt;
 &lt;p&gt;It used to be as follows (example for a single module, it had to be repeated
 for each affected kernel module):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# perl /usr/src/linux/scripts/sign-file sha512 \
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# perl /usr/src/linux/scripts/sign-file sha512 \
       /usr/src/linux/signing_key.priv \
       /usr/src/linux/signing_key.x509 \
       /lib/modules/4.12.5-gentoo/video/nvidia-uvm.ko
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;However, from version 4.3.3 onward (as also explained by this excellent
 &lt;a href="https://wiki.gentoo.org/wiki/Signed_kernel_module_support"&gt;Signed kernel module support article&lt;/a&gt; on the Gentoo wiki) this command
@@ -41,7 +42,7 @@ for sure.&lt;/p&gt;
 &lt;p&gt;However, attempts to use 3D applications showed (through SELinux denials)
 that access to these device files is needed. Without that, applications just
 crashed, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;org.lwjgl.LWJGLException: X Error - disp: 0x7fd164907b00 serial: 150 error: BadValue (integer parameter out of range for operation) request_code: 153 minor_code: 24
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;org.lwjgl.LWJGLException: X Error - disp: 0x7fd164907b00 serial: 150 error: BadValue (integer parameter out of range for operation) request_code: 153 minor_code: 24
         at org.lwjgl.opengl.LinuxDisplay.globalErrorHandler(LinuxDisplay.java:320)
         at org.lwjgl.opengl.LinuxContextImplementation.nCreate(Native Method)
         at org.lwjgl.opengl.LinuxContextImplementation.create(LinuxContextImplementation.java:51)
@@ -53,7 +54,8 @@ crashed, like so:&lt;/p&gt;
         at bib.aq(SourceFile:458)
         at bib.a(SourceFile:404)
         at net.minecraft.client.main.Main.main(SourceFile:123)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Not really useful to debug for me, but the SELinux denials were a bit more obvious,
 showing requests for read and write to the &lt;code&gt;nvidiactl&lt;/code&gt; character device.&lt;/p&gt;
@@ -62,13 +64,15 @@ showing requests for read and write to the &lt;code&gt;nvidiactl&lt;/code&gt; ch
 files were added after the automated &lt;code&gt;restorecon&lt;/code&gt; was done on the &lt;code&gt;/dev&lt;/code&gt; location).&lt;/p&gt;
 &lt;p&gt;So, adding the following command to my local init script fixed the context setting
 at boot up:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;restorecon /dev/nvidiactl /dev/nvidia0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;restorecon /dev/nvidiactl /dev/nvidia0
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Also, the domains that needed to use nVidia had to receive the following
 addition SELinux-policy-wise:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dev_rw_xserver_misc(...)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dev_rw_xserver_misc(...)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Perhaps this can be made more fine-grained (as there are several other device
 files marked as &lt;code&gt;xserver_misc_device_t&lt;/code&gt;) but for now this should suffice.&lt;/p&gt;
@@ -79,7 +83,7 @@ X server did not work automatically though, and it took some fiddling to get
 it to work.&lt;/p&gt;
 &lt;p&gt;In the end, I had to add in an &lt;code&gt;nvidia.conf&lt;/code&gt; file inside &lt;code&gt;/etc/X11/xorg.conf.d&lt;/code&gt;
 with the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Section &amp;quot;ServerLayout&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Section &amp;quot;ServerLayout&amp;quot;
         Identifier      &amp;quot;layout&amp;quot;
         Screen  0       &amp;quot;nvidia&amp;quot;
         Inactive        &amp;quot;intel&amp;quot;
@@ -106,19 +110,22 @@ Section &amp;quot;Screen&amp;quot;
         Identifier      &amp;quot;intel&amp;quot;
         Device          &amp;quot;intel&amp;quot;
 EndSection
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;And with a single &lt;code&gt;xrandr&lt;/code&gt; command I re-enabled split screen support (as by
 default it now showed the same output on both screens):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ xrandr --output eDP-1-1 --left-of HDMI-1-2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ xrandr --output eDP-1-1 --left-of HDMI-1-2
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;I also had to set the output source to the nVidia device, by adding the following
 lines to my &lt;code&gt;~/.xinitrc&lt;/code&gt; file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;xrandr --setprovideroutputsource modesetting NVIDIA-0
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;And with that, another thing was crossed off from my TODO list. Which has become
 quite large after my holidays (went to Kos, Greece) as I had many books and articles
-on my ebook reader with me, which inspired a lot.&lt;/p&gt;</content><category term="SELinux"></category><category term="gentoo"></category><category term="selinux"></category><category term="nvidia"></category></entry></feed>
+on my ebook reader with me, which inspired a lot.&lt;/p&gt;</content><category term="gentoo"></category><category term="selinux"></category><category term="nvidia"></category></entry></feed>

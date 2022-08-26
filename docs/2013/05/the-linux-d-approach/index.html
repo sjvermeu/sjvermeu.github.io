@@ -236,13 +236,14 @@ overwriting changes, etc.) but instead can place their definitions in
 the <code>cron.d</code> directory.</p>
 <p>This approach is getting more traction, as can be seen from the
 available "dot-d" directories on a system:</p>
-<div class="highlight"><pre><span></span><code>$ ls -d /etc/*.d
+<div class="highlight"><pre><span></span>$ ls -d /etc/*.d
 /etc/bash_completion.d  /etc/ld.so.conf.d  /etc/pam.d          /etc/sysctl.d
 /etc/conf.d             /etc/local.d       /etc/profile.d      /etc/wgetpaste.d
 /etc/dracut.conf.d      /etc/logrotate.d   /etc/request-key.d  /etc/xinetd.d
 /etc/env.d              /etc/makedev.d     /etc/sandbox.d      /etc/cron.d
 /etc/init.d             /etc/modprobe.d    /etc/sudoers.d
-</code></pre></div>
+</pre></div>
+
 
 <p>An application can place its configuration files in these directories,
 automatically "plugging" it in into the operating system and the
@@ -277,9 +278,10 @@ unless they use a proper naming convention.</p>
 <p>The second is to use something identifying where the file comes from. A
 best practice when using Puppet for instance is to add in a comment to
 the file such as the following:</p>
-<div class="highlight"><pre><span></span><code># This file is managed by Puppet through the org-pgsl-def module
+<div class="highlight"><pre><span></span># This file is managed by Puppet through the org-pgsl-def module
 # Please do not modify manually
-</code></pre></div>
+</pre></div>
+
 
 <p>This informs the administrator how the file is put there; you might even
 want to include version information.</p>

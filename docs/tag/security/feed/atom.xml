@@ -177,7 +177,7 @@ company has a good security posture, including the flexibility to adjust as the
 environment evolves.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1445380710706073613"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="zero-trust"></category><category term="security"></category><category term="enterprise"></category><category term="network-security"></category></entry><entry><title>Authenticating with U2F</title><link href="https://blog.siphos.be/2017/09/authenticating-with-u2f/" rel="alternate"></link><published>2017-09-11T18:25:00+02:00</published><updated>2017-09-11T18:25:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-09-11:/2017/09/authenticating-with-u2f/</id><summary type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="zero-trust"></category><category term="security"></category><category term="enterprise"></category><category term="network-security"></category></entry><entry><title>Authenticating with U2F</title><link href="https://blog.siphos.be/2017/09/authenticating-with-u2f/" rel="alternate"></link><published>2017-09-11T18:25:00+02:00</published><updated>2017-09-11T18:25:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-09-11:/2017/09/authenticating-with-u2f/</id><summary type="html">&lt;p&gt;In order to further secure access to my workstation, after the &lt;a href="http://blog.siphos.be/2017/08/switch-to-gentoo-sources/"&gt;switch to Gentoo
 sources&lt;/a&gt;, I now enabled two-factor authentication through my Yubico U2F
 USB device. Well, at least for local access - remote access through SSH requires
 both userid/password as well as the correct SSH key, by &lt;a href="https://lwn.net/Articles/544640/"&gt;chaining authentication
@@ -210,22 +210,25 @@ on my kernel configuration already, and Internet sources are not clear which one
 needed, so let's assume for now both are.&lt;/p&gt;
 &lt;p&gt;Next, the PAM module needs to be installed. On Gentoo, this is a matter of installing
 the &lt;code&gt;pam\_u2f&lt;/code&gt; package, as the necessary dependencies will be pulled in automatically:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge pam_u2f
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# emerge pam_u2f
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Next, for each user, a registration has to be made. This registration is needed for the
 U2F components to be able to correctly authenticate the use of a U2F key for a particular
 user. This is done with &lt;code&gt;pamu2fcfg&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ pamu2fcfg -u&amp;lt;username&amp;gt; &amp;gt; ~/.config/Yubico/u2f_keys
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ pamu2fcfg -u&amp;lt;username&amp;gt; &amp;gt; ~/.config/Yubico/u2f_keys
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The U2F USB key must be plugged in when the command is executed, as a succesful keypress (on the
 U2F device) is needed to complete the operation.&lt;/p&gt;
 &lt;p&gt;Finally, enable the use of the &lt;code&gt;pam\_u2f&lt;/code&gt; module in PAM. On my system, this is done
 through the &lt;code&gt;/etc/pam.d/system-local-login&lt;/code&gt; PAM configuration file used by all
 local logon services.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auth     required     pam_u2f.so
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;auth     required     pam_u2f.so
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;&lt;strong&gt;Consider the problems you might face&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;When fiddling with PAM, it is important to keep in mind what could fail. During the setup, it
@@ -245,10 +248,11 @@ rebooted in single user mode.&lt;/p&gt;
 the proper rights to handle U2F, and because PAM just works in the address space (and thus SELinux
 domain) of the application, the necessary privileges need to be added to these services. My initial
 investigation revealed the following necessary policy rules (refpolicy-style);&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;udev_search_pids(...)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;udev_search_pids(...)
 udev_read_db(...)
 dev_rw_generic_usb_dev(...)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The first two rules are needed because the operation to trigger the USB key uses the udev tables
 to find out where the key is located/attached, before it interacts with it. This interaction is then
@@ -262,23 +266,25 @@ my password (or extracting it from memory) won't suffice to perform a successful
 &lt;p&gt;If you want to use a different two-factor authentication, check out the use of the &lt;a href="https://wiki.gentoo.org/wiki/Google_Authenticator"&gt;Google
 authenticator&lt;/a&gt;, another nice article on the Gentoo wiki. It is also possible to use Yubico keys
 for remote authentication, but that uses the OTP (One Time Password) functionality which isn't active
-on the Yubico keys that I own.&lt;/p&gt;</content><category term="Security"></category><category term="gentoo"></category><category term="security"></category><category term="yubico"></category><category term="u2f"></category><category term="pam"></category></entry><entry><title>Audit buffering and rate limiting</title><link href="https://blog.siphos.be/2015/05/audit-buffering-and-rate-limiting/" rel="alternate"></link><published>2015-05-10T14:18:00+02:00</published><updated>2015-05-10T14:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-10:/2015/05/audit-buffering-and-rate-limiting/</id><summary type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+on the Yubico keys that I own.&lt;/p&gt;</content><category term="gentoo"></category><category term="security"></category><category term="yubico"></category><category term="u2f"></category><category term="pam"></category></entry><entry><title>Audit buffering and rate limiting</title><link href="https://blog.siphos.be/2015/05/audit-buffering-and-rate-limiting/" rel="alternate"></link><published>2015-05-10T14:18:00+02:00</published><updated>2015-05-10T14:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-10:/2015/05/audit-buffering-and-rate-limiting/</id><summary type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
 &lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
@@ -288,8 +294,9 @@ might be either ignored, sent through the kernel logging infrastructure
 or even have the system panic. And if the messages are sent to the
 kernel log then they might show up, but even that log has its
 limitations, which can lead to output similar to the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;__ratelimit: 53 callbacks suppressed
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;__ratelimit: 53 callbacks suppressed
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In this post, I want to give some pointers in configuring the audit
 subsystem as well as understand these messages...&lt;/p&gt;
@@ -297,10 +304,11 @@ subsystem as well as understand these messages...&lt;/p&gt;
 &lt;p&gt;If you take a look at the audit processes running on the system, you'll
 notice that (assuming Linux auditing is used of course) two processes
 are running:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# ps -ef | grep audit
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ps -ef | grep audit
 root      1483     1  0 10:11 ?        00:00:00 /sbin/auditd
 root      1486     2  0 10:11 ?        00:00:00 [kauditd]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The &lt;code&gt;/sbin/auditd&lt;/code&gt; daemon is the user-space audit daemon. It &lt;a href="http://man7.org/linux/man-pages/man3/audit_open.3.html"&gt;registers
 itself&lt;/a&gt; with the
@@ -342,9 +350,10 @@ chapter&lt;/a&gt;
 worth reading, but many others exist as well.&lt;/p&gt;
 &lt;p&gt;There is a useful command related to the subject of the audit backlog
 queue. It queries the audit subsystem for its current status:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# auditctl -s
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# auditctl -s
 AUDIT_STATUS: enabled=1 flag=1 pid=1483 rate_limit=0 backlog_limit=8192 lost=3 backlog=0
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The command displays not only the audit state (enabled or not) but also
 the settings for rate limits (on the audit backlog) and backlog limit.
@@ -360,10 +369,11 @@ but is usually left at the default (which is 1, being to switch to the
 kernel log subsystem).&lt;/p&gt;
 &lt;p&gt;Before that is done, the message is displayed which reveals the cause of
 the failure handling:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In this case, the backlog queue was set to contain at most 320 entries
 (which is low for a production system) and more messages were being
@@ -376,17 +386,19 @@ limit exceeded" if that was the limitation that was triggered.&lt;/p&gt;
 the system, then the "dropped" messages are sent to the kernel log
 subsystem. The calls however are also governed through a configurable
 limitation: it uses a rate limit which can be set through &lt;code&gt;sysctl&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sysctl -a | grep kernel.printk_rate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sysctl -a | grep kernel.printk_rate
 kernel.printk_ratelimit = 5
 kernel.printk_ratelimit_burst = 10
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the above example, this system allows one message every 5 seconds,
 but does allow a burst of up to 10 messages at once. When the rate
 limitation kicks in, then the kernel will log (at most one per second)
 the number of suppressed events:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Although this limit is kernel-wide, not all kernel log events are
 governed through it. It is the caller subsystem (in our case, the audit
@@ -405,7 +417,7 @@ not to make this setting too low. I personally set it to 8192.&lt;/p&gt;
 which is the case when dealing with new or experimental SELinux
 policies. It would also result in missing security-important events. It
 is the audit subsystem, after all. So tune it properly, and enjoy the
-power of Linux' audit subsystem.&lt;/p&gt;</content><category term="Free-Software"></category><category term="audit"></category><category term="kernel"></category><category term="security"></category><category term="selinux"></category></entry><entry><title>Talk about SELinux on GSE Linux/Security</title><link href="https://blog.siphos.be/2014/03/talk-about-selinux-on-gse-linuxsecurity/" rel="alternate"></link><published>2014-03-25T23:11:00+01:00</published><updated>2014-03-25T23:11:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-25:/2014/03/talk-about-selinux-on-gse-linuxsecurity/</id><summary type="html">&lt;p&gt;On today's &lt;a href="http://www.gsebelux.com"&gt;GSE Linux / GSE Security&lt;/a&gt; meeting
+power of Linux' audit subsystem.&lt;/p&gt;</content><category term="audit"></category><category term="kernel"></category><category term="security"></category><category term="selinux"></category></entry><entry><title>Talk about SELinux on GSE Linux/Security</title><link href="https://blog.siphos.be/2014/03/talk-about-selinux-on-gse-linuxsecurity/" rel="alternate"></link><published>2014-03-25T23:11:00+01:00</published><updated>2014-03-25T23:11:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-25:/2014/03/talk-about-selinux-on-gse-linuxsecurity/</id><summary type="html">&lt;p&gt;On today's &lt;a href="http://www.gsebelux.com"&gt;GSE Linux / GSE Security&lt;/a&gt; meeting
 (in cooperation with
 &lt;a href="http://www.imug.be/events_be/IMUG_LinuxSecurity_Event.asp"&gt;IMUG&lt;/a&gt;) I
 gave a small (30 minutes) presentation about what SELinux is. The
@@ -436,7 +448,7 @@ well, you can guess which technology is also one of the many sources of
 logging. Right. SELinux ;-)&lt;/p&gt;
 &lt;p&gt;Anyway, if your company is interested in such GSE events, make sure to
 follow the &lt;a href="http://www.gsebelux.com"&gt;gsebelux.com&lt;/a&gt; site for updates.
-It's a great way for networking as well as sharing experiences.&lt;/p&gt;</content><category term="Security"></category><category term="gse"></category><category term="mainframe"></category><category term="s390x"></category><category term="security"></category><category term="selinux"></category><category term="zenterprise"></category></entry><entry><title>Putting OVAL at work</title><link href="https://blog.siphos.be/2013/08/putting-oval-at-work/" rel="alternate"></link><published>2013-08-01T15:01:00+02:00</published><updated>2013-08-01T15:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/putting-oval-at-work/</id><summary type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
+It's a great way for networking as well as sharing experiences.&lt;/p&gt;</content><category term="gse"></category><category term="mainframe"></category><category term="s390x"></category><category term="security"></category><category term="selinux"></category><category term="zenterprise"></category></entry><entry><title>Putting OVAL at work</title><link href="https://blog.siphos.be/2013/08/putting-oval-at-work/" rel="alternate"></link><published>2013-08-01T15:01:00+02:00</published><updated>2013-08-01T15:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/putting-oval-at-work/</id><summary type="html">&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
 you might get the feeling of "How does this work". The underlying
 interfaces, like OVAL and XCCDF, might seem a bit daunting to implement.&lt;/p&gt;
 &lt;p&gt;This is correct, but you need to remember that the standards are
@@ -500,7 +512,7 @@ integrate with XCCDF as well. The idea you'll need to focus on then is
 the same as with OVAL: what is your source, how do you store it, you
 need interpreters that can "play" it, and on the reporting side you'll
 need to store the results so you can combine them later in your
-reporting.&lt;/p&gt;</content><category term="Security"></category><category term="baseline"></category><category term="benchmark"></category><category term="oval"></category><category term="security"></category><category term="xccdf"></category></entry><entry><title>Gentoo metadata support for CPE</title><link href="https://blog.siphos.be/2013/05/gentoo-metadata-support-for-cpe/" rel="alternate"></link><published>2013-05-10T03:50:00+02:00</published><updated>2013-05-10T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-10:/2013/05/gentoo-metadata-support-for-cpe/</id><summary type="html">&lt;p&gt;Recently, the &lt;code&gt;metadata.xml&lt;/code&gt; file syntax definition (the DTD for those
+reporting.&lt;/p&gt;</content><category term="baseline"></category><category term="benchmark"></category><category term="oval"></category><category term="security"></category><category term="xccdf"></category></entry><entry><title>Gentoo metadata support for CPE</title><link href="https://blog.siphos.be/2013/05/gentoo-metadata-support-for-cpe/" rel="alternate"></link><published>2013-05-10T03:50:00+02:00</published><updated>2013-05-10T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-10:/2013/05/gentoo-metadata-support-for-cpe/</id><summary type="html">&lt;p&gt;Recently, the &lt;code&gt;metadata.xml&lt;/code&gt; file syntax definition (the DTD for those
 that know a bit of XML) has been updated to support CPE definitions. A
 &lt;a href="https://nvd.nist.gov/cpe.cfm"&gt;CPE&lt;/a&gt; (Common Platform Enumeration) is an
 identifier that
@@ -545,7 +557,7 @@ create a "hitlist" which generates the CPEs. With the recent change to
 &lt;a href="http://dev.gentoo.org/~swift/blog/01/2_matchcve.txt"&gt;Third&lt;/a&gt;, I try to
 match the CPE data with the CVE data, depending on a given time delay of
 commits. In other words, you can ask possible CVE fixes for commits made
-in the last few XXX days.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cpe"></category><category term="cve"></category><category term="Gentoo"></category><category term="metadata"></category><category term="security"></category></entry><entry><title>Mitigating DDoS attacks</title><link href="https://blog.siphos.be/2013/04/mitigating-ddos-attacks/" rel="alternate"></link><published>2013-04-22T03:50:00+02:00</published><updated>2013-04-22T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-22:/2013/04/mitigating-ddos-attacks/</id><summary type="html">&lt;p&gt;Lately, DDoS attacks have been in the news more than I was hoping for.
+in the last few XXX days.&lt;/p&gt;</content><category term="cpe"></category><category term="cve"></category><category term="Gentoo"></category><category term="metadata"></category><category term="security"></category></entry><entry><title>Mitigating DDoS attacks</title><link href="https://blog.siphos.be/2013/04/mitigating-ddos-attacks/" rel="alternate"></link><published>2013-04-22T03:50:00+02:00</published><updated>2013-04-22T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-22:/2013/04/mitigating-ddos-attacks/</id><summary type="html">&lt;p&gt;Lately, DDoS attacks have been in the news more than I was hoping for.
 It seems that the botnets or other methods that are used to generate
 high-volume traffic to a legitimate service are becoming more and more
 easy to get and direct. At the time that I'm writing this …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Lately, DDoS attacks have been in the news more than I was hoping for.
@@ -632,7 +644,7 @@ addresses towards open DNS resolvers; called a DNS reflection attack).&lt;/p&gt;
 want to spread services across &lt;strong&gt;multiple locations&lt;/strong&gt;. Although more
 difficult from a management point of view, a dispersed/distributed
 architecture allows other services to continue running while one is
-being attacked.&lt;/p&gt;</content><category term="Security"></category><category term="ddos"></category><category term="dns"></category><category term="mitigation"></category><category term="security"></category></entry><entry><title>How far reaching vulnerabilities can go</title><link href="https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/" rel="alternate"></link><published>2013-04-09T19:39:00+02:00</published><updated>2013-04-09T19:39:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-09:/2013/04/how-far-reaching-vulnerabilities-can-go/</id><summary type="html">&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
+being attacked.&lt;/p&gt;</content><category term="ddos"></category><category term="dns"></category><category term="mitigation"></category><category term="security"></category></entry><entry><title>How far reaching vulnerabilities can go</title><link href="https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/" rel="alternate"></link><published>2013-04-09T19:39:00+02:00</published><updated>2013-04-09T19:39:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-09:/2013/04/how-far-reaching-vulnerabilities-can-go/</id><summary type="html">&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
 significant security vulnerability. The PostgreSQL team announced it up
 front and communicated how they would deal with the vulnerability (which
 basically comes down to saying that it is severe, that the public
@@ -677,4 +689,4 @@ forgotten, very active community) database platform. But I do hope that
 these products take up their responsibility and release updated versions
 or patches for their installations to their customers &lt;em&gt;very&lt;/em&gt; soon.&lt;/p&gt;
 &lt;p&gt;Perhaps I should ask our security operational team to take a scan to
-actively follow-up on these...&lt;/p&gt;</content><category term="Security"></category><category term="firewall"></category><category term="patching"></category><category term="postgresql"></category><category term="security"></category></entry></feed>
+actively follow-up on these...&lt;/p&gt;</content><category term="firewall"></category><category term="patching"></category><category term="postgresql"></category><category term="security"></category></entry></feed>

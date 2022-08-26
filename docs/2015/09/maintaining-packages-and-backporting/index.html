@@ -238,11 +238,12 @@ wait for a new release.</p>
 
 <p><strong>Getting the patches</strong></p>
 <p>To capture the patches, I used <code>git</code> together with the commit id:</p>
-<div class="highlight"><pre><span></span><code><span class="go">~$ git format-patch -n -1 73b7ff41</span>
+<div class="highlight"><pre><span></span><span class="go">~$ git format-patch -n -1 73b7ff41</span>
 <span class="go">0001-Only-invoke-RPM-on-RPM-enabled-Linux-distributions.patch</span>
 <span class="go">~$ git format-patch -n -1 4fbc6623</span>
 <span class="go">0001-Set-self.sename-to-sename-after-calling-semanage_seu.patch</span>
-</code></pre></div>
+</pre></div>
+
 
 <p>The two generated patch files contain all information about the commit. Thanks
 to the <code>epatch</code> support in the <code>eutils.eclass</code>, these patch files are
@@ -254,36 +255,39 @@ ebuilds is that we can simply copy them and commit in order to make a new releas
 <p>So, in case of the patch backporting, the necessary patch files are first moved
 into the <code>files/</code> subdirectory of the package. Then, the live ebuild is updated
 to use the new patches:</p>
-<div class="highlight"><pre><span></span><code><span class="gu">@@ -88,6 +85,8 @@ src_prepare() {</span><span class="w"></span>
-<span class="w"> </span>               epatch &quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&quot;<span class="w"></span>
-<span class="w"> </span>               epatch &quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&quot;<span class="w"></span>
-<span class="w"> </span>               epatch &quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&quot;<span class="w"></span>
-<span class="gi">+               epatch &quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&quot;</span><span class="w"></span>
-<span class="gi">+               epatch &quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&quot;</span><span class="w"></span>
-<span class="w"> </span>       fi<span class="w"></span>
+<div class="highlight"><pre><span></span><span class="gu">@@ -88,6 +85,8 @@ src_prepare() {</span>
+                epatch &quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&quot;
+                epatch &quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&quot;
+                epatch &quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&quot;
+<span class="gi">+               epatch &quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&quot;</span>
+<span class="gi">+               epatch &quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&quot;</span>
+        fi
 
-<span class="w"> </span>       # rlpkg is more useful than fixfiles<span class="w"></span>
-</code></pre></div>
+        # rlpkg is more useful than fixfiles
+</pre></div>
+
 
 <p>The patches themselves do not apply for the live ebuilds themselves (they are
 ignored there) as we want the live ebuilds to be as close to the upstream
 project as possible. But because the ebuilds are immediately usable for
 releases, we add the necessary information there first.</p>
 <p>Next, the new release is created:</p>
-<div class="highlight"><pre><span></span><code><span class="go">~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild</span>
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="go">~$ cp policycoreutils-9999.ebuild policycoreutils-2.4-r2.ebuild</span>
+</pre></div>
+
 
 <p><strong>Testing the changes</strong></p>
 <p>The new release is then tested. I have a couple of scripts that I use
 for automated testing. So first I update these scripts to also try out
 the functionality that was failing before. On existing systems, these
 tests should fail:</p>
-<div class="highlight"><pre><span></span><code>Running task semanage (Various semanage related operations).
+<div class="highlight"><pre><span></span>Running task semanage (Various semanage related operations).
   ...
     Executing step &quot;perm_port_on   : Marking portage_t as a permissive domain                              &quot; -&gt; ok
     Executing step &quot;perm_port_off  : Removing permissive mark from portage_t                               &quot; -&gt; ok
     Executing step &quot;selogin_modify : Modifying a SELinux login definition                                  &quot; -&gt; failed
-</code></pre></div>
+</pre></div>
+
 
 <p>Then, on a test system where the new package has been installed, the same
 testset is executed (together with all other tests) to validate if the problem

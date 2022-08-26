@@ -34,14 +34,15 @@ with obnam. So, how does it work?&lt;/p&gt;
 I tell which directories need to be backed up, as well as which subdirectories
 or files (through expressions) can be left alone. For instance, I don't want
 obnam to backup ISO files as those have been downloaded anyway.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[config]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;repository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/srv/backup&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;root&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;exclude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;exclude-caches&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[config]&lt;/span&gt;
+&lt;span class="na"&gt;repository&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;/srv/backup&lt;/span&gt;
+&lt;span class="na"&gt;root&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home&lt;/span&gt;
+&lt;span class="na"&gt;exclude&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*&lt;/span&gt;
+&lt;span class="na"&gt;exclude-caches&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;yes&lt;/span&gt;
 
-&lt;span class="na"&gt;keep&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;8h,14d,10w,12m,10y&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class="na"&gt;keep&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;8h,14d,10w,12m,10y&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The &lt;code&gt;root&lt;/code&gt; parameter tells obnam which directories (and subdirectories) to
 back up. With &lt;code&gt;exclude&lt;/code&gt; a particular set of files or directories can be
@@ -77,17 +78,19 @@ server. If I need to restore a file, I use &lt;code&gt;obnam ls&lt;/code&gt; to 
 need to restore (add in a &lt;code&gt;--generation=&lt;/code&gt; to list the files of a different
 backup generation than the last one).&lt;/p&gt;
 &lt;p&gt;Then, the command to restore is:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# obnam restore --to=/var/restore /home/swift/Images/Processing/*.NCF
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# obnam restore --to=/var/restore /home/swift/Images/Processing/*.NCF
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Or I can restore immediately to the directory again:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# obnam restore --to=/home/swift/Images/Processing /home/swift/Images/Processing/*.NCF
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# obnam restore --to=/home/swift/Images/Processing /home/swift/Images/Processing/*.NCF
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;To support multiple clients, obnam by default identifies each client through
 the hostname. It is possible to use different names, but hostnames tend to be
 a common best practice which I don't deviate from either. Obnam is able to share
-blocks between clients (it is not mandatory, but supported nonetheless).&lt;/p&gt;</content><category term="Free-Software"></category><category term="mab"></category><category term="backup"></category><category term="obnam"></category></entry><entry><title>My application base: graphviz</title><link href="https://blog.siphos.be/2013/06/my-application-base-graphviz/" rel="alternate"></link><published>2013-06-09T03:50:00+02:00</published><updated>2013-06-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-09:/2013/06/my-application-base-graphviz/</id><summary type="html">&lt;p&gt;Visualization of data is often needed in order to understand what the
+blocks between clients (it is not mandatory, but supported nonetheless).&lt;/p&gt;</content><category term="mab"></category><category term="backup"></category><category term="obnam"></category></entry><entry><title>My application base: graphviz</title><link href="https://blog.siphos.be/2013/06/my-application-base-graphviz/" rel="alternate"></link><published>2013-06-09T03:50:00+02:00</published><updated>2013-06-09T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-09:/2013/06/my-application-base-graphviz/</id><summary type="html">&lt;p&gt;Visualization of data is often needed in order to understand what the
 data means. When data needs to be visualized automatically, I often use
 the &lt;a href="http://www.graphviz.org/"&gt;graphviz&lt;/a&gt; tools. Not that they are
 extremely pretty, but it works very well and is made to be automated.&lt;/p&gt;
@@ -132,7 +135,7 @@ prototyping).&lt;/p&gt;
 instance, I can take the IRC logs of #gentoo or #gentoo-hardened to
 generate graphs showing interactions between people (who speaks to who
 and how frequently) or to find out the strength of topics (get the
-keywords and generate communication graphs based on those keywords).&lt;/p&gt;</content><category term="Free-Software"></category><category term="dependencies"></category><category term="dot"></category><category term="graphviz"></category><category term="mab"></category><category term="neato"></category><category term="scheduling"></category><category term="visualization"></category><category term="visualize"></category></entry><entry><title>My application base: LibreOffice</title><link href="https://blog.siphos.be/2013/06/my-application-base-libreoffice/" rel="alternate"></link><published>2013-06-08T03:50:00+02:00</published><updated>2013-06-08T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-08:/2013/06/my-application-base-libreoffice/</id><summary type="html">&lt;p&gt;Of course, working with a Linux desktop eventually requires you to work
+keywords and generate communication graphs based on those keywords).&lt;/p&gt;</content><category term="dependencies"></category><category term="dot"></category><category term="graphviz"></category><category term="mab"></category><category term="neato"></category><category term="scheduling"></category><category term="visualization"></category><category term="visualize"></category></entry><entry><title>My application base: LibreOffice</title><link href="https://blog.siphos.be/2013/06/my-application-base-libreoffice/" rel="alternate"></link><published>2013-06-08T03:50:00+02:00</published><updated>2013-06-08T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-08:/2013/06/my-application-base-libreoffice/</id><summary type="html">&lt;p&gt;Of course, working with a Linux desktop eventually requires you to work
 with an office suite. Although I have used alternatives like AbiWord and
 Calligra in the past, and although I do think that Google Docs might
 eventually become powerful enough to use instead, I'm currently using
@@ -167,7 +170,7 @@ suggest a &lt;em&gt;real&lt;/em&gt; application development ;-)&lt;/p&gt;
 &lt;p&gt;I generally don't use its presentation part much though - if I get a
 powerpoint, I first see if Google Docs doesn't show it sufficiently
 well. If not, then I try it out in LibreOffice. But usually, if someone
-sends me a presentation, I tend to ask for a PDF version.&lt;/p&gt;</content><category term="Free-Software"></category><category term="excel"></category><category term="libreoffice"></category><category term="mab"></category><category term="openoffice"></category><category term="word"></category></entry><entry><title>My application base: firefox</title><link href="https://blog.siphos.be/2013/06/my-application-base-firefox/" rel="alternate"></link><published>2013-06-07T03:50:00+02:00</published><updated>2013-06-07T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-07:/2013/06/my-application-base-firefox/</id><summary type="html">&lt;p&gt;Browsers are becoming application disclosure frameworks rather than the
+sends me a presentation, I tend to ask for a PDF version.&lt;/p&gt;</content><category term="excel"></category><category term="libreoffice"></category><category term="mab"></category><category term="openoffice"></category><category term="word"></category></entry><entry><title>My application base: firefox</title><link href="https://blog.siphos.be/2013/06/my-application-base-firefox/" rel="alternate"></link><published>2013-06-07T03:50:00+02:00</published><updated>2013-06-07T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-07:/2013/06/my-application-base-firefox/</id><summary type="html">&lt;p&gt;Browsers are becoming application disclosure frameworks rather than the
 visualization tools they were in the past. More and more services, like
 the
 &lt;a href="http://blog.siphos.be/2013/06/my-application-base-draw-io/"&gt;Draw.io&lt;/a&gt;
@@ -219,7 +222,7 @@ video chats and such is all done through the browser.&lt;/p&gt;
 but powerful interface, but also an important resource to properly
 manage: keep it up-to-date, backup your settings (including auto-stored
 passwords if you enable that), verify its integrity and ensure it runs
-in its confined SELinux domain.&lt;/p&gt;</content><category term="Free-Software"></category><category term="browser"></category><category term="firefox"></category><category term="mab"></category></entry><entry><title>My application base: bash and kiss tools</title><link href="https://blog.siphos.be/2013/06/my-application-base-bash-and-kiss-tools/" rel="alternate"></link><published>2013-06-06T03:50:00+02:00</published><updated>2013-06-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-06:/2013/06/my-application-base-bash-and-kiss-tools/</id><summary type="html">&lt;p&gt;Okay, this just had to be here. I'm an automation guy - partially
+in its confined SELinux domain.&lt;/p&gt;</content><category term="browser"></category><category term="firefox"></category><category term="mab"></category></entry><entry><title>My application base: bash and kiss tools</title><link href="https://blog.siphos.be/2013/06/my-application-base-bash-and-kiss-tools/" rel="alternate"></link><published>2013-06-06T03:50:00+02:00</published><updated>2013-06-06T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-06:/2013/06/my-application-base-bash-and-kiss-tools/</id><summary type="html">&lt;p&gt;Okay, this just had to be here. I'm an automation guy - partially
 because of my job in which I'm responsible for the long-term strategy
 behind batch, scheduling and workload automation, but also because I
 believe proper automation makes life just that much easier. And for
@@ -250,7 +253,7 @@ have the potential to be used by others) so I can easily find them (if
 they are within my &lt;code&gt;${PATH}&lt;/code&gt; of course, not all of them are): just type
 the first letters followed by two tabs and bash shows me the list of
 scripts I have:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sw\t\t
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sw\t\t
 swbackup               swdocbook2html      swsandboxfirefox    swletter      swpics
 swstartvm              swstripcomment      swvmconsole         swgenpdf      swcheckmistakes
 swdoctransaccuracy     swhardened-secmerge swmailman2mbox      swmassrename  swmassstable
@@ -262,7 +265,8 @@ $ mgl\t\t
 mglshow                mglverify         mglgxml2docbook       mglautogenif  mgltellabout
 mgltellhowto           mgltellwhynot     mglgenmodoverview     mglgenoval    mglgensetup
 mglcertcli             mglcleannode      mglwaitforfile
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With the proper basic template, I can keep the scripts sane and well
 documented. None of the scripts execute something without arguments, and
@@ -291,7 +295,7 @@ and more. Because these applications just do what they are supposed to,
 without too many bells and whistles, it makes it easy to "glue" them
 together to get an automated flow.&lt;/p&gt;
 &lt;p&gt;Automation saves you from performing repetitive steps manually, so is a
-real time-saver. And bash is a perfect scripting language for it.&lt;/p&gt;</content><category term="Free-Software"></category><category term="bash"></category><category term="dash"></category><category term="mab"></category><category term="scripting"></category></entry><entry><title>My application base: geekie</title><link href="https://blog.siphos.be/2013/06/my-application-base-geekie/" rel="alternate"></link><published>2013-06-05T03:50:00+02:00</published><updated>2013-06-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-05:/2013/06/my-application-base-geekie/</id><summary type="html">&lt;p&gt;In the past, when I had to manage my images (pictures) I used
+real time-saver. And bash is a perfect scripting language for it.&lt;/p&gt;</content><category term="bash"></category><category term="dash"></category><category term="mab"></category><category term="scripting"></category></entry><entry><title>My application base: geekie</title><link href="https://blog.siphos.be/2013/06/my-application-base-geekie/" rel="alternate"></link><published>2013-06-05T03:50:00+02:00</published><updated>2013-06-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-05:/2013/06/my-application-base-geekie/</id><summary type="html">&lt;p&gt;In the past, when I had to manage my images (pictures) I used
 &lt;a href="http://gqview.sourceforge.net/"&gt;GQview&lt;/a&gt; (which started back in
 &lt;a href="http://blog.siphos.be/2008/08/playing-with-gqview/"&gt;2008&lt;/a&gt;). But the
 application doesn't get many updates, and if an application does not get
@@ -336,7 +340,7 @@ nature) and I need to see which one is better. With the side-by-side
 comparison, I can look at artifacts in the image or the consequences of
 the different aperture, ISO and shutter speed.&lt;/p&gt;
 &lt;p&gt;And the moment I start working on images, Gimp and Darktable are just a
-single click away.&lt;/p&gt;</content><category term="Free-Software"></category><category term="geeqie"></category><category term="gimp"></category><category term="gqview"></category><category term="images"></category><category term="mab"></category></entry><entry><title>My application base: freemind</title><link href="https://blog.siphos.be/2013/06/my-application-base-freemind/" rel="alternate"></link><published>2013-06-04T03:50:00+02:00</published><updated>2013-06-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-04:/2013/06/my-application-base-freemind/</id><summary type="html">&lt;p&gt;Anyone who is even remotely busy with innovation will know what mindmaps
+single click away.&lt;/p&gt;</content><category term="geeqie"></category><category term="gimp"></category><category term="gqview"></category><category term="images"></category><category term="mab"></category></entry><entry><title>My application base: freemind</title><link href="https://blog.siphos.be/2013/06/my-application-base-freemind/" rel="alternate"></link><published>2013-06-04T03:50:00+02:00</published><updated>2013-06-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-04:/2013/06/my-application-base-freemind/</id><summary type="html">&lt;p&gt;Anyone who is even remotely busy with innovation will know what mindmaps
 are. They are a means to visualize information, ideas or tasks in
 whatever structure you like. By using graphical annotations the
 information is easier to look through, even when the mindmap becomes
@@ -375,7 +379,7 @@ difficult if you know some XSLT.&lt;/p&gt;
 &lt;p&gt;I personally use freemind when I embark on a new project, to structure
 the approach, centralize all information, keep track of problems (and
 their solutions), etc. The only thing I am missing is a nice interface
-for mobile devices though.&lt;/p&gt;</content><category term="Free-Software"></category><category term="freemind"></category><category term="java"></category><category term="mab"></category><category term="mindmanager"></category><category term="mindmap"></category><category term="structure"></category><category term="xmind"></category></entry><entry><title>My application base: draw.io</title><link href="https://blog.siphos.be/2013/06/my-application-base-draw-io/" rel="alternate"></link><published>2013-06-03T03:50:00+02:00</published><updated>2013-06-03T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-03:/2013/06/my-application-base-draw-io/</id><summary type="html">&lt;p&gt;The next few weeks (months even) will be challenging my free time as I'm
+for mobile devices though.&lt;/p&gt;</content><category term="freemind"></category><category term="java"></category><category term="mab"></category><category term="mindmanager"></category><category term="mindmap"></category><category term="structure"></category><category term="xmind"></category></entry><entry><title>My application base: draw.io</title><link href="https://blog.siphos.be/2013/06/my-application-base-draw-io/" rel="alternate"></link><published>2013-06-03T03:50:00+02:00</published><updated>2013-06-03T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-06-03:/2013/06/my-application-base-draw-io/</id><summary type="html">&lt;p&gt;The next few weeks (months even) will be challenging my free time as I'm
 working on (too many) projects simultaneously (sadly, only a few of
 those are free software related, most are house renovations). But that
 shouldn't stop me from starting a new set of posts, being &lt;em&gt;my
@@ -418,4 +422,4 @@ you know who you are!&lt;/p&gt;
 doesn't seem too limited due to it), but Draw.io also has commercial
 support if you want through Google Apps and Confluence integration. I
 don't have much experience with those yet but that might change in the
-near future (projects, projects).&lt;/p&gt;</content><category term="Documentation"></category><category term="appbase"></category><category term="architecturing"></category><category term="dia"></category><category term="draw"></category><category term="draw.io"></category><category term="mab"></category><category term="visio"></category></entry></feed>
+near future (projects, projects).&lt;/p&gt;</content><category term="appbase"></category><category term="architecturing"></category><category term="dia"></category><category term="draw"></category><category term="draw.io"></category><category term="mab"></category><category term="visio"></category></entry></feed>

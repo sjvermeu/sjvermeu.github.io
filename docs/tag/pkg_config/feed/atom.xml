@@ -30,12 +30,13 @@ code in Portage, something I'd rather not do (introduces additional
 complexity and maintenance).&lt;/p&gt;
 &lt;p&gt;Another possibility would be to have administrators explicitly state
 that no transition should occur, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With a minor addition to the policy, this gave me a good hope... until I
 noticed that &lt;strong&gt;emerge&lt;/strong&gt; underlyingly calls &lt;strong&gt;ebuild&lt;/strong&gt; and &lt;strong&gt;ebuild.sh&lt;/strong&gt;,
 both labeled as &lt;code&gt;portage_exec_t&lt;/code&gt;, so these calls transition to
 &lt;code&gt;portage_t&lt;/code&gt; again.&lt;/p&gt;
 &lt;p&gt;I'm going to look further into this - there are quite a few options
-still open.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="pkg_config"></category><category term="portage"></category><category term="selinux"></category></entry></feed>
+still open.&lt;/p&gt;</content><category term="Gentoo"></category><category term="pkg_config"></category><category term="portage"></category><category term="selinux"></category></entry></feed>

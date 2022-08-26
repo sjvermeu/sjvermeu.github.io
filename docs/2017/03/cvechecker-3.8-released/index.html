@@ -231,9 +231,10 @@ known, so it did not take them up to the database. As a result, systems would ne
 
 
 <p>It is recommended to remove any historical files from <code>/var/lib/cvechecker/cache</code> like so:</p>
-<div class="highlight"><pre><span></span><code>~# rm /var/lib/cvechecker/cache/nvdcve-2.0-2017.*
+<div class="highlight"><pre><span></span>~# rm /var/lib/cvechecker/cache/nvdcve-2.0-2017.*
 ~# rm /var/lib/cvechecker/cache/nvdcve-2.0-modified.*
-</code></pre></div>
+</pre></div>
+
 
 <p>This will make sure that the next run of <code>pullcves pull</code> will re-download those files, and attempt to load
 the resulting CVEs back in the database.</p>

@@ -2,15 +2,15 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - busybox</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/busybox/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2014-03-26T14:18:00+01:00</updated><entry><title>Fixing the busybox build failure</title><link href="https://blog.siphos.be/2014/03/fixing-the-busybox-build-failure/" rel="alternate"></link><published>2014-03-26T14:18:00+01:00</published><updated>2014-03-26T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-26:/2014/03/fixing-the-busybox-build-failure/</id><summary type="html">&lt;p&gt;Since a few months I have a build failure every time I try to generate
 an initial ram file system (as my current primary workstation uses a
 separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt;/boot&lt;/code&gt;):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;* busybox: &amp;gt;&amp;gt; Compiling...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;* busybox: &amp;gt;&amp;gt; Compiling...
 * ERROR: Failed to compile the &amp;quot;all&amp;quot; target...
 * 
 * -- Grepping log... --
 * 
-*           - busybox-1.7.4-signal-hack.patch …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Since a few months I have a build failure every time I try to generate
+*           - busybox-1.7.4-signal-hack.patch …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;Since a few months I have a build failure every time I try to generate
 an initial ram file system (as my current primary workstation uses a
 separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt;/boot&lt;/code&gt;):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;* busybox: &amp;gt;&amp;gt; Compiling...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;* busybox: &amp;gt;&amp;gt; Compiling...
 * ERROR: Failed to compile the &amp;quot;all&amp;quot; target...
 * 
 * -- Grepping log... --
@@ -25,7 +25,8 @@ separate &lt;code&gt;/usr&lt;/code&gt; and LVM for everything except &lt;code&gt
 */bin/sh: scripts/basic/fixdep: Permission denied
 *make[1]: *** [scripts/basic/fixdep] Error 1
 *make: *** [scripts_basic] Error 2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;I know it isn't SELinux that is causing this, as I have no denial
 messages and even putting SELinux in permissive mode doesn't help. Today
@@ -38,9 +39,10 @@ not allowed.&lt;/p&gt;
 location where executing &lt;em&gt;is&lt;/em&gt; allowed. Of course, this being a SELinux
 system, the new location will need to be labeled as &lt;code&gt;tmp_t&lt;/code&gt; as well, but
 that's just a simple thing to do.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
 ~# restorecon -R /var/build/genkernel
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The new location is not world-writable (only for root as only root
-builds initial ram file systems here) so not having &lt;code&gt;noexec&lt;/code&gt; here is ok.&lt;/p&gt;</content><category term="Gentoo"></category><category term="busybox"></category><category term="genkernel"></category><category term="Gentoo"></category><category term="initramfs"></category><category term="initrd"></category><category term="noexec"></category><category term="tmp"></category></entry></feed>
+builds initial ram file systems here) so not having &lt;code&gt;noexec&lt;/code&gt; here is ok.&lt;/p&gt;</content><category term="busybox"></category><category term="genkernel"></category><category term="Gentoo"></category><category term="initramfs"></category><category term="initrd"></category><category term="noexec"></category><category term="tmp"></category></entry></feed>

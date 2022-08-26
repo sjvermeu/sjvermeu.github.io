@@ -275,7 +275,7 @@ resource requirements.</p>
 be a PostgreSQL database system with a certain administration password,
 and within the database system we define two databases with their
 own user roles:</p>
-<div class="highlight"><pre><span></span><code>topology_template:
+<div class="highlight"><pre><span></span>topology_template:
   ...
   node_templates:
     db_server:
@@ -299,7 +299,8 @@ own user roles:</p>
           type: tosca.artifacts.File
       requirements:
         - host: postgresql
-</code></pre></div>
+</pre></div>
+
 
 <p>The parameters can, and should be further parameterized. TOSCA supports
 declaring inputs that are provided upon deployment so you can safely

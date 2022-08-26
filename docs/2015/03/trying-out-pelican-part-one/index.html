@@ -262,9 +262,10 @@ better working. So I enabled <code>dev-haskell/*</code> in my
 packages... which also failed. Then I ran <code>haskell-updater</code> multiple
 times, but that also failed. After a while, I had to run the following
 set of commands (in random order) just to get everything to build fine:</p>
-<div class="highlight"><pre><span></span><code>~# emerge -u $(qlist -IC dev-haskell) --keep-going
+<div class="highlight"><pre><span></span>~# emerge -u $(qlist -IC dev-haskell) --keep-going
 ~# for n in $(qlist -IC dev-haskell); do emerge -u $n; done
-</code></pre></div>
+</pre></div>
+
 
 <p>It took quite some reruns, but it finally got through. I never thought I
 had this much Haskell-related packages installed on my system (89

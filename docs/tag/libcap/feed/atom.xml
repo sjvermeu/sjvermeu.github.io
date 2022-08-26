@@ -125,7 +125,7 @@ for the &lt;code&gt;SECBIT_KEEP_CAPS&lt;/code&gt; security bit, the others are p
 when &lt;em&gt;fork()&lt;/em&gt; is used).&lt;/p&gt;
 &lt;p&gt;As a user or admin, you can also see capability-related information
 through the &lt;code&gt;/proc&lt;/code&gt; file system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep ^Cap /proc/$$/status
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; # grep ^Cap /proc/$$/status
 CapInh: 0000000000000000
 CapPrm: 0000001fffffffff
 CapEff: 0000001fffffffff
@@ -136,7 +136,8 @@ CapInh: 0000000000000000
 CapPrm: 0000000000000000
 CapEff: 0000000000000000
 CapBnd: 0000001fffffffff
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The capabilities listed therein are bitmasks for the various
 capabilities. The mask &lt;code&gt;1FFFFFFFFF&lt;/code&gt; holds 37 positions, which match the
@@ -147,7 +148,7 @@ capabilities of running processes in a more human readable format. But
 another tool provided by the &lt;code&gt;sys-libs/libcap&lt;/code&gt; is interested as well to
 look at: &lt;strong&gt;capsh&lt;/strong&gt;. The tool offers many capability-related features,
 including decoding the &lt;code&gt;status&lt;/code&gt; fields:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ capsh --decode=0000001fffffffff
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ capsh --decode=0000001fffffffff
 0x0000001fffffffff=cap_chown,cap_dac_override,cap_dac_read_search,
 cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,
 cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,
@@ -157,8 +158,9 @@ cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,
 cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,
 cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,
 cap_syslog,35,36
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Next to fancy decoding, &lt;strong&gt;capsh&lt;/strong&gt; can also launch a shell with reduced
 capabilities. This makes it a good utility for jailing chroots even
-more.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="capsh"></category><category term="libcap"></category><category term="linux"></category></entry></feed>
+more.&lt;/p&gt;</content><category term="capabilities"></category><category term="capsh"></category><category term="libcap"></category><category term="linux"></category></entry></feed>

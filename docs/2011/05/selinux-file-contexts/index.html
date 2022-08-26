@@ -249,11 +249,12 @@ themselves would be impossible to manage. However, it immediately brings
 up the question about what SELinux does when two or more lines are
 appropriate for a particular file. Let's look at a few lines for
 configuration related locations...</p>
-<div class="highlight"><pre><span></span><code>/etc/.*                     all files          system_u:object_r:etc_t
+<div class="highlight"><pre><span></span>/etc/.*                     all files          system_u:object_r:etc_t
 /etc/HOSTNAME               regular file       system_u:object_r:etc_runtime_t
 /etc/X11/[wx]dm/Xreset.*    regular file       system_u:object_r:xsession_exec_t 
 /etc/X11/wdm(/.*)?          all files          system_u:object_r:xdm_rw_etc_t
-</code></pre></div>
+</pre></div>
+
 
 <p>In the above examples, you'll notice that there is quite some overlap.
 To start, the first line already matches all other lines as well. So how
@@ -281,22 +282,24 @@ the first regular expression in the xsession_exec_t line (<code>[wx]</code>)
 comes sooner than the first regular expression in the xdm_rw_etc_t
 line (<code>(/.*)?</code>). You can validate this - even if you do not have such
 file - with <strong>matchpathcon</strong>:</p>
-<div class="highlight"><pre><span></span><code>~# matchpathcon /etc/X11/wdm/Xreset.sh
+<div class="highlight"><pre><span></span>~# matchpathcon /etc/X11/wdm/Xreset.sh
 /etc/X11/wdm/Xreset.sh   system_u:object_r:xdm_rw_etc_t
-</code></pre></div>
+</pre></div>
+
 
 <p>If you want to know which line in the <strong>semanage fcontext -l</strong> output is
 used, you can use <strong>findcon</strong> to show which lines match. That together
 with the output of matchpathcon can help you deduce which line is
 causing the label to be set:</p>
-<div class="highlight"><pre><span></span><code>~# matchpathcon /etc/X11/wdm/Xreset.sh
+<div class="highlight"><pre><span></span>~# matchpathcon /etc/X11/wdm/Xreset.sh
 /etc/X11/wdm/Xreset.sh   system_u:object_r:xdm_rw_etc_t
 ~# findcon /etc/selinux/strict/contexts/files/file_contexts -p /etc/X11/wdm/Xreset.sh
 /.*             system_u:object_r:default_t
 /etc/.*         system_u:object_r:etc_t
 /etc/X11/[wx]dm/Xreset.*        --      system_u:object_r:xsession_exec_t
 /etc/X11/wdm(/.*)?              system_u:object_r:xdm_rw_etc_t
-</code></pre></div>
+</pre></div>
+
 
 <p>In many cases, the last output line of <strong>findcon</strong> is the line you are
 looking for, but I have not find a source that confirms this behavior so

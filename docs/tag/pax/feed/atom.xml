@@ -32,7 +32,7 @@ the phone itself and refer to it from the recovery manager.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; (so I remember next time), if the system is stuck in CMR
 (recovery), reboot with VolDown+Pwr, but don't select recovery. After 5
 seconds, it will ask if you want a cold boot. Select it, and things work
-again ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="android"></category><category term="grsecurity"></category><category term="pax"></category><category term="selinux"></category><category term="tablet"></category></entry><entry><title>And now, 31 days later...</title><link href="https://blog.siphos.be/2013/08/and-now-31-days-later/" rel="alternate"></link><published>2013-08-01T22:43:00+02:00</published><updated>2013-08-01T22:43:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/and-now-31-days-later/</id><summary type="html">&lt;p&gt;... the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo Hardened&lt;/a&gt; team
+again ;-)&lt;/p&gt;</content><category term="android"></category><category term="grsecurity"></category><category term="pax"></category><category term="selinux"></category><category term="tablet"></category></entry><entry><title>And now, 31 days later...</title><link href="https://blog.siphos.be/2013/08/and-now-31-days-later/" rel="alternate"></link><published>2013-08-01T22:43:00+02:00</published><updated>2013-08-01T22:43:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-01:/2013/08/and-now-31-days-later/</id><summary type="html">&lt;p&gt;... the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo Hardened&lt;/a&gt; team
 had its monthly online meeting again ;-)&lt;/p&gt;
 &lt;p&gt;On the agenda were the usual suspects, such as the &lt;em&gt;toolchain&lt;/em&gt;. In this
 category, Zorry mentioned that he has a fix for GCC 4.8.1 for the
@@ -72,7 +72,7 @@ fully automated yet (except for amd64 and x86 which are automated).&lt;/p&gt;
 in the kernel, and the problem about loosing PaX markings during
 installation is fixed as Portage (2.1.12.9 and higher) now preserves the
 flags during installation (a wrapper on &lt;code&gt;install&lt;/code&gt; is used that preserves
-&lt;code&gt;usr.pax.flags&lt;/code&gt;).&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="irc"></category><category term="irl"></category><category term="meeting"></category><category term="minutes"></category><category term="pax"></category><category term="project"></category><category term="selinux"></category><category term="toolchain"></category></entry><entry><title>Looking at the local Linux kernel privilege escalation</title><link href="https://blog.siphos.be/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/" rel="alternate"></link><published>2013-05-17T03:50:00+02:00</published><updated>2013-05-17T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-17:/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/</id><summary type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
+&lt;code&gt;usr.pax.flags&lt;/code&gt;).&lt;/p&gt;</content><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="irc"></category><category term="irl"></category><category term="meeting"></category><category term="minutes"></category><category term="pax"></category><category term="project"></category><category term="selinux"></category><category term="toolchain"></category></entry><entry><title>Looking at the local Linux kernel privilege escalation</title><link href="https://blog.siphos.be/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/" rel="alternate"></link><published>2013-05-17T03:50:00+02:00</published><updated>2013-05-17T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-17:/2013/05/looking-at-the-local-linux-kernel-privilege-escalation/</id><summary type="html">&lt;p&gt;There has been a few posts already on the local Linux kernel privilege
 escalation, which has received the
 &lt;a href="https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2013-2094"&gt;CVE-2013-2094&lt;/a&gt;
 ID.
@@ -117,7 +117,7 @@ to get to the userland. On my system, the exploit fails with the
 following (start of) oops (without affecting the system further) when it
 tries to close the file descriptor returned from the syscall that
 invokes the decrement:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[ 1926.226678] PAX: please report this to pageexec@freemail.hu
 [ 1926.227019] BUG: unable to handle kernel paging request at 0000000381f5815c
 [ 1926.227019] IP: [] sw_perf_event_destroy+0x1a/0xa0
 [ 1926.227019] PGD 58a7c000 
@@ -129,11 +129,13 @@ invokes the decrement:&lt;/p&gt;
 [ 1926.227019] RIP: 0010:[]  [] sw_perf_event_destroy+0x1a/0xa0
 [ 1926.227019] RSP: 0018:ffff880058a03e08  EFLAGS: 00010246
 ...
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The exploit also finds that the decrement didn't succeed:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;test: semtex.c:76: main: Assertion &amp;#39;i&amp;lt;0x0100000000/4&amp;#39; failed.
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;A second mitigation is that
 &lt;a href="http://pax.grsecurity.net/docs/PaXTeam-H2HC12-PaX-kernel-self-protection.pdf"&gt;KERNEXEC&lt;/a&gt;
@@ -145,8 +147,9 @@ feature prevents the execution of binaries that are not located in a
 root-owned directory and owned by a trusted group (which on my system is
 10 = wheel). So users attempting to execute such code will fail with a
 &lt;em&gt;Permission denied&lt;/em&gt; error, and the following is shown in the logs:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[ 3152.165780] grsec: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/user/test by /home/user/test[bash:4382] uid/euid:1000/1000 gid/egid:100/100, parent /bin/bash[bash:4352] uid/euid:1000/1000 gid/egid:100/100
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;However, even though a nicely hardened system should be fairly immune
 against the currently circling public exploit, it should be noted that
@@ -166,7 +169,7 @@ SELinux (since the shell code is ran with ring0 privileges it can access
 and modify the SELinux state information in the kernel).&lt;/p&gt;
 &lt;p&gt;Many thanks to Brad for the excellent write-up, and to the &lt;a href="http://www.gentoo.org/proj/en/hardened"&gt;Gentoo
 Hardened&lt;/a&gt; team for providing the
-grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="Security"></category><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry><entry><title>Another Gentoo Hardened month has passed</title><link href="https://blog.siphos.be/2013/04/another-gentoo-hardened-month-has-passed/" rel="alternate"></link><published>2013-04-18T23:36:00+02:00</published><updated>2013-04-18T23:36:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/another-gentoo-hardened-month-has-passed/</id><summary type="html">&lt;p&gt;Another month has passed, so time to mention again what we have all been
+grSecurity PaX/TPE protections in its &lt;code&gt;hardened-sources&lt;/code&gt; kernel.&lt;/p&gt;</content><category term="event"></category><category term="grsecurity"></category><category term="kernexec"></category><category term="linux"></category><category term="pax"></category><category term="perf"></category><category term="selinux"></category><category term="uderef"></category><category term="vulnerability"></category></entry><entry><title>Another Gentoo Hardened month has passed</title><link href="https://blog.siphos.be/2013/04/another-gentoo-hardened-month-has-passed/" rel="alternate"></link><published>2013-04-18T23:36:00+02:00</published><updated>2013-04-18T23:36:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-18:/2013/04/another-gentoo-hardened-month-has-passed/</id><summary type="html">&lt;p&gt;Another month has passed, so time to mention again what we have all been
 doing lately ;-)&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Version 4.8 of GCC is available in the tree, but currently masked. The
@@ -188,8 +191,9 @@ crazy, I start seeing a pattern here.&lt;/p&gt;
 &lt;p&gt;Anyway, it turns out that PaX/grSec and asan do not get along yet (ASAN
 assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened
@@ -262,7 +266,7 @@ Integrity&lt;/a&gt;
 subproject.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Media&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;If you don't do it already, start following
-&lt;a href="https://twitter.com/GentooHardened"&gt;@GentooHardened&lt;/a&gt; ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="asan"></category><category term="gcc"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="integrity"></category><category term="irc"></category><category term="meeting"></category><category term="pax"></category><category term="selinux"></category><category term="uderef"></category></entry><entry><title>Gentoo Hardened progress meeting of march 2013</title><link href="https://blog.siphos.be/2013/03/gentoo-hardened-progress-meeting-of-march-2013/" rel="alternate"></link><published>2013-03-07T22:46:00+01:00</published><updated>2013-03-07T22:46:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-07:/2013/03/gentoo-hardened-progress-meeting-of-march-2013/</id><summary type="html">&lt;p&gt;Another month has passed, so time for a new progress meeting...&lt;/p&gt;
+&lt;a href="https://twitter.com/GentooHardened"&gt;@GentooHardened&lt;/a&gt; ;-)&lt;/p&gt;</content><category term="asan"></category><category term="gcc"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="integrity"></category><category term="irc"></category><category term="meeting"></category><category term="pax"></category><category term="selinux"></category><category term="uderef"></category></entry><entry><title>Gentoo Hardened progress meeting of march 2013</title><link href="https://blog.siphos.be/2013/03/gentoo-hardened-progress-meeting-of-march-2013/" rel="alternate"></link><published>2013-03-07T22:46:00+01:00</published><updated>2013-03-07T22:46:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-07:/2013/03/gentoo-hardened-progress-meeting-of-march-2013/</id><summary type="html">&lt;p&gt;Another month has passed, so time for a new progress meeting...&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Toolchain&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;GCC v4.7 has been unmasked, allowing a large set of users to test out
 the new GCC. It is also expected that GCC 4.8-rc1 will hit the tree next
@@ -313,7 +317,7 @@ issue is on the way.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Some of the user oriented documentation (integrity and SELinux) have
 been moved to the Gentoo Wiki for easier user contributions and
-simplified management. Other documents will follow soon.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category><category term="toolchain"></category></entry><entry><title>Gentoo Hardened goes onward (aka project meeting)</title><link href="https://blog.siphos.be/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/" rel="alternate"></link><published>2013-02-07T23:40:00+01:00</published><updated>2013-02-07T23:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-07:/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/</id><summary type="html">&lt;p&gt;It's been a while again, so time for another Gentoo Hardened online
+simplified management. Other documents will follow soon.&lt;/p&gt;</content><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category><category term="toolchain"></category></entry><entry><title>Gentoo Hardened goes onward (aka project meeting)</title><link href="https://blog.siphos.be/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/" rel="alternate"></link><published>2013-02-07T23:40:00+01:00</published><updated>2013-02-07T23:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-07:/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/</id><summary type="html">&lt;p&gt;It's been a while again, so time for another Gentoo Hardened online
 progress meeting.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;GCC 4.8 is on development stage 4, so the hardened patches will be
@@ -410,4 +414,4 @@ next year, chances are very high that we'll give a "What has changed
 since last year" session and a round table again.&lt;/p&gt;
 &lt;p&gt;With many thanks to the usual suspects: Zorry, blueness, prometheanfire,
 lejonet, klondike and the several dozen contributors that are going to
-kill me for not mentioning their (nick)names.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="meeting"></category><category term="minutes"></category><category term="online"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category></entry></feed>
+kill me for not mentioning their (nick)names.&lt;/p&gt;</content><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="meeting"></category><category term="minutes"></category><category term="online"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category></entry></feed>

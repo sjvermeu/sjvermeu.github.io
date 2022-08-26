@@ -234,7 +234,7 @@
             <p>A few weeks ago, we introduced an error in the (\~arch) <code>libselinux</code>
 ebuild which caused the following stacktrace to occur every time the
 <strong>semanage</strong> command was invoked:</p>
-<div class="highlight"><pre><span></span><code>~ # semanage
+<div class="highlight"><pre><span></span>~ # semanage
 Traceback (most recent call last):
   File &quot;/usr/lib/python-exec/python2.7/semanage&quot;, line 27, in 
     import seobject
@@ -247,7 +247,8 @@ Traceback (most recent call last):
   File &quot;/usr/lib64/python2.7/site-packages/sepolgen/access.py&quot;, line 35, in 
     from selinux import audit2why
 ImportError: /usr/lib64/python2.7/site-packages/selinux/audit2why.so: undefined symbol: sepol_set_policydb
-</code></pre></div>
+</pre></div>
+
 
 <p>Usually this error means that a needed library (a <code>.so</code> file) is
 missing, or is not part of the <code>/etc/ld.so.conf</code> list of directories to
@@ -259,12 +260,13 @@ I looked at the <code>audit2why.c</code> code and see if/where
 <em>sepol_set_policydb</em> is needed, as well as at the <code>libsepol</code> sources
 to see where it is defined. And yes, the call is (of course) needed, but
 the definition made me wonder if this wasn't a bug:</p>
-<div class="highlight"><pre><span></span><code>int hidden sepol_set_policydb(policydb_t * p)
+<div class="highlight"><pre><span></span>int hidden sepol_set_policydb(policydb_t * p)
 {
         policydb = p;
         return 0;
 }
-</code></pre></div>
+</pre></div>
+
 
 <p>Hidden? But, that means that the function symbol is not available for
 dynamic linking... So if that is the case, shouldn't <code>audit2why.c</code> not
@@ -277,8 +279,8 @@ introduced), and I learned a bit more about symbols (and the <em>hidden</em>
 statement).</p>
 <p>Bonus: if you need to check what symbols are available in a binary /
 shared library, use <strong>nm</strong>:</p>
-<div class="highlight"><pre><span></span><code>~$ nm -D /path/to/binary
-</code></pre></div>
+<div class="highlight"><pre><span></span>~$ nm -D /path/to/binary
+</pre></div>
         </div>
 
         <!-- Neighbors -->

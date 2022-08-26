@@ -41,18 +41,20 @@ pictures are marked as &lt;code&gt;xdg_pictures_home_t&lt;/code&gt;, etc.&lt;/p&
 &lt;p&gt;With those types defined, we grant the regular user domains full access to
 those types, but start removing access to user content from applications. Rules
 such as the following are commented out or removed from the policies:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# userdom_manage_user_home_content_dirs(mozilla_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# userdom_manage_user_home_content_dirs(mozilla_t)
 # userdom_manage_user_home_content_files(mozilla_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Instead, we add in a call to a template we have defined ourselves:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;userdom_user_content_access_template(mozilla, { mozilla_t mozilla_plugin_t })
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;userdom_user_content_access_template(mozilla, { mozilla_t mozilla_plugin_t })
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This call makes access to user content optional through SELinux booleans. For
 instance, for the &lt;code&gt;mozilla_t&lt;/code&gt; domain (which is used for Firefox), the following
 booleans are created:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Read generic (user_home_t) user content
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Read generic (user_home_t) user content
 mozilla_read_generic_user_content       -&amp;gt;      true
 
 # Read all user content
@@ -63,7 +65,8 @@ mozilla_manage_generic_user_content     -&amp;gt;      false
 
 # Manage all user content
 mozilla_manage_all_user_content         -&amp;gt;      false
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;As you can see, the default setting is that Firefox can read user content, but
 only non-specific types. So &lt;code&gt;ssh_home_t&lt;/code&gt;, which is used for the SSH related
@@ -117,7 +120,7 @@ policies.&lt;/p&gt;
 &lt;p&gt;I am glad that we at least try to confine desktop applications more, and
 that Gentoo Hardened users who use SELinux are at least somewhat more protected
 from the vulnerability (even with the default case) and that our investment for
-this is sound.&lt;/p&gt;</content><category term="SELinux"></category><category term="gentoo"></category><category term="selinux"></category><category term="policy"></category><category term="firefox"></category><category term="cve"></category><category term="vulnerability"></category><category term="xdg"></category></entry><entry><title>Don't confuse SELinux with its policy</title><link href="https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/" rel="alternate"></link><published>2015-08-03T01:49:00+02:00</published><updated>2015-08-03T01:49:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-03:/2015/08/dont-confuse-selinux-with-its-policy/</id><summary type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
+this is sound.&lt;/p&gt;</content><category term="gentoo"></category><category term="selinux"></category><category term="policy"></category><category term="firefox"></category><category term="cve"></category><category term="vulnerability"></category><category term="xdg"></category></entry><entry><title>Don't confuse SELinux with its policy</title><link href="https://blog.siphos.be/2015/08/dont-confuse-selinux-with-its-policy/" rel="alternate"></link><published>2015-08-03T01:49:00+02:00</published><updated>2015-08-03T01:49:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-03:/2015/08/dont-confuse-selinux-with-its-policy/</id><summary type="html">&lt;p&gt;With the increased attention that SELinux is getting thanks to its inclusion in
 recent &lt;a href="https://source.android.com/devices/tech/security/selinux/"&gt;Android&lt;/a&gt;
 releases, more and more people are understanding that SELinux is not a singular
 security solution. Many administrators are still disabling SELinux on their 
@@ -199,7 +202,7 @@ also shows how very open SELinux itself is, and that most of the users'
 experience with SELinux is based on a singular policy implementation. This is
 a prime reason why having a more open policy ecosystem makes perfect sense.&lt;/p&gt;
 &lt;p&gt;If you don't like a particular car, do you ditch driving at all? No, you try out
-another car. Let's create other cars in the SELinux world as well.&lt;/p&gt;</content><category term="SELinux"></category><category term="selinux"></category><category term="policy"></category><category term="cil"></category></entry><entry><title>Testing with permissive domains</title><link href="https://blog.siphos.be/2015/05/testing-with-permissive-domains/" rel="alternate"></link><published>2015-05-18T13:40:00+02:00</published><updated>2015-05-18T13:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-18:/2015/05/testing-with-permissive-domains/</id><summary type="html">&lt;p&gt;When testing out new technologies or new setups, not having (proper)
+another car. Let's create other cars in the SELinux world as well.&lt;/p&gt;</content><category term="selinux"></category><category term="policy"></category><category term="cil"></category></entry><entry><title>Testing with permissive domains</title><link href="https://blog.siphos.be/2015/05/testing-with-permissive-domains/" rel="alternate"></link><published>2015-05-18T13:40:00+02:00</published><updated>2015-05-18T13:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-18:/2015/05/testing-with-permissive-domains/</id><summary type="html">&lt;p&gt;When testing out new technologies or new setups, not having (proper)
 SELinux policies can be a nuisance. Not only are the number of SELinux
 policies that are available through the standard repositories limited,
 some of these policies are not even written with the same level of
@@ -230,22 +233,25 @@ then, after transitioning into the "simple" domain, is not part of the
 SELinux enforcements anymore whereas the rest of the system remains in
 SELinux enforcing mode.&lt;/p&gt;
 &lt;p&gt;For instance, create a minuscule policy like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(testdom, 1.0)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(testdom, 1.0)
 
 type testdom_t;
 type testdom_exec_t;
 init_daemon_domain(testdom_t, testdom_exec_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Mark the executable for the daemon as &lt;code&gt;testdom_exec_t&lt;/code&gt; (after building
 and loading the minuscule policy):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# chcon -t testdom_exec_t /opt/something/bin/daemond
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# chcon -t testdom_exec_t /opt/something/bin/daemond
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Finally, tell SELinux that &lt;code&gt;testdom_t&lt;/code&gt; is to be seen as a permissive
 domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage permissive -a testdom_t
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage permissive -a testdom_t
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;When finished, don't forget to remove the permissive bit
 (&lt;code&gt;semanage permissive -d testdom_t&lt;/code&gt;) and unload/remove the SELinux
@@ -253,7 +259,7 @@ policy module.&lt;/p&gt;
 &lt;p&gt;And that's it. If the daemon is now started (through a standard init
 script) it will run as &lt;code&gt;testdom_t&lt;/code&gt; and everything it does will be
 logged, but not enforced by SELinux. That might even help in
-understanding the application better.&lt;/p&gt;</content><category term="SELinux"></category><category term="permissive"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category><category term="test"></category></entry><entry><title>Use change management when you are using SELinux to its fullest</title><link href="https://blog.siphos.be/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/" rel="alternate"></link><published>2015-04-30T20:58:00+02:00</published><updated>2015-04-30T20:58:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-04-30:/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/</id><summary type="html">&lt;p&gt;If you are using SELinux on production systems (with which I mean
+understanding the application better.&lt;/p&gt;</content><category term="permissive"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category><category term="test"></category></entry><entry><title>Use change management when you are using SELinux to its fullest</title><link href="https://blog.siphos.be/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/" rel="alternate"></link><published>2015-04-30T20:58:00+02:00</published><updated>2015-04-30T20:58:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-04-30:/2015/04/use-change-management-when-you-are-using-selinux-to-its-fullest/</id><summary type="html">&lt;p&gt;If you are using SELinux on production systems (with which I mean
 systems that you offer services with towards customers or other parties
 beyond you, yourself and your ego), please consider proper change
 management if you don't do already. SELinux is a very sensitive security
@@ -393,7 +399,7 @@ convinced that I'll have the majority of my change management scripts
 removed by the end of this year towards Saltstack-based configurations.
 And that'll allow me to automate changes and thus provide a more
 qualitative service offering.&lt;/p&gt;
-&lt;p&gt;With SELinux, of course.&lt;/p&gt;</content><category term="SELinux"></category><category term="change-management"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>D-Bus and SELinux</title><link href="https://blog.siphos.be/2014/06/d-bus-and-selinux/" rel="alternate"></link><published>2014-06-30T20:07:00+02:00</published><updated>2014-06-30T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-30:/2014/06/d-bus-and-selinux/</id><summary type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
+&lt;p&gt;With SELinux, of course.&lt;/p&gt;</content><category term="change-management"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>D-Bus and SELinux</title><link href="https://blog.siphos.be/2014/06/d-bus-and-selinux/" rel="alternate"></link><published>2014-06-30T20:07:00+02:00</published><updated>2014-06-30T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-30:/2014/06/d-bus-and-selinux/</id><summary type="html">&lt;p&gt;After a &lt;a href="http://blog.siphos.be/2014/06/d-bus-quick-recap/"&gt;post about
 D-Bus&lt;/a&gt; comes the
 inevitable related post about SELinux with D-Bus.&lt;/p&gt;
 &lt;p&gt;Some users might not know that D-Bus is an SELinux-aware application.
@@ -429,10 +435,11 @@ service also inherits the &lt;code&gt;dnsmasq_t&lt;/code&gt; label.&lt;/p&gt;
 &lt;p&gt;The necessary permission checks for the &lt;code&gt;sysadm_t&lt;/code&gt; user domain to send
 messages to the dnsmasq service, and the dnsmasq service itself to
 register it as a service:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
 allow sysadm_t dnsmasq_t:dbus send_msg;
 allow dnsmasq_t sysadm_t:dbus send_msg;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;For the &lt;code&gt;sysadm_t&lt;/code&gt; domain, the two rules are needed as we usually not
 only want to send a message to a D-Bus service, but also receive a reply
@@ -440,21 +447,23 @@ only want to send a message to a D-Bus service, but also receive a reply
 inverse direction).&lt;/p&gt;
 &lt;p&gt;However, with the following XML snippet inside its service configuration
 file, owning a certain resource is checked against a different label:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;busconfig&amp;gt;
   &amp;lt;selinux&amp;gt;
     &amp;lt;associate
       own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;
       context=&amp;quot;system_u:object_r:dnsmasq_dbus_t:s0&amp;quot; /&amp;gt;
   &amp;lt;/selinux&amp;gt;
 &amp;lt;/busconfig&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this, the rules would become as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
 allow dnsmasq_t self:dbus send_msg;
 allow sysadm_t dnsmasq_t:dbus send_msg;
 allow dnsmasq_t sysadm_t:dbus send_msg;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Note that &lt;em&gt;only&lt;/em&gt; the access for acquiring a service based on a name
 (i.e. owning a service) is checked based on the different label. Sending
@@ -467,7 +476,7 @@ D-Bus to only allow services with a correct label. This ensures that
 other domains that might have enough privileges to interact with D-Bus
 and own a service cannot own these particular services. After all, other
 services don't usually have the privileges (policy-wise) to
-&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="SELinux"></category><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>If things are weird, check for policy.29</title><link href="https://blog.siphos.be/2014/04/if-things-are-weird-check-for-policy-29/" rel="alternate"></link><published>2014-04-17T21:01:00+02:00</published><updated>2014-04-17T21:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-17:/2014/04/if-things-are-weird-check-for-policy-29/</id><summary type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
+&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>If things are weird, check for policy.29</title><link href="https://blog.siphos.be/2014/04/if-things-are-weird-check-for-policy-29/" rel="alternate"></link><published>2014-04-17T21:01:00+02:00</published><updated>2014-04-17T21:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-17:/2014/04/if-things-are-weird-check-for-policy-29/</id><summary type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
 issue that has been resolved in our current SELinux policy repository
@@ -494,7 +503,7 @@ disappointing.&lt;/p&gt;
 &lt;p&gt;Anyway - if you see weird behavior, check both the &lt;code&gt;semanage.conf&lt;/code&gt; file
 (and set &lt;code&gt;policy-version = 28&lt;/code&gt;) as well as the contents of your
 &lt;code&gt;/etc/selinux/*/policy&lt;/code&gt; directory. If you see any &lt;code&gt;policy.*&lt;/code&gt; that isn't
-version 28, delete them.&lt;/p&gt;</content><category term="SELinux"></category><category term="load_policy"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category></entry><entry><title>Proof of concept for USE enabled policies</title><link href="https://blog.siphos.be/2014/03/proof-of-concept-for-use-enabled-policies/" rel="alternate"></link><published>2014-03-31T18:33:00+02:00</published><updated>2014-03-31T18:33:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-31:/2014/03/proof-of-concept-for-use-enabled-policies/</id><summary type="html">&lt;p&gt;&lt;em&gt;tl;dr:&lt;/em&gt; Some (&lt;code&gt;-9999&lt;/code&gt;) policy ebuilds now have &lt;code&gt;USE&lt;/code&gt; support for
+version 28, delete them.&lt;/p&gt;</content><category term="load_policy"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category></entry><entry><title>Proof of concept for USE enabled policies</title><link href="https://blog.siphos.be/2014/03/proof-of-concept-for-use-enabled-policies/" rel="alternate"></link><published>2014-03-31T18:33:00+02:00</published><updated>2014-03-31T18:33:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-31:/2014/03/proof-of-concept-for-use-enabled-policies/</id><summary type="html">&lt;p&gt;&lt;em&gt;tl;dr:&lt;/em&gt; Some (&lt;code&gt;-9999&lt;/code&gt;) policy ebuilds now have &lt;code&gt;USE&lt;/code&gt; support for
 building in (or leaving out) SELinux policy statements.&lt;/p&gt;
 &lt;p&gt;One of the "problems" I have been facing since I took on the maintenance
 of SELinux policies within Gentoo Hardened is the (seeming) inability to
@@ -532,7 +541,7 @@ those domains access to each others' semaphores and shared memory. And
 although SELinux booleans can help, this would mean that for each
 application domain, something like the following policy would need to
 be, optionally, allowed:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# For the mplayer_t domain:
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# For the mplayer_t domain:
 optional_policy(`
   tunable_policy(`use_alsa&amp;#39;,`
     mozilla_rw_semaphores(mplayer_t)
@@ -548,7 +557,8 @@ optional_policy(`
     chromium_tmpfs_rw_files(mplayer_t)
   &amp;#39;)
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;And this for all domains that are ALSA-enabled. Every time a new
 application is added that knows ALSA, the same code needs to be added to
@@ -558,17 +568,18 @@ create separate booleans for each domain if we want to. Not that that
 will make it more manageable.&lt;/p&gt;
 &lt;p&gt;One way of dealing with this would be to use attributes. Say we have a
 policy like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;attribute alsadomain;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;attribute alsadomain;
 attribute alsatmpfsfile;
 
 allow alsadomain alsadomain:sem rw_sem_perms;
 allow alsadomain alsadomain:shm rw_shm_perms;
 allow alsadomain alsatmpfsfile:file rw_file_perms;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;By assigning the attribute to the proper domains whenever ALSA support
 is needed, we can toggle this more easily:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# In alsa.if
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# In alsa.if
 interface(`alsa_domain&amp;#39;,`
   gen_require(`
     attribute alsadomain;
@@ -585,7 +596,8 @@ optional_policy(`
     alsa_domain(mplayer_t, mplayer_tmpfs_t)
   &amp;#39;)
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;That would solve the problem of needlessly adding more calls in a policy
 for every ALSA application. And hey, we can probably live with either a
@@ -595,12 +607,13 @@ toggle this according to our needs.&lt;/p&gt;
 assignments inside a &lt;code&gt;tunable_policy&lt;/code&gt; code: attributes are part of the
 non-conditional part of a SELinux policy. The solution would be to
 create build-time conditionals (rather than run-time):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ifdef(`use_alsa&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ifdef(`use_alsa&amp;#39;,`
   optional_policy(`
     alsa_domain(mplayer_t, mplayer_tmpfs_t)
   &amp;#39;)
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This does mean that &lt;code&gt;use_alsa&lt;/code&gt; has to be known when the policy is built.
 For Gentoo, that's not that bad, as policies are part of separate
@@ -621,7 +634,7 @@ need to keep this in mind when using package-local USE flag definitions.&lt;/p&g
 SELinux policy for Gentoo (as upstream will not use this setup, and as
 such patches from upstream might need a few manual corrections before
 they apply to our tree). However, I gladly take that up if it means my
-system will have somewhat better confinement.&lt;/p&gt;</content><category term="Gentoo"></category><category term="alsa"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>How does foo_t get this privilege?</title><link href="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/" rel="alternate"></link><published>2014-01-05T04:14:00+01:00</published><updated>2014-01-05T04:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-05:/2014/01/how-does-foo_t-get-this-privilege/</id><summary type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+system will have somewhat better confinement.&lt;/p&gt;</content><category term="alsa"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>How does foo_t get this privilege?</title><link href="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/" rel="alternate"></link><published>2014-01-05T04:14:00+01:00</published><updated>2014-01-05T04:14:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-05:/2014/01/how-does-foo_t-get-this-privilege/</id><summary type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
 was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
 that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
 &lt;p&gt;I used a simple script (which I've been using for a while already)
@@ -636,17 +649,19 @@ such questions. If you're interested, the script is also available on my
 &lt;a href="https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowtree"&gt;github
 small.coding&lt;/a&gt;
 project.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# seshowtree user roles/unprivuser.te &amp;gt; output.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# seshowtree user roles/unprivuser.te &amp;gt; output.txt
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the resulting output, I search for the &lt;code&gt;cgroup_t&lt;/code&gt; and work my way up,
 which gives:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;userdom_unpriv_user_template(user)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;userdom_unpriv_user_template(user)
 . userdom_common_user_template($1)
 . . fs_rw_cgroup_files($1_t)
 . . . rw_files_pattern($1, cgroup_t, cgroup_t)
 . . . . allow $1 $3:file rw_file_perms;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So in this case, the user forgot to look into
 &lt;code&gt;userdom_common_user_template&lt;/code&gt;, which is called by
@@ -655,13 +670,14 @@ course, that still doesn't explain why the privileges are assigned in
 the first place. As the policy file itself does not contain the
 necessary comments to deduce this, I had to ask the git repository for
 more information:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ git annotate userdomain.if
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ git annotate userdomain.if
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the end, it was a commit from 2010, informing me that "Common users
 can read and write cgroup files (access governed by dac)". So the
 privilege is by design, referring to the regular DAC permissions to
-properly govern access to the files.&lt;/p&gt;</content><category term="SELinux"></category><category term="policy"></category><category term="selinux"></category><category term="seshowtree"></category></entry><entry><title>Private key handling and SELinux protection</title><link href="https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/" rel="alternate"></link><published>2014-01-02T04:00:00+01:00</published><updated>2014-01-02T04:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-02:/2014/01/private-key-handling-and-selinux-protection/</id><summary type="html">&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
+properly govern access to the files.&lt;/p&gt;</content><category term="policy"></category><category term="selinux"></category><category term="seshowtree"></category></entry><entry><title>Private key handling and SELinux protection</title><link href="https://blog.siphos.be/2014/01/private-key-handling-and-selinux-protection/" rel="alternate"></link><published>2014-01-02T04:00:00+01:00</published><updated>2014-01-02T04:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-02:/2014/01/private-key-handling-and-selinux-protection/</id><summary type="html">&lt;p&gt;In this post I'll give some insight in a &lt;em&gt;possible&lt;/em&gt; SELinux policy for a
 script I wrote.&lt;/p&gt;
 &lt;p&gt;The script is a certificate authority handling script, in which I can
 generate a private key (and certificate assigned to it), sign the
@@ -673,7 +689,7 @@ certificate either by itself (for the root CA key) or by another
 previously created key (for subkeys), create certificates (such as user
 certificates or device certificates) and sign them, sign certificate
 requests, and revoke certificates.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;export KEYLOC=&amp;quot;/var/db/ca&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;export KEYLOC=&amp;quot;/var/db/ca&amp;quot;
 # Create a root CA key for &amp;quot;genfic&amp;quot;
 # (openssl questions and other output not shown)
 certcli.sh -r genfic
@@ -685,7 +701,8 @@ certcli.sh -p genfic-user -R /var/db/ca/myUserId
 certcli.sh -p genfic-user -s /var/db/ca/requests/someUser.csr
 # Revoke a certificate
 certcli.sh -p genfic-user -x myuser@genfic.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;From a security point of view, I currently focus on two types:&lt;/p&gt;
 &lt;ul&gt;
@@ -707,14 +724,15 @@ types also are declared:&lt;/p&gt;
     well - protected like the private key&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;So let's start with this.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(ca, 1.0.0)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(ca, 1.0.0)
 
 # CA management script and domain
 type ca_cli_t;
 type ca_cli_exec_t;
 domain_base_type(ca_cli_t)
 fs_associate(ca_cli_exec_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Above, I declared the two types &lt;code&gt;ca_cli_t&lt;/code&gt; and &lt;code&gt;ca_cli_exec_t&lt;/code&gt;. Then,
 two non-standard approaches were followed.&lt;/p&gt;
@@ -723,7 +741,7 @@ two non-standard approaches were followed.&lt;/p&gt;
 Which interface you use depends on the privileges you want to grant on
 the domain, but also which existing privileges should also be applicable
 to the domain. Make sure you review the interfaces. For instance:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seshowif application_domain
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# seshowif application_domain
 interface(`application_type&amp;#39;,`
         gen_require(`
                 attribute application_domain_type;
@@ -734,7 +752,8 @@ interface(`application_type&amp;#39;,`
         # start with basic domain
         domain_type($1)
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This means that the assigned domain (&lt;code&gt;ca_cli_t&lt;/code&gt; in our example) would be
 assigned the &lt;code&gt;application_domain_type&lt;/code&gt; attribute, as well as the
@@ -746,7 +765,7 @@ need to make sure that the lowest possible privileges are assigned.&lt;/p&gt;
 and other domains might have access to &lt;code&gt;file_type&lt;/code&gt;. So all I do here is
 to allow the type &lt;code&gt;ca_cli_exec_t&lt;/code&gt; to be associated on a file system.&lt;/p&gt;
 &lt;p&gt;Similarly, I define the remainder of file types:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type ca_private_key_t;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type ca_private_key_t;
 fs_associate(ca_private_key_t)
 
 type ca_misc_tmp_t;
@@ -755,16 +774,18 @@ fs_associate_tmpfs(ca_misc_tmp_t)
 
 type ca_misc_t;
 fs_associate(ca_misc_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Next, grant the CA handling script (which will run as &lt;code&gt;ca_cli_t&lt;/code&gt;) the
 proper access to these types.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ca_cli_t ca_misc_t:dir create_dir_perms;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow ca_cli_t ca_misc_t:dir create_dir_perms;
 manage_files_pattern(ca_cli_t, ca_misc_t, ca_misc_t)
 
 allow ca_cli_t ca_private_key_t:dir create_dir_perms;
 manage_files_pattern(ca_cli_t, ca_private_key_t, ca_private_key_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This of course heavily depends on the script itself. Mine creates a
 directory "private", so needs the proper rights on the
@@ -774,12 +795,13 @@ can also create a file transition. This means that the SELinux policy
 will automatically assign the &lt;code&gt;ca_private_key_t&lt;/code&gt; type to a directory,
 created in a directory with label &lt;code&gt;ca_misc_t&lt;/code&gt;, if created by the
 &lt;code&gt;ca_cli_t&lt;/code&gt; domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;filetrans_pattern(ca_cli_t, ca_misc_t, ca_private_key_t, dir, &amp;quot;private&amp;quot;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;filetrans_pattern(ca_cli_t, ca_misc_t, ca_private_key_t, dir, &amp;quot;private&amp;quot;)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now, &lt;code&gt;ca_cli_t&lt;/code&gt; is a domain used for a shell script, which in my case
 also requires the following permissions:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Handling pipes between commands
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Handling pipes between commands
 allow ca_cli_t self:fifo_file rw_fifo_file_perms;
 # Shell script...
 corecmd_exec_shell(ca_cli_t)
@@ -788,15 +810,17 @@ corecmd_exec_bin(ca_cli_t)
 # Allow output on the screen
 getty_use_fds(ca_cli_t)
 userdom_use_user_terminals(ca_cli_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now I still need to mark &lt;code&gt;ca_cli_exec_t&lt;/code&gt; as an entrypoint for
 &lt;code&gt;ca_cli_t&lt;/code&gt;, meaning that the &lt;code&gt;ca_cli_t&lt;/code&gt; domain can only be accessed
 (transitioned to) through the execution of a file with label
 &lt;code&gt;ca_cli_exec_t&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ca_cli_t ca_cli_exec_t:file entrypoint;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow ca_cli_t ca_cli_exec_t:file entrypoint;
 allow ca_cli_t ca_cli_exec_t:file { mmap_file_perms ioctl lock };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Normally, the above is granted through the invocation of the
 &lt;code&gt;application_domain(ca_cli_t, ca_cli_exec_t)&lt;/code&gt; but as mentioned before,
@@ -805,7 +829,7 @@ this example.&lt;/p&gt;
 &lt;p&gt;Next, the &lt;code&gt;openssl&lt;/code&gt; application, which the script uses extensively, also
 requires additional permissions. As the &lt;code&gt;openssl&lt;/code&gt; command just runs in
 the &lt;code&gt;ca_cli_t&lt;/code&gt; domain, I extend the privileges for this domain more:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Read access on /proc files
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Read access on /proc files
 kernel_read_system_state(ca_cli_t)
 # Access to random devices
 dev_read_rand(ca_cli_t)
@@ -815,14 +839,16 @@ files_read_etc_files(ca_cli_t)
 miscfiles_read_localization(ca_cli_t)
 # /tmp access
 fs_getattr_tmpfs(ca_cli_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Also, the following file transition is created: when OpenSSL creates a
 temporary file in &lt;code&gt;/tmp&lt;/code&gt;, this file should immediately be assigned the
 &lt;code&gt;ca_misc_tmp_t&lt;/code&gt; type:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# File transition in /tmp to ca_misc_tmp_t
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# File transition in /tmp to ca_misc_tmp_t
 files_tmp_filetrans(ca_cli_t, ca_misc_tmp_t, file)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this in place, the application works just fine - all I need to do
 is have an initial location marked as &lt;code&gt;ca_misc_t&lt;/code&gt;. For now, none of the
@@ -832,12 +858,13 @@ to be used against other user domains.&lt;/p&gt;
 handled by the &lt;code&gt;ca_role()&lt;/code&gt; interface. In order to support such an
 interface, let's first create the &lt;code&gt;ca_roles&lt;/code&gt; role attribute in the &lt;code&gt;.te&lt;/code&gt;
 file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;attribute_role ca_roles;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;attribute_role ca_roles;
 role ca_roles types ca_cli_t;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now I can define the &lt;code&gt;ca_role()&lt;/code&gt; interface:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_role&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;interface(`ca_role&amp;#39;,`
   gen_require(`
     attribute_role ca_roles;
     type ca_cli_t, ca_cli_exec_t;
@@ -860,14 +887,15 @@ role ca_roles types ca_cli_t;
   # Output (and redirect) handling
   allow ca_cli_t $2:fd use;
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This role allows to run the command, but we still don't have the rights
 to create a &lt;code&gt;ca_misc_t&lt;/code&gt; directory. So another interface is created,
 which is granted to &lt;em&gt;regular&lt;/em&gt; system administrators (as the &lt;code&gt;ca_role()&lt;/code&gt;
 might be granted to non-admins as well, who can invoke the script
 through &lt;code&gt;sudo&lt;/code&gt;).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_sysadmin&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;interface(`ca_sysadmin&amp;#39;,`
   gen_require(`
     type ca_misc_t;
     type ca_private_key_t;
@@ -885,7 +913,8 @@ through &lt;code&gt;sudo&lt;/code&gt;).&lt;/p&gt;
   allow $1 ca_misc_t:dir list_dir_perms;
   allow $1 ca_misc_t:file read_file_perms;
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The &lt;code&gt;ca_sysadmin()&lt;/code&gt; interface can also be assigned to the &lt;code&gt;setfiles_t&lt;/code&gt;
 command so that relabel operations (and file system relabeling) works
@@ -896,7 +925,7 @@ relabel &lt;em&gt;from&lt;/em&gt; rights (so any domain granted this interface w
 - to change the type of private keys to a regular file). This one should
 &lt;em&gt;only&lt;/em&gt; be assigned to a rescue user (if any). Also, this interface is
 allowed to label CA management scripts.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`ca_admin&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;interface(`ca_admin&amp;#39;,`
   gen_require(`
     type ca_misc_t, ca_private_key_t;
     type ca_cli_exec_t;
@@ -907,20 +936,21 @@ allowed to label CA management scripts.&lt;/p&gt;
 
   allow $1 ca_cli_exec_t:file relabel_file_perms;
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So regular system administrators would be assigned the &lt;code&gt;ca_sysadmin()&lt;/code&gt;
 interface as well as the &lt;code&gt;setfiles_t&lt;/code&gt; domain; CA handling roles would be
 granted the &lt;code&gt;ca_role()&lt;/code&gt; interface. The &lt;code&gt;ca_admin()&lt;/code&gt; interface would only
 be granted on the rescue (or super-admin).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Regular system administrators
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Regular system administrators
 ca_sysadmin(sysadm_t)
 ca_sysadmin(setfiles_t)
 # Certificate administrator
 ca_role(certadmin_r, certadmin_t)
 # Security administrator
 ca_admin(secadm_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="ca"></category><category term="certcli"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Gentoo SELinux policy release script</title><link href="https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/" rel="alternate"></link><published>2013-12-11T18:37:00+01:00</published><updated>2013-12-11T18:37:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-11:/2013/12/gentoo-selinux-policy-release-script/</id><summary type="html">&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
+&lt;/pre&gt;&lt;/div&gt;</content><category term="ca"></category><category term="certcli"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Gentoo SELinux policy release script</title><link href="https://blog.siphos.be/2013/12/gentoo-selinux-policy-release-script/" rel="alternate"></link><published>2013-12-11T18:37:00+01:00</published><updated>2013-12-11T18:37:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-11:/2013/12/gentoo-selinux-policy-release-script/</id><summary type="html">&lt;p&gt;A few months ago, I wrote a small script that aids in the creation of
 new SELinux policy packages. The script is on the
 &lt;a href="http://git.overlays.gentoo.org/gitweb/?p=proj/hardened-refpolicy.git;a=summary"&gt;repository&lt;/a&gt;
 itself, in the &lt;code&gt;gentoo/&lt;/code&gt; subdirectory, and is called
@@ -938,7 +968,7 @@ the script, and decided to blog about it as other developers in the
 hardened team might one day be asked to make a release when I'm not
 available.&lt;/p&gt;
 &lt;p&gt;When the script is called, it spits out the usual help information.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sh release-prepare.sh -h
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sh release-prepare.sh -h
 Usage: release-prepare.sh
 
 Example: release-prepare.sh 2.20130424-r2 2.20130424-r3
@@ -956,7 +986,8 @@ to function properly:
   - REFPOLRELEASE should point to the current latest /release/ of the reference
     policy (so NOT to a checkout), extracted somewhere on the file system.
     E.g. export REFPOLRELEASE=&amp;quot;/home/user/local/refpolicy-20130424&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So first, we need to export three environment variables needed by the
 script:&lt;/p&gt;
@@ -971,7 +1002,7 @@ script:&lt;/p&gt;
     repository and the upstream release).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;After setting the variables, the script does its magic:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sh release-prepare.sh 2.20130424-r3 2.20130424-r4
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sh release-prepare.sh 2.20130424-r3 2.20130424-r4
 Creating patch 0001-full-patch-against-stable-release.patch... done
 Creating patch bundle for 2.20130424-r4... done
 Copying patch bundle into /usr/portage/distfiles and dev.g.o... done
@@ -991,7 +1022,8 @@ version is deployed of course:
 sec-policy/selinux-alsa
 ...
 Only then do a &amp;#39;repoman commit -m &amp;#39;Release of 2.20130424-r4&amp;#39;&amp;#39;.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The script performs the following steps:&lt;/p&gt;
 &lt;ol&gt;
@@ -1025,7 +1057,7 @@ testing, the created ebuilds can be committed to the repository.&lt;/p&gt;
 &lt;p&gt;The last few steps have explicitly not been automated so the developer
 has the chance to update the ebuilds (in case more than just the policy
 contents has changed between releases) or do dry runs without affecting
-the &lt;code&gt;gentoo-x86&lt;/code&gt; repository.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="policy"></category><category term="release"></category><category term="selinux"></category></entry><entry><title>Using CUSTOM_BUILDOPT in refpolicy for USE flag-alike functionality?</title><link href="https://blog.siphos.be/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/" rel="alternate"></link><published>2013-08-16T09:17:00+02:00</published><updated>2013-08-16T09:17:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-16:/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/</id><summary type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
+the &lt;code&gt;gentoo-x86&lt;/code&gt; repository.&lt;/p&gt;</content><category term="Gentoo"></category><category term="hardened"></category><category term="policy"></category><category term="release"></category><category term="selinux"></category></entry><entry><title>Using CUSTOM_BUILDOPT in refpolicy for USE flag-alike functionality?</title><link href="https://blog.siphos.be/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/" rel="alternate"></link><published>2013-08-16T09:17:00+02:00</published><updated>2013-08-16T09:17:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-16:/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/</id><summary type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
 policy&lt;/a&gt; as its base for
 SELinux policies. Yes, we do customize it and not everything is already
 pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
@@ -1048,21 +1080,23 @@ tangible.&lt;/p&gt;
 offers support for ALSA and PulseAudio (amongst other things). In the
 SELinux policy, support for (and thus privileges related to) ALSA and
 PulseAudio is handled through &lt;em&gt;optional_policy&lt;/em&gt; statements:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;optional_policy(`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;optional_policy(`
   pulseaudio_tmpfs_content(mplayer_tmpfs_t)
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This means that the rules defined in &lt;em&gt;pulseaudio_tmpfs_content&lt;/em&gt; are
 executed if the dependencies match:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`pulseaudio_tmpfs_content&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;interface(`pulseaudio_tmpfs_content&amp;#39;,`
         gen_require(`
                 attribute pulseaudio_tmpfsfile;
         &amp;#39;)
 
         typeattribute $1 pulseaudio_tmpfsfile;
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;If the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute exists, then the
 &lt;code&gt;mplayer_tmpfs_t&lt;/code&gt; type gets the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute
@@ -1078,10 +1112,11 @@ privileges become active.&lt;/p&gt;
 &lt;p&gt;One way SELinux supports a more flexible approach is to use conditionals
 in the policy. One could create booleans that administrators can toggle
 to enable / disable SELinux rules. For instance, in the mplayer policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tunable_policy(`allow_mplayer_execstack&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tunable_policy(`allow_mplayer_execstack&amp;#39;,`
         allow mencoder_t self:process { execmem execstack };
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;If an administrator toggles the &lt;code&gt;allow_mplayer_execstack&lt;/code&gt; boolean to
 "on", then the mentioned &lt;code&gt;allow&lt;/code&gt; rule becomes active.&lt;/p&gt;
@@ -1103,12 +1138,13 @@ based) to see if rules need to be activated or not. For type attribute
 declarations, this is a valid approach. So one idea would be to
 transform USE flags, if they are set, into &lt;code&gt;use_${USEFLAG}&lt;/code&gt;, and make
 decisions based on this in the policy code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ifdef(`use_pulseaudio&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ifdef(`use_pulseaudio&amp;#39;,`
   optional_policy(`
     pulseaudio_tmpfs_content(mplayer_tmpfs_t)
   &amp;#39;)
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;We can add in the USE flags, if set, through the &lt;code&gt;CUSTOM_BUILDOPT&lt;/code&gt;
 parameter that the reference policy provides. So introducing this is not
@@ -1123,7 +1159,7 @@ pulseaudio enabled.&lt;/p&gt;
 Gentoo aims to do: if you do not want a certain support/feature in the
 code, then why would the policy still have to allow it? With the proper
 documentation towards administrators, I think this would be a good
-approach.&lt;/p&gt;</content><category term="Gentoo"></category><category term="boolean"></category><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="use"></category><category term="useflag"></category></entry><entry><title>A SELinux policy for incron: finishing up</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-finishing-up/" rel="alternate"></link><published>2013-05-31T03:50:00+02:00</published><updated>2013-05-31T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-31:/2013/05/a-selinux-policy-for-incron-finishing-up/</id><summary type="html">&lt;p&gt;After 9 posts, it's time to wrap things up. You can review the final
+approach.&lt;/p&gt;</content><category term="boolean"></category><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="use"></category><category term="useflag"></category></entry><entry><title>A SELinux policy for incron: finishing up</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-finishing-up/" rel="alternate"></link><published>2013-05-31T03:50:00+02:00</published><updated>2013-05-31T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-31:/2013/05/a-selinux-policy-for-incron-finishing-up/</id><summary type="html">&lt;p&gt;After 9 posts, it's time to wrap things up. You can review the final
 results online
 (&lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.te.txt"&gt;incron.te&lt;/a&gt;,
 &lt;a href="http://dev.gentoo.org/~swift/blog/01/incron.if.txt"&gt;incron.if&lt;/a&gt; and
@@ -1226,7 +1262,7 @@ through complex policies.&lt;/p&gt;
 system, you can use a simple ebuild to install the files. Create an
 ebuild (for instance &lt;code&gt;selinux-incron&lt;/code&gt;), put the three files in the
 &lt;code&gt;files/&lt;/code&gt; subdirectory, and use the following ebuild code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Copyright 1999-2013 Gentoo Foundation
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header$
 EAPI=&amp;quot;4&amp;quot;
@@ -1241,11 +1277,12 @@ inherit selinux-policy-2
 DESCRIPTION=&amp;quot;SELinux policy for incron, the inotify cron daemon&amp;quot;
 
 KEYWORDS=&amp;quot;~amd64 ~x86&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;When installed, the interface files will be published as well and can
 then be used by other modules (something we couldn't do in the past few
-posts) or by the &lt;strong&gt;selocal&lt;/strong&gt; tool.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: using booleans</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/" rel="alternate"></link><published>2013-05-30T03:50:00+02:00</published><updated>2013-05-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-30:/2013/05/a-selinux-policy-for-incron-using-booleans/</id><summary type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+posts) or by the &lt;strong&gt;selocal&lt;/strong&gt; tool.&lt;/p&gt;</content><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: using booleans</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/" rel="alternate"></link><published>2013-05-30T03:50:00+02:00</published><updated>2013-05-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-30:/2013/05/a-selinux-policy-for-incron-using-booleans/</id><summary type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
 to mark other
 types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
@@ -1262,28 +1299,30 @@ latter is merely an approach, you can define other sets as well if you
 want, including all possible files).&lt;/p&gt;
 &lt;p&gt;Booleans in SELinux policy can be generated in the &lt;code&gt;incron.te&lt;/code&gt; file as
 follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;## &amp;lt;desc&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;## &amp;lt;desc&amp;gt;
 ## &amp;lt;p&amp;gt;
 ##      Determine whether incron can watch all non-security
 ##      file types
 ## &amp;lt;/p&amp;gt;
 ## &amp;lt;/desc&amp;gt;
 gen_tunable(incron_notify_non_security_files, false)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this boolean in place, the policy can be enhanced with code like
 the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tunable_policy(`incron_notify_non_security_files&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tunable_policy(`incron_notify_non_security_files&amp;#39;,`
         files_read_non_security_files(incrond_t)
         files_read_all_dirs_except(incrond_t)
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This code tells SELinux that, &lt;em&gt;if&lt;/em&gt; the
 &lt;em&gt;incron_notify_non_security_files&lt;/em&gt; boolean is set (which by default
 is not the case), then &lt;code&gt;incrond_t&lt;/code&gt; is able to read non security files.&lt;/p&gt;
 &lt;p&gt;Let's try to watch for changes in the AIDE log directory:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail audit.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tail audit.log
 type=AVC msg=audit(1368777675.597:28611): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;log&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=13 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:var_log_t tclass=dir
 type=AVC msg=audit(1368777675.597:28612): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;log&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=13 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:var_log_t tclass=dir
 
@@ -1292,28 +1331,31 @@ May 17 10:01:15 test incrond[11704]: access denied on /var/log/aide - events wil
 
 # getsebool incron_notify_non_security_files
 incron_notify_non_security_files --&amp;gt; off
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Let's enable the boolean and try again:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setsebool incron_notify_non_security_files on
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# setsebool incron_notify_non_security_files on
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Reloading the incrontab tables now works, and the notifications work as
 well.&lt;/p&gt;
 &lt;p&gt;As you can see, once a policy is somewhat working, policy developers are
 considering the various "use cases" of an application, trying to write
 down policies that can be used by the majority of users, without
-granting too many rights automatically.&lt;/p&gt;</content><category term="SELinux"></category><category term="boolean"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: default set</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/" rel="alternate"></link><published>2013-05-28T03:50:00+02:00</published><updated>2013-05-28T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-28:/2013/05/a-selinux-policy-for-incron-default-set/</id><summary type="html">&lt;p&gt;I finished the last post a bit with a
+granting too many rights automatically.&lt;/p&gt;</content><category term="boolean"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: default set</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/" rel="alternate"></link><published>2013-05-28T03:50:00+02:00</published><updated>2013-05-28T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-28:/2013/05/a-selinux-policy-for-incron-default-set/</id><summary type="html">&lt;p&gt;I finished the last post a bit with a
 &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/"&gt;cliffhanger&lt;/a&gt;
 as &lt;strong&gt;incrond&lt;/strong&gt; is still not working properly, and we got a few denials
 that needed to be resolved; here they are again for your convenience:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&amp;quot;incrond …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;I finished the last post a bit with a
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&amp;quot;incrond …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;I finished the last post a bit with a
 &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/"&gt;cliffhanger&lt;/a&gt;
 as &lt;strong&gt;incrond&lt;/strong&gt; is still not working properly, and we got a few denials
 that needed to be resolved; here they are again for your convenience:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;/home/user/test2&amp;quot; dev=&amp;quot;dm-0&amp;quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;/home/user/test2&amp;quot; dev=&amp;quot;dm-0&amp;quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
 type=AVC msg=audit(1368734110.913:28354): avc:  denied  { read } for  pid=9716 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;test2&amp;quot; dev=&amp;quot;dm-0&amp;quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The permission we are looking for here is
 &lt;em&gt;userdom_list_user_home_content&lt;/em&gt;, but this is only for when we want
@@ -1337,15 +1379,16 @@ such. So we introduce the proper rights to watch that data. There is an
 interface available called &lt;em&gt;miscfiles_read_public_files&lt;/em&gt; but let's
 first see if that interface isn't too broad (after all, watching might
 not be the same as reading).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# This is only to temporarily check if the rights of the interface are too broad or not
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# This is only to temporarily check if the rights of the interface are too broad or not
 # You can set this using &amp;quot;selocal&amp;quot; or in a module (in which case you&amp;#39;ll need to &amp;#39;require&amp;#39;
 # the two types)
 allow incrond_t public_content_t:dir { read getattr };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;After editing the incrontab to watch a directory labeled with
 &lt;code&gt;public_content_t&lt;/code&gt;, we now get the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail cron.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tail cron.log
 May 17 08:46:12 test incrond[9716]: (user) CMD (/usr/local/bin/test)
 May 17 08:46:12 test incrond[11281]: cannot exec process: Operation not permitted
 May 17 08:46:12 test incrond[9716]: cannot send SIGCHLD token to notification pipe
@@ -1354,25 +1397,28 @@ May 17 08:46:12 test incrond[9716]: cannot send SIGCHLD token to notification pi
 type=AVC msg=audit(1368773172.313:28386): avc:  denied  { setgid } for  pid=11281 comm=&amp;quot;incrond&amp;quot; capability=6  scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=capability
 type=AVC msg=audit(1368773172.314:28387): avc:  denied  { read } for  pid=9716 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;pipe:[14027]&amp;quot; dev=&amp;quot;pipefs&amp;quot; ino=14027 scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=fifo_file
 type=AVC msg=audit(1368773172.315:28388): avc:  denied  { write } for  pid=9716 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;pipe:[14027]&amp;quot; dev=&amp;quot;pipefs&amp;quot; ino=14027 scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=fifo_file
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;As the incrontab is a user incrontab, we can expect &lt;code&gt;incrond_t&lt;/code&gt; to
 require setuid and setgid privileges. Also, the &lt;em&gt;fifo_file&lt;/em&gt; access is
 after forking (notice the difference in PID values) and most likely to
 communicate to the master process. So let's allow those:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrond_t self:capability { setuid setgid };
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow incrond_t self:capability { setuid setgid };
 allow incrond_t self:fifo_file { read write };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With that set, we get the following upon triggering a file write:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail cron.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tail cron.log
 May 17 08:52:46 test incrond[9716]: (user) CMD (/usr/local/bin/test)
 May 17 08:52:46 test incrond[11338]: cannot exec process: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368773566.606:28394): avc:  denied  { read } for  pid=11338 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;ngroups_max&amp;quot; dev=&amp;quot;proc&amp;quot; ino=5711 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:sysctl_kernel_t tclass=file
 type=AVC msg=audit(1368773566.607:28395): avc:  denied  { search } for  pid=11338 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;bin&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=1048578 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:bin_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The &lt;code&gt;ngroups_max&lt;/code&gt; pseudo-file (in &lt;code&gt;/proc/sys/kernel&lt;/code&gt;) returns the
 maximum number of supplementary group IDs per process, and is consulted
@@ -1383,13 +1429,14 @@ I might be forced to do so later if things don't work out well. The
 &lt;em&gt;search&lt;/em&gt; privilege on &lt;code&gt;bin_t&lt;/code&gt; is needed to find the script that I have
 prepared (&lt;code&gt;/usr/local/bin/test&lt;/code&gt;) to be executed, so I add in a
 &lt;em&gt;corecmd_search_bin&lt;/em&gt; and retry.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail cron.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tail cron.log
 May 17 09:02:55 test incrond[9716]: (user) CMD (/usr/local/bin/test)
 May 17 09:02:55 test incrond[11427]: cannot exec process: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368774175.646:28441): avc:  denied  { read } for  pid=11427 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;sh&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=131454 scontext=system_u:system_r:incrond_t tcontext=root:object_r:bin_t tclass=lnk_file
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Still not there yet apparently. The &lt;strong&gt;incrond&lt;/strong&gt; forked process wants to
 execute the script, but to do so it has to follow a symbolic link
@@ -1397,8 +1444,9 @@ labeled &lt;code&gt;bin_t&lt;/code&gt;. This is because the script points to &lt
 is a symlink to the system shell. We need to follow this link before the
 execution can occur; only after execution will the transition from
 &lt;code&gt;incrond_t&lt;/code&gt; to &lt;code&gt;system_cronjob_t&lt;/code&gt; be done.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corecmd_read_bin_symlinks(incrond_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corecmd_read_bin_symlinks(incrond_t)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With that set in the policy, the watch works, &lt;strong&gt;incrond&lt;/strong&gt; properly
 launches the command and the command properly transitions into
@@ -1407,31 +1455,34 @@ output of &lt;strong&gt;id -Z&lt;/strong&gt; into a temporary file).&lt;/p&gt;
 &lt;p&gt;So we are left with the (temporary) rights we granted on
 &lt;code&gt;public_content_t&lt;/code&gt;. Consider the rules we had versus the rules applied
 with &lt;em&gt;miscfiles_read_public_files&lt;/em&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrond_t public_content_t:dir { read getattr };
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow incrond_t public_content_t:dir { read getattr };
 
 # miscfiles_read_public_files
 allow $1 { public_content_t public_content_rw_t }:dir list_dir_perms;
 read_files_pattern($1, { public_content_t public_content_rw_t }, { public_content_t public_content_rw_t })
 read_lnk_files_pattern($1, { public_content_t public_content_rw_t }, { public_content_t public_content_rw_t })
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The rights here seem to bemore than what we need. Playing around a bit
 with the directories reveals that &lt;strong&gt;incrond&lt;/strong&gt; requires a bit more. For
 instance, when you create additional directories (subdirectories) and
 want to match multiple ones:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail cron.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tail cron.log
 May 17 09:16:08 test incrond[11704]: access denied on /var/www/test/* - events will be discarded silently
 May 17 09:16:08 test incrond[11704]: cannot create watch for user user: (13) Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368774968.416:28504): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;test&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=1488 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=dir
 type=AVC msg=audit(1368774968.416:28505): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;test&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=1488 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Similarly if you want to watch on a particular file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368775274.655:28552): avc:  denied  { getattr } for  pid=11704 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;/var/www/test/testfile&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=1709 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1368775274.655:28552): avc:  denied  { getattr } for  pid=11704 comm=&amp;quot;incrond&amp;quot; path=&amp;quot;/var/www/test/testfile&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=1709 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=file
 type=AVC msg=audit(1368775274.655:28553): avc:  denied  { read } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;testfile&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=1709 scontext=system_u:system_r:incrond_t tcontext=root:object_r:public_content_t tclass=file
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So it looks like &lt;em&gt;miscfiles_read_public_files&lt;/em&gt; isn't that bad after
 all.&lt;/p&gt;
@@ -1448,7 +1499,7 @@ incrontab watches &lt;code&gt;/var/www&lt;/code&gt; and another line (or user in
 watches &lt;code&gt;/var/www/localhost/upload&lt;/code&gt; it is very well possible that only
 the &lt;code&gt;/var/www&lt;/code&gt; watch is triggered.&lt;/p&gt;
 &lt;p&gt;So right now, our &lt;code&gt;incrond_t&lt;/code&gt; policy looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;###########################################
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;###########################################
 #
 # incrond policy
 #
@@ -1476,29 +1527,31 @@ auth_use_nsswitch(incrond_t)
 
 miscfiles_read_localization(incrond_t)
 miscfiles_read_public_files(incrond_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Next on the agenda is another interface to make other types
-"watch-worthy".&lt;/p&gt;</content><category term="SELinux"></category><category term="booleans"></category><category term="incrond"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: new types and transitions</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/" rel="alternate"></link><published>2013-05-26T03:50:00+02:00</published><updated>2013-05-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-26:/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/</id><summary type="html">&lt;p&gt;So I've shown the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/"&gt;iterative approach
+"watch-worthy".&lt;/p&gt;</content><category term="booleans"></category><category term="incrond"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: new types and transitions</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/" rel="alternate"></link><published>2013-05-26T03:50:00+02:00</published><updated>2013-05-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-26:/2013/05/a-selinux-policy-for-incron-new-types-and-transitions/</id><summary type="html">&lt;p&gt;So I've shown the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/"&gt;iterative approach
 used&lt;/a&gt;
 to develop policies. Again, please be aware that this is my way of
 developing policies, other policy developers might have a different
 approach. We were working on the &lt;strong&gt;incrontab&lt;/strong&gt; command, so let's
 continue with trying to create a new user incrontab:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;So I've shown the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/"&gt;iterative approach
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -e …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;So I've shown the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/"&gt;iterative approach
 used&lt;/a&gt;
 to develop policies. Again, please be aware that this is my way of
 developing policies, other policy developers might have a different
 approach. We were working on the &lt;strong&gt;incrontab&lt;/strong&gt; command, so let's
 continue with trying to create a new user incrontab:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -e
 cannot create temporary file: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368709633.285:28211): avc:  denied  { setgid } for  pid=8159 comm=&amp;quot;incrontab&amp;quot; capability=6  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
 type=AVC msg=audit(1368709633.285:28212): avc:  denied  { setuid } for  pid=8159 comm=&amp;quot;incrontab&amp;quot; capability=7  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
 type=AVC msg=audit(1368709633.287:28213): avc:  denied  { search } for  pid=8159 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;/&amp;quot; dev=&amp;quot;tmpfs&amp;quot; ino=3927 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:tmp_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The requests for the setuid and setgid capabilities are needed for the
 application to safely handle the user incrontabs. Note that SELinux does
@@ -1506,30 +1559,34 @@ not "remove" the setuid bit on the binary itself, but does govern the
 related capabilities. Since this is required, we will add these
 capabilities to the policy. We also notice that &lt;strong&gt;incrontab&lt;/strong&gt; searched
 in the &lt;code&gt;/tmp&lt;/code&gt; location.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t self:capability { setuid setgid };
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow incrontab_t self:capability { setuid setgid };
 ...
 files_search_tmp(incrontab_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the next round of iteration, we notice the same error message with
 the following denial:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368728433.521:28215): avc:  denied  { write } for  pid=8913 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;/&amp;quot; dev=&amp;quot;tmpfs&amp;quot; ino=3927 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:tmp_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1368728433.521:28215): avc:  denied  { write } for  pid=8913 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;/&amp;quot; dev=&amp;quot;tmpfs&amp;quot; ino=3927 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:tmp_t tclass=dir
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;It is safe to assume here that the process wants to create a temporary
 file (if it is a directory, we will find out later and can adapt). But
 when temporary files are created, we better make those files a specific
 type, like &lt;code&gt;incrontab_tmp_t&lt;/code&gt;. So we define that on top of the policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type incrontab_tmp_t;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type incrontab_tmp_t;
 files_tmp_file(incrontab_tmp_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Also, we need to allow the &lt;code&gt;incrontab_t&lt;/code&gt; domain write privileges into
 the &lt;code&gt;tmp_t&lt;/code&gt; labeled directory, but with an automatic file transition
 towards &lt;code&gt;incrontab_tmp_t&lt;/code&gt; for every file written. This is done through
 the &lt;em&gt;files_tmp_filetrans&lt;/em&gt; method:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;files_tmp_filetrans(incrontab_t, incrontab_tmp_t, file)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;files_tmp_filetrans(incrontab_t, incrontab_tmp_t, file)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;What this sais is that, if a domain &lt;code&gt;incrontab_t&lt;/code&gt; wants to create a
 &lt;code&gt;file&lt;/code&gt; inside &lt;code&gt;tmp_t&lt;/code&gt;, then this file is automatically labeled
@@ -1538,16 +1595,18 @@ know what the file name would be, then you can add that as a fourth
 argument. However, this does not seem necessary now since we definitely
 want all files created in &lt;code&gt;tmp_t&lt;/code&gt; to become &lt;code&gt;incrontab_tmp_t&lt;/code&gt;. All that
 rests us is to allow &lt;strong&gt;incrontab&lt;/strong&gt; to actually manage those files:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t incrontab_tmp_t:file manage_file_perms;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow incrontab_t incrontab_tmp_t:file manage_file_perms;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With those in place, let's look at the outcome:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -e
 editor finished with error: No such file or directory
 
 # tail audit.log
 type=AVC msg=audit(1368729268.465:28217): avc:  denied  { search } for  pid=8981 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;bin&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=524289 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:bin_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Considering that here, &lt;strong&gt;incrontab&lt;/strong&gt; is going to launch the users
 &lt;code&gt;$EDITOR&lt;/code&gt; application to allow him (or her) to create an incrontab, we
@@ -1570,14 +1629,15 @@ different domain for the editor for the following reasons:&lt;/p&gt;
     current domain low.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Let's see if things work now:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -e
 (Editor opened, so I added in an incrontab line. Upon closing:)
 cannot move temporary table: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368729825.673:28237): avc:  denied  { dac_read_search } for  pid=9030 comm=&amp;quot;incrontab&amp;quot; capability=2  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
 type=AVC msg=audit(1368729825.673:28237): avc:  denied  { dac_override } for  pid=9030 comm=&amp;quot;incrontab&amp;quot; capability=1  scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=capability
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;From a quick look through &lt;strong&gt;ps&lt;/strong&gt;, I notice that the application runs as
 the user (luckily, otherwise I could use the editor to escape and get a
@@ -1586,16 +1646,18 @@ sense that it wants to move this newly created incrontab file somewhere
 in &lt;code&gt;/var/spool/incron&lt;/code&gt; so we grant it the permission to
 &lt;code&gt;dac_read_search&lt;/code&gt; (which is lower than &lt;code&gt;dac_override&lt;/code&gt; as &lt;a href="http://blog.siphos.be/2013/05/the-weird-audit_access-permission/"&gt;explained
 before&lt;/a&gt;):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t self:capability { dac_read_search setuid setgid };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow incrontab_t self:capability { dac_read_search setuid setgid };
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;On to the next failure:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -e 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -e 
 cannot move temporary table: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368730155.706:28296): avc:  denied  { write } for  pid=9088 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;incron&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=19725 scontext=user_u:user_r:incrontab_t tcontext=root:object_r:incron_spool_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now the application wants to write this file there. Now remember we
 already have &lt;code&gt;search_dir_perms&lt;/code&gt; permissions into &lt;code&gt;incron_spool_t&lt;/code&gt;? We
@@ -1604,17 +1666,18 @@ manage permissions on files (manage because users should be able to
 create, modify and delete their files). These two permissions are
 combined in the &lt;em&gt;manage_files_pattern&lt;/em&gt; interface, and makes the search
 one obsolete:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;manage_files_pattern(incrontab_t, incron_spool_t, incron_spool_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;manage_files_pattern(incrontab_t, incron_spool_t, incron_spool_t)
 
 $ incrontab -e
 ...
 table updated
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Finally! And looking at the other options in &lt;strong&gt;incrontab&lt;/strong&gt;, it seems
 that the policy for &lt;code&gt;incrontab_t&lt;/code&gt; is finally complete, and looks like
 so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;###########################################
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;###########################################
 #
 # incrontab policy
 #
@@ -1636,38 +1699,43 @@ files_search_tmp(incrontab_t)
 auth_use_nsswitch(incrontab_t)
 
 userdom_use_user_terminals(incrontab_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Next on the agenda: the &lt;code&gt;incrond_t&lt;/code&gt; domain.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: basic set for incrontab</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/" rel="alternate"></link><published>2013-05-25T03:50:00+02:00</published><updated>2013-05-25T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-25:/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/</id><summary type="html">&lt;p&gt;Now that our &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/"&gt;regular user is
+
+&lt;p&gt;Next on the agenda: the &lt;code&gt;incrond_t&lt;/code&gt; domain.&lt;/p&gt;</content><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: basic set for incrontab</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/" rel="alternate"></link><published>2013-05-25T03:50:00+02:00</published><updated>2013-05-25T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-25:/2013/05/a-selinux-policy-for-incron-basic-set-for-incrontab/</id><summary type="html">&lt;p&gt;Now that our &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/"&gt;regular user is
 allowed&lt;/a&gt;
 to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at the denials to
 build up the policy.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab --help
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
 (or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Now that our &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/"&gt;regular user is
 allowed&lt;/a&gt;
 to execute &lt;strong&gt;incrontab&lt;/strong&gt;, let's fire it up and look at the denials to
 build up the policy.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab --help
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab --help
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;That doesn't show much does it? Well, if you look into the &lt;code&gt;audit.log&lt;/code&gt;
 (or &lt;code&gt;avc.log&lt;/code&gt;) file, you'll notice a lot of denials. If you are
 developing a policy, it is wise to clear the entire log and reproduce
 the "situation" so you get a proper idea of the scope.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cd /var/log/audit
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd /var/log/audit
 # &amp;gt; audit.log
 # tail -f audit.log | grep AVC
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now let's run &lt;strong&gt;incrontab --help&lt;/strong&gt; again and look at the denials:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368707274.429:28180): avc:  denied  { read write } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=user_u:object_r:user_tty_device_t tclass=chr_file
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1368707274.429:28180): avc:  denied  { read write } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=user_u:object_r:user_tty_device_t tclass=chr_file
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&amp;quot;incrontab&amp;quot; path=&amp;quot;/dev/tty2&amp;quot; dev=&amp;quot;devtmpfs&amp;quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;You can start piping this information into &lt;strong&gt;audit2allow&lt;/strong&gt; to generate
 policy statements, but I personally prefer not to use &lt;strong&gt;audit2allow&lt;/strong&gt;
@@ -1684,7 +1752,7 @@ it the proper access. With &lt;strong&gt;sefindif&lt;/strong&gt; as
 &lt;a href="http://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/"&gt;documented&lt;/a&gt;
 before, we can look for the proper interfaces we need. I look for
 &lt;code&gt;user_tty_device_t&lt;/code&gt; with &lt;code&gt;rw&lt;/code&gt; (commonly used for read-write):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif user_tty_device_t.*rw
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefindif user_tty_device_t.*rw
 system/userdomain.if: template(`userdom_base_user_template&amp;#39;,`
 system/userdomain.if:   allow $1_t user_tty_device_t:chr_file { setattr rw_chr_file_perms };
 system/userdomain.if: interface(`userdom_use_user_ttys&amp;#39;,`
@@ -1695,7 +1763,8 @@ system/userdomain.if: interface(`userdom_dontaudit_use_user_terminals&amp;#39;,`
 system/userdomain.if:   dontaudit $1 user_tty_device_t:chr_file rw_term_perms;
 system/userdomain.if: interface(`userdom_dontaudit_use_user_ttys&amp;#39;,`
 system/userdomain.if:   dontaudit $1 user_tty_device_t:chr_file rw_file_perms;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Two of these look interesting: &lt;em&gt;userdom_use_user_ttys&lt;/em&gt; and
 &lt;em&gt;userdom_use_user_terminals&lt;/em&gt;. Looking at the API documentation (or
@@ -1721,7 +1790,7 @@ session or so). When you &lt;em&gt;think&lt;/em&gt; that the target context (in 
 &lt;code&gt;getty_t&lt;/code&gt;) could be a placeholder (so other types are likely to be
 needed as well), make sure you check which attributes are assigned to
 the type:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -tgetty_t -x
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# seinfo -tgetty_t -x
    getty_t
       privfd
       mcssetcats
@@ -1729,18 +1798,20 @@ the type:&lt;/p&gt;
       mlsfilewrite
       application_domain_type
       domain
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Of the above ones, &lt;code&gt;privfd&lt;/code&gt; is the important one:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif privfd.*use
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefindif privfd.*use
 kernel/domain.if: interface(`domain_use_interactive_fds&amp;#39;,`
 kernel/domain.if:       allow $1 privfd:fd use;
 kernel/domain.if: interface(`domain_dontaudit_use_interactive_fds&amp;#39;,`
 kernel/domain.if:       dontaudit $1 privfd:fd use;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So let's update &lt;code&gt;incron.te&lt;/code&gt; accordingly:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
 type incron_spool_t;
 files_type(incron_spool_t)
 
@@ -1751,21 +1822,24 @@ files_type(incron_spool_t)
 
 userdom_use_user_terminals(incrontab_t)
 domain_use_interactive_fds(incrontab_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Rebuild the policy and load it in memory.&lt;/p&gt;
 &lt;p&gt;If we now run &lt;strong&gt;incrontab&lt;/strong&gt; we get the online help as we expected. Let's
 now look at the currently installed incrontabs (there shouldn't be any
 of course):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -l
 cannot determine current user
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the denials, we notice:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1368708632.060:28192): avc:  denied  { create } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=unix_stream_socket
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1368708632.060:28192): avc:  denied  { create } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=unix_stream_socket
 type=AVC msg=audit(1368708632.060:28194): avc:  denied  { read } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;nsswitch.conf&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=393768 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:etc_t tclass=file
 type=AVC msg=audit(1368708632.062:28196): avc:  denied  { read } for  pid=7968 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;passwd&amp;quot; dev=&amp;quot;dm-2&amp;quot; ino=394223 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:etc_t tclass=file
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Let's first focus on &lt;code&gt;nsswitch.conf&lt;/code&gt; and &lt;code&gt;passwd&lt;/code&gt;. Although both require
 read access to &lt;code&gt;etc_t&lt;/code&gt; files, it might be wrong to just add in
@@ -1774,33 +1848,37 @@ suggest). For nsswitch, there is a special interface available:
 &lt;em&gt;auth_use_nsswitch&lt;/em&gt;. It is very, very likely that you'll need this
 one, especially if you want to share the policy with others who might
 not have all of the system databases in local files (as &lt;code&gt;etc_t&lt;/code&gt; files).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
 domain_use_interactive_fds(incrontab_t)
 auth_use_nsswitch(incrontab_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Let's retry:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -l
 cannot read table for &amp;#39;user&amp;#39;: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368708893.260:28199): avc:  denied  { search } for  pid=7997 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;spool&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=20 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:var_spool_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;So we need to grant search privileges on &lt;code&gt;var_spool_t&lt;/code&gt;. This is offered
 through &lt;em&gt;files_search_spool&lt;/em&gt;. Add it to the policy, rebuild and retry.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -l
 cannot read table for &amp;#39;user&amp;#39;: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368709146.426:28201): avc:  denied  { search } for  pid=8046 comm=&amp;quot;incrontab&amp;quot; name=&amp;quot;incron&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=19725 scontext=user_u:user_r:incrontab_t tcontext=root:object_r:incron_spool_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;For this one, no interface exists yet. We might be able to create one
 for ourselves, but as long as other domains don't need it, we can just
 add it locally in our policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow incrontab_t incron_spool_t:dir search_dir_perms;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow incrontab_t incron_spool_t:dir search_dir_perms;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Adding raw allow rules in a policy is, according to the &lt;a href="http://oss.tresys.com/projects/refpolicy/wiki/StyleGuide"&gt;refpolicy
 styleguide&lt;/a&gt;,
@@ -1810,13 +1888,14 @@ also find that you can use the &lt;em&gt;search_dirs_patter&lt;/em&gt; call. How
 that one only makes sense if you need to do this on top of another
 directory - just look at the definition of &lt;em&gt;search_dirs_pattern&lt;/em&gt;. So
 with this permission set, let's retry.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ incrontab -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ incrontab -l
 no table for user
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Great, we have successfully updated the policy until the commands
 worked. In the next post, we'll enhance it even further while creating
-new incrontabs.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="incrontab"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: our first interface</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/" rel="alternate"></link><published>2013-05-24T03:50:00+02:00</published><updated>2013-05-24T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-24:/2013/05/a-selinux-policy-for-incron-our-first-interface/</id><summary type="html">&lt;p&gt;The next step after having &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/"&gt;a basic
+new incrontabs.&lt;/p&gt;</content><category term="incron"></category><category term="incrontab"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>A SELinux policy for incron: our first interface</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-our-first-interface/" rel="alternate"></link><published>2013-05-24T03:50:00+02:00</published><updated>2013-05-24T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-24:/2013/05/a-selinux-policy-for-incron-our-first-interface/</id><summary type="html">&lt;p&gt;The next step after having &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/"&gt;a basic
 skeleton&lt;/a&gt;
 is to get &lt;strong&gt;incrontab&lt;/strong&gt; running. We know however that everything invoked
 from the main daemon will be running with the rights of the daemon
@@ -1834,7 +1913,7 @@ all, we define a &lt;em&gt;role attribute&lt;/em&gt; called &lt;code&gt;incronta
 that gets this attribute assigned will be able to transition to the
 &lt;code&gt;incrontab_t&lt;/code&gt; domain.&lt;/p&gt;
 &lt;p&gt;We can accomplish this by editing the &lt;code&gt;incron.te&lt;/code&gt; file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(incron, 0.2)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(incron, 0.2)
 
 # Declare the incrontab_roles attribute
 attribute_role incrontab_roles;
@@ -1845,12 +1924,13 @@ type incrontab_exec_t;
 application_domain(incrontab_t, incrontab_exec_t)
 # Allow incrontab_t for all incrontab_roles 
 role incrontab_roles types incrontab_t;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Next, we need something where we can allow user domains to call
 incrontab. This will be done through an interface. Let's look at
 &lt;code&gt;incron.if&lt;/code&gt; with one such interface in it: the &lt;em&gt;incron_role&lt;/em&gt; interface.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;## inotify-based cron-like daemon
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;## inotify-based cron-like daemon
 
 #########################################
 ## &amp;lt;summary&amp;gt;
@@ -1880,7 +1960,8 @@ interface(`incron_role&amp;#39;,`
         ps_process_pattern($2, incrontab_t)
         allow $2 incrontab_t:process signal;
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The comments in the file are somewhat special: if the comments start
 with two hashes (&lt;code&gt;##&lt;/code&gt;) then it is taken into account while building the
@@ -1893,27 +1974,30 @@ Most of the time, you can use &lt;code&gt;signal_perms&lt;/code&gt; here but fro
 the application we see that the application is setuid root, so we don't
 want to grant too many privileges by default if they are not needed.&lt;/p&gt;
 &lt;p&gt;With this interface file created, we can rebuild the module and load it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
 # semodule -i incron.pp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;But how to assign this interface to users? Well, what we want to do is
 something like the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;incron_role(user_r, user_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;incron_role(user_r, user_t)
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;When interfaces are part of the policy provided by the distribution, the
 definitions of it are stored in the proper location and you can easily
 add it. For instance, in Gentoo, if you want to allow the &lt;code&gt;user_r&lt;/code&gt; role
 and &lt;code&gt;user_t&lt;/code&gt; domain the &lt;em&gt;cron_role&lt;/em&gt; access (and assuming it doesn't
 have so already), then you can call &lt;strong&gt;selocal&lt;/strong&gt; as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal -a &amp;quot;cron_role(user_r, user_t)&amp;quot; -c &amp;quot;Granting user_t cron access&amp;quot; -Lb
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal -a &amp;quot;cron_role(user_r, user_t)&amp;quot; -c &amp;quot;Granting user_t cron access&amp;quot; -Lb
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;However, because the interface is currently not known yet, we need to
 create a second small policy that does this. Create a file (called
 &lt;code&gt;localuser.te&lt;/code&gt; or so) with the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(localuser, 0.1)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(localuser, 0.1)
 
 gen_require(`
         type user_t;
@@ -1921,18 +2005,20 @@ gen_require(`
 &amp;#39;)
 
 incron_role(user_r, user_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Now build the policies and load them. We'll now just build and load all
 the policies in the current directory (which will be the incron and
 localuser ones):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# make -f /usr/share/selinux/strict/include/Makefile
 # semodule -i *.pp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;You can now verify that the user is allowed to transition to the
 &lt;code&gt;incrontab_t&lt;/code&gt; domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -ruser_r -x | grep incron
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# seinfo -ruser_r -x | grep incron
          incrontab_t
 # sesearch -s user_t -t incrontab_exec_t -AdCTS
 Found 1 semantic av rules:
@@ -1940,9 +2026,10 @@ Found 1 semantic av rules:
 
 Found 1 semantic te rules:
    type_transition user_t incrontab_exec_t : process incrontab_t;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Great, let's get to our first failure to resolve... in the next post ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="interface"></category><category term="policy"></category></entry><entry><title>A SELinux policy for incron: the basic skeleton</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/" rel="alternate"></link><published>2013-05-23T03:50:00+02:00</published><updated>2013-05-23T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-23:/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/</id><summary type="html">&lt;p&gt;So, in the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/"&gt;previous
+
+&lt;p&gt;Great, let's get to our first failure to resolve... in the next post ;-)&lt;/p&gt;</content><category term="incron"></category><category term="interface"></category><category term="policy"></category></entry><entry><title>A SELinux policy for incron: the basic skeleton</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/" rel="alternate"></link><published>2013-05-23T03:50:00+02:00</published><updated>2013-05-23T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-23:/2013/05/a-selinux-policy-for-incron-the-basic-skeleton/</id><summary type="html">&lt;p&gt;So, in the &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/"&gt;previous
 post&lt;/a&gt;
 I talked about &lt;em&gt;incron&lt;/em&gt; and why I think moving it into the existing cron
 policy would not be a good idea. It works, somewhat, but is probably not
@@ -1971,7 +2058,7 @@ any) and files, etc.&lt;/p&gt;
 &lt;p&gt;So let's take a look at the content of the &lt;em&gt;incron&lt;/em&gt; package. On Gentoo,
 we can use &lt;strong&gt;qlist incron&lt;/strong&gt; for this. In the output of &lt;strong&gt;qlist&lt;/strong&gt;, I
 added comments to show you how contexts can be (easily) deduced.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Application binary for managing user crontabs. We want to give this a specific
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Application binary for managing user crontabs. We want to give this a specific
 # context because we want the application (which will manage the incrontabs in
 # /var/spool/incron) in a specific domain
 /usr/bin/incrontab  ## incrontab_exec_t
@@ -1997,12 +2084,13 @@ added comments to show you how contexts can be (easily) deduced.&lt;/p&gt;
 # those users the sysadm_r role, we need to give this file a different
 # context as well.
 /etc/init.d/incrond ## incrond_initrc_exec_t
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this information at hand, and the behavior of the application we
 know from the previous post, can lead to the following &lt;code&gt;incron.fc&lt;/code&gt; file,
 which defines the file contexts for the application.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/etc/incron.d(/.*)?     gen_context(system_u:object_r:incron_spool_t,s0)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/etc/incron.d(/.*)?     gen_context(system_u:object_r:incron_spool_t,s0)
 
 /etc/rc\.d/init\.d/incrond      --      gen_context(system_u:object_r:incrond_initrc_exec_t,s0)
 
@@ -2011,7 +2099,8 @@ which defines the file contexts for the application.&lt;/p&gt;
 /usr/sbin/incrond       --      gen_context(system_u:object_r:incrond_exec_t,s0)
 
 /var/spool/incron(/.*)?         gen_context(system_u:object_r:incron_spool_t,s0)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The syntax of this file closely follows the syntax that &lt;strong&gt;semanage
 fcontext&lt;/strong&gt; takes - at least for the regular expressions in the
@@ -2026,7 +2115,7 @@ matches whatever class the path matches.&lt;/p&gt;
 would look like so. I added in inline comments here to explain why
 certain lines are prepared, but generally this is omitted when the
 policy is &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;upstreamed&lt;/a&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(incron, 0.1)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(incron, 0.1)
 # The above line declares that this file is a SELinux policy file. Its name
 # is incron, so the file should saved as incron.te
 
@@ -2060,7 +2149,8 @@ application_domain(incrontab_t, incrontab_exec_t)
 # it will be used for regular files.
 type incron_spool_t;
 files_type(incron_spool_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Knowing which interface calls, like &lt;em&gt;init_daemon_domain&lt;/em&gt; and
 &lt;em&gt;application_domain&lt;/em&gt;, we should use is not obvious at first. Most of
@@ -2088,16 +2178,18 @@ included). However, with the information currently at hand, we have our
 first policy module ready for building. Save the type enforcement rules
 in &lt;code&gt;incron.te&lt;/code&gt; and the file contexts in &lt;code&gt;incron.fc&lt;/code&gt; and you can then
 build the SELinux policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
 # semodule -i incron.pp
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;On Gentoo, you can then relabel the files and directories offered
 through the package using &lt;strong&gt;rlpkg&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# rlpkg incron
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# rlpkg incron
+&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Next is to start looking at the &lt;strong&gt;incrontab&lt;/strong&gt; application.&lt;/p&gt;</content><category term="SELinux"></category><category term="fc"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category><category term="skeleton"></category><category term="te"></category></entry><entry><title>A SELinux policy for incron: what does it do?</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/" rel="alternate"></link><published>2013-05-22T03:50:00+02:00</published><updated>2013-05-22T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-22:/2013/05/a-selinux-policy-for-incron-what-does-it-do/</id><summary type="html">&lt;p&gt;In this series of posts, we'll go through the creation of a SELinux
+
+&lt;p&gt;Next is to start looking at the &lt;strong&gt;incrontab&lt;/strong&gt; application.&lt;/p&gt;</content><category term="fc"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category><category term="skeleton"></category><category term="te"></category></entry><entry><title>A SELinux policy for incron: what does it do?</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-what-does-it-do/" rel="alternate"></link><published>2013-05-22T03:50:00+02:00</published><updated>2013-05-22T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-22:/2013/05/a-selinux-policy-for-incron-what-does-it-do/</id><summary type="html">&lt;p&gt;In this series of posts, we'll go through the creation of a SELinux
 policy for
 &lt;a href="http://inotify.aiken.cz/?section=incron&amp;amp;page=doc⟨=en"&gt;incron&lt;/a&gt;, a simple
 inotify based cron-like application. I will talk about the various steps
@@ -2137,12 +2229,13 @@ push incron in the existing &lt;em&gt;cron&lt;/em&gt; policy. After all, it defi
 contexts for all these and probably doesn't need any additional
 tweaking. And this seems to work at first, but a few tests reveal that
 the behavior is not that optimal.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# chcon -t crond_exec_t /usr/sbin/incrond
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# chcon -t crond_exec_t /usr/sbin/incrond
 # chcon -t crontab_exec_t /usr/bin/incrontab
 # chcon -R -t system_cron_spool_t /etc/incron.d
 # chcon -t cron_log_t /var/log/cron.log
 # chcon -R -t cron_spool_t /var/spool/incron
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;System tables work somewhat, but all commands are executed in the
 &lt;code&gt;crond_t&lt;/code&gt; domain, not in a &lt;code&gt;system_cronjob_t&lt;/code&gt; or related domain.&lt;br&gt;
@@ -2161,7 +2254,7 @@ extend these rights to the other cron daemons (who also run in
 &lt;code&gt;crond_t&lt;/code&gt;). Another reason is that the cron policy has a few booleans
 that would not affect the behavior at all, making it less obvious for
 users to troubleshoot. As a result, we'll go for the separate policy
-instead - which will be for the next post.&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Why oh why does a process run in unlabeled_t?</title><link href="https://blog.siphos.be/2013/05/why-oh-why-does-a-process-run-in-unlabeled_t/" rel="alternate"></link><published>2013-05-21T03:50:00+02:00</published><updated>2013-05-21T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-21:/2013/05/why-oh-why-does-a-process-run-in-unlabeled_t/</id><summary type="html">&lt;p&gt;If you notice that a process is running in the &lt;code&gt;unlabeled_t&lt;/code&gt; domain, the
+instead - which will be for the next post.&lt;/p&gt;</content><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Why oh why does a process run in unlabeled_t?</title><link href="https://blog.siphos.be/2013/05/why-oh-why-does-a-process-run-in-unlabeled_t/" rel="alternate"></link><published>2013-05-21T03:50:00+02:00</published><updated>2013-05-21T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-21:/2013/05/why-oh-why-does-a-process-run-in-unlabeled_t/</id><summary type="html">&lt;p&gt;If you notice that a process is running in the &lt;code&gt;unlabeled_t&lt;/code&gt; domain, the
 first question to ask is how it got there.&lt;/p&gt;
 &lt;p&gt;Well, one way is to have a process running in a known domain, like
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
@@ -2171,23 +2264,25 @@ first question to ask is how it got there.&lt;/p&gt;
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
 domain is removed from the system (or updated and the update does not
 contain the &lt;code&gt;screen_t&lt;/code&gt; definition anymore):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test ~ # ps -eZ | grep screen
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;test ~ # ps -eZ | grep screen
 root:sysadm_r:sysadm_screen_t    5047 ?        00:00:00 screen
 test ~ # semodule -r screen
 test ~ # ps -eZ | grep screen
 system_u:object_r:unlabeled_t    5047 ?        00:00:00 screen
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In permissive mode, this will be visible easily; in enforcing mode, the
 domains you are running in might not be allowed to do anything with
 &lt;code&gt;unlabeled_t&lt;/code&gt; files, directories and processes, so &lt;strong&gt;ps&lt;/strong&gt; might not show
 it even though it still exists:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;test audit # ps -eZ | grep 5047
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;test audit # ps -eZ | grep 5047
 test audit # ls -dZ /proc/5047
 ls: cannot access /proc/5047: Permission denied
 test audit # tail audit.log | grep unlabeled
 type=AVC msg=audit(1368698097.494:27806): avc:  denied  { getattr } for  pid=4137 comm=&amp;quot;bash&amp;quot; path=&amp;quot;/proc/5047&amp;quot; dev=&amp;quot;proc&amp;quot; ino=6677 scontext=root:sysadm_r:sysadm_t tcontext=system_u:object_r:unlabeled_t tclass=dir
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Notice that, if you reload the module, the process becomes visible
 again. That is because the process context itself (&lt;code&gt;screen_t&lt;/code&gt;) is
@@ -2197,7 +2292,7 @@ retained, but because the policy doesn't know it anymore, it shows it as
 (should be), it uses &lt;code&gt;unlabeled_t&lt;/code&gt;. The SELinux policy then defines how
 this &lt;code&gt;unlabeled_t&lt;/code&gt; domain is handled. Processes getting into
 &lt;code&gt;unlabeled_t&lt;/code&gt; is not that common though as there is no supported
-transition to it. The above one is one way that this still can occur.&lt;/p&gt;</content><category term="SELinux"></category><category term="policy"></category><category term="selinux"></category><category term="unlabeled"></category></entry><entry><title>Commandline SELinux policy helper functions</title><link href="https://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/" rel="alternate"></link><published>2013-05-18T03:50:00+02:00</published><updated>2013-05-18T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-18:/2013/05/commandline-selinux-policy-helper-functions/</id><summary type="html">&lt;p&gt;To work on SELinux policies, I use a couple of functions that I can call
+transition to it. The above one is one way that this still can occur.&lt;/p&gt;</content><category term="policy"></category><category term="selinux"></category><category term="unlabeled"></category></entry><entry><title>Commandline SELinux policy helper functions</title><link href="https://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/" rel="alternate"></link><published>2013-05-18T03:50:00+02:00</published><updated>2013-05-18T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-18:/2013/05/commandline-selinux-policy-helper-functions/</id><summary type="html">&lt;p&gt;To work on SELinux policies, I use a couple of functions that I can call
 on the shell (command line): &lt;strong&gt;seshowif&lt;/strong&gt;, &lt;strong&gt;sefindif&lt;/strong&gt;, &lt;strong&gt;seshowdef&lt;/strong&gt;
 and &lt;strong&gt;sefinddef&lt;/strong&gt;. The idea behind the methods is that I want to search
 (&lt;em&gt;find&lt;/em&gt;) for an interface (&lt;em&gt;if&lt;/em&gt;) or definition (&lt;em&gt;def&lt;/em&gt;) that contains a
@@ -2209,14 +2304,15 @@ particular method or call. Or, if I know what the interface or
 definition is, I want to see it (&lt;em&gt;show&lt;/em&gt;).&lt;/p&gt;
 &lt;p&gt;For instance, to find the name of the interface that allows us to define
 file transitions from the &lt;code&gt;postfix_etc_t&lt;/code&gt; label:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif filetrans.*postfix_etc
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefindif filetrans.*postfix_etc
 contrib/postfix.if: interface(`postfix_config_filetrans&amp;#39;,`
 contrib/postfix.if:     filetrans_pattern($1, postfix_etc_t, $2, $3, $4)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Or to show the content of the &lt;em&gt;corenet_tcp_bind_http_port&lt;/em&gt;
 interface:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ seshowif corenet_tcp_bind_http_port
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ seshowif corenet_tcp_bind_http_port
 interface(`corenet_tcp_bind_http_port&amp;#39;,`
         gen_require(`
                 type http_port_t;
@@ -2225,10 +2321,11 @@ interface(`corenet_tcp_bind_http_port&amp;#39;,`
         allow $1 http_port_t:tcp_socket name_bind;
         allow $1 self:capability net_bind_service;
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;For the definitions, this is quite similar:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefinddef socket.*create
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefinddef socket.*create
 obj_perm_sets.spt:define(`create_socket_perms&amp;#39;, `{ create rw_socket_perms }&amp;#39;)
 obj_perm_sets.spt:define(`create_stream_socket_perms&amp;#39;, `{ create_socket_perms listen accept }&amp;#39;)
 obj_perm_sets.spt:define(`connected_socket_perms&amp;#39;, `{ create ioctl read getattr write setattr append bind getopt setopt shutdown }&amp;#39;)
@@ -2242,7 +2339,8 @@ define(`manage_files_pattern&amp;#39;,`
         allow $1 $2:dir rw_dir_perms;
         allow $1 $3:file manage_file_perms;
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;I have these defined in my &lt;code&gt;~/.bashrc&lt;/code&gt; (they are simple
 &lt;a href="http://dev.gentoo.org/~swift/blog/01/selinux-funcs.txt"&gt;functions&lt;/a&gt;) and
@@ -2250,7 +2348,7 @@ are used on a daily basis here ;-) If you want to learn a bit more on
 developing SELinux policies for Gentoo, make sure you read the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux-development.xml"&gt;Gentoo
 Hardened SELinux
 Development&lt;/a&gt;
-guide.&lt;/p&gt;</content><category term="SELinux"></category><category term="bash"></category><category term="definition"></category><category term="functions"></category><category term="interface"></category><category term="policy"></category><category term="selinux"></category><category term="support"></category></entry><entry><title>Overriding the default SELinux policies</title><link href="https://blog.siphos.be/2013/05/overriding-the-default-selinux-policies/" rel="alternate"></link><published>2013-05-15T03:50:00+02:00</published><updated>2013-05-15T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-15:/2013/05/overriding-the-default-selinux-policies/</id><summary type="html">&lt;p&gt;Extending SELinux policies with additional rules is easy. As SELinux
+guide.&lt;/p&gt;</content><category term="bash"></category><category term="definition"></category><category term="functions"></category><category term="interface"></category><category term="policy"></category><category term="selinux"></category><category term="support"></category></entry><entry><title>Overriding the default SELinux policies</title><link href="https://blog.siphos.be/2013/05/overriding-the-default-selinux-policies/" rel="alternate"></link><published>2013-05-15T03:50:00+02:00</published><updated>2013-05-15T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-15:/2013/05/overriding-the-default-selinux-policies/</id><summary type="html">&lt;p&gt;Extending SELinux policies with additional rules is easy. As SELinux
 uses a &lt;em&gt;deny by default&lt;/em&gt; approach, all you need to do is to &lt;a href="https://wiki.gentoo.org/wiki/SELinux/Tutorials/Creating_your_own_policy_module_file"&gt;create a
 policy
 module&lt;/a&gt;
@@ -2274,11 +2372,12 @@ read/write to the video device, create your own skype-providing module
 (&lt;em&gt;myskype&lt;/em&gt;) with the exact same content (except for the module name at
 the first line) as the original skype module, except for the video
 device:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dev_read_sound(skype_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dev_read_sound(skype_t)
 # dev_read_video_dev(skype_t)
 dev_write_sound(skype_t)
 # dev_write_video_dev(skype_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Load in this policy, and you now have the &lt;code&gt;skype_t&lt;/code&gt; domain without the
 video access. You will get post-install failures when Gentoo pushes out
@@ -2302,7 +2401,7 @@ start stripping directories up to the fourth one.&lt;/p&gt;
 &lt;p&gt;This approach is also needed if you want to exclude rules from
 interfaces rather than from the &lt;code&gt;.te&lt;/code&gt; file: create a small patch and put
 it in &lt;code&gt;/etc/portage/patches&lt;/code&gt; for the &lt;code&gt;sec-policy/selinux-base&lt;/code&gt; package
-(as this provides the interfaces).&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="epatch_user"></category><category term="Gentoo"></category><category term="override"></category><category term="patch"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>SECMARK and SELinux</title><link href="https://blog.siphos.be/2013/05/secmark-and-selinux/" rel="alternate"></link><published>2013-05-13T03:50:00+02:00</published><updated>2013-05-13T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-13:/2013/05/secmark-and-selinux/</id><summary type="html">&lt;p&gt;When using SECMARK, the administrator configures the &lt;strong&gt;iptables&lt;/strong&gt; or
+(as this provides the interfaces).&lt;/p&gt;</content><category term="ebuild"></category><category term="epatch_user"></category><category term="Gentoo"></category><category term="override"></category><category term="patch"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>SECMARK and SELinux</title><link href="https://blog.siphos.be/2013/05/secmark-and-selinux/" rel="alternate"></link><published>2013-05-13T03:50:00+02:00</published><updated>2013-05-13T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-13:/2013/05/secmark-and-selinux/</id><summary type="html">&lt;p&gt;When using SECMARK, the administrator configures the &lt;strong&gt;iptables&lt;/strong&gt; or
 &lt;strong&gt;netfilter&lt;/strong&gt; rules to add a label to the packet data structure (on the
 host itself) that can be governed through SELinux policies. Unlike peer
 labeling, here the labels assigned to the network traffic is completely
@@ -2311,23 +2410,26 @@ locally defined. Consider the following command …&lt;/p&gt;</summary><content 
 host itself) that can be governed through SELinux policies. Unlike peer
 labeling, here the labels assigned to the network traffic is completely
 locally defined. Consider the following command:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# iptables -t mangle -A INPUT -p tcp --src 192.168.1.2 --dport 443
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# iptables -t mangle -A INPUT -p tcp --src 192.168.1.2 --dport 443
   -j SECMARK --selctx system_u:object_r:myauth_packet_t
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;With this command, packets that originate from the &lt;em&gt;192.168.1.2&lt;/em&gt; host
 and arrive on port 443 (typically used for HTTPS traffic) are marked as
 &lt;code&gt;myauth_packet_t&lt;/code&gt;. SELinux policy writers can then allow domains to
 receive this type of packets (or send) through the &lt;em&gt;packet&lt;/em&gt; class:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# Allow sockets with mydomain_t context to receive packets labeled myauth_packet_t
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Allow sockets with mydomain_t context to receive packets labeled myauth_packet_t
 allow mydomain_t myauth_packet_t:packet recv;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;The SELinux policy modules enable this through the
 &lt;em&gt;corenet_sendrecv_&amp;lt;type&amp;gt;_{client,server}_packets&lt;/em&gt; interfaces:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_sendrecv_http_client_packets(mybrowser_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_sendrecv_http_client_packets(mybrowser_t)
 # allow mybrowser_t http_client_packet_t:packet { send recv };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;As a common rule, packets are marked as client packets or server
 packets, depending on the role of the &lt;em&gt;domain&lt;/em&gt;. In the above example,
@@ -2343,7 +2445,7 @@ labeled as &lt;code&gt;http_client_packet_t&lt;/code&gt; whereas on the target t
 contexts with &lt;strong&gt;iptables&lt;/strong&gt; yourself (there is no default labeling), so
 knowing about the above convention is important.&lt;/p&gt;
 &lt;p&gt;Again, Paul Moore has &lt;a href="http://paulmoore.livejournal.com/4281.html"&gt;more
-information&lt;/a&gt; about this.&lt;/p&gt;</content><category term="SELinux"></category><category term="policy"></category><category term="secmark"></category><category term="selinux"></category></entry><entry><title>Peer labeling in SELinux policy</title><link href="https://blog.siphos.be/2013/05/peer-labeling-in-selinux-policy/" rel="alternate"></link><published>2013-05-12T03:50:00+02:00</published><updated>2013-05-12T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-12:/2013/05/peer-labeling-in-selinux-policy/</id><summary type="html">&lt;p&gt;Allow me to start with an important warning: I don't have much hands-on
+information&lt;/a&gt; about this.&lt;/p&gt;</content><category term="policy"></category><category term="secmark"></category><category term="selinux"></category></entry><entry><title>Peer labeling in SELinux policy</title><link href="https://blog.siphos.be/2013/05/peer-labeling-in-selinux-policy/" rel="alternate"></link><published>2013-05-12T03:50:00+02:00</published><updated>2013-05-12T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-12:/2013/05/peer-labeling-in-selinux-policy/</id><summary type="html">&lt;p&gt;Allow me to start with an important warning: I don't have much hands-on
 experience with the remainder of this post. Its based on the few
 resources I found on the Internet and a few tests done locally which
 I've investigated in my attempt to understand SELinux policy writing for
@@ -2386,9 +2488,10 @@ checked on the traffic is &lt;em&gt;ingress&lt;/em&gt; (incoming) and &lt;em&gt;
 traffic, and most policies set this through the following call (comment
 shows the underlying SELinux rules, where &lt;em&gt;tcp_send&lt;/em&gt; and &lt;em&gt;tcp_recv&lt;/em&gt;
 are - I think - obsolete):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_sendrecv_generic_if(something_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_sendrecv_generic_if(something_t)
 # allow something_t netif_t:netif { tcp_send tcp_recv egress ingress };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Node definitions define which targets (nodes, which can be IP addresses
 or subnets) traffic meant for a particular socket is allow to originate
@@ -2397,9 +2500,10 @@ own node types and manage them using &lt;strong&gt;semanage node&lt;/strong&gt;.
 I already covered in the previous post (&lt;code&gt;node_t&lt;/code&gt;) and is allowed by most
 policies by default through the following call (where the &lt;em&gt;tcp_send&lt;/em&gt;
 and &lt;em&gt;tcp_recv&lt;/em&gt; are probably deprecated as well):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_sendrecv_generic_node(something_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_sendrecv_generic_node(something_t)
 # allow something_t node_t:node { tcp_send tcp_recv sendto recvfrom };
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Finally, peer definitions are based on the labels from the traffic. If
 the system uses NetLabel, then the target label will always be
@@ -2410,34 +2514,37 @@ this isn't the case as the peer label is transmitted by the peer itself.&lt;/p&g
 &lt;p&gt;For NetLabel support, policies generally include two methods - one is to
 support unlabeled traffic (only needed the moment you have support for
 labeled traffic) and one is to allow the NetLabel'ed traffic:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_all_recvfrom_unlabeled(something_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_all_recvfrom_unlabeled(something_t)
 # allow something_t unlabeled_t:peer recv;
 corenet_all_recvfrom_netlabel(something_t)
 # allow something_t netlabel_peer_t:peer recv;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In case of IPSec for instance, the peer will have a provided label, as
 is shown by the call for accepting hadoop traffic:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;hadoop_recvfrom(something_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;hadoop_recvfrom(something_t)
 # allow something_t hadoop_t:peer recv;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;However, this alone is not sufficient for labeled IPSec. We also need to
 allow the domain to be allowed to send anything towards an IPSec
 security association. There is an interface called
 &lt;em&gt;corenet_tcp_recvfrom_labeled&lt;/em&gt; that takes two arguments which,
 amongst other things, enables &lt;em&gt;sendto&lt;/em&gt; towards its association.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_recvfrom_labeled(some_t, thing_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_recvfrom_labeled(some_t, thing_t)
 # allow { some_t thing_t} self:association sendto;
 # allow some_t thing_t:peer recv;
 # allow thing_t some_t:peer recv;
 # corenet_tcp_recvfrom_netlabel(some_t)
 # corenet_tcp_recvfrom_netlabel(thing_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This interface is usually called within a &lt;em&gt;*_tcp_connect()&lt;/em&gt; interface
 for a particular domain, like with the &lt;em&gt;mysql_tcp_connect&lt;/em&gt; example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`mysql_tcp_connect&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;interface(`mysql_tcp_connect&amp;#39;,`
         gen_require(`
                 type mysqld_t;
         &amp;#39;)
@@ -2447,7 +2554,8 @@ for a particular domain, like with the &lt;em&gt;mysql_tcp_connect&lt;/em&gt; ex
         corenet_tcp_connect_mysqld_port($1)
         corenet_sendrecv_mysqld_client_packets($1)
 &amp;#39;)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;When using peer labeling, the domain that is allowed something is based
 on the socket context of the application. Also, the rules when using
@@ -2459,7 +2567,7 @@ blog&lt;/a&gt;, such as the
 &lt;a href="http://paulmoore.livejournal.com/2128.html?nojs=1"&gt;egress/ingress&lt;/a&gt;
 information. And if you know of resources that show this in a more
 practical setting (above is mainly to work with the SELinux policy) I'm
-all ears.&lt;/p&gt;</content><category term="SELinux"></category><category term="cipso"></category><category term="ipsec"></category><category term="peer"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>SELinux policy and network controls</title><link href="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/" rel="alternate"></link><published>2013-05-11T03:50:00+02:00</published><updated>2013-05-11T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-11:/2013/05/selinux-policy-and-network-controls/</id><summary type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
+all ears.&lt;/p&gt;</content><category term="cipso"></category><category term="ipsec"></category><category term="peer"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>SELinux policy and network controls</title><link href="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/" rel="alternate"></link><published>2013-05-11T03:50:00+02:00</published><updated>2013-05-11T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-11:/2013/05/selinux-policy-and-network-controls/</id><summary type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
 reflects this into the policy).&lt;/p&gt;
 &lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
@@ -2479,18 +2587,20 @@ client-like behavior (which "connects" to a port). Consider an FTP
 daemon (domain &lt;code&gt;ftpd_t&lt;/code&gt;) versus FTP client (example domain &lt;code&gt;ncftp_t&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;In case of a daemon, the policy would contain the following (necessary)
 rules:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_bind_generic_node(ftpd_t) # Somewhat legacy but still needed
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_bind_generic_node(ftpd_t) # Somewhat legacy but still needed
 corenet_tcp_bind_ftp_port(ftpd_t)
 corenet_tcp_bind_ftp_data_port(ftpd_t)
 corenet_tcp_bind_all_unreserved_ports(ftpd_t) # In case of passive mode
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This gets translated to the following "real" SELinux statements:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ftpd_t node_t:tcp_socket node_bind;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow ftpd_t node_t:tcp_socket node_bind;
 allow ftpd_t ftp_port_t:tcp_socket name_bind;
 allow ftpd_t ftp_data_port_t:tcp_socket name_bind;
 allow ftpd_t unreserved_port_type:tcp_socket name_bind;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;I mention that &lt;em&gt;corenet_tcp_bind_generic_node&lt;/em&gt; as being somewhat
 legacy. When you use netlabeling, you can define different nodes (a
@@ -2501,19 +2611,21 @@ work with is &lt;code&gt;node_t&lt;/code&gt; which represents any possible node.
 of passive mode within the ftp policy is governed through the
 &lt;em&gt;ftpd_use_passive_mode&lt;/em&gt; boolean.&lt;/p&gt;
 &lt;p&gt;For a client, the following policy line would suffice:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_connect_ftp_port(ncftp_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_connect_ftp_port(ncftp_t)
 # allow ncftp_t ftp_port_t:tcp_socket name_connect;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Well, I lied. Because of how FTP works, if you use active connections,
 you need to allow the client to bind on an unreserved port, and allow
 the server to connect to unreserved ports (cfr code snippet below), but
 you get the idea.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_connect_all_unreserved_ports(ftpd_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_connect_all_unreserved_ports(ftpd_t)
 
 corenet_tcp_bind_generic_node(ncftp_t)
 corenet_tcp_bind_all_unreserved_ports(ncftp_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the past, policy developers also had to include other lines, but
 these have by time become obsolete (&lt;em&gt;corenet_tcp_sendrecv_ftp_port&lt;/em&gt;
@@ -2522,7 +2634,7 @@ messages on the port, but this is no longer controlled this way. If you
 need such controls, you will need to look at SELinux and SECMARK (which
 uses packets with the &lt;em&gt;packet&lt;/em&gt; class) or netlabel (which uses the &lt;em&gt;peer&lt;/em&gt;
 class and peer types to send or receive messages from).&lt;/p&gt;
-&lt;p&gt;And that'll be for a different post.&lt;/p&gt;</content><category term="SELinux"></category><category term="networking"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Introducing selocal for small SELinux policy enhancements</title><link href="https://blog.siphos.be/2013/04/introducing-selocal-for-small-selinux-policy-enhancements/" rel="alternate"></link><published>2013-04-21T03:50:00+02:00</published><updated>2013-04-21T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-21:/2013/04/introducing-selocal-for-small-selinux-policy-enhancements/</id><summary type="html">&lt;p&gt;When working with a SELinux-enabled system, administrators will
+&lt;p&gt;And that'll be for a different post.&lt;/p&gt;</content><category term="networking"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Introducing selocal for small SELinux policy enhancements</title><link href="https://blog.siphos.be/2013/04/introducing-selocal-for-small-selinux-policy-enhancements/" rel="alternate"></link><published>2013-04-21T03:50:00+02:00</published><updated>2013-04-21T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-21:/2013/04/introducing-selocal-for-small-selinux-policy-enhancements/</id><summary type="html">&lt;p&gt;When working with a SELinux-enabled system, administrators will
 eventually need to make small updates to the existing policy. Instead of
 building their own full policy (always an option, but most likely not
 maintainable in the long term) one or more SELinux policy modules are
@@ -2544,7 +2656,7 @@ distributed otherwise. It is a command-line application that you feed
 single policy rules at one at a time. Each rule can be accompanied with
 a single-line comment, making it obvious for the user to know why he
 added the rule in the first place.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --help
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal --help
 Usage: selocal [] []
 
 Command can be one of:
@@ -2564,7 +2676,8 @@ The option -a requires that a rule is given, like so:
   selocal -a &amp;quot;dbadm_role_change(staff_r)&amp;quot;
 The option -d requires that a line number, as shown by the --list, is given, like so:
   selocal -d 12
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Let's say that you need to launch a small script you written as a
 daemon, but you want this to run while you are still in the &lt;em&gt;staff_t&lt;/em&gt;
@@ -2572,22 +2685,25 @@ domain (it is a user-sided daemon you use personally). As regular
 &lt;em&gt;staff_t&lt;/em&gt; isn't allowed to have processes bind on generic ports/nodes,
 you need to enhance the SELinux policy a bit. With &lt;strong&gt;selocal&lt;/strong&gt;, you can
 do so as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --add &amp;quot;corenet_tcp_bind_generic_node(staff_t)&amp;quot; --comment &amp;quot;Launch local webserv.py daemon&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal --add &amp;quot;corenet_tcp_bind_generic_node(staff_t)&amp;quot; --comment &amp;quot;Launch local webserv.py daemon&amp;quot;
 # selocal --add &amp;quot;corenet_tcp_bind_generic_port(staff_t)&amp;quot; --comment &amp;quot;Launch local webserv.my daemon&amp;quot;
 # selocal --build --load
 (some output on building the policy module)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;When finished, the local policy is enhanced with the two mentioned
 rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --list
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal --list
 12: corenet_tcp_bind_generic_node(staff_t) # Launch local webserv.py daemon
 13: corenet_tcp_bind_generic_port(staff_t) # Launch local webserv.py daemon
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;If you need to delete a rule, just pass the line number:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --delete 13
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal --delete 13
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Having this tool around also makes it easier to test out changes
 suggested through bugreports. When I test such changes, I add in the bug
@@ -2599,4 +2715,4 @@ name.&lt;/p&gt;
 &lt;p&gt;I hope this tool helps users with their quest on using SELinux. Feedback
 and comments are always appreciated! It is a small bash script and might
 still have a few bugs in it, but I have been using it for a few months
-so most quirks should be handled.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="selocal"></category></entry></feed>
+so most quirks should be handled.&lt;/p&gt;</content><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="selocal"></category></entry></feed>

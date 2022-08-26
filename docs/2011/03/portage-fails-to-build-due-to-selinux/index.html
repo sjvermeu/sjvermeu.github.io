@@ -231,10 +231,11 @@ backtrace, saying somewhere that "setexeccon" is misbehaving.</p>
 current domain you are in (check <strong>id -Z</strong>) has no right to transition
 to the <em>portage_fetch_t</em>, <em>portage_t</em> or <em>portage_sandbox_t</em>
 domains. You can verify that with <strong>seinfo</strong>:</p>
-<div class="highlight"><pre><span></span><code>~# id -Z
+<div class="highlight"><pre><span></span>~# id -Z
 unconfined_u:unconfined_r:unconfined_t
 ~# seinfo -runconfined_r -x | grep portage
-</code></pre></div>
+</pre></div>
+
 
 <p>The above example shows it for the <em>unconfined_t</em> domain, but the same
 is true if your current domain is a more illogical <em>local_login_t</em>
@@ -249,12 +250,14 @@ again restoring SELINUX to what you had before, reboot, relabel your
 entire filesystem (<strong>rlpkg -a -r</strong>) and perhaps even reboot again.</p>
 <p>In the second method, edit /usr/lib(64)/portage/pym/portage/_selinux.py
 and go to line 79. It reads:</p>
-<div class="highlight"><pre><span></span><code>        if selinux.setexeccon(ctx) &lt; 0:
-</code></pre></div>
+<div class="highlight"><pre><span></span>        if selinux.setexeccon(ctx) &lt; 0:
+</pre></div>
+
 
 <p>Comment out that line (so it isn't lost) and substitute it with</p>
-<div class="highlight"><pre><span></span><code>        if selinux.setexeccon(&quot;\n&quot;) &lt; 0:
-</code></pre></div>
+<div class="highlight"><pre><span></span>        if selinux.setexeccon(&quot;\n&quot;) &lt; 0:
+</pre></div>
+
 
 <p>Now you should be able to install software without hitting the error.
 But note that <em>this is only to help you fix the real problem</em> as we're

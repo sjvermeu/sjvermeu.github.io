@@ -226,21 +226,24 @@
         <!-- Article -->
         <div>
             <p>After reorganizing my salt configuration, I received the following error:</p>
-<div class="highlight"><pre><span></span><code>[ERROR   ] Template was specified incorrectly: False
-</code></pre></div>
+<div class="highlight"><pre><span></span>[ERROR   ] Template was specified incorrectly: False
+</pre></div>
+
 
 <p>Enabling some debugging on the command gave me a slight pointer why this occurred:</p>
-<div class="highlight"><pre><span></span><code>[DEBUG   ] Could not find file from saltenv &#39;testing&#39;, u&#39;salt://top.sls&#39;
+<div class="highlight"><pre><span></span>[DEBUG   ] Could not find file from saltenv &#39;testing&#39;, u&#39;salt://top.sls&#39;
 [DEBUG   ] No contents loaded for env: testing
 [DEBUG   ] compile template: False
 [ERROR   ] Template was specified incorrectly: False
-</code></pre></div>
+</pre></div>
+
 
 <p>I was using a single top file as recommended by Salt, but apparently it was still
 looking for top files in the other environments.</p>
 <p>Yet, if I split the top files across the environments, I got the following warning:</p>
-<div class="highlight"><pre><span></span><code>[WARNING ] Top file merge strategy set to &#39;merge&#39; and multiple top files found. Top file merging order is undefined; for better results use &#39;same&#39; option
-</code></pre></div>
+<div class="highlight"><pre><span></span>[WARNING ] Top file merge strategy set to &#39;merge&#39; and multiple top files found. Top file merging order is undefined; for better results use &#39;same&#39; option
+</pre></div>
+
 
 <p>So what's all this about?</p>
 
@@ -249,22 +252,24 @@ looking for top files in the other environments.</p>
 <p>If you want to stick with a single top file, then the first error is (or at least, in my case)
 caused by my environments not having a fall-back definition.</p>
 <p>My <code>/etc/salt/master</code> configuration file had the following <code>file_roots</code> setting:</p>
-<div class="highlight"><pre><span></span><code>file_roots:
+<div class="highlight"><pre><span></span>file_roots:
   base:
     - /srv/salt/base
   testing:
     - /srv/salt/testing
-</code></pre></div>
+</pre></div>
+
 
 <p>The problem is that Salt expects ''a'' top file through the environment. What I had to do was to
 set the fallback directory to the base directory again, like so:</p>
-<div class="highlight"><pre><span></span><code>file_roots:
+<div class="highlight"><pre><span></span>file_roots:
   base:
     - /srv/salt/base
   testing:
     - /srv/salt/testing
     - /srv/salt/base
-</code></pre></div>
+</pre></div>
+
 
 <p>With this set, the error disappeared and both salt and myself were happy again.</p>
 <p><strong>When multiple top files are preferred</strong></p>
@@ -281,20 +286,21 @@ that this is not a problem, then you can just ignore the warning. See also
 top file completely manages the entire environment. When that is the case, then we tell salt that
 only the top file of the affected environment should be used. This is done using the following
 setting in <code>/etc/salt/master</code>:</p>
-<div class="highlight"><pre><span></span><code>top_file_merging_strategy: same
-</code></pre></div>
+<div class="highlight"><pre><span></span>top_file_merging_strategy: same
+</pre></div>
+
 
 <p>If this is used, then the <code>env_order</code> setting is used to define in which order the environments
 are processed. </p>
 <p>Oh and if you're using <code>salt-ssh</code>, then be sure to set the environment of the minion in the roster
 file, as there is no running minion on the target system that informs salt about the environment 
 to use otherwise:</p>
-<div class="highlight"><pre><span></span><code># In /etc/salt/roster
+<div class="highlight"><pre><span></span># In /etc/salt/roster
 testserver:
   host: testserver.example.com
   minion_opts:
     environment: testing
-</code></pre></div>
+</pre></div>
         </div>
 
         <!-- Neighbors -->

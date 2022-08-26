@@ -250,11 +250,12 @@ rules is set:</p>
 </ol>
 <p>Or, in SELinux policy terms, assuming the domains are <code>source_t</code> and
 <code>destination_t</code> with the label of the executed file being <code>file_exec_t</code>:</p>
-<div class="highlight"><pre><span></span><code>allow source_t destination_t:process transition;
+<div class="highlight"><pre><span></span>allow source_t destination_t:process transition;
 allow destination_t file_exec_t:file entrypoint;
 allow source_t file_exec_t:file execute;
 type_transition source_t file_exec_t : process destination_t;
-</code></pre></div>
+</pre></div>
+
 
 <p>If those four settings are valid, then (and only then) can the automatic
 transition be active.</p>
@@ -277,7 +278,7 @@ behavior.</p>
 authenticate and possibly set up the user session. The actions that PAM
 invokes are defined by the PAM configuration files. For instance, for
 the at daemon:</p>
-<div class="highlight"><pre><span></span><code>## /etc/pam.d/atd
+<div class="highlight"><pre><span></span>## /etc/pam.d/atd
 #
 # The PAM configuration file for the at daemon
 #
@@ -286,14 +287,15 @@ auth    required        pam_env.so
 auth    include         system-services
 account include         system-services
 session include         system-services
-</code></pre></div>
+</pre></div>
+
 
 <p>I am not going to dive into the details of PAM in this blog post, so
 let's just jump to the session management part. In the above example
 file, if PAM sets up (or shuts down) a user session for the service (at
 in our case), it will go through the PAM services that are listed in the
 <em>system-services</em> definition, which looks like so:</p>
-<div class="highlight"><pre><span></span><code>## /etc/pam.d/system-services
+<div class="highlight"><pre><span></span>## /etc/pam.d/system-services
 auth            sufficient      pam_permit.so
 account         include         system-auth
 session         optional        pam_loginuid.so
@@ -301,26 +303,29 @@ session         required        pam_limits.so
 session         required        pam_env.so 
 session         required        pam_unix.so 
 session         optional        pam_permit.so
-</code></pre></div>
+</pre></div>
+
 
 <p>Until now, nothing SELinux-specific is enabled. But if we change the
 session section of the at service to the following, then the SELinux pam
 module will be called as well:</p>
-<div class="highlight"><pre><span></span><code>session optional        pam_selinux.so close
+<div class="highlight"><pre><span></span>session optional        pam_selinux.so close
 session include         system-services
 session optional        pam_selinux.so multiple open
-</code></pre></div>
+</pre></div>
+
 
 <p>Now that the SELinux module is called, pam_selinux will try to switch
 the context of the process based on the definitions in the
 /etc/selinux/strict/contexts location (substitute strict with the policy
 type you use). The outcome of this switching can be checked with the
 <strong>getseuser</strong> application:</p>
-<div class="highlight"><pre><span></span><code>~# getseuser root system_u:system_r:crond_t
+<div class="highlight"><pre><span></span>~# getseuser root system_u:system_r:crond_t
 seuser:  root, level (null)
 Context 0       root:sysadm_r:cronjob_t
 Context 1       root:staff_r:cronjob_t
-</code></pre></div>
+</pre></div>
+
 
 <p>By providing the contexts in configurable files in
 /etc/selinux/strict/contexts, a non-SELinux aware application suddenly
@@ -329,7 +334,7 @@ needing to patch or even rebuild the application. All that is need is to
 allow the security context of the application to switch ids and roles
 (as that is by default not allowed), which I believe is offered through
 the following statements:</p>
-<div class="highlight"><pre><span></span><code>domain_subj_id_change_exemption(atd_t)
+<div class="highlight"><pre><span></span>domain_subj_id_change_exemption(atd_t)
 domain_role_change_exemption(atd_t)
 
 selinux_validate_context(atd_t)
@@ -340,7 +345,7 @@ selinux_compute_user_contexts(atd_t)
 
 seutil_read_config(atd_t)
 seutil_read_default_contexts(atd_t)
-</code></pre></div>
+</pre></div>
         </div>
 
         <!-- Neighbors -->

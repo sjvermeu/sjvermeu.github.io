@@ -236,19 +236,21 @@ because my <code>/var/tmp</code> wasn't mounted correctly, and <strong>emerge</s
 python) uses libffi. Most users won't notice this, because libffi works
 behind the scenes. But when it fails, it fails bad. And SELinux actually
 helped me quickly identify what the problem is.</p>
-<div class="highlight"><pre><span></span><code>$ emerge --info
+<div class="highlight"><pre><span></span>$ emerge --info
 segmentation fault
-</code></pre></div>
+</pre></div>
+
 
 <p>The abbreviation "libffi" comes from <em>Foreign Function Interface</em>, and
 is a library that allows developers to dynamically call code from
 another application or library. But the method how it approaches this
 concerns me a bit. Let's look at some <strong>strace</strong> output:</p>
-<div class="highlight"><pre><span></span><code>8560  open(&quot;/var/tmp/ffiZ8gKPd&quot;, O_RDWR|O_CREAT|O_EXCL, 0600) = 11
+<div class="highlight"><pre><span></span>8560  open(&quot;/var/tmp/ffiZ8gKPd&quot;, O_RDWR|O_CREAT|O_EXCL, 0600) = 11
 8560  unlink(&quot;/var/tmp/ffiZ8gKPd&quot;)      = 0
 8560  ftruncate(11, 4096)               = 0
 8560  mmap(NULL, 4096, PROT_READ|PROT_EXEC, MAP_SHARED, 11, 0) = -1 EACCES (Permission denied)
-</code></pre></div>
+</pre></div>
+
 
 <p>Generally, what libffi does, is to create a file somewhere where it can
 write files (it checks the various mounts on a system to get a list of
@@ -260,11 +262,12 @@ executing is allowed by the system (for instance because the mount point
 does not have <code>noexec</code>), then SELinux will trap it because the domain
 (in our case now, <code>portage_t</code>) is trying to execute an (unlinked) file
 for which it holds no execute rights on:</p>
-<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1366656205.201:2221): avc:  denied  { execute } for  
+<div class="highlight"><pre><span></span>type=AVC msg=audit(1366656205.201:2221): avc:  denied  { execute } for  
 pid=8560 comm=&quot;emerge&quot; path=2F7661722F66666962713154465A202864656C6574656429 
 dev=&quot;dm-3&quot; ino=6912 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t
 tclass=file
-</code></pre></div>
+</pre></div>
+
 
 <p>When you notice something like this (an execute on an unnamed file),
 then this is because the file descriptor points to a file already
@@ -295,9 +298,10 @@ more secure manner than allowing exec on world-writeable locations.</p>
 <code>/lib64/rc/init.d</code>) are tmpfs-mounts with the <code>noexec</code> (as well as
 <code>nodev</code> and <code>nosuid</code>) bits set, with the location pointed towards by
 <code>$PORTAGE_TMPDIR</code> being only really usable by the Portage user:</p>
-<div class="highlight"><pre><span></span><code>$ ls -ldZ /var/portage
+<div class="highlight"><pre><span></span>$ ls -ldZ /var/portage
 drwxr-x---. 4 portage root system_u:object_r:tmp_t 4096 Apr 22 21:45 /var/portage/
-</code></pre></div>
+</pre></div>
+
 
 <p>And libffi? Well, allowing applications to create their own executables
 and executing it is something that should be carefully governed. I'm not
@@ -312,10 +316,11 @@ difficult to achieve, but with SELinux, we can actually control this a
 bit more.</p>
 <p>Let's first see how many domains are allowed to create, write and
 execute files:</p>
-<div class="highlight"><pre><span></span><code>$ sesearch -c file -p write,create,execute -A | grep write | grep create   
+<div class="highlight"><pre><span></span>$ sesearch -c file -p write,create,execute -A | grep write | grep create   
  | grep execute | awk &#39;{print $1}&#39; | sort | uniq | wc -l
 32
-</code></pre></div>
+</pre></div>
+
 
 <p>Okay, 32 target domains. Not that bad, and certainly doable to verify
 manually (hell, even in a scripted manner). You can now check which of

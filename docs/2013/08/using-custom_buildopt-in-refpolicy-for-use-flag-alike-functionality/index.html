@@ -253,21 +253,23 @@ tangible.</p>
 offers support for ALSA and PulseAudio (amongst other things). In the
 SELinux policy, support for (and thus privileges related to) ALSA and
 PulseAudio is handled through <em>optional_policy</em> statements:</p>
-<div class="highlight"><pre><span></span><code>optional_policy(`
+<div class="highlight"><pre><span></span>optional_policy(`
   pulseaudio_tmpfs_content(mplayer_tmpfs_t)
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>This means that the rules defined in <em>pulseaudio_tmpfs_content</em> are
 executed if the dependencies match:</p>
-<div class="highlight"><pre><span></span><code>interface(`pulseaudio_tmpfs_content&#39;,`
+<div class="highlight"><pre><span></span>interface(`pulseaudio_tmpfs_content&#39;,`
         gen_require(`
                 attribute pulseaudio_tmpfsfile;
         &#39;)
 
         typeattribute $1 pulseaudio_tmpfsfile;
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>If the <code>pulseaudio_tmpfsfile</code> attribute exists, then the
 <code>mplayer_tmpfs_t</code> type gets the <code>pulseaudio_tmpfsfile</code> attribute
@@ -283,10 +285,11 @@ privileges become active.</p>
 <p>One way SELinux supports a more flexible approach is to use conditionals
 in the policy. One could create booleans that administrators can toggle
 to enable / disable SELinux rules. For instance, in the mplayer policy:</p>
-<div class="highlight"><pre><span></span><code>tunable_policy(`allow_mplayer_execstack&#39;,`
+<div class="highlight"><pre><span></span>tunable_policy(`allow_mplayer_execstack&#39;,`
         allow mencoder_t self:process { execmem execstack };
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>If an administrator toggles the <code>allow_mplayer_execstack</code> boolean to
 "on", then the mentioned <code>allow</code> rule becomes active.</p>
@@ -308,12 +311,13 @@ based) to see if rules need to be activated or not. For type attribute
 declarations, this is a valid approach. So one idea would be to
 transform USE flags, if they are set, into <code>use_${USEFLAG}</code>, and make
 decisions based on this in the policy code:</p>
-<div class="highlight"><pre><span></span><code>ifdef(`use_pulseaudio&#39;,`
+<div class="highlight"><pre><span></span>ifdef(`use_pulseaudio&#39;,`
   optional_policy(`
     pulseaudio_tmpfs_content(mplayer_tmpfs_t)
   &#39;)
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>We can add in the USE flags, if set, through the <code>CUSTOM_BUILDOPT</code>
 parameter that the reference policy provides. So introducing this is not

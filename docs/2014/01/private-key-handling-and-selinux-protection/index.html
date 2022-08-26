@@ -239,7 +239,7 @@ certificate either by itself (for the root CA key) or by another
 previously created key (for subkeys), create certificates (such as user
 certificates or device certificates) and sign them, sign certificate
 requests, and revoke certificates.</p>
-<div class="highlight"><pre><span></span><code>export KEYLOC=&quot;/var/db/ca&quot;
+<div class="highlight"><pre><span></span>export KEYLOC=&quot;/var/db/ca&quot;
 # Create a root CA key for &quot;genfic&quot;
 # (openssl questions and other output not shown)
 certcli.sh -r genfic
@@ -251,7 +251,8 @@ certcli.sh -p genfic-user -R /var/db/ca/myUserId
 certcli.sh -p genfic-user -s /var/db/ca/requests/someUser.csr
 # Revoke a certificate
 certcli.sh -p genfic-user -x myuser@genfic.com
-</code></pre></div>
+</pre></div>
+
 
 <p>From a security point of view, I currently focus on two types:</p>
 <ul>
@@ -273,14 +274,15 @@ types also are declared:</p>
     well - protected like the private key</li>
 </ul>
 <p>So let's start with this.</p>
-<div class="highlight"><pre><span></span><code>policy_module(ca, 1.0.0)
+<div class="highlight"><pre><span></span>policy_module(ca, 1.0.0)
 
 # CA management script and domain
 type ca_cli_t;
 type ca_cli_exec_t;
 domain_base_type(ca_cli_t)
 fs_associate(ca_cli_exec_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>Above, I declared the two types <code>ca_cli_t</code> and <code>ca_cli_exec_t</code>. Then,
 two non-standard approaches were followed.</p>
@@ -289,7 +291,7 @@ two non-standard approaches were followed.</p>
 Which interface you use depends on the privileges you want to grant on
 the domain, but also which existing privileges should also be applicable
 to the domain. Make sure you review the interfaces. For instance:</p>
-<div class="highlight"><pre><span></span><code># seshowif application_domain
+<div class="highlight"><pre><span></span># seshowif application_domain
 interface(`application_type&#39;,`
         gen_require(`
                 attribute application_domain_type;
@@ -300,7 +302,8 @@ interface(`application_type&#39;,`
         # start with basic domain
         domain_type($1)
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>This means that the assigned domain (<code>ca_cli_t</code> in our example) would be
 assigned the <code>application_domain_type</code> attribute, as well as the
@@ -312,7 +315,7 @@ need to make sure that the lowest possible privileges are assigned.</p>
 and other domains might have access to <code>file_type</code>. So all I do here is
 to allow the type <code>ca_cli_exec_t</code> to be associated on a file system.</p>
 <p>Similarly, I define the remainder of file types:</p>
-<div class="highlight"><pre><span></span><code>type ca_private_key_t;
+<div class="highlight"><pre><span></span>type ca_private_key_t;
 fs_associate(ca_private_key_t)
 
 type ca_misc_tmp_t;
@@ -321,16 +324,18 @@ fs_associate_tmpfs(ca_misc_tmp_t)
 
 type ca_misc_t;
 fs_associate(ca_misc_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>Next, grant the CA handling script (which will run as <code>ca_cli_t</code>) the
 proper access to these types.</p>
-<div class="highlight"><pre><span></span><code>allow ca_cli_t ca_misc_t:dir create_dir_perms;
+<div class="highlight"><pre><span></span>allow ca_cli_t ca_misc_t:dir create_dir_perms;
 manage_files_pattern(ca_cli_t, ca_misc_t, ca_misc_t)
 
 allow ca_cli_t ca_private_key_t:dir create_dir_perms;
 manage_files_pattern(ca_cli_t, ca_private_key_t, ca_private_key_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>This of course heavily depends on the script itself. Mine creates a
 directory "private", so needs the proper rights on the
@@ -340,12 +345,13 @@ can also create a file transition. This means that the SELinux policy
 will automatically assign the <code>ca_private_key_t</code> type to a directory,
 created in a directory with label <code>ca_misc_t</code>, if created by the
 <code>ca_cli_t</code> domain:</p>
-<div class="highlight"><pre><span></span><code>filetrans_pattern(ca_cli_t, ca_misc_t, ca_private_key_t, dir, &quot;private&quot;)
-</code></pre></div>
+<div class="highlight"><pre><span></span>filetrans_pattern(ca_cli_t, ca_misc_t, ca_private_key_t, dir, &quot;private&quot;)
+</pre></div>
+
 
 <p>Now, <code>ca_cli_t</code> is a domain used for a shell script, which in my case
 also requires the following permissions:</p>
-<div class="highlight"><pre><span></span><code># Handling pipes between commands
+<div class="highlight"><pre><span></span># Handling pipes between commands
 allow ca_cli_t self:fifo_file rw_fifo_file_perms;
 # Shell script...
 corecmd_exec_shell(ca_cli_t)
@@ -354,15 +360,17 @@ corecmd_exec_bin(ca_cli_t)
 # Allow output on the screen
 getty_use_fds(ca_cli_t)
 userdom_use_user_terminals(ca_cli_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>Now I still need to mark <code>ca_cli_exec_t</code> as an entrypoint for
 <code>ca_cli_t</code>, meaning that the <code>ca_cli_t</code> domain can only be accessed
 (transitioned to) through the execution of a file with label
 <code>ca_cli_exec_t</code>:</p>
-<div class="highlight"><pre><span></span><code>allow ca_cli_t ca_cli_exec_t:file entrypoint;
+<div class="highlight"><pre><span></span>allow ca_cli_t ca_cli_exec_t:file entrypoint;
 allow ca_cli_t ca_cli_exec_t:file { mmap_file_perms ioctl lock };
-</code></pre></div>
+</pre></div>
+
 
 <p>Normally, the above is granted through the invocation of the
 <code>application_domain(ca_cli_t, ca_cli_exec_t)</code> but as mentioned before,
@@ -371,7 +379,7 @@ this example.</p>
 <p>Next, the <code>openssl</code> application, which the script uses extensively, also
 requires additional permissions. As the <code>openssl</code> command just runs in
 the <code>ca_cli_t</code> domain, I extend the privileges for this domain more:</p>
-<div class="highlight"><pre><span></span><code># Read access on /proc files
+<div class="highlight"><pre><span></span># Read access on /proc files
 kernel_read_system_state(ca_cli_t)
 # Access to random devices
 dev_read_rand(ca_cli_t)
@@ -381,14 +389,16 @@ files_read_etc_files(ca_cli_t)
 miscfiles_read_localization(ca_cli_t)
 # /tmp access
 fs_getattr_tmpfs(ca_cli_t)
-</code></pre></div>
+</pre></div>
+
 
 <p>Also, the following file transition is created: when OpenSSL creates a
 temporary file in <code>/tmp</code>, this file should immediately be assigned the
 <code>ca_misc_tmp_t</code> type:</p>
-<div class="highlight"><pre><span></span><code># File transition in /tmp to ca_misc_tmp_t
+<div class="highlight"><pre><span></span># File transition in /tmp to ca_misc_tmp_t
 files_tmp_filetrans(ca_cli_t, ca_misc_tmp_t, file)
-</code></pre></div>
+</pre></div>
+
 
 <p>With this in place, the application works just fine - all I need to do
 is have an initial location marked as <code>ca_misc_t</code>. For now, none of the
@@ -398,12 +408,13 @@ to be used against other user domains.</p>
 handled by the <code>ca_role()</code> interface. In order to support such an
 interface, let's first create the <code>ca_roles</code> role attribute in the <code>.te</code>
 file:</p>
-<div class="highlight"><pre><span></span><code>attribute_role ca_roles;
+<div class="highlight"><pre><span></span>attribute_role ca_roles;
 role ca_roles types ca_cli_t;
-</code></pre></div>
+</pre></div>
+
 
 <p>Now I can define the <code>ca_role()</code> interface:</p>
-<div class="highlight"><pre><span></span><code>interface(`ca_role&#39;,`
+<div class="highlight"><pre><span></span>interface(`ca_role&#39;,`
   gen_require(`
     attribute_role ca_roles;
     type ca_cli_t, ca_cli_exec_t;
@@ -426,14 +437,15 @@ role ca_roles types ca_cli_t;
   # Output (and redirect) handling
   allow ca_cli_t $2:fd use;
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>This role allows to run the command, but we still don't have the rights
 to create a <code>ca_misc_t</code> directory. So another interface is created,
 which is granted to <em>regular</em> system administrators (as the <code>ca_role()</code>
 might be granted to non-admins as well, who can invoke the script
 through <code>sudo</code>).</p>
-<div class="highlight"><pre><span></span><code>interface(`ca_sysadmin&#39;,`
+<div class="highlight"><pre><span></span>interface(`ca_sysadmin&#39;,`
   gen_require(`
     type ca_misc_t;
     type ca_private_key_t;
@@ -451,7 +463,8 @@ through <code>sudo</code>).</p>
   allow $1 ca_misc_t:dir list_dir_perms;
   allow $1 ca_misc_t:file read_file_perms;
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>The <code>ca_sysadmin()</code> interface can also be assigned to the <code>setfiles_t</code>
 command so that relabel operations (and file system relabeling) works
@@ -462,7 +475,7 @@ relabel <em>from</em> rights (so any domain granted this interface will be able
 - to change the type of private keys to a regular file). This one should
 <em>only</em> be assigned to a rescue user (if any). Also, this interface is
 allowed to label CA management scripts.</p>
-<div class="highlight"><pre><span></span><code>interface(`ca_admin&#39;,`
+<div class="highlight"><pre><span></span>interface(`ca_admin&#39;,`
   gen_require(`
     type ca_misc_t, ca_private_key_t;
     type ca_cli_exec_t;
@@ -473,20 +486,21 @@ allowed to label CA management scripts.</p>
 
   allow $1 ca_cli_exec_t:file relabel_file_perms;
 &#39;)
-</code></pre></div>
+</pre></div>
+
 
 <p>So regular system administrators would be assigned the <code>ca_sysadmin()</code>
 interface as well as the <code>setfiles_t</code> domain; CA handling roles would be
 granted the <code>ca_role()</code> interface. The <code>ca_admin()</code> interface would only
 be granted on the rescue (or super-admin).</p>
-<div class="highlight"><pre><span></span><code># Regular system administrators
+<div class="highlight"><pre><span></span># Regular system administrators
 ca_sysadmin(sysadm_t)
 ca_sysadmin(setfiles_t)
 # Certificate administrator
 ca_role(certadmin_r, certadmin_t)
 # Security administrator
 ca_admin(secadm_t)
-</code></pre></div>
+</pre></div>
         </div>
 
         <!-- Neighbors -->

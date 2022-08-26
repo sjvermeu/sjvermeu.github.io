@@ -257,7 +257,7 @@
 <p><strong>The OVAL XML structure</strong></p>
 <p>The <a href="https://blog.siphos.be/static/2018/oval.xml">full example</a> contains a few more entries than those we declare next, in order to be complete. The most important definitions though are documented below.</p>
 <p>Let's start with the definition. As stated, it will refer to tests that need to match for the definition to be valid.</p>
-<div class="highlight"><pre><span></span><code>&lt;definitions&gt;
+<div class="highlight"><pre><span></span>&lt;definitions&gt;
   &lt;definition id=&quot;oval:com.example.oval:def:1&quot; version=&quot;1&quot; class=&quot;compliance&quot;&gt;
     &lt;metadata&gt;
       &lt;title&gt;libdefaults.forwardable in /etc/krb5.conf must be set to true&lt;/title&gt;
@@ -274,11 +274,12 @@
     &lt;/criteria&gt;
   &lt;/definition&gt;
 &lt;/definitions&gt;
-</code></pre></div>
+</pre></div>
+
 
 <p>The first thing to keep in mind is the (weird) identification structure. Just like with XCCDF, it is not sufficient to have your own id convention. You need to start an id with <code>oval:</code> followed by the reverse domain definition (here <code>com.example.oval</code>), followed by the type (<code>def</code> for definition) and a sequence number.</p>
 <p>Also, take a look at the criteria. Here, two tests need to be compliant (hence the <code>AND</code> operator). However, more complex operations can be done as well. It is even allowed to nest multiple criteria, and refer to previous definitions, like so (taken from the <a href="https://raw.githubusercontent.com/GovReady/ubuntu-scap/master/ssg-rhel6-oval.xml">ssg-rhel6-oval.xml file</a>:</p>
-<div class="highlight"><pre><span></span><code>&lt;criteria comment=&quot;package hal removed or service haldaemon is not configured to start&quot; operator=&quot;OR&quot;&gt;
+<div class="highlight"><pre><span></span>&lt;criteria comment=&quot;package hal removed or service haldaemon is not configured to start&quot; operator=&quot;OR&quot;&gt;
   &lt;extend_definition comment=&quot;hal removed&quot; definition_ref=&quot;oval:ssg:def:211&quot;/&gt;
   &lt;criteria operator=&quot;AND&quot; comment=&quot;service haldaemon is not configured to start&quot;&gt;
     &lt;criterion comment=&quot;haldaemon runlevel 0&quot; test_ref=&quot;oval:ssg:tst:212&quot;/&gt;
@@ -290,10 +291,11 @@
     &lt;criterion comment=&quot;haldaemon runlevel 6&quot; test_ref=&quot;oval:ssg:tst:218&quot;/&gt;
   &lt;/criteria&gt;
 &lt;/criteria&gt;
-</code></pre></div>
+</pre></div>
+
 
 <p>Next, let's look at the tests.</p>
-<div class="highlight"><pre><span></span><code>&lt;tests&gt;
+<div class="highlight"><pre><span></span>&lt;tests&gt;
   &lt;unix:file_test id=&quot;oval:com.example.oval:tst:1&quot; version=&quot;1&quot; check_existence=&quot;all_exist&quot; check=&quot;all&quot; comment=&quot;/etc/redhat-release exists&quot;&gt;
     &lt;unix:object object_ref=&quot;oval:com.example.oval:obj:1&quot; /&gt;
   &lt;/unix:file_test&gt;
@@ -302,12 +304,13 @@
     &lt;ind:state state_ref=&quot;oval:com.example.oval:ste:2&quot; /&gt;
   &lt;/ind:textfilecontent54_test&gt;
 &lt;/tests&gt;
-</code></pre></div>
+</pre></div>
+
 
 <p>There are two tests defined here. The first test just checks if <code>/etc/redhat-release</code> exists. If not, then the test will fail and the definition itself will result to false (as in, not compliant). This isn't actually a proper definition, because you want the test to not run when it is on a different platform, but for the sake of example and simplicity, let's keep it as is.</p>
 <p>The second test will check for the value of the <code>forwardable</code> key in <code>/etc/krb5.conf</code>. For it, it refers to an object and a state. The test states that all objects must exist (<code>check_existence="all_exist"</code>) and that all objects must match the state (<code>check="all"</code>).</p>
 <p>The object definition looks like so:</p>
-<div class="highlight"><pre><span></span><code>&lt;objects&gt;
+<div class="highlight"><pre><span></span>&lt;objects&gt;
   &lt;unix:file_object id=&quot;oval:com.example.oval:obj:1&quot; comment=&quot;The /etc/redhat-release file&quot; version=&quot;1&quot;&gt;
     &lt;unix:filepath&gt;/etc/redhat-release&lt;/unix:filepath&gt;
   &lt;/unix:file_object&gt;
@@ -317,28 +320,31 @@
     &lt;ind:instance datatype=&quot;int&quot; operation=&quot;equals&quot;&gt;1&lt;/ind:instance&gt;
   &lt;/ind:textfilecontent54_object&gt;
 &lt;/objects&gt;
-</code></pre></div>
+</pre></div>
+
 
 <p>The first object is a simple file reference. The second is a text file content object. More specifically, it matches the line inside <code>/etc/krb5.conf</code> which has <code>forwardable = true</code> or <code>forwardable = false</code> in it. An expression is made on it, so that we can refer to the subexpression as part of the test.</p>
 <p>This test looks like so:</p>
-<div class="highlight"><pre><span></span><code>&lt;states&gt;
+<div class="highlight"><pre><span></span>&lt;states&gt;
   &lt;ind:textfilecontent54_state id=&quot;oval:com.example.oval:ste:2&quot; version=&quot;1&quot;&gt;
     &lt;ind:subexpression datatype=&quot;string&quot;&gt;true&lt;/ind:subexpression&gt;
   &lt;/ind:textfilecontent54_state&gt;
 &lt;/states&gt;
-</code></pre></div>
+</pre></div>
+
 
 <p>This test refers to a subexpression, and wants it to be <code>true</code>.</p>
 <p><strong>Testing the checks with Open-SCAP</strong></p>
 <p>The Open-SCAP tool is able to test OVAL statements directly. For instance, with the above definition in a file called <code>oval.xml</code>:</p>
-<div class="highlight"><pre><span></span><code>~$ oscap oval eval --results oval-results.xml oval.xml
+<div class="highlight"><pre><span></span>~$ oscap oval eval --results oval-results.xml oval.xml
 Definition oval:com.example.oval:def:1: true
 Evaluation done.
-</code></pre></div>
+</pre></div>
+
 
 <p>The output of the command shows that the definition was evaluated successfully. If you want more information, open up the <code>oval-results.xml</code> file which contains all the details about the test. This results file is also very useful while developing OVAL as it shows the entire result of objects, tests and so forth.</p>
 <p>For instance, the <code>/etc/redhat-release</code> file was only checked to see if it exists, but the results file shows what other parameters can be verified with it as well:</p>
-<div class="highlight"><pre><span></span><code>&lt;unix-sys:file_item id=&quot;1233781&quot; status=&quot;exists&quot;&gt;
+<div class="highlight"><pre><span></span>&lt;unix-sys:file_item id=&quot;1233781&quot; status=&quot;exists&quot;&gt;
   &lt;unix-sys:filepath&gt;/etc/redhat-release&lt;/unix-sys:filepath&gt;
   &lt;unix-sys:path&gt;/etc&lt;/unix-sys:path&gt;
   &lt;unix-sys:filename&gt;redhat-release&lt;/unix-sys:filename&gt;
@@ -363,29 +369,32 @@ Evaluation done.
   &lt;unix-sys:oexec datatype=&quot;boolean&quot;&gt;false&lt;/unix-sys:oexec&gt;
   &lt;unix-sys:has_extended_acl datatype=&quot;boolean&quot;&gt;false&lt;/unix-sys:has_extended_acl&gt;
 &lt;/unix-sys:file_item&gt;
-</code></pre></div>
+</pre></div>
+
 
 <p>Now, this is just on OVAL level. The final step is to link it in the XCCDF file.</p>
 <p><strong>Referring to OVAL in XCCDF</strong></p>
 <p>The XCCDF Rule entry allows for a <code>check</code> element, which refers to an automated check for compliance.</p>
 <p>For instance, the above rule could be referred to like so:</p>
-<div class="highlight"><pre><span></span><code>&lt;Rule id=&quot;xccdf_com.example_rule_krb5-forwardable-true&quot;&gt;
+<div class="highlight"><pre><span></span>&lt;Rule id=&quot;xccdf_com.example_rule_krb5-forwardable-true&quot;&gt;
   &lt;title&gt;Enable forwardable tickets on RHEL systems&lt;/title&gt;
   ...
   &lt;check system=&quot;http://oval.mitre.org/XMLSchema/oval-definitions-5&quot;&gt;
     &lt;check-content-ref href=&quot;oval.xml&quot; name=&quot;oval:com.example.oval:def:1&quot; /&gt;
   &lt;/check&gt;
 &lt;/Rule&gt;
-</code></pre></div>
+</pre></div>
+
 
 <p>With this set in the Rule, Open-SCAP can validate it while checking the configuration baseline:</p>
-<div class="highlight"><pre><span></span><code>~$ oscap xccdf eval --oval-results --results xccdf-results.xml xccdf.xml
+<div class="highlight"><pre><span></span>~$ oscap xccdf eval --oval-results --results xccdf-results.xml xccdf.xml
 ...
 Title   Enable forwardable kerberos tickets in krb5.conf libdefaults
 Rule    xccdf_com.example_rule_krb5-forwardable-tickets
 Ident   RHEL7-01007
 Result  pass
-</code></pre></div>
+</pre></div>
+
 
 <p>A huge advantage here is that, alongside the detailed results of the run, there is also better human readable output as it shows the title of the Rule being checked.</p>
 <p><strong>The detailed capabilities of OVAL</strong></p>

@@ -35,7 +35,7 @@ take on one system can be made based on the context of the process on
 the other system.&lt;/p&gt;
 &lt;p&gt;So no, SELinux cannot be used to route traffic, but it plays very nicely
 with various networking controls to make proper decisions on its access
-control enforcement.&lt;/p&gt;</content><category term="SELinux"></category><category term="ipsec"></category><category term="netlabel"></category><category term="networking"></category><category term="secmark"></category><category term="selinux"></category></entry><entry><title>SELinux policy and network controls</title><link href="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/" rel="alternate"></link><published>2013-05-11T03:50:00+02:00</published><updated>2013-05-11T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-11:/2013/05/selinux-policy-and-network-controls/</id><summary type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
+control enforcement.&lt;/p&gt;</content><category term="ipsec"></category><category term="netlabel"></category><category term="networking"></category><category term="secmark"></category><category term="selinux"></category></entry><entry><title>SELinux policy and network controls</title><link href="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/" rel="alternate"></link><published>2013-05-11T03:50:00+02:00</published><updated>2013-05-11T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-11:/2013/05/selinux-policy-and-network-controls/</id><summary type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
 reflects this into the policy).&lt;/p&gt;
 &lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
@@ -55,18 +55,20 @@ client-like behavior (which "connects" to a port). Consider an FTP
 daemon (domain &lt;code&gt;ftpd_t&lt;/code&gt;) versus FTP client (example domain &lt;code&gt;ncftp_t&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;In case of a daemon, the policy would contain the following (necessary)
 rules:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_bind_generic_node(ftpd_t) # Somewhat legacy but still needed
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_bind_generic_node(ftpd_t) # Somewhat legacy but still needed
 corenet_tcp_bind_ftp_port(ftpd_t)
 corenet_tcp_bind_ftp_data_port(ftpd_t)
 corenet_tcp_bind_all_unreserved_ports(ftpd_t) # In case of passive mode
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;This gets translated to the following "real" SELinux statements:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow ftpd_t node_t:tcp_socket node_bind;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow ftpd_t node_t:tcp_socket node_bind;
 allow ftpd_t ftp_port_t:tcp_socket name_bind;
 allow ftpd_t ftp_data_port_t:tcp_socket name_bind;
 allow ftpd_t unreserved_port_type:tcp_socket name_bind;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;I mention that &lt;em&gt;corenet_tcp_bind_generic_node&lt;/em&gt; as being somewhat
 legacy. When you use netlabeling, you can define different nodes (a
@@ -77,19 +79,21 @@ work with is &lt;code&gt;node_t&lt;/code&gt; which represents any possible node.
 of passive mode within the ftp policy is governed through the
 &lt;em&gt;ftpd_use_passive_mode&lt;/em&gt; boolean.&lt;/p&gt;
 &lt;p&gt;For a client, the following policy line would suffice:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_connect_ftp_port(ncftp_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_connect_ftp_port(ncftp_t)
 # allow ncftp_t ftp_port_t:tcp_socket name_connect;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;Well, I lied. Because of how FTP works, if you use active connections,
 you need to allow the client to bind on an unreserved port, and allow
 the server to connect to unreserved ports (cfr code snippet below), but
 you get the idea.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;corenet_tcp_connect_all_unreserved_ports(ftpd_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;corenet_tcp_connect_all_unreserved_ports(ftpd_t)
 
 corenet_tcp_bind_generic_node(ncftp_t)
 corenet_tcp_bind_all_unreserved_ports(ncftp_t)
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 
 &lt;p&gt;In the past, policy developers also had to include other lines, but
 these have by time become obsolete (&lt;em&gt;corenet_tcp_sendrecv_ftp_port&lt;/em&gt;
@@ -98,4 +102,4 @@ messages on the port, but this is no longer controlled this way. If you
 need such controls, you will need to look at SELinux and SECMARK (which
 uses packets with the &lt;em&gt;packet&lt;/em&gt; class) or netlabel (which uses the &lt;em&gt;peer&lt;/em&gt;
 class and peer types to send or receive messages from).&lt;/p&gt;
-&lt;p&gt;And that'll be for a different post.&lt;/p&gt;</content><category term="SELinux"></category><category term="networking"></category><category term="policy"></category><category term="selinux"></category></entry></feed>
+&lt;p&gt;And that'll be for a different post.&lt;/p&gt;</content><category term="networking"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

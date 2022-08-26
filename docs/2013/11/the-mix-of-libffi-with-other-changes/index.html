@@ -247,21 +247,23 @@ to add the <code>portage</code> Linux user, as well as the Linux accounts that y
 use to run emerge with (even just things like <strong>emerge --info</strong>) in the
 <code>wheel</code> group. This group is exempt from TPE protections (unless you
 configured a different group in your kernel for this:</p>
-<div class="highlight"><pre><span></span><code>~# zgrep CONFIG_GRKERNSEC_TPE_TRUSTED_GID /proc/config.gz
+<div class="highlight"><pre><span></span>~# zgrep CONFIG_GRKERNSEC_TPE_TRUSTED_GID /proc/config.gz
 CONFIG_GRKERNSEC_TPE_TRUSTED_GID=10
-</code></pre></div>
+</pre></div>
+
 
 <p>Next we also need to allow the <code>portage_t</code> domain to execute files
 labeled with <code>portage_tmpfs_t</code>. You can do this by creating your own
 SELinux policy module with the following content (or use selocal):</p>
-<div class="highlight"><pre><span></span><code>can_exec(portage_t, portage_tmpfs_t)
-</code></pre></div>
+<div class="highlight"><pre><span></span>can_exec(portage_t, portage_tmpfs_t)
+</pre></div>
+
 
 <p>This works around the libffi issue for now. A better solution still has
 to be implemented (as discussed in the previous post).</p>
 <p>With regards to the portage installation failing, you'll notice this
 quickly when you get an error like so:</p>
-<div class="highlight"><pre><span></span><code>~# emerge -1 portage
+<div class="highlight"><pre><span></span>~# emerge -1 portage
 Calculating dependencies  ... done!
 Traceback (most recent call last):
   File &quot;/usr/bin/emerge&quot;, line 50, in &lt;module&gt;
@@ -292,12 +294,13 @@ b&#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/prepinfo&#
 b&#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib.so&#39;, 
 &quot;[Errno 13] Permission denied: &#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib.so&#39;&quot;), 
 [...]
-</code></pre></div>
+</pre></div>
+
 
 <p>And the errors go on and on and on.</p>
 <p>I've been able to get it working again by allowing the following SELinux
 permissions:</p>
-<div class="highlight"><pre><span></span><code>allow portage_t portage_tmp_t:dir relabel_dir_perms;
+<div class="highlight"><pre><span></span>allow portage_t portage_tmp_t:dir relabel_dir_perms;
 allow portage_t portage_tmp_t:lnk_file relabel_lnk_file_perms;
 allow portage_t bin_t:dir relabel_dir_perms;
 allow portage_t bin_t:file relabel_file_perms;
@@ -306,20 +309,23 @@ allow portage_t portage_exec_t:file relabel_file_perms;
 allow portage_t portage_fetch_exec_t:file relabel_file_perms;
 allow portage_t lib_t:dir relabel_dir_perms;
 allow portage_t lib_t:file relabel_file_perms;
-</code></pre></div>
+</pre></div>
+
 
 <p>You can somewhat shorten this by combining types (but this doesn't work
 with selocal for now):</p>
-<div class="highlight"><pre><span></span><code>allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
+<div class="highlight"><pre><span></span>allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
 allow portage_t { portage_tmp_t bin_t }:lnk_file relabel_lnk_file_perms;
 allow portage_t { bin_t portage_exec_t portage_fetch_exec_t lib_t}:file relabel_file_perms;
-</code></pre></div>
+</pre></div>
+
 
 <p>At the end of the emerge process (when the new portage is installed) you
 might want to reset the labels of all files provided by the portage
 package:</p>
-<div class="highlight"><pre><span></span><code>~# rlpkg portage
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# rlpkg portage
+</pre></div>
+
 
 <p>These changes have not been passed into the policy yet as I first need
 to find out why exactly they are needed, and as you can see from <a href="http://dev.gentoo.org/devaway/">the

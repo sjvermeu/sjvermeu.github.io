@@ -255,14 +255,15 @@ settings related to publication.</p>
 as links to the blog from other sites and even the comments themselves) I did
 had to update some variables, but the Internet was strong on this one and I had
 little problems finding the right settings:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Link structure of the site</span>
-<span class="n">ARTICLE_URL</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;{date:%Y}/{date:%m}/</span><span class="si">{slug}</span><span class="s1">/&#39;</span>
-<span class="n">ARTICLE_SAVE_AS</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;{date:%Y}/{date:%m}/</span><span class="si">{slug}</span><span class="s1">/index.html&#39;</span>
-<span class="n">CATEGORY_URL</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;category/</span><span class="si">{slug}</span><span class="s1">&#39;</span>
-<span class="n">CATEGORY_SAVE_AS</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;category/</span><span class="si">{slug}</span><span class="s1">/index.html&#39;</span>
-<span class="n">TAG_URL</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;tag/</span><span class="si">{slug}</span><span class="s1">/&#39;</span>
-<span class="n">TAG_SAVE_AS</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;tag/</span><span class="si">{slug}</span><span class="s1">/index.html&#39;</span>
-</code></pre></div>
+<div class="highlight"><pre><span></span><span class="c1"># Link structure of the site</span>
+<span class="n">ARTICLE_URL</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;{date:%Y}/{date:%m}/{slug}/&#39;</span>
+<span class="n">ARTICLE_SAVE_AS</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;{date:%Y}/{date:%m}/{slug}/index.html&#39;</span>
+<span class="n">CATEGORY_URL</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;category/{slug}&#39;</span>
+<span class="n">CATEGORY_SAVE_AS</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;category/{slug}/index.html&#39;</span>
+<span class="n">TAG_URL</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;tag/{slug}/&#39;</span>
+<span class="n">TAG_SAVE_AS</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;tag/{slug}/index.html&#39;</span>
+</pre></div>
+
 
 <p>The next challenges were (and still are, I will have to check if this is working
 or not soon by checking the blog aggregation sites I am usually aggregated on)
@@ -276,7 +277,7 @@ these URLs. To fix this, I am now trying to generate the XML files as I would
 like them to be, and create symbolic links afterwards from <code>index.html</code> to the
 right XML file.</p>
 <p>The RSS/ATOM settings I am currently using are as follows:</p>
-<div class="highlight"><pre><span></span><code><span class="n">CATEGORY_FEED_ATOM</span> <span class="o">=</span> <span class="s1">&#39;category/</span><span class="si">%s</span><span class="s1">/feed/atom.xml&#39;</span>
+<div class="highlight"><pre><span></span><span class="n">CATEGORY_FEED_ATOM</span> <span class="o">=</span> <span class="s1">&#39;category/</span><span class="si">%s</span><span class="s1">/feed/atom.xml&#39;</span>
 <span class="n">CATEGORY_FEED_RSS</span> <span class="o">=</span> <span class="s1">&#39;category/</span><span class="si">%s</span><span class="s1">/feed/rss.xml&#39;</span>
 <span class="n">FEED_ATOM</span> <span class="o">=</span> <span class="s1">&#39;feed/atom.xml&#39;</span>
 <span class="n">FEED_ALL_ATOM</span> <span class="o">=</span> <span class="s1">&#39;feed/all.atom.xml&#39;</span>
@@ -284,10 +285,11 @@ right XML file.</p>
 <span class="n">FEED_ALL_RSS</span> <span class="o">=</span> <span class="s1">&#39;feed/all.rss.xml&#39;</span>
 <span class="n">TAG_FEED_ATOM</span> <span class="o">=</span> <span class="s1">&#39;tag/</span><span class="si">%s</span><span class="s1">/feed/atom.xml&#39;</span>
 <span class="n">TAG_FEED_RSS</span> <span class="o">=</span> <span class="s1">&#39;tag/</span><span class="si">%s</span><span class="s1">/feed/rss.xml&#39;</span>
-<span class="n">TRANSLATION_FEED_ATOM</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">AUTHOR_FEED_ATOM</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">AUTHOR_FEED_RSS</span> <span class="o">=</span> <span class="kc">None</span>
-</code></pre></div>
+<span class="n">TRANSLATION_FEED_ATOM</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">AUTHOR_FEED_ATOM</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">AUTHOR_FEED_RSS</span> <span class="o">=</span> <span class="bp">None</span>
+</pre></div>
+
 
 <p>Hopefully, the existing aggregations still work, and I can then start asking
 the planets to move to the XML URL itself. Some tracking on the access logs

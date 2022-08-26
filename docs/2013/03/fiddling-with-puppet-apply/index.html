@@ -242,8 +242,9 @@ Puppet master server - mainly because that master server is again a VM
 that might need to be build up and consumes some resources that I'd
 rather have free for other VMs. So what I do now is akin to the
 following:</p>
-<div class="highlight"><pre><span></span><code>~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
-</code></pre></div>
+<div class="highlight"><pre><span></span>~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
+</pre></div>
+
 
 <p>All I have to do is make sure that the /mnt/puppet location is a shared
 resource (in my case, an NFSv4 read-only mount) which I can just mount
@@ -257,22 +258,24 @@ have a pam_rootok.so statement in the run_init PAM file to allow
 unattended calls towards rc-service).</p>
 <p>A quick Google revealed that all I had to do was to add a <em>provider
 =&gt; openrc</em> in the service definitions, like so:</p>
-<div class="highlight"><pre><span></span><code>service { &quot;net.eth0&quot;:
+<div class="highlight"><pre><span></span>service { &quot;net.eth0&quot;:
   provider =&gt; openrc,
   ensure =&gt; running,
 }
-</code></pre></div>
+</pre></div>
+
 
 <p>As mentioned, I still manually patch the openrc provider (located in
 /usr/lib64/ruby/site_ruby/1.9.1/puppet/provider/service) so that the
 run_init command is known as well, and that all invocations of the
 rc-service is prepended with run_init:</p>
-<div class="highlight"><pre><span></span><code>...
+<div class="highlight"><pre><span></span>...
   commands :runinit =&gt; &#39;/usr/sbin/run_init&#39;
   commands :rcservice =&gt; &#39;/sbin/rc-service&#39;
 ...
  [command(:runinit), command(:rcservice), @resource[:name], :start ]
-</code></pre></div>
+</pre></div>
+
 
 <p>And the same for the stop and status definitions. I might use Portage'
 postinst hook to automatically apply the patch so I don't need to do
