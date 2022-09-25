@@ -243,7 +243,7 @@ certificate close as well:</p>
 <p>First of all, we setup the stunnel, listening on 1465 (as 465 requires
 the stunnel service to run as root, which I'd rather not) and fowarding
 towards 127.0.0.1:25:</p>
-<div class="highlight"><pre><span></span>cert = /etc/ssl/services/stunnel/server.pem
+<div class="highlight"><pre><span></span><code>cert = /etc/ssl/services/stunnel/server.pem
 key = /etc/ssl/services/stunnel/server.key
 setuid = stunnel
 setgid = stunnel
@@ -256,8 +256,7 @@ CAfile = /etc/ssl/certs/root-genfic.crt
 [smtp]
 accept = 1465
 connect = 127.0.0.1:25
-</pre></div>
-
+</code></pre></div>
 
 <p>To test out mutual authentication this way, I used the following
 command-line snippet. The delays between the lines are because the mail
@@ -265,9 +264,8 @@ client is supposed to wait for the mail server to give its reply and if
 not, the data gets lost. I'm sure this can be made easier (with netcat I
 could just use "-i 1" to print a line with a one-second delay), but it
 works ;-)</p>
-<div class="highlight"><pre><span></span>~$  (sleep 1; echo &quot;EHLO localdomain&quot;; sleep 1; echo &quot;MAIL FROM:remote@test.localdomain&quot;;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~$  (sleep 1; echo &quot;EHLO localdomain&quot;; sleep 1; echo &quot;MAIL FROM:remote@test.localdomain&quot;;
+</code></pre></div>
 
 <p>sleep 1; echo "RCPT TO:user@localhost"; sleep 1; echo "DATA"; sleep 1; cat TEMPFILE) | <br>
    openssl s_client -connect 192.168.100.102:1465 -crlf -ign_eof -ssl3 -key client.key -cert client.pem</p>
@@ -276,13 +274,12 @@ To, other headers, data, ...).</p>
 <p>If the provided certificate isn't trusted, then you'll find the
 following in the log file (on Gentoo, thats /var/log/daemon.log by
 default but you can setup logging in stunnel as well):</p>
-<div class="highlight"><pre><span></span>Dec  8 13:17:32 testsys stunnel: LOG7[20237:2766895953664]: Starting certificate verification: depth=0, /C=US/ST=California/L=Santa Barbara/O=SSL Server/OU=For Testing Purposes Only/CN=localhost/emailAddress=root@localhost
+<div class="highlight"><pre><span></span><code>Dec  8 13:17:32 testsys stunnel: LOG7[20237:2766895953664]: Starting certificate verification: depth=0, /C=US/ST=California/L=Santa Barbara/O=SSL Server/OU=For Testing Purposes Only/CN=localhost/emailAddress=root@localhost
 Dec  8 13:17:32 testsys stunnel: LOG4[20237:2766895953664]: CERT: Verification error: unable to get local issuer certificate
 Dec  8 13:17:32 testsys stunnel: LOG4[20237:2766895953664]: Certificate check failed: depth=0, /C=US/ST=California/L=Santa Barbara/O=SSL Server/OU=For Testing Purposes Only/CN=localhost/emailAddress=root@localhost
 Dec  8 13:17:32 testsys stunnel: LOG7[20237:2766895953664]: SSL alert (write): fatal: bad certificate
 Dec  8 13:17:32 testsys stunnel: LOG3[20237:2766895953664]: SSL_accept: 140890B2: error:140890B2:SSL routines:SSL3_GET_CLIENT_CERTIFICATE:no certificate returned
-</pre></div>
-
+</code></pre></div>
 
 <p>When a trusted certificate is shown, the connection goes through.</p>
 <p>Finally, if you not only want to validate if the certificate is trusted,

@@ -17,7 +17,7 @@ handle the VMs.&lt;/p&gt;
 can enable it on the monitor using &lt;strong&gt;change vnc&lt;/strong&gt; while getting details
 is done using &lt;strong&gt;info vnc&lt;/strong&gt;. To disable VNC again, use &lt;strong&gt;change vnc
 none&lt;/strong&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(qemu) info vnc
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) info vnc
 Server: disabled
 (qemu) change vnc 127.0.0.1:20
 (qemu) change vnc password
@@ -27,8 +27,7 @@ Server:
      address: 127.0.0.1:5920
         auth: vnc
 Client: none
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Similarly, if you need to enable remote debugging, you can use the
 &lt;strong&gt;gdbserver&lt;/strong&gt; option.&lt;/p&gt;
@@ -39,14 +38,13 @@ enter &lt;strong&gt;info&lt;/strong&gt; to get an overview of all supported comm
 &lt;p&gt;To easily manage block devices, you can see the current state of devices
 using &lt;strong&gt;info block&lt;/strong&gt; and then use &lt;strong&gt;change &amp;lt;blockdevice&amp;gt;
 &amp;lt;path&amp;gt;&lt;/strong&gt; to update it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(qemu) info block
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) info block
 virtio0: removable=0 io-status=ok file=/srv/virt/gentoo/hardened2selinux/selinux-base.img ro=0 drv=qcow2 encrypted=0 bps=0 bps_rd=0 bps_wr=0 iops=0 iops_rd=0 iops_wr=0
 ide1-cd0: removable=1 locked=0 tray-open=0 io-status=ok [not inserted]
 floppy0: removable=1 locked=0 tray-open=0 [not inserted]
 sd0: removable=1 locked=0 tray-open=0 [not inserted]
 (qemu) change ide1-cd0 /srv/virt/media/systemrescuecd-x86-2.2.0.iso
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To powerdown the system, use &lt;strong&gt;system_powerdown&lt;/strong&gt;. If that fails, you
 can use &lt;strong&gt;quit&lt;/strong&gt; to immediately shut down (terminate) the VM. To reset
@@ -58,9 +56,9 @@ migrations&lt;/a&gt; between systems.&lt;/p&gt;
 &lt;strong&gt;loadvm&lt;/strong&gt;. This is interesting when you want to do potentially harmful
 changes on the system and want to easily revert back if things got
 broken.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;(qemu) savevm 20130419
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;(qemu) savevm 20130419
 (qemu) info snapshots
      ID        TAG                 VM SIZE                DATE       VM CLOCK
      1         20130419               224M 2013-04-19 12:05:16   00:00:17.294
 (qemu) loadvm 20130419
-&lt;/pre&gt;&lt;/div&gt;</content><category term="kvm"></category><category term="monitor"></category><category term="qemu"></category></entry></feed>
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Free-Software"></category><category term="kvm"></category><category term="monitor"></category><category term="qemu"></category></entry></feed>

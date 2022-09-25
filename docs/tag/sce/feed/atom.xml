@@ -65,17 +65,12 @@ and optionally a &lt;em&gt;state&lt;/em&gt; to which the object should (or shoul
 match.&lt;/p&gt;
 &lt;p&gt;Consider the test we made with SCE to see if a platform is a Gentoo
 Linux system:&lt;/p&gt;
-&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
-2
-3
-4
-5&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#!/bin/sh
 
-&lt;span class="c1"&gt;# If /etc/gentoo-release exists then the system is a Gentoo Linux system.&lt;/span&gt;
-&lt;span class="nb"&gt;test&lt;/span&gt; -f /etc/gentoo-release &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_PASS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+# If /etc/gentoo-release exists then the system is a Gentoo Linux system.
+test -f /etc/gentoo-release &amp;amp;&amp;amp; exit ${XCCDF_RESULT_PASS};
+exit ${XCCDF_RESULT_FAIL};
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In OVAL, this would be structured as follows (pseudo-OVAL):&lt;/p&gt;
 &lt;dl&gt;
@@ -142,7 +137,7 @@ OVAL, and have the XCCDF document updated to only use OVAL statements.&lt;/p&gt;
     document&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/remediation-through-scap/"&gt;Remediation through
     SCAP&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><category term="openscap"></category><category term="oval"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>Running a bit with the XCCDF document</title><link href="https://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/" rel="alternate"></link><published>2013-12-18T04:23:00+01:00</published><updated>2013-12-18T04:23:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-18:/2013/12/running-a-bit-with-the-xccdf-document/</id><summary type="html">&lt;p&gt;In my &lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;previous
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="oval"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>Running a bit with the XCCDF document</title><link href="https://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/" rel="alternate"></link><published>2013-12-18T04:23:00+01:00</published><updated>2013-12-18T04:23:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-18:/2013/12/running-a-bit-with-the-xccdf-document/</id><summary type="html">&lt;p&gt;In my &lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;previous
 post&lt;/a&gt;
 I introduced automated checking of rules through &lt;em&gt;SCE (Script Check
 Engine)&lt;/em&gt;. Let's focus a bit more now on running with an XCCDF document:
@@ -177,9 +172,8 @@ information of those results.&lt;/p&gt;
 &lt;p&gt;With &lt;a href="http://www.open-scap.org"&gt;openscap&lt;/a&gt; (available as
 &lt;em&gt;app-forensics/openscap&lt;/em&gt; in Gentoo), we can generate a guide of the
 XCCDF document as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf generate guide test-xccdf.xml &amp;gt; guide-test-xccdf.html
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf generate guide test-xccdf.xml &amp;gt; guide-test-xccdf.html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The
 &lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/guide-test-xccdf.html"&gt;result&lt;/a&gt;
@@ -197,9 +191,8 @@ although I had to do some manual cleanups in the output to have it
 render a PDF here using FOP (there are other methods to create PDFs too)
 such as removing the &lt;code&gt;&amp;lt;preface&amp;gt;&lt;/code&gt; part.&lt;/p&gt;
 &lt;p&gt;Let's try evaluating the XCCDF document on the system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf eval test-xccdf.xml
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval test-xccdf.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Nothing happened. That is because there are no rules that are by default
 selected (all rules in the document have &lt;code&gt;selected="false"&lt;/code&gt;) and we have
@@ -207,7 +200,7 @@ not passed on a profile. I don't know if there is a way to automatically
 make a particular profile default, so let's try it with the
 &lt;em&gt;xccdf_org.gentoo.dev.swift_profile_default&lt;/em&gt; (which I always use as
 the default profile name for all my XCCDF documents):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ export PROFILE=&amp;quot;xccdf_org.gentoo.dev.swift_profile_default&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ export PROFILE=&amp;quot;xccdf_org.gentoo.dev.swift_profile_default&amp;quot;
 ~$ oscap xccdf eval --profile ${PROFILE} test-xccdf.xml
 
 Title   There should be no /dev/ROOT in /etc/fstab
@@ -221,8 +214,7 @@ Result  notapplicable
 Title   rc_sys should be defined in /etc/rc.conf
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  notapplicable
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;At least we have output now, but still no results. In fact, all rules
 have &lt;em&gt;notapplicable&lt;/em&gt; as a result. What gives?&lt;/p&gt;
@@ -237,7 +229,7 @@ dictionary&lt;/em&gt; element which is saved as
 &lt;a href="http://dev.gentoo.org/~swift/blog/201312/18/gentoo-cpe.txt"&gt;gentoo-cpe.xml&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In the dictionary, the coupling between cpe:/o:gentoo:linux and a scripted
 check called gentoo-platform.sh is made. Let's now give this info to oscap:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf eval --profile ${PROFILE} --cpe gentoo-cpe.xml test-xccdf.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --profile ${PROFILE} --cpe gentoo-cpe.xml test-xccdf.xml
 Title   There should be no /dev/ROOT in /etc/fstab
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-root
 Result  pass
@@ -257,19 +249,17 @@ No definition with ID: (null) in definition model. [oval_probe.c:338]
 No definition with ID: (null) in result model. [oval_agent.c:184]
 No definition with ID: (null) in definition model. [oval_probe.c:338]
 No definition with ID: (null) in result model. [oval_agent.c:184]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Great; we now see that openscap ran the tests and gave feedback. It also
 gave a few errors. These can be ignored now - it is openscap that tries
 to interpret the shell scripts as OVAL scripts (I'll talk about OVAL in
 a later post). After changing my system to be non-compliant, I see that
 openscap detects that as well:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Title   rc_sys should be defined in /etc/rc.conf
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Title   rc_sys should be defined in /etc/rc.conf
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  fail
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now, by itself the rule might give us enough clues as to what is wrong,
 but sometimes you might want to get the output of the scripts as well.
@@ -283,7 +273,7 @@ argument list, the results of the XCCDF evaluation is also saved as
 &lt;p&gt;The oscap command has many more options, which I will not discuss in
 more detail now, but are important to know (for instance, you can save
 the XCCDF results in XML format for future processing).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf eval -h
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval -h
  oscap -&amp;gt; xccdf -&amp;gt; eval
 
 Perform evaluation driven by XCCDF file and use OVAL as checking engine
@@ -318,8 +308,7 @@ Options:
                                    (only applicable when datastream-id AND xccdf-id are not specified)
    --remediate                   - Automatically execute XCCDF fix elements for failed rules.
                                    Use of this option is always at your own risk.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In my next post, I'll talk a bit more about remediation.&lt;/p&gt;
 &lt;p&gt;This post is part of a series on SCAP content:&lt;/p&gt;
@@ -330,7 +319,7 @@ Options:
     PostgreSQL&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/"&gt;Documenting a bit more than just
     descriptions&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><category term="openscap"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>XCCDF - Documenting a bit more than just descriptions</title><link href="https://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/" rel="alternate"></link><published>2013-12-16T04:58:00+01:00</published><updated>2013-12-16T04:58:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-16:/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/</id><summary type="html">&lt;p&gt;In my &lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;previous
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry><entry><title>XCCDF - Documenting a bit more than just descriptions</title><link href="https://blog.siphos.be/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/" rel="alternate"></link><published>2013-12-16T04:58:00+01:00</published><updated>2013-12-16T04:58:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-16:/2013/12/xccdf-documenting-a-bit-more-than-just-descriptions/</id><summary type="html">&lt;p&gt;In my &lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;previous
 post&lt;/a&gt; I
 made a skeleton XCCDF document. By now, we can create a well documented
 "baseline" (best practice) for our subject (say PostgreSQL). But for now
@@ -391,91 +380,49 @@ automated validation is provided by the &lt;code&gt;system&lt;/code&gt; attribut
 this case refers to the SCE system. The &lt;code&gt;check-content-ref&lt;/code&gt; element
 refers to the script to be executed.&lt;/p&gt;
 &lt;p&gt;Let's look at the contents of the script:&lt;/p&gt;
-&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#!/bin/sh
 
-&lt;span class="c1"&gt;# Get CHOST value&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting CHOST variable content through portageq.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;portageq envvar CHOST&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;then&lt;/span&gt;
-  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- The portageq command failed. Falling back to glibc build info.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat /var/db/pkg/sys-libs/glibc-*/CHOST &lt;span class="p"&gt;|&lt;/span&gt; tail -1&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got CHOST=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+# Get CHOST value
+echo &amp;quot;Getting CHOST variable content through portageq.&amp;quot;;
+my_chost=$(portageq envvar CHOST);
+if [ -z &amp;quot;${my_chost}&amp;quot; ];
+then
+  echo &amp;quot;-- The portageq command failed. Falling back to glibc build info.&amp;quot;;
+  my_chost=$(cat /var/db/pkg/sys-libs/glibc-*/CHOST | tail -1);
+fi
+echo &amp;quot;-- Got CHOST=${my_chost}&amp;quot;;
 
-&lt;span class="c1"&gt;# Get current GCC version&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting current GCC version through /etc/env.d/gcc/config-*&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;grep CURRENT /etc/env.d/gcc/config-* &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:CURRENT=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;-::g&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:\([0-9\.-r]*\){&lt;/span&gt;$&lt;span class="s2"&gt;,-.*&lt;/span&gt;$&lt;span class="s2"&gt;}:\1:g&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got version=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+# Get current GCC version
+echo &amp;quot;Getting current GCC version through /etc/env.d/gcc/config-*&amp;quot;;
+current_gcc=$(grep CURRENT /etc/env.d/gcc/config-* | sed -e &amp;quot;s:CURRENT=${my_chost}-::g&amp;quot; | sed -e &amp;quot;s:\([0-9\.-r]*\){$,-.*$}:\1:g&amp;quot; );
+echo &amp;quot;-- Got version=${current_gcc}&amp;quot;;
 
-&lt;span class="c1"&gt;# Get type&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Getting compiler type (profile/spec) through its CURRENT= value.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;grep CURRENT /etc/env.d/gcc/config-* &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s2"&gt;&amp;quot;s:CURRENT=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;my_chost&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;-&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;::g&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sed -e &lt;span class="s1"&gt;&amp;#39;s:^-::g&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- Got type=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+# Get type
+echo &amp;quot;Getting compiler type (profile/spec) through its CURRENT= value.&amp;quot;;
+current_type=$(grep CURRENT /etc/env.d/gcc/config-* | sed -e &amp;quot;s:CURRENT=${my_chost}-${current_gcc}::g&amp;quot; | sed -e &amp;#39;s:^-::g&amp;#39;);
+echo &amp;quot;-- Got type=${current_type}&amp;quot;;
 
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Checking USE flags of gcc-&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; for hardened USE flag.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-grep -q hardened /var/db/pkg/sys-devel/gcc-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/USE&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;current_hardened_use&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$?&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_hardened_use&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; -ne &lt;span class="m"&gt;0&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;then&lt;/span&gt;
-  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! GCC &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; is not build with USE=hardened!&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! Please enable a hardened profile.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="k"&gt;else&lt;/span&gt;
-  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- GCC &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_gcc&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; is build with USE=hardened.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -z &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;then&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;-- The default type is used which is a hardened type.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_PASS&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;else&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! A non-default type is used: &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;current_type&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;!! This means not all hardened toolchain measures are enabled.&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-    &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;XCCDF_RESULT_FAIL&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+echo &amp;quot;Checking USE flags of gcc-${current_gcc} for hardened USE flag.&amp;quot;;
+grep -q hardened /var/db/pkg/sys-devel/gcc-${current_gcc}/USE;
+current_hardened_use=$?;
+if [ ${current_hardened_use} -ne 0 ];
+then
+  echo &amp;quot;!! GCC ${current_gcc} is not build with USE=hardened!&amp;quot;;
+  echo &amp;quot;!! Please enable a hardened profile.&amp;quot;;
+  exit ${XCCDF_RESULT_FAIL};
+else
+  echo &amp;quot;-- GCC ${current_gcc} is build with USE=hardened.&amp;quot;;
+  if [ -z &amp;quot;${current_type}&amp;quot; ];
+  then
+    echo &amp;quot;-- The default type is used which is a hardened type.&amp;quot;;
+    exit ${XCCDF_RESULT_PASS};
+  else
+    echo &amp;quot;!! A non-default type is used: ${current_type}&amp;quot;;
+    echo &amp;quot;!! This means not all hardened toolchain measures are enabled.&amp;quot;;
+    exit ${XCCDF_RESULT_FAIL};
+  fi
+fi
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As you can see, the script can give output when needed, but the most
 important part is that it has to return a particular return value. This
@@ -487,7 +434,7 @@ return value is provided through environment variables
 right profile. By selecting the profile, the XCCDF interpreter will also
 automatically check the rules referred to by the profile (and the rules
 that do not have &lt;code&gt;selected="false"&lt;/code&gt; set too).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# oscap xccdf eval --profile ... gentoo-xccdf.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# oscap xccdf eval --profile ... gentoo-xccdf.xml
 
 Title   Test if the hardened toolchain is used
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-toolchain-hardened
@@ -496,17 +443,15 @@ Result  pass
 Title   Test if sulogin is used for single-user boot (/etc/inittab)
 Rule    xccdf_org.gentoo.dev.swift_rule_inittab-sulogin
 Result  fail
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now, if you want to check this on several systems, you would need to
 distribute not only the XCCDF file, but also all files referred to by
 the XCCDF document. As this is counterproductive, SCAP supports &lt;em&gt;Data
 Streams&lt;/em&gt;. A data stream is a single file that includes the content of
 all files. With openscap, data streams can be made as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# oscap ds sds-compose postgresql-xccdf.xml postgresql-ds.xml
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# oscap ds sds-compose postgresql-xccdf.xml postgresql-ds.xml
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So now we have a document explaining the secure setup of a component,
 and included automated checks to validate system compliance with the
@@ -517,4 +462,4 @@ document using scripts. In the next post, I'll go on with OVAL.&lt;/p&gt;
     introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/an-xccdf-skeleton-for-postgresql/"&gt;An XCCDF skeleton for
     PostgreSQL&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><category term="openscap"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry></feed>
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="scap"></category><category term="sce"></category><category term="xccdf"></category></entry></feed>

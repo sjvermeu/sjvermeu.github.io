@@ -249,7 +249,7 @@ distributed otherwise. It is a command-line application that you feed
 single policy rules at one at a time. Each rule can be accompanied with
 a single-line comment, making it obvious for the user to know why he
 added the rule in the first place.</p>
-<div class="highlight"><pre><span></span># selocal --help
+<div class="highlight"><pre><span></span><code># selocal --help
 Usage: selocal [] []
 
 Command can be one of:
@@ -269,8 +269,7 @@ The option -a requires that a rule is given, like so:
   selocal -a &quot;dbadm_role_change(staff_r)&quot;
 The option -d requires that a line number, as shown by the --list, is given, like so:
   selocal -d 12
-</pre></div>
-
+</code></pre></div>
 
 <p>Let's say that you need to launch a small script you written as a
 daemon, but you want this to run while you are still in the <em>staff_t</em>
@@ -278,25 +277,22 @@ domain (it is a user-sided daemon you use personally). As regular
 <em>staff_t</em> isn't allowed to have processes bind on generic ports/nodes,
 you need to enhance the SELinux policy a bit. With <strong>selocal</strong>, you can
 do so as follows:</p>
-<div class="highlight"><pre><span></span># selocal --add &quot;corenet_tcp_bind_generic_node(staff_t)&quot; --comment &quot;Launch local webserv.py daemon&quot;
+<div class="highlight"><pre><span></span><code># selocal --add &quot;corenet_tcp_bind_generic_node(staff_t)&quot; --comment &quot;Launch local webserv.py daemon&quot;
 # selocal --add &quot;corenet_tcp_bind_generic_port(staff_t)&quot; --comment &quot;Launch local webserv.my daemon&quot;
 # selocal --build --load
 (some output on building the policy module)
-</pre></div>
-
+</code></pre></div>
 
 <p>When finished, the local policy is enhanced with the two mentioned
 rules. You can query which rules are currently stored in the policy:</p>
-<div class="highlight"><pre><span></span># selocal --list
+<div class="highlight"><pre><span></span><code># selocal --list
 12: corenet_tcp_bind_generic_node(staff_t) # Launch local webserv.py daemon
 13: corenet_tcp_bind_generic_port(staff_t) # Launch local webserv.py daemon
-</pre></div>
-
+</code></pre></div>
 
 <p>If you need to delete a rule, just pass the line number:</p>
-<div class="highlight"><pre><span></span># selocal --delete 13
-</pre></div>
-
+<div class="highlight"><pre><span></span><code># selocal --delete 13
+</code></pre></div>
 
 <p>Having this tool around also makes it easier to test out changes
 suggested through bugreports. When I test such changes, I add in the bug

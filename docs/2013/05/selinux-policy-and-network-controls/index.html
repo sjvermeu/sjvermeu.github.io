@@ -16,7 +16,7 @@
     <meta name="keywords" content="networking, policy, selinux">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="SELinux policy and network controls" />
-<meta property="og:description" content="Let&#39;s talk about how SELinux governs network streams (and how it reflects this into the policy). When you don&#39;t do fancy stuff like SECMARK or netlabeling, then the classes that you should keep an eye on are tcp_socket and udp_socket (depending on the protocol). There used to be node and …" />
+<meta property="og:description" content="Let&#39;s talk about how SELinux governs network streams (and how it reflects this into the policy). When you don&#39;t do fancy stuff like SECMARK or netlabeling, then the classes that you should keep an eye on are tcp_socket and udp_socket (depending on the protocol). There used to be …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/" />
 <meta property="og:type" content="article" />
@@ -245,20 +245,18 @@ client-like behavior (which "connects" to a port). Consider an FTP
 daemon (domain <code>ftpd_t</code>) versus FTP client (example domain <code>ncftp_t</code>).</p>
 <p>In case of a daemon, the policy would contain the following (necessary)
 rules:</p>
-<div class="highlight"><pre><span></span>corenet_tcp_bind_generic_node(ftpd_t) # Somewhat legacy but still needed
+<div class="highlight"><pre><span></span><code>corenet_tcp_bind_generic_node(ftpd_t) # Somewhat legacy but still needed
 corenet_tcp_bind_ftp_port(ftpd_t)
 corenet_tcp_bind_ftp_data_port(ftpd_t)
 corenet_tcp_bind_all_unreserved_ports(ftpd_t) # In case of passive mode
-</pre></div>
-
+</code></pre></div>
 
 <p>This gets translated to the following "real" SELinux statements:</p>
-<div class="highlight"><pre><span></span>allow ftpd_t node_t:tcp_socket node_bind;
+<div class="highlight"><pre><span></span><code>allow ftpd_t node_t:tcp_socket node_bind;
 allow ftpd_t ftp_port_t:tcp_socket name_bind;
 allow ftpd_t ftp_data_port_t:tcp_socket name_bind;
 allow ftpd_t unreserved_port_type:tcp_socket name_bind;
-</pre></div>
-
+</code></pre></div>
 
 <p>I mention that <em>corenet_tcp_bind_generic_node</em> as being somewhat
 legacy. When you use netlabeling, you can define different nodes (a
@@ -269,21 +267,19 @@ work with is <code>node_t</code> which represents any possible node. Also, the u
 of passive mode within the ftp policy is governed through the
 <em>ftpd_use_passive_mode</em> boolean.</p>
 <p>For a client, the following policy line would suffice:</p>
-<div class="highlight"><pre><span></span>corenet_tcp_connect_ftp_port(ncftp_t)
+<div class="highlight"><pre><span></span><code>corenet_tcp_connect_ftp_port(ncftp_t)
 # allow ncftp_t ftp_port_t:tcp_socket name_connect;
-</pre></div>
-
+</code></pre></div>
 
 <p>Well, I lied. Because of how FTP works, if you use active connections,
 you need to allow the client to bind on an unreserved port, and allow
 the server to connect to unreserved ports (cfr code snippet below), but
 you get the idea.</p>
-<div class="highlight"><pre><span></span>corenet_tcp_connect_all_unreserved_ports(ftpd_t)
+<div class="highlight"><pre><span></span><code>corenet_tcp_connect_all_unreserved_ports(ftpd_t)
 
 corenet_tcp_bind_generic_node(ncftp_t)
 corenet_tcp_bind_all_unreserved_ports(ncftp_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>In the past, policy developers also had to include other lines, but
 these have by time become obsolete (<em>corenet_tcp_sendrecv_ftp_port</em>
@@ -348,7 +344,7 @@ class and peer types to send or receive messages from).</p>
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2013/05/selinux-policy-and-network-controls/",
-    "description": "Let's talk about how SELinux governs network streams (and how it reflects this into the policy). When you don't do fancy stuff like SECMARK or netlabeling, then the classes that you should keep an eye on are tcp_socket and udp_socket (depending on the protocol). There used to be node and …"
+    "description": "Let's talk about how SELinux governs network streams (and how it reflects this into the policy). When you don't do fancy stuff like SECMARK or netlabeling, then the classes that you should keep an eye on are tcp_socket and udp_socket (depending on the protocol). There used to be …"
 }
 </script>
     <!-- Disqus count -->

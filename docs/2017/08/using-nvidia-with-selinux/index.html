@@ -245,12 +245,11 @@ can be loaded (as unsigned or wrongly signed modules are not allowed on the
 system), was different.</p>
 <p>It used to be as follows (example for a single module, it had to be repeated
 for each affected kernel module):</p>
-<div class="highlight"><pre><span></span>~# perl /usr/src/linux/scripts/sign-file sha512 \
+<div class="highlight"><pre><span></span><code>~# perl /usr/src/linux/scripts/sign-file sha512 \
       /usr/src/linux/signing_key.priv \
       /usr/src/linux/signing_key.x509 \
       /lib/modules/4.12.5-gentoo/video/nvidia-uvm.ko
-</pre></div>
-
+</code></pre></div>
 
 <p>However, from version 4.3.3 onward (as also explained by this excellent
 <a href="https://wiki.gentoo.org/wiki/Signed_kernel_module_support">Signed kernel module support article</a> on the Gentoo wiki) this command
@@ -265,7 +264,7 @@ for sure.</p>
 <p>However, attempts to use 3D applications showed (through SELinux denials)
 that access to these device files is needed. Without that, applications just
 crashed, like so:</p>
-<div class="highlight"><pre><span></span>org.lwjgl.LWJGLException: X Error - disp: 0x7fd164907b00 serial: 150 error: BadValue (integer parameter out of range for operation) request_code: 153 minor_code: 24
+<div class="highlight"><pre><span></span><code>org.lwjgl.LWJGLException: X Error - disp: 0x7fd164907b00 serial: 150 error: BadValue (integer parameter out of range for operation) request_code: 153 minor_code: 24
         at org.lwjgl.opengl.LinuxDisplay.globalErrorHandler(LinuxDisplay.java:320)
         at org.lwjgl.opengl.LinuxContextImplementation.nCreate(Native Method)
         at org.lwjgl.opengl.LinuxContextImplementation.create(LinuxContextImplementation.java:51)
@@ -277,8 +276,7 @@ crashed, like so:</p>
         at bib.aq(SourceFile:458)
         at bib.a(SourceFile:404)
         at net.minecraft.client.main.Main.main(SourceFile:123)
-</pre></div>
-
+</code></pre></div>
 
 <p>Not really useful to debug for me, but the SELinux denials were a bit more obvious,
 showing requests for read and write to the <code>nvidiactl</code> character device.</p>
@@ -287,15 +285,13 @@ showing requests for read and write to the <code>nvidiactl</code> character devi
 files were added after the automated <code>restorecon</code> was done on the <code>/dev</code> location).</p>
 <p>So, adding the following command to my local init script fixed the context setting
 at boot up:</p>
-<div class="highlight"><pre><span></span>restorecon /dev/nvidiactl /dev/nvidia0
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>restorecon /dev/nvidiactl /dev/nvidia0
+</code></pre></div>
 
 <p>Also, the domains that needed to use nVidia had to receive the following
 addition SELinux-policy-wise:</p>
-<div class="highlight"><pre><span></span>dev_rw_xserver_misc(...)
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>dev_rw_xserver_misc(...)
+</code></pre></div>
 
 <p>Perhaps this can be made more fine-grained (as there are several other device
 files marked as <code>xserver_misc_device_t</code>) but for now this should suffice.</p>
@@ -306,7 +302,7 @@ X server did not work automatically though, and it took some fiddling to get
 it to work.</p>
 <p>In the end, I had to add in an <code>nvidia.conf</code> file inside <code>/etc/X11/xorg.conf.d</code>
 with the following content:</p>
-<div class="highlight"><pre><span></span>Section &quot;ServerLayout&quot;
+<div class="highlight"><pre><span></span><code>Section &quot;ServerLayout&quot;
         Identifier      &quot;layout&quot;
         Screen  0       &quot;nvidia&quot;
         Inactive        &quot;intel&quot;
@@ -333,21 +329,18 @@ Section &quot;Screen&quot;
         Identifier      &quot;intel&quot;
         Device          &quot;intel&quot;
 EndSection
-</pre></div>
-
+</code></pre></div>
 
 <p>And with a single <code>xrandr</code> command I re-enabled split screen support (as by
 default it now showed the same output on both screens):</p>
-<div class="highlight"><pre><span></span>~$ xrandr --output eDP-1-1 --left-of HDMI-1-2
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~$ xrandr --output eDP-1-1 --left-of HDMI-1-2
+</code></pre></div>
 
 <p>I also had to set the output source to the nVidia device, by adding the following
 lines to my <code>~/.xinitrc</code> file:</p>
-<div class="highlight"><pre><span></span>xrandr --setprovideroutputsource modesetting NVIDIA-0
+<div class="highlight"><pre><span></span><code>xrandr --setprovideroutputsource modesetting NVIDIA-0
 xrandr --auto
-</pre></div>
-
+</code></pre></div>
 
 <p>And with that, another thing was crossed off from my TODO list. Which has become
 quite large after my holidays (went to Kos, Greece) as I had many books and articles

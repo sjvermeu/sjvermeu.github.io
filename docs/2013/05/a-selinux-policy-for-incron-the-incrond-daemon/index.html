@@ -16,7 +16,7 @@
     <meta name="keywords" content="incrond, selinux">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="A SELinux policy for incron: the incrond daemon" />
-<meta property="og:description" content="With incrontab_t (hopefully) complete, let&#39;s look at the incrond_t domain. As this domain will also be used to execute the user (and system) commands provided through the incrontabs, we need to consider how we are going to deal with this wide range of possible permissions that it might take. One …" />
+<meta property="og:description" content="With incrontab_t (hopefully) complete, let&#39;s look at the incrond_t domain. As this domain will also be used to execute the user (and system) commands provided through the incrontabs, we need to consider how we are going to deal with this wide range of possible permissions that it might …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/" />
 <meta property="og:type" content="article" />
@@ -248,7 +248,7 @@ the <em>foo</em> SELinux module can decide.</p>
 create a new interface called <em>incron_entry</em>, taken a bit from the
 <em>cron_system_entry</em> interface already in place for the regular <em>cron</em>
 domain (the following comes in <code>incron.if</code>):</p>
-<div class="highlight"><pre><span></span>## &lt;summary&gt;
+<div class="highlight"><pre><span></span><code>## &lt;summary&gt;
 ##      Make the specified program domain
 ##      accessible from the incrond job.
 ## &lt;/summary&gt;
@@ -270,8 +270,7 @@ interface(`incron_entry&#39;,`
 
         domtrans_pattern(incrond_t, $2, $1)
 &#39;)
-</pre></div>
-
+</code></pre></div>
 
 <p>With this in place, the <em>foo</em> SELinux module can call
 <em>incron_entry(foo_t, foo_exec_t)</em> so that, the moment <code>incrond_t</code>
@@ -282,7 +281,7 @@ shell_exec_t)</em>, making every shell script being called run in
 <code>system_cronjob_t</code> domain (for instance in the <code>localuser.te</code> file that
 already assigned <em>incron_role</em> to the <code>user_t</code> domain.</p>
 <p>With that in place, it's time to start our iterations again.</p>
-<div class="highlight"><pre><span></span># run_init rc-service incrond start
+<div class="highlight"><pre><span></span><code># run_init rc-service incrond start
 * start-stop-daemon: failed to start &#39;/usr/sbin/incrond&#39; [ !! ]
 * ERROR: incrond failed to start
 
@@ -292,13 +291,12 @@ type=AVC msg=audit(1368732494.275:28320): avc:  denied  { create } for  pid=9282
 type=AVC msg=audit(1368732494.276:28321): avc:  denied  { read } for  pid=9282 comm=&quot;incrond&quot; name=&quot;incron.d&quot; dev=&quot;dm-2&quot; ino=394140 scontext=system_u:system_r:incrond_t tcontext=root:object_r:incron_spool_t tclass=dir
 type=AVC msg=audit(1368732494.276:28322): avc:  denied  { create } for  pid=9282 comm=&quot;incrond&quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 type=AVC msg=audit(1368732494.276:28323): avc:  denied  { create } for  pid=9282 comm=&quot;incrond&quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
-</pre></div>
-
+</code></pre></div>
 
 <p>Ignoring the <em>unix_dgram_socket</em> for now, we need to allow <code>incrond_t</code>
 to read locale information, and to read the files in the
 <code>/var/spool/incron</code> location (this goes in <code>incron.te</code> again):</p>
-<div class="highlight"><pre><span></span>###########################################
+<div class="highlight"><pre><span></span><code>###########################################
 #
 # incrond policy
 #
@@ -308,29 +306,26 @@ read_files_pattern(incrond_t, incron_spool_t, incron_spool_t)
 files_search_spool(incrond_t)
 
 miscfiles_read_localization(incrond_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>The next run fails again, with the following denials:</p>
-<div class="highlight"><pre><span></span>type=AVC msg=audit(1368732806.757:28328): avc:  denied  { create } for  pid=9419 comm=&quot;incrond&quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
+<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368732806.757:28328): avc:  denied  { create } for  pid=9419 comm=&quot;incrond&quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 type=AVC msg=audit(1368732806.757:28329): avc:  denied  { read } for  pid=9419 comm=&quot;incrond&quot; name=&quot;incron.d&quot; dev=&quot;dm-2&quot; ino=394140 scontext=system_u:system_r:incrond_t tcontext=root:object_r:incron_spool_t tclass=dir
 type=AVC msg=audit(1368732806.757:28330): avc:  denied  { create } for  pid=9419 comm=&quot;incrond&quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 type=AVC msg=audit(1368732806.757:28331): avc:  denied  { create } for  pid=9419 comm=&quot;incrond&quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
-</pre></div>
-
+</code></pre></div>
 
 <p>So although <code>incrond_t</code> has search rights on the <code>incron_spool_t</code>
 directories (through the <code>read_files_pattern</code>), we need to grant it
 <em>list_dir_perms</em> as well (which contains the <em>read</em> permission). As
 <em>list_dir_perms</em> contains search anyhow, we can just update the line
 with:</p>
-<div class="highlight"><pre><span></span>allow incrond_t incron_spool_t:dir list_dir_perms;
+<div class="highlight"><pre><span></span><code>allow incrond_t incron_spool_t:dir list_dir_perms;
 allow incrond_t incron_spool_t:file read_file_perms;
-</pre></div>
-
+</code></pre></div>
 
 <p>Now the startup seems to work, but we still get denials:</p>
-<div class="highlight"><pre><span></span># run_init rc-service incrond start
+<div class="highlight"><pre><span></span><code># run_init rc-service incrond start
 * Starting incrond... [ ok ]
 
 # ps -eZ | grep incrond
@@ -342,8 +337,7 @@ type=AVC msg=audit(1368733443.799:28340): avc:  denied  { create } for  pid=9551
 type=AVC msg=audit(1368733443.802:28341): avc:  denied  { write } for  pid=9552 comm=&quot;incrond&quot; name=&quot;/&quot; dev=&quot;tmpfs&quot; ino=1970 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:var_run_t tclass=dir
 type=AVC msg=audit(1368733443.806:28342): avc:  denied  { create } for  pid=9552 comm=&quot;incrond&quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
 type=AVC msg=audit(1368733443.806:28343): avc:  denied  { create } for  pid=9552 comm=&quot;incrond&quot; scontext=system_u:system_r:incrond_t tcontext=system_u:system_r:incrond_t tclass=unix_dgram_socket
-</pre></div>
-
+</code></pre></div>
 
 <p>Those <em>unix_dgram_sockets</em> are here again. But seeing that <code>cron.log</code>
 is empty, and <em>logging_send_syslog_msg</em> is one of the interfaces that
@@ -351,18 +345,17 @@ would enable it, we might want to do just that so that we get more
 information about why <strong>incrond</strong> doesn't properly start. Also, it tries
 to write into <code>var_run_t</code> labeled directories, probably for its PID
 file, so add in a proper file transition as well as manage rights:</p>
-<div class="highlight"><pre><span></span>type incrond_var_run_t;
+<div class="highlight"><pre><span></span><code>type incrond_var_run_t;
 files_pid_file(incrond_var_run_t)
 ...
 allow incrond_t incrond_var_run_t:file manage_file_perms;
 files_pid_filetrans(incrond_t, incrond_var_run_t, file)
 ...
 logging_send_syslog_msg(incrond_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>With that in place:</p>
-<div class="highlight"><pre><span></span># run_init rc-service incrond start
+<div class="highlight"><pre><span></span><code># run_init rc-service incrond start
 * Starting incrond... [ ok ]
 
 # ps -eZ | grep incron
@@ -378,12 +371,11 @@ May 16 21:51:34 test incrond[9648]: ready to process filesystem events
 # tail audit.log
 type=AVC msg=audit(1368733894.641:28347): avc:  denied  { read } for  pid=9648 comm=&quot;incrond&quot; name=&quot;nsswitch.conf&quot; dev=&quot;dm-2&quot; ino=393768 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:etc_t tclass=file
 type=AVC msg=audit(1368733894.645:28349): avc:  denied  { read } for  pid=9648 comm=&quot;incrond&quot; name=&quot;passwd&quot; dev=&quot;dm-2&quot; ino=394223 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:etc_t tclass=file
-</pre></div>
-
+</code></pre></div>
 
 <p>It looks like we're getting there. Similar as with <strong>incrontab</strong> we
 allow <em>auth_use_nsswitch</em> as well, and then get:</p>
-<div class="highlight"><pre><span></span># tail cron.log
+<div class="highlight"><pre><span></span><code># tail cron.log
 May 16 21:55:10 test incrond[9715]: starting service (version 0.5.10, built on May 16 2013 12:11:29)
 May 16 21:55:10 test incrond[9716]: loading system tables
 May 16 21:55:10 test incrond[9716]: loading user tables
@@ -395,8 +387,7 @@ May 16 21:55:10 test incrond[9716]: ready to process filesystem events
 # tail audit.log
 type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&quot;incrond&quot; path=&quot;/home/user/test2&quot; dev=&quot;dm-0&quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
 type=AVC msg=audit(1368734110.913:28354): avc:  denied  { read } for  pid=9716 comm=&quot;incrond&quot; name=&quot;test2&quot; dev=&quot;dm-0&quot; ino=16 scontext=system_u:system_r:incrond_t tcontext=user_u:object_r:user_home_t tclass=dir
-</pre></div>
-
+</code></pre></div>
 
 <p>What happens is that <strong>incrond</strong> read the (user) crontab, found that it
 had to "watch" <code>/home/user/test2</code> but fails because SELinux doesn't
@@ -458,7 +449,7 @@ next time ;-)</p>
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/",
-    "description": "With incrontab_t (hopefully) complete, let's look at the incrond_t domain. As this domain will also be used to execute the user (and system) commands provided through the incrontabs, we need to consider how we are going to deal with this wide range of possible permissions that it might take. One …"
+    "description": "With incrontab_t (hopefully) complete, let's look at the incrond_t domain. As this domain will also be used to execute the user (and system) commands provided through the incrontabs, we need to consider how we are going to deal with this wide range of possible permissions that it might …"
 }
 </script>
     <!-- Disqus count -->

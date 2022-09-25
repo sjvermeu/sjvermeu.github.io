@@ -259,20 +259,18 @@ sanitized.</p>
 environment sanitation activity for a particular transition. You can do
 this through the following allow statement (applied to the above
 example):</p>
-<div class="highlight"><pre><span></span>allow sysadm_t mozilla_t:process { noatsecure };
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>allow sysadm_t mozilla_t:process { noatsecure };
+</code></pre></div>
 
 <p>if every domain transition for which this permission isn't allowed would
 log its denial, our audit logs would be filled with noise. That is why
 the reference policy by default hides (<code>dontaudit</code>) these calls. But
 knowing what they are for is important, because you might sometimes come
 into contact with it, like I did:</p>
-<div class="highlight"><pre><span></span>&gt;&gt;&gt; Installing (1 of 1) net-dns/host-991529
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; Installing (1 of 1) net-dns/host-991529
 &gt;&gt;&gt; Setting SELinux security labels
 ERROR: ld.so: object &#39;libsandbox.so&#39; from LD_PRELOAD cannot be preloaded: ignored.
-</pre></div>
-
+</code></pre></div>
 
 <p>This error message is when Portage (running in <code>portage_t</code>) wants to
 relabel the files that it just placed on the system through setfiles
@@ -294,7 +292,7 @@ sanitation here. That does mean that the warning will stay as we cannot
 control that from within SELinux.</p>
 <p>If you want to allow <em>noatsecure</em> here, create a simple module and load
 it:</p>
-<div class="highlight"><pre><span></span>~# cat &gt; portage_noatsecure.te &lt;&lt; EOF
+<div class="highlight"><pre><span></span><code>~# cat &gt; portage_noatsecure.te &lt;&lt; EOF
 module portage_noatsecure 1.0;
 require {
   type portage_t;
@@ -306,7 +304,7 @@ EOF
 ~# checkmodule -m -o portage_noatsecure.mod portage_noatsecure.te
 ~# semodule_package -o portage_noatsecure.pp -m portage_noatsecure.mod
 ~# semodule -i portage_noatsecure.pp
-</pre></div>
+</code></pre></div>
         </div>
 
         <!-- Neighbors -->

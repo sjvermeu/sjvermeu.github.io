@@ -247,18 +247,16 @@ the first thing to look at is to see if this risk can be reduced. Of
 course, using an intrusion detection system like
 <a href="https://wiki.gentoo.org/wiki/AIDE">AIDE</a> helps, but even with Gentoo's
 <strong>qcheck</strong> command you can test the integrity of the files:</p>
-<div class="highlight"><pre><span></span># qcheck www-servers/apache
+<div class="highlight"><pre><span></span><code># qcheck www-servers/apache
 Checking www-servers/apache-2.2.24 ...
   * 424 out of 424 files are good
-</pre></div>
-
+</code></pre></div>
 
 <p>If the binary is modified, this would result in something equivalent to:</p>
-<div class="highlight"><pre><span></span>Checking www-servers/apache-2.2.24 ...
+<div class="highlight"><pre><span></span><code>Checking www-servers/apache-2.2.24 ...
  MD5-DIGEST: /usr/sbin/apache2
   * 423 out of 424 files are good
-</pre></div>
-
+</code></pre></div>
 
 <p>I don't know if the modified binary would otherwise work just fine, I
 have not been able to find exact details on the infected binary to (in a
@@ -271,9 +269,8 @@ the proper SELinux context on the file (if it overwrites the existing
 binary, then the context is retained, otherwise it gets the default
 context of <code>bin_t</code>). If the context is wrong, then starting Apache
 results in:</p>
-<div class="highlight"><pre><span></span>apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
+</code></pre></div>
 
 <p>This is because the modified binary stays in the calling domain context
 (<code>initrc_t</code>). If you use a targeted policy, then this will not present
@@ -287,7 +284,7 @@ articles I read, the malware can do a reverse connect. That means that
 the domain will attempt to connect to an IP address provided by the
 attacker (in a specifically crafted URL). For SELinux, this means that
 the <em>name_connect</em> permission is checked:</p>
-<div class="highlight"><pre><span></span># sesearch -s httpd_t -c tcp_socket -p name_connect -ACTS
+<div class="highlight"><pre><span></span><code># sesearch -s httpd_t -c tcp_socket -p name_connect -ACTS
 Found 20 semantic av rules:
    allow nsswitch_domain dns_port_t : tcp_socket { name_connect } ; 
 DT allow httpd_t port_type : tcp_socket { name_connect } ; [ httpd_can_network_connect ]
@@ -309,8 +306,7 @@ DT allow httpd_t pop_port_t : tcp_socket { name_connect } ; [ httpd_can_sendmail
 DT allow nsswitch_domain ocsp_port_t : tcp_socket { name_connect } ; [ allow_kerberos ]
 DT allow httpd_t gds_db_port_t : tcp_socket { name_connect } ; [ httpd_can_network_connect_db ]
 DT allow httpd_t gopher_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
-</pre></div>
-
+</code></pre></div>
 
 <p>So by default, the Apache (<code>httpd_t</code>) domain is allowed to connect to
 DNS port (to resolve hostnames). All other <em>name_connect</em> calls depend
@@ -332,12 +328,11 @@ access to the shared memory. However, if this shared memory would need
 to be accessed by third party applications (the malware seems to grant
 read/write rights on everybody to this segment) SELinux will prevent
 this:</p>
-<div class="highlight"><pre><span></span># sesearch -t httpd_t -c shm -ACTS
+<div class="highlight"><pre><span></span><code># sesearch -t httpd_t -c shm -ACTS
 Found 2 semantic av rules:
    allow unconfined_domain_type domain : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ; 
    allow httpd_t httpd_t : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ;
-</pre></div>
-
+</code></pre></div>
 
 <p>Only unconfined domains and the <code>httpd_t</code> domain itself have access to
 <code>httpd_t</code> labeled shared memory.</p>

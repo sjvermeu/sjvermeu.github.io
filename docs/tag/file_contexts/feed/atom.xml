@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - file_contexts</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/file_contexts/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2014-07-09T20:35:00+02:00</updated><entry><title>Segmentation fault when emerging packages after libpcre upgrade?</title><link href="https://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/" rel="alternate"></link><published>2014-07-09T20:35:00+02:00</published><updated>2014-07-09T20:35:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-07-09:/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/</id><summary type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
 to the file system, with an error that looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
- * ERROR: dev-libs/libpcre-8.35::gentoo …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
+ * ERROR: dev-libs/libpcre-8 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
 to the file system, with an error that looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
  * ERROR: dev-libs/libpcre-8.35::gentoo failed:
  *   Failed to set SELinux security labels.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This has been &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=516608"&gt;reported as bug
 516608&lt;/a&gt; and, after some
 investigation, the cause is found. First the quick workaround:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# cd /etc/selinux/strict/contexts/files
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# cd /etc/selinux/strict/contexts/files
 ~# rm *.bin
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And do the same for the other SELinux policy stores on the system
 (targeted, mcs, mls, ...).&lt;/p&gt;
@@ -49,4 +47,4 @@ in time, so the workaround might be needed.&lt;/p&gt;
 considering that libselinux is most likely to be stabilized faster than
 any libpcre bump I let it go.&lt;/p&gt;
 &lt;p&gt;At least we have a solution for future upgrades; sorry for the noise.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; &lt;code&gt;libselinux-2.2.2-r5&lt;/code&gt; also has the fix included.&lt;/p&gt;</content><category term="file_contexts"></category><category term="fix"></category><category term="Gentoo"></category><category term="libselinux"></category><category term="pcre"></category></entry></feed>
+&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; &lt;code&gt;libselinux-2.2.2-r5&lt;/code&gt; also has the fix included.&lt;/p&gt;</content><category term="SELinux"></category><category term="file_contexts"></category><category term="fix"></category><category term="Gentoo"></category><category term="libselinux"></category><category term="pcre"></category></entry></feed>

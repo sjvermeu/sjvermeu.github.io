@@ -235,27 +235,24 @@
 allowed</a>
 to execute <strong>incrontab</strong>, let's fire it up and look at the denials to
 build up the policy.</p>
-<div class="highlight"><pre><span></span>$ incrontab --help
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>$ incrontab --help
+</code></pre></div>
 
 <p>That doesn't show much does it? Well, if you look into the <code>audit.log</code>
 (or <code>avc.log</code>) file, you'll notice a lot of denials. If you are
 developing a policy, it is wise to clear the entire log and reproduce
 the "situation" so you get a proper idea of the scope.</p>
-<div class="highlight"><pre><span></span># cd /var/log/audit
+<div class="highlight"><pre><span></span><code># cd /var/log/audit
 # &gt; audit.log
 # tail -f audit.log | grep AVC
-</pre></div>
-
+</code></pre></div>
 
 <p>Now let's run <strong>incrontab --help</strong> again and look at the denials:</p>
-<div class="highlight"><pre><span></span>type=AVC msg=audit(1368707274.429:28180): avc:  denied  { read write } for  pid=7742 comm=&quot;incrontab&quot; path=&quot;/dev/tty2&quot; dev=&quot;devtmpfs&quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=user_u:object_r:user_tty_device_t tclass=chr_file
+<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368707274.429:28180): avc:  denied  { read write } for  pid=7742 comm=&quot;incrontab&quot; path=&quot;/dev/tty2&quot; dev=&quot;devtmpfs&quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=user_u:object_r:user_tty_device_t tclass=chr_file
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&quot;incrontab&quot; path=&quot;/dev/tty2&quot; dev=&quot;devtmpfs&quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&quot;incrontab&quot; path=&quot;/dev/tty2&quot; dev=&quot;devtmpfs&quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
 type=AVC msg=audit(1368707274.429:28180): avc:  denied  { use } for  pid=7742 comm=&quot;incrontab&quot; path=&quot;/dev/tty2&quot; dev=&quot;devtmpfs&quot; ino=1042 scontext=user_u:user_r:incrontab_t tcontext=system_u:system_r:getty_t tclass=fd
-</pre></div>
-
+</code></pre></div>
 
 <p>You can start piping this information into <strong>audit2allow</strong> to generate
 policy statements, but I personally prefer not to use <strong>audit2allow</strong>
@@ -272,7 +269,7 @@ it the proper access. With <strong>sefindif</strong> as
 <a href="http://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/">documented</a>
 before, we can look for the proper interfaces we need. I look for
 <code>user_tty_device_t</code> with <code>rw</code> (commonly used for read-write):</p>
-<div class="highlight"><pre><span></span>$ sefindif user_tty_device_t.*rw
+<div class="highlight"><pre><span></span><code>$ sefindif user_tty_device_t.*rw
 system/userdomain.if: template(`userdom_base_user_template&#39;,`
 system/userdomain.if:   allow $1_t user_tty_device_t:chr_file { setattr rw_chr_file_perms };
 system/userdomain.if: interface(`userdom_use_user_ttys&#39;,`
@@ -283,8 +280,7 @@ system/userdomain.if: interface(`userdom_dontaudit_use_user_terminals&#39;,`
 system/userdomain.if:   dontaudit $1 user_tty_device_t:chr_file rw_term_perms;
 system/userdomain.if: interface(`userdom_dontaudit_use_user_ttys&#39;,`
 system/userdomain.if:   dontaudit $1 user_tty_device_t:chr_file rw_file_perms;
-</pre></div>
-
+</code></pre></div>
 
 <p>Two of these look interesting: <em>userdom_use_user_ttys</em> and
 <em>userdom_use_user_terminals</em>. Looking at the API documentation (or
@@ -310,7 +306,7 @@ session or so). When you <em>think</em> that the target context (in this case
 <code>getty_t</code>) could be a placeholder (so other types are likely to be
 needed as well), make sure you check which attributes are assigned to
 the type:</p>
-<div class="highlight"><pre><span></span># seinfo -tgetty_t -x
+<div class="highlight"><pre><span></span><code># seinfo -tgetty_t -x
    getty_t
       privfd
       mcssetcats
@@ -318,20 +314,18 @@ the type:</p>
       mlsfilewrite
       application_domain_type
       domain
-</pre></div>
-
+</code></pre></div>
 
 <p>Of the above ones, <code>privfd</code> is the important one:</p>
-<div class="highlight"><pre><span></span>$ sefindif privfd.*use
+<div class="highlight"><pre><span></span><code>$ sefindif privfd.*use
 kernel/domain.if: interface(`domain_use_interactive_fds&#39;,`
 kernel/domain.if:       allow $1 privfd:fd use;
 kernel/domain.if: interface(`domain_dontaudit_use_interactive_fds&#39;,`
 kernel/domain.if:       dontaudit $1 privfd:fd use;
-</pre></div>
-
+</code></pre></div>
 
 <p>So let's update <code>incron.te</code> accordingly:</p>
-<div class="highlight"><pre><span></span>...
+<div class="highlight"><pre><span></span><code>...
 type incron_spool_t;
 files_type(incron_spool_t)
 
@@ -342,24 +336,21 @@ files_type(incron_spool_t)
 
 userdom_use_user_terminals(incrontab_t)
 domain_use_interactive_fds(incrontab_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>Rebuild the policy and load it in memory.</p>
 <p>If we now run <strong>incrontab</strong> we get the online help as we expected. Let's
 now look at the currently installed incrontabs (there shouldn't be any
 of course):</p>
-<div class="highlight"><pre><span></span>$ incrontab -l
+<div class="highlight"><pre><span></span><code>$ incrontab -l
 cannot determine current user
-</pre></div>
-
+</code></pre></div>
 
 <p>In the denials, we notice:</p>
-<div class="highlight"><pre><span></span>type=AVC msg=audit(1368708632.060:28192): avc:  denied  { create } for  pid=7968 comm=&quot;incrontab&quot; scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=unix_stream_socket
+<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368708632.060:28192): avc:  denied  { create } for  pid=7968 comm=&quot;incrontab&quot; scontext=user_u:user_r:incrontab_t tcontext=user_u:user_r:incrontab_t tclass=unix_stream_socket
 type=AVC msg=audit(1368708632.060:28194): avc:  denied  { read } for  pid=7968 comm=&quot;incrontab&quot; name=&quot;nsswitch.conf&quot; dev=&quot;dm-2&quot; ino=393768 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:etc_t tclass=file
 type=AVC msg=audit(1368708632.062:28196): avc:  denied  { read } for  pid=7968 comm=&quot;incrontab&quot; name=&quot;passwd&quot; dev=&quot;dm-2&quot; ino=394223 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:etc_t tclass=file
-</pre></div>
-
+</code></pre></div>
 
 <p>Let's first focus on <code>nsswitch.conf</code> and <code>passwd</code>. Although both require
 read access to <code>etc_t</code> files, it might be wrong to just add in
@@ -368,37 +359,33 @@ suggest). For nsswitch, there is a special interface available:
 <em>auth_use_nsswitch</em>. It is very, very likely that you'll need this
 one, especially if you want to share the policy with others who might
 not have all of the system databases in local files (as <code>etc_t</code> files).</p>
-<div class="highlight"><pre><span></span>...
+<div class="highlight"><pre><span></span><code>...
 domain_use_interactive_fds(incrontab_t)
 auth_use_nsswitch(incrontab_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>Let's retry:</p>
-<div class="highlight"><pre><span></span>$ incrontab -l
+<div class="highlight"><pre><span></span><code>$ incrontab -l
 cannot read table for &#39;user&#39;: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368708893.260:28199): avc:  denied  { search } for  pid=7997 comm=&quot;incrontab&quot; name=&quot;spool&quot; dev=&quot;dm-4&quot; ino=20 scontext=user_u:user_r:incrontab_t tcontext=system_u:object_r:var_spool_t tclass=dir
-</pre></div>
-
+</code></pre></div>
 
 <p>So we need to grant search privileges on <code>var_spool_t</code>. This is offered
 through <em>files_search_spool</em>. Add it to the policy, rebuild and retry.</p>
-<div class="highlight"><pre><span></span>$ incrontab -l
+<div class="highlight"><pre><span></span><code>$ incrontab -l
 cannot read table for &#39;user&#39;: Permission denied
 
 # tail audit.log
 type=AVC msg=audit(1368709146.426:28201): avc:  denied  { search } for  pid=8046 comm=&quot;incrontab&quot; name=&quot;incron&quot; dev=&quot;dm-4&quot; ino=19725 scontext=user_u:user_r:incrontab_t tcontext=root:object_r:incron_spool_t tclass=dir
-</pre></div>
-
+</code></pre></div>
 
 <p>For this one, no interface exists yet. We might be able to create one
 for ourselves, but as long as other domains don't need it, we can just
 add it locally in our policy:</p>
-<div class="highlight"><pre><span></span>allow incrontab_t incron_spool_t:dir search_dir_perms;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>allow incrontab_t incron_spool_t:dir search_dir_perms;
+</code></pre></div>
 
 <p>Adding raw allow rules in a policy is, according to the <a href="http://oss.tresys.com/projects/refpolicy/wiki/StyleGuide">refpolicy
 styleguide</a>,
@@ -408,10 +395,9 @@ also find that you can use the <em>search_dirs_patter</em> call. However,
 that one only makes sense if you need to do this on top of another
 directory - just look at the definition of <em>search_dirs_pattern</em>. So
 with this permission set, let's retry.</p>
-<div class="highlight"><pre><span></span>$ incrontab -l
+<div class="highlight"><pre><span></span><code>$ incrontab -l
 no table for user
-</pre></div>
-
+</code></pre></div>
 
 <p>Great, we have successfully updated the policy until the commands
 worked. In the next post, we'll enhance it even further while creating

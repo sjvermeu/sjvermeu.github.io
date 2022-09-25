@@ -236,14 +236,13 @@ application for generating HTML pages). However, it failed in a
 particular feature. Not with an exception or stack trace, just
 functionally. Now, I have the source code at hand, so I look into the
 code and find the logical error. Below is a snippet of it:</p>
-<div class="highlight"><pre><span></span>if (myHandler != null) {
+<div class="highlight"><pre><span></span><code>if (myHandler != null) {
   int i = startValue + maxRange;
   for (int j = endValue; j &gt; i; j--) {
     ... (do some logic)
   }
 }
-</pre></div>
-
+</code></pre></div>
 
 <p>It doesn't matter what the code is supposed to do, but from what I can
 remember, I shouldn't be adding <code>maxRange</code> to the <code>i</code> variable (yet - as
@@ -253,7 +252,7 @@ the class file directly using <strong>dhex</strong> (a wonderful utility I recen
 discovered) because doing things the hard way is sometimes fun as well.
 So I ran <strong>javap -c MyClass</strong> to get some java bytecode information from
 the method, which gives me:</p>
-<div class="highlight"><pre><span></span>   8:   ifnull  116
+<div class="highlight"><pre><span></span><code>   8:   ifnull  116
    11:  iload_2
    12:  iload_3
    13:  iadd
@@ -263,8 +262,7 @@ the method, which gives me:</p>
    19:  iload   6
    21:  iload   5
    23:  if_icmpge       106
-</pre></div>
-
+</code></pre></div>
 
 <p>I know lines 11 and 12 is about pushing the 2nd and 3rd arguments of the
 function (which are <code>startValue</code> and <code>maxRange</code>) to the stack to add

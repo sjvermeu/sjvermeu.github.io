@@ -28,7 +28,7 @@ attributes, such as &lt;em&gt;complexity&lt;/em&gt;, &lt;em&gt;disruption&lt;/em
 that helps in deciding which auto-remediation you want to execute.&lt;/p&gt;
 &lt;p&gt;With openscap, the remediation can be triggered online during the
 evaluation, by adding &lt;code&gt;--remediate&lt;/code&gt;&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf eval --remediate --profile ${PROFILE} --cpe gentoo-cpe.xml --results results-test-xccdf.xml test-xccdf.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --remediate --profile ${PROFILE} --cpe gentoo-cpe.xml --results results-test-xccdf.xml test-xccdf.xml
 Title   There should be no /dev/ROOT in /etc/fstab
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-fstab-root
 Result  pass
@@ -45,16 +45,14 @@ Result  fail
 Title   rc_sys should be defined in /etc/rc.conf
 Rule    xccdf_org.gentoo.dev.swift_rule_installation-rc_sys
 Result  fixed
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And indeed, the file has been changed and now complies with the rules
 again.&lt;/p&gt;
 &lt;p&gt;We can also generate the remediation scripts offline:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ oscap xccdf eval --profile ${PROFILE} --results results-test-xccdf.xml --cpe gentoo-cpe.xml test-xccdf.xml
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ oscap xccdf eval --profile ${PROFILE} --results results-test-xccdf.xml --cpe gentoo-cpe.xml test-xccdf.xml
 ~$ oscap xccdf generate fix --output remediate.sh results-test-xccdf.xml
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The resulting &lt;code&gt;remediate.sh&lt;/code&gt; script then contains the steps to remediate
 the failures reported in the &lt;code&gt;results-test-xccdf.xml&lt;/code&gt; file.&lt;/p&gt;
@@ -77,4 +75,4 @@ running validation, I'll talk about OVAL in the next post.&lt;/p&gt;
     descriptions&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="http://blog.siphos.be/2013/12/running-a-bit-with-the-xccdf-document/"&gt;Running a bit with the XCCDF
     document&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><category term="openscap"></category><category term="remediation"></category><category term="scap"></category><category term="xccdf"></category></entry></feed>
+&lt;/ol&gt;</content><category term="Security"></category><category term="openscap"></category><category term="remediation"></category><category term="scap"></category><category term="xccdf"></category></entry></feed>

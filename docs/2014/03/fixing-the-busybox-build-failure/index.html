@@ -240,7 +240,7 @@
             <p>Since a few months I have a build failure every time I try to generate
 an initial ram file system (as my current primary workstation uses a
 separate <code>/usr</code> and LVM for everything except <code>/boot</code>):</p>
-<div class="highlight"><pre><span></span>* busybox: &gt;&gt; Compiling...
+<div class="highlight"><pre><span></span><code>* busybox: &gt;&gt; Compiling...
 * ERROR: Failed to compile the &quot;all&quot; target...
 * 
 * -- Grepping log... --
@@ -255,8 +255,7 @@ separate <code>/usr</code> and LVM for everything except <code>/boot</code>):</p
 */bin/sh: scripts/basic/fixdep: Permission denied
 *make[1]: *** [scripts/basic/fixdep] Error 1
 *make: *** [scripts_basic] Error 2
-</pre></div>
-
+</code></pre></div>
 
 <p>I know it isn't SELinux that is causing this, as I have no denial
 messages and even putting SELinux in permissive mode doesn't help. Today
@@ -269,10 +268,9 @@ not allowed.</p>
 location where executing <em>is</em> allowed. Of course, this being a SELinux
 system, the new location will need to be labeled as <code>tmp_t</code> as well, but
 that's just a simple thing to do.</p>
-<div class="highlight"><pre><span></span>~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
+<div class="highlight"><pre><span></span><code>~# semanage fcontext -a -t tmp_t /var/build/genkernel(/.*)?
 ~# restorecon -R /var/build/genkernel
-</pre></div>
-
+</code></pre></div>
 
 <p>The new location is not world-writable (only for root as only root
 builds initial ram file systems here) so not having <code>noexec</code> here is ok.</p>

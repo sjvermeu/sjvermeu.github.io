@@ -272,7 +272,7 @@
 <p><strong>Documenting a rule in XCCDF</strong></p>
 <p>In XCCDF, a rule is defined through the <code>Rule</code> XML entity, and is placed within a <code>Group</code>. The Group entities are used to structure the document, while the <code>Rule</code> entities document specific configuration directives.</p>
 <p>The postgres related rule of above could be written as follows:</p>
-<div class="highlight"><pre><span></span>&lt;Rule id=&quot;xccdf_com.example_rule_pgsql-selinux-context&quot;
+<div class="highlight"><pre><span></span><code>&lt;Rule id=&quot;xccdf_com.example_rule_pgsql-selinux-context&quot;
       role=&quot;full&quot;
       selected=&quot;1&quot;
       weight=&quot;5.1&quot;
@@ -307,8 +307,7 @@
   &lt;/fix&gt;
   &lt;ident system=&quot;http://example.com/configbaseline&quot;&gt;pgsql-01032&lt;/ident&gt;
 &lt;/Rule&gt;
-</pre></div>
-
+</code></pre></div>
 
 <p>Although this is lots of XML, it is easy to see what each element declares. The <a href="https://csrc.nist.gov/CSRC/media/Publications/nistir/7275/rev-4/final/documents/nistir-7275r4_updated-march-2012_clean.pdf">NIST IR 7275 document</a> is a very good resource to continuously consult in order to find the right elements and their interpretation.</p>
 <p>There is one element added that is "specific" to the content of this blog post series and not the XCCDF standard, namely the identification. As mentioned in an earlier post, organizations might have their own taxonomy for technical service identification, and requirements on how to number or identify rules. In the above example, the rule is identified as <code>pgsql-01032</code>.</p>
@@ -350,9 +349,8 @@
 <p><strong>Generating the guide</strong></p>
 <p>To close off this post, let's finish with how to generate the guide based on an XCCDF document. Personally, I use two approaches for this.</p>
 <p>The first one is to rely on Open-SCAP. With Open-SCAP, you can generate guides easily:</p>
-<div class="highlight"><pre><span></span>~$ oscap xccdf generate guide xccdf.xml &gt; ConfigBaseline.html
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~$ oscap xccdf generate guide xccdf.xml &gt; ConfigBaseline.html
+</code></pre></div>
 
 <p>The second one, which I use more often, is a custom XSL style sheet, which also introduces the knowledge and interpretations of what this blog post series brings up (including the organizational identification). The end result is similar (the same content) but uses a structure/organization that is more in line with expectations.</p>
 <p>For instance, in my company, the information security officers want to have a tabular overview of all the rules in a configuration baseline. So the XSL style sheet generates such a tabular overview, and uses in-documenting linking to the more elaborate descriptions of all the rules.</p>

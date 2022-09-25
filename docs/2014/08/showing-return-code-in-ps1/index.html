@@ -246,7 +246,7 @@ its content (which I declare as a function) to generate the prompt.
 Inside the function, I obtain the return code of the last command (<code>$?</code>)
 and then add it to the PS1 variable. This results in the following code
 snippet inside my <code>~/.bashrc</code>:</p>
-<div class="highlight"><pre><span></span>export PROMPT_COMMAND=__gen_ps1
+<div class="highlight"><pre><span></span><code>export PROMPT_COMMAND=__gen_ps1
 
 function __gen_ps1() {
   local EXITCODE=&quot;$?&quot;;
@@ -265,8 +265,7 @@ function __gen_ps1() {
     PS1=&quot;RC=${EXITCODE} \[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] &quot;
   fi
 }
-</pre></div>
-
+</code></pre></div>
 
 <p>With it, my prompt now nicely shows the return code of the last executed
 command. Neat.</p>

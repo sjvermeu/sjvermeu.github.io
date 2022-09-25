@@ -8,14 +8,13 @@ conditionally granted based on the value of a &lt;em&gt;SELinux boolean&lt;/em&g
 &lt;p&gt;To find the list of SELinux booleans that are available on your system,
 you can use the &lt;strong&gt;getsebool -a&lt;/strong&gt; method, or &lt;strong&gt;semanage boolean -l&lt;/strong&gt;. The
 latter also displays the description of the boolean:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage boolean -l | grep user_ping
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage boolean -l | grep user_ping
 user_ping                      (on   ,   on)  Control users use of ping and traceroute
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can easily query the SELinux policy to see what this boolean
 triggers:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# sesearch -b user_ping -A -C
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# sesearch -b user_ping -A -C
 Found 22 semantic av rules:
 ET allow ping_t staff_t : process sigchld ; [ user_ping ]
 ET allow ping_t staff_t : fd use ; [ user_ping ]
@@ -23,26 +22,24 @@ ET allow ping_t staff_t : fifo_file { ioctl read write getattr lock append open 
 ET allow ping_t user_t : process sigchld ; [ user_ping ]
 ET allow ping_t user_t : fd use ; [ user_ping ]
 ...
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;However, often you want to know if a particular access is allowed and,
 if it is conditionally allowed, which boolean enables it. In the case of
 user ping, we want to know if (and when) a user domain (&lt;code&gt;user_t&lt;/code&gt;) is
 allowed to transition to the ping domain (&lt;code&gt;ping_t&lt;/code&gt;):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# sesearch -s user_t -t ping_t -c process -p transition -ACTS
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# sesearch -s user_t -t ping_t -c process -p transition -ACTS
 Found 1 semantic av rules:
 ET allow user_t ping_t : process transition ; [ user_ping ]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So there you go - it is allowed if the &lt;code&gt;user_ping&lt;/code&gt; SELinux boolean is
-enabled.&lt;/p&gt;</content><category term="boolean"></category><category term="query"></category><category term="selinux"></category><category term="sesearch"></category></entry><entry><title>Using CUSTOM_BUILDOPT in refpolicy for USE flag-alike functionality?</title><link href="https://blog.siphos.be/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/" rel="alternate"></link><published>2013-08-16T09:17:00+02:00</published><updated>2013-08-16T09:17:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-16:/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/</id><summary type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
+enabled.&lt;/p&gt;</content><category term="SELinux"></category><category term="boolean"></category><category term="query"></category><category term="selinux"></category><category term="sesearch"></category></entry><entry><title>Using CUSTOM_BUILDOPT in refpolicy for USE flag-alike functionality?</title><link href="https://blog.siphos.be/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/" rel="alternate"></link><published>2013-08-16T09:17:00+02:00</published><updated>2013-08-16T09:17:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-16:/2013/08/using-custom_buildopt-in-refpolicy-for-use-flag-alike-functionality/</id><summary type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
 policy&lt;/a&gt; as its base for
 SELinux policies. Yes, we do customize it and not everything is already
 pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
 customizable types to further restrict user application access has been
-sent up for comments …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
+sent up for …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
 policy&lt;/a&gt; as its base for
 SELinux policies. Yes, we do customize it and not everything is already
 pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
@@ -60,23 +57,21 @@ tangible.&lt;/p&gt;
 offers support for ALSA and PulseAudio (amongst other things). In the
 SELinux policy, support for (and thus privileges related to) ALSA and
 PulseAudio is handled through &lt;em&gt;optional_policy&lt;/em&gt; statements:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;optional_policy(`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;optional_policy(`
   pulseaudio_tmpfs_content(mplayer_tmpfs_t)
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This means that the rules defined in &lt;em&gt;pulseaudio_tmpfs_content&lt;/em&gt; are
 executed if the dependencies match:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;interface(`pulseaudio_tmpfs_content&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;interface(`pulseaudio_tmpfs_content&amp;#39;,`
         gen_require(`
                 attribute pulseaudio_tmpfsfile;
         &amp;#39;)
 
         typeattribute $1 pulseaudio_tmpfsfile;
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute exists, then the
 &lt;code&gt;mplayer_tmpfs_t&lt;/code&gt; type gets the &lt;code&gt;pulseaudio_tmpfsfile&lt;/code&gt; attribute
@@ -92,11 +87,10 @@ privileges become active.&lt;/p&gt;
 &lt;p&gt;One way SELinux supports a more flexible approach is to use conditionals
 in the policy. One could create booleans that administrators can toggle
 to enable / disable SELinux rules. For instance, in the mplayer policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tunable_policy(`allow_mplayer_execstack&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tunable_policy(`allow_mplayer_execstack&amp;#39;,`
         allow mencoder_t self:process { execmem execstack };
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If an administrator toggles the &lt;code&gt;allow_mplayer_execstack&lt;/code&gt; boolean to
 "on", then the mentioned &lt;code&gt;allow&lt;/code&gt; rule becomes active.&lt;/p&gt;
@@ -118,13 +112,12 @@ based) to see if rules need to be activated or not. For type attribute
 declarations, this is a valid approach. So one idea would be to
 transform USE flags, if they are set, into &lt;code&gt;use_${USEFLAG}&lt;/code&gt;, and make
 decisions based on this in the policy code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ifdef(`use_pulseaudio&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ifdef(`use_pulseaudio&amp;#39;,`
   optional_policy(`
     pulseaudio_tmpfs_content(mplayer_tmpfs_t)
   &amp;#39;)
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We can add in the USE flags, if set, through the &lt;code&gt;CUSTOM_BUILDOPT&lt;/code&gt;
 parameter that the reference policy provides. So introducing this is not
@@ -139,13 +132,13 @@ pulseaudio enabled.&lt;/p&gt;
 Gentoo aims to do: if you do not want a certain support/feature in the
 code, then why would the policy still have to allow it? With the proper
 documentation towards administrators, I think this would be a good
-approach.&lt;/p&gt;</content><category term="boolean"></category><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="use"></category><category term="useflag"></category></entry><entry><title>A SELinux policy for incron: using booleans</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/" rel="alternate"></link><published>2013-05-30T03:50:00+02:00</published><updated>2013-05-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-30:/2013/05/a-selinux-policy-for-incron-using-booleans/</id><summary type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+approach.&lt;/p&gt;</content><category term="Gentoo"></category><category term="boolean"></category><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="use"></category><category term="useflag"></category></entry><entry><title>A SELinux policy for incron: using booleans</title><link href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/" rel="alternate"></link><published>2013-05-30T03:50:00+02:00</published><updated>2013-05-30T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-30:/2013/05/a-selinux-policy-for-incron-using-booleans/</id><summary type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
 to mark other
 types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
 more flexible: booleans. The idea now is that a boolean called
 &lt;em&gt;incron_notify_non_security_files&lt;/em&gt; enables &lt;strong&gt;incrond&lt;/strong&gt; to be
-notified on changes on all possible …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+notified on …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
 to mark other
 types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
@@ -156,30 +149,28 @@ latter is merely an approach, you can define other sets as well if you
 want, including all possible files).&lt;/p&gt;
 &lt;p&gt;Booleans in SELinux policy can be generated in the &lt;code&gt;incron.te&lt;/code&gt; file as
 follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;## &amp;lt;desc&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;## &amp;lt;desc&amp;gt;
 ## &amp;lt;p&amp;gt;
 ##      Determine whether incron can watch all non-security
 ##      file types
 ## &amp;lt;/p&amp;gt;
 ## &amp;lt;/desc&amp;gt;
 gen_tunable(incron_notify_non_security_files, false)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With this boolean in place, the policy can be enhanced with code like
 the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tunable_policy(`incron_notify_non_security_files&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tunable_policy(`incron_notify_non_security_files&amp;#39;,`
         files_read_non_security_files(incrond_t)
         files_read_all_dirs_except(incrond_t)
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This code tells SELinux that, &lt;em&gt;if&lt;/em&gt; the
 &lt;em&gt;incron_notify_non_security_files&lt;/em&gt; boolean is set (which by default
 is not the case), then &lt;code&gt;incrond_t&lt;/code&gt; is able to read non security files.&lt;/p&gt;
 &lt;p&gt;Let's try to watch for changes in the AIDE log directory:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tail audit.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# tail audit.log
 type=AVC msg=audit(1368777675.597:28611): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;log&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=13 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:var_log_t tclass=dir
 type=AVC msg=audit(1368777675.597:28612): avc:  denied  { search } for  pid=11704 comm=&amp;quot;incrond&amp;quot; name=&amp;quot;log&amp;quot; dev=&amp;quot;dm-4&amp;quot; ino=13 scontext=system_u:system_r:incrond_t tcontext=system_u:object_r:var_log_t tclass=dir
 
@@ -188,17 +179,15 @@ May 17 10:01:15 test incrond[11704]: access denied on /var/log/aide - events wil
 
 # getsebool incron_notify_non_security_files
 incron_notify_non_security_files --&amp;gt; off
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Let's enable the boolean and try again:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# setsebool incron_notify_non_security_files on
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setsebool incron_notify_non_security_files on
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Reloading the incrontab tables now works, and the notifications work as
 well.&lt;/p&gt;
 &lt;p&gt;As you can see, once a policy is somewhat working, policy developers are
 considering the various "use cases" of an application, trying to write
 down policies that can be used by the majority of users, without
-granting too many rights automatically.&lt;/p&gt;</content><category term="boolean"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry></feed>
+granting too many rights automatically.&lt;/p&gt;</content><category term="SELinux"></category><category term="boolean"></category><category term="incron"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

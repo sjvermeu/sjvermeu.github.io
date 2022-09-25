@@ -238,19 +238,17 @@ attached to the file with the public key used by Gentoo's infrastructure
 is not used on the system.</p>
 <p>If you want to use this, here are the steps to do so.</p>
 <p>First, set up the location where you keep the key:</p>
-<div class="highlight"><pre><span></span>~# mkdir -p /etc/portage/gpg
+<div class="highlight"><pre><span></span><code>~# mkdir -p /etc/portage/gpg
 ~# gpg --homedir /etc/portage/gpg --keyserver subkeys.pgp.net --recv-keys 0x239C75C4
 ~# gpg --homedir /etc/portage/gpg --edit-key 0x239C75C4 trust
-</pre></div>
-
+</code></pre></div>
 
 <p>Next, edit <code>/etc/make.conf</code> and set the following parameters:</p>
-<div class="highlight"><pre><span></span>FEATURES=&quot;webrsync-gpg&quot;
+<div class="highlight"><pre><span></span><code>FEATURES=&quot;webrsync-gpg&quot;
 PORTAGE_GPG_DIR=&quot;/etc/portage/gpg&quot;
 # Disable &#39;emerge --sync&#39; so emerge-webrsync has to be used
 SYNC=&quot;&quot;
-</pre></div>
-
+</code></pre></div>
 
 <p>With that done, you're all set. Just run <strong>emerge-webrsync</strong>.</p>
 <p>Happy Gentooing!</p>

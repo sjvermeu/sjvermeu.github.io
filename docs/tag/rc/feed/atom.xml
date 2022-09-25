@@ -18,7 +18,7 @@ its content (which I declare as a function) to generate the prompt.
 Inside the function, I obtain the return code of the last command (&lt;code&gt;$?&lt;/code&gt;)
 and then add it to the PS1 variable. This results in the following code
 snippet inside my &lt;code&gt;~/.bashrc&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;export PROMPT_COMMAND=__gen_ps1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;export PROMPT_COMMAND=__gen_ps1
 
 function __gen_ps1() {
   local EXITCODE=&amp;quot;$?&amp;quot;;
@@ -37,12 +37,11 @@ function __gen_ps1() {
     PS1=&amp;quot;RC=${EXITCODE} \[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$\[\033[00m\] &amp;quot;
   fi
 }
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With it, my prompt now nicely shows the return code of the last executed
 command. Neat.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; Sean Patrick Santos showed me my utter failure in that this can
 be accomplished with the &lt;code&gt;PS1&lt;/code&gt; variable immediately, without using the
 overhead of the &lt;code&gt;PROMPT_COMMAND&lt;/code&gt;. Just make sure to properly escape the
-&lt;code&gt;$&lt;/code&gt; sign which I of course forgot in my late-night experiments :-(.&lt;/p&gt;</content><category term="bash"></category><category term="ps1"></category><category term="rc"></category><category term="shell"></category></entry></feed>
+&lt;code&gt;$&lt;/code&gt; sign which I of course forgot in my late-night experiments :-(.&lt;/p&gt;</content><category term="Gentoo"></category><category term="bash"></category><category term="ps1"></category><category term="rc"></category><category term="shell"></category></entry></feed>

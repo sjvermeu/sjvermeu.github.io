@@ -2,22 +2,20 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - kernel</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/kernel/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2015-05-10T14:18:00+02:00</updated><entry><title>Audit buffering and rate limiting</title><link href="https://blog.siphos.be/2015/05/audit-buffering-and-rate-limiting/" rel="alternate"></link><published>2015-05-10T14:18:00+02:00</published><updated>2015-05-10T14:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-10:/2015/05/audit-buffering-and-rate-limiting/</id><summary type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
-&lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+&lt;p&gt;The message shows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
@@ -27,9 +25,8 @@ might be either ignored, sent through the kernel logging infrastructure
 or even have the system panic. And if the messages are sent to the
 kernel log then they might show up, but even that log has its
 limitations, which can lead to output similar to the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;__ratelimit: 53 callbacks suppressed
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;__ratelimit: 53 callbacks suppressed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In this post, I want to give some pointers in configuring the audit
 subsystem as well as understand these messages...&lt;/p&gt;
@@ -37,11 +34,10 @@ subsystem as well as understand these messages...&lt;/p&gt;
 &lt;p&gt;If you take a look at the audit processes running on the system, you'll
 notice that (assuming Linux auditing is used of course) two processes
 are running:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ps -ef | grep audit
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# ps -ef | grep audit
 root      1483     1  0 10:11 ?        00:00:00 /sbin/auditd
 root      1486     2  0 10:11 ?        00:00:00 [kauditd]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;code&gt;/sbin/auditd&lt;/code&gt; daemon is the user-space audit daemon. It &lt;a href="http://man7.org/linux/man-pages/man3/audit_open.3.html"&gt;registers
 itself&lt;/a&gt; with the
@@ -83,10 +79,9 @@ chapter&lt;/a&gt;
 worth reading, but many others exist as well.&lt;/p&gt;
 &lt;p&gt;There is a useful command related to the subject of the audit backlog
 queue. It queries the audit subsystem for its current status:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# auditctl -s
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# auditctl -s
 AUDIT_STATUS: enabled=1 flag=1 pid=1483 rate_limit=0 backlog_limit=8192 lost=3 backlog=0
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The command displays not only the audit state (enabled or not) but also
 the settings for rate limits (on the audit backlog) and backlog limit.
@@ -102,11 +97,10 @@ but is usually left at the default (which is 1, being to switch to the
 kernel log subsystem).&lt;/p&gt;
 &lt;p&gt;Before that is done, the message is displayed which reveals the cause of
 the failure handling:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In this case, the backlog queue was set to contain at most 320 entries
 (which is low for a production system) and more messages were being
@@ -119,19 +113,17 @@ limit exceeded" if that was the limitation that was triggered.&lt;/p&gt;
 the system, then the "dropped" messages are sent to the kernel log
 subsystem. The calls however are also governed through a configurable
 limitation: it uses a rate limit which can be set through &lt;code&gt;sysctl&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sysctl -a | grep kernel.printk_rate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sysctl -a | grep kernel.printk_rate
 kernel.printk_ratelimit = 5
 kernel.printk_ratelimit_burst = 10
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In the above example, this system allows one message every 5 seconds,
 but does allow a burst of up to 10 messages at once. When the rate
 limitation kicks in, then the kernel will log (at most one per second)
 the number of suppressed events:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Although this limit is kernel-wide, not all kernel log events are
 governed through it. It is the caller subsystem (in our case, the audit
@@ -150,7 +142,7 @@ not to make this setting too low. I personally set it to 8192.&lt;/p&gt;
 which is the case when dealing with new or experimental SELinux
 policies. It would also result in missing security-important events. It
 is the audit subsystem, after all. So tune it properly, and enjoy the
-power of Linux' audit subsystem.&lt;/p&gt;</content><category term="audit"></category><category term="kernel"></category><category term="security"></category><category term="selinux"></category></entry><entry><title>Gentoo Hardened progress meeting of march 2013</title><link href="https://blog.siphos.be/2013/03/gentoo-hardened-progress-meeting-of-march-2013/" rel="alternate"></link><published>2013-03-07T22:46:00+01:00</published><updated>2013-03-07T22:46:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-07:/2013/03/gentoo-hardened-progress-meeting-of-march-2013/</id><summary type="html">&lt;p&gt;Another month has passed, so time for a new progress meeting...&lt;/p&gt;
+power of Linux' audit subsystem.&lt;/p&gt;</content><category term="Free-Software"></category><category term="audit"></category><category term="kernel"></category><category term="security"></category><category term="selinux"></category></entry><entry><title>Gentoo Hardened progress meeting of march 2013</title><link href="https://blog.siphos.be/2013/03/gentoo-hardened-progress-meeting-of-march-2013/" rel="alternate"></link><published>2013-03-07T22:46:00+01:00</published><updated>2013-03-07T22:46:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-07:/2013/03/gentoo-hardened-progress-meeting-of-march-2013/</id><summary type="html">&lt;p&gt;Another month has passed, so time for a new progress meeting...&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Toolchain&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;GCC v4.7 has been unmasked, allowing a large set of users to test out
 the new GCC. It is also expected that GCC 4.8-rc1 will hit the tree next
@@ -201,7 +193,7 @@ issue is on the way.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Some of the user oriented documentation (integrity and SELinux) have
 been moved to the Gentoo Wiki for easier user contributions and
-simplified management. Other documents will follow soon.&lt;/p&gt;</content><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category><category term="toolchain"></category></entry><entry><title>Gentoo Hardened goes onward (aka project meeting)</title><link href="https://blog.siphos.be/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/" rel="alternate"></link><published>2013-02-07T23:40:00+01:00</published><updated>2013-02-07T23:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-07:/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/</id><summary type="html">&lt;p&gt;It's been a while again, so time for another Gentoo Hardened online
+simplified management. Other documents will follow soon.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category><category term="toolchain"></category></entry><entry><title>Gentoo Hardened goes onward (aka project meeting)</title><link href="https://blog.siphos.be/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/" rel="alternate"></link><published>2013-02-07T23:40:00+01:00</published><updated>2013-02-07T23:40:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-07:/2013/02/gentoo-hardened-goes-onward-aka-project-meeting/</id><summary type="html">&lt;p&gt;It's been a while again, so time for another Gentoo Hardened online
 progress meeting.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Toolchain&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;GCC 4.8 is on development stage 4, so the hardened patches will be
@@ -298,4 +290,4 @@ next year, chances are very high that we'll give a "What has changed
 since last year" session and a round table again.&lt;/p&gt;
 &lt;p&gt;With many thanks to the usual suspects: Zorry, blueness, prometheanfire,
 lejonet, klondike and the several dozen contributors that are going to
-kill me for not mentioning their (nick)names.&lt;/p&gt;</content><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="meeting"></category><category term="minutes"></category><category term="online"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category></entry></feed>
+kill me for not mentioning their (nick)names.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="kernel"></category><category term="meeting"></category><category term="minutes"></category><category term="online"></category><category term="pax"></category><category term="profiles"></category><category term="selinux"></category></entry></feed>

@@ -16,7 +16,7 @@
     <meta name="keywords" content="policy, selinux, seshowtree">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="How does foo_t get this privilege?" />
-<meta property="og:description" content="Today a question was raised how the unprivileged user domain user_t was allowed to write to cgroup_t files. There is nothing obvious about that in the roles/unprivuser.te file, so what gives? I used a simple script (which I&#39;ve been using for a while already) called seshowtree which presents …" />
+<meta property="og:description" content="Today a question was raised how the unprivileged user domain user_t was allowed to write to cgroup_t files. There is nothing obvious about that in the roles/unprivuser.te file, so what gives? I used a simple script (which I&#39;ve been using for a while already) called seshowtree …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/" />
 <meta property="og:type" content="article" />
@@ -240,19 +240,17 @@ such questions. If you're interested, the script is also available on my
 <a href="https://github.com/sjvermeu/small.coding/blob/master/se_scripts/seshowtree">github
 small.coding</a>
 project.</p>
-<div class="highlight"><pre><span></span>~# seshowtree user roles/unprivuser.te &gt; output.txt
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~# seshowtree user roles/unprivuser.te &gt; output.txt
+</code></pre></div>
 
 <p>In the resulting output, I search for the <code>cgroup_t</code> and work my way up,
 which gives:</p>
-<div class="highlight"><pre><span></span>userdom_unpriv_user_template(user)
+<div class="highlight"><pre><span></span><code>userdom_unpriv_user_template(user)
 . userdom_common_user_template($1)
 . . fs_rw_cgroup_files($1_t)
 . . . rw_files_pattern($1, cgroup_t, cgroup_t)
 . . . . allow $1 $3:file rw_file_perms;
-</pre></div>
-
+</code></pre></div>
 
 <p>So in this case, the user forgot to look into
 <code>userdom_common_user_template</code>, which is called by
@@ -261,9 +259,8 @@ course, that still doesn't explain why the privileges are assigned in
 the first place. As the policy file itself does not contain the
 necessary comments to deduce this, I had to ask the git repository for
 more information:</p>
-<div class="highlight"><pre><span></span>~$ git annotate userdomain.if
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~$ git annotate userdomain.if
+</code></pre></div>
 
 <p>In the end, it was a commit from 2010, informing me that "Common users
 can read and write cgroup files (access governed by dac)". So the
@@ -324,7 +321,7 @@ properly govern access to the files.</p>
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2014/01/how-does-foo_t-get-this-privilege/",
-    "description": "Today a question was raised how the unprivileged user domain user_t was allowed to write to cgroup_t files. There is nothing obvious about that in the roles/unprivuser.te file, so what gives? I used a simple script (which I've been using for a while already) called seshowtree which presents …"
+    "description": "Today a question was raised how the unprivileged user domain user_t was allowed to write to cgroup_t files. There is nothing obvious about that in the roles/unprivuser.te file, so what gives? I used a simple script (which I've been using for a while already) called seshowtree …"
 }
 </script>
     <!-- Disqus count -->

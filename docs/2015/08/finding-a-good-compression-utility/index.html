@@ -237,7 +237,7 @@ possible).</p>
 
 
 <p>The currently supported packages are:</p>
-<div class="highlight"><pre><span></span>app-arch/bloscpack      app-arch/bzip2          app-arch/freeze
+<div class="highlight"><pre><span></span><code>app-arch/bloscpack      app-arch/bzip2          app-arch/freeze
 app-arch/gzip           app-arch/lha            app-arch/lrzip
 app-arch/lz4            app-arch/lzip           app-arch/lzma
 app-arch/lzop           app-arch/mscompress     app-arch/p7zip
@@ -245,8 +245,7 @@ app-arch/pigz           app-arch/pixz           app-arch/plzip
 app-arch/pxz            app-arch/rar            app-arch/rzip
 app-arch/xar            app-arch/xz-utils       app-arch/zopfli
 app-arch/zpaq
-</pre></div>
-
+</code></pre></div>
 
 <p>The script should keep the best compression information: duration, compression
 ratio, compression command, as well as the compressed file itself.</p>
@@ -294,7 +293,7 @@ more of a high-level selection than anything else.</p>
 <p>The script can also only run the compressions of a single application (which I
 use when I'm fine-tuning the parameter runs).</p>
 <p>A run shows something like the following:</p>
-<div class="highlight"><pre><span></span>Original file (test.nef) size 20958430 bytes
+<div class="highlight"><pre><span></span><code>Original file (test.nef) size 20958430 bytes
       package name                                                 command      duration                   size compr.Δ effic.:
       ------------                                                 -------      --------                   ---- ------- -------
 app-arch/bloscpack                                               blpk -n 4           0.1               20947097 0.00054 0.00416
@@ -328,23 +327,20 @@ app-arch/bloscpack                                              blpk -n 16      
 The best compression was found with 7za -t7z -m0=PPMd:mem=28.
 The compression delta obtained was 0.11643 within 10.58 seconds.
 This file is now available as test.nef.7z.
-</pre></div>
-
+</code></pre></div>
 
 <p>In the above example, the test file was around 20 MByte. The best compression
 compression command that the script found was:</p>
-<div class="highlight"><pre><span></span>~$ 7za -t7z -m0=PPMd:mem=28 a test.nef.7z test.nef
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~$ 7za -t7z -m0=PPMd:mem=28 a test.nef.7z test.nef
+</code></pre></div>
 
 <p>The resulting file (<code>test.nef.7z</code>) is 18 MByte, a reduction of 11,64%. The
 compression command took almost 11 seconds to do its thing, which gave an
 efficiency rating of 0,011, which is definitely not a fast one.</p>
 <p>Some other algorithms don't do bad either with a better efficiency. For
 instance:</p>
-<div class="highlight"><pre><span></span>   app-arch/pbzip2                                                  pbzip2           0.6               19287402 0.07973 0.13071
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>   app-arch/pbzip2                                                  pbzip2           0.6               19287402 0.07973 0.13071
+</code></pre></div>
 
 <p>In this case, the <code>pbzip2</code> command got almost 8% reduction in less than a
 second, which is considerably more efficient than the 11-seconds long <code>7za</code>
@@ -353,7 +349,7 @@ run.</p>
 <p>I've pushed the script to my <a href="https://github.com/sjvermeu/small.coding/tree/master/sw_comprbest">github</a>
 location. Do a quick review of the code first (to see that I did not include
 anything malicious) and then execute it to see how it works:</p>
-<div class="highlight"><pre><span></span>~$ sw_comprbest -h
+<div class="highlight"><pre><span></span><code>~$ sw_comprbest -h
 Usage: sw_comprbest --infile=&lt;inputfile&gt; [--family=&lt;family&gt;[,...]] [--command=&lt;cmd&gt;]
        sw_comprbest -i &lt;inputfile&gt; [-f &lt;family&gt;[,...]] [-c &lt;cmd&gt;]
 
@@ -369,39 +365,35 @@ The output shows
   - The efficiency ratio showing how much reduction (percentage) per second (higher is better)
 
 When the command supports multithreading, we use the number of available cores on the system (as told by /proc/cpuinfo).
-</pre></div>
-
+</code></pre></div>
 
 <p>For instance, to try it out against a PDF file:</p>
-<div class="highlight"><pre><span></span>~$ sw_comprbest -i MEA6-Sven_Vermeulen-Research_Summary.pdf
+<div class="highlight"><pre><span></span><code>~$ sw_comprbest -i MEA6-Sven_Vermeulen-Research_Summary.pdf
 Original file (MEA6-Sven_Vermeulen-Research_Summary.pdf) size 117763 bytes
 ...
 The best compression was found with zopfli --deflate.
 The compression delta obtained was 0.00982 within 0.19 seconds.
 This file is now available as MEA6-Sven_Vermeulen-Research_Summary.pdf.deflate.
-</pre></div>
-
+</code></pre></div>
 
 <p>So in this case, the resulting file is hardly better compressed - the PDF
 itself is already compressed. Let's try it against the uncompressed PDF:</p>
-<div class="highlight"><pre><span></span>~$ pdftk MEA6-Sven_Vermeulen-Research_Summary.pdf output test.pdf uncompress
+<div class="highlight"><pre><span></span><code>~$ pdftk MEA6-Sven_Vermeulen-Research_Summary.pdf output test.pdf uncompress
 ~$ sw_comprbest -i test.pdf
 Original file (test.pdf) size 144670 bytes
 ...
 The best compression was found with lrzip -z.
 The compression delta obtained was 0.27739 within 0.18 seconds.
 This file is now available as test.pdf.lrz.
-</pre></div>
-
+</code></pre></div>
 
 <p>This is somewhat better:</p>
-<div class="highlight"><pre><span></span>~$ ls -l MEA6-Sven_Vermeulen-Research_Summary.pdf* test.pdf*
+<div class="highlight"><pre><span></span><code>~$ ls -l MEA6-Sven_Vermeulen-Research_Summary.pdf* test.pdf*
 -rw-r--r--. 1 swift swift 117763 Aug  7 14:32 MEA6-Sven_Vermeulen-Research_Summary.pdf
 -rw-r--r--. 1 swift swift 116606 Aug  7 14:32 MEA6-Sven_Vermeulen-Research_Summary.pdf.deflate
 -rw-r--r--. 1 swift swift 144670 Aug  7 14:34 test.pdf
 -rw-r--r--. 1 swift swift 104540 Aug  7 14:35 test.pdf.lrz
-</pre></div>
-
+</code></pre></div>
 
 <p>The resulting file is 11,22% reduced from the original one.</p>
         </div>

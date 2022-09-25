@@ -9,14 +9,13 @@ application for generating HTML pages). However, it failed in a
 particular feature. Not with an exception or stack trace, just
 functionally. Now, I have the source code at hand, so I look into the
 code and find the logical error. Below is a snippet of it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;if (myHandler != null) {
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;if (myHandler != null) {
   int i = startValue + maxRange;
   for (int j = endValue; j &amp;gt; i; j--) {
     ... (do some logic)
   }
 }
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;It doesn't matter what the code is supposed to do, but from what I can
 remember, I shouldn't be adding &lt;code&gt;maxRange&lt;/code&gt; to the &lt;code&gt;i&lt;/code&gt; variable (yet - as
@@ -26,7 +25,7 @@ the class file directly using &lt;strong&gt;dhex&lt;/strong&gt; (a wonderful uti
 discovered) because doing things the hard way is sometimes fun as well.
 So I ran &lt;strong&gt;javap -c MyClass&lt;/strong&gt; to get some java bytecode information from
 the method, which gives me:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;   8:   ifnull  116
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;   8:   ifnull  116
    11:  iload_2
    12:  iload_3
    13:  iadd
@@ -36,8 +35,7 @@ the method, which gives me:&lt;/p&gt;
    19:  iload   6
    21:  iload   5
    23:  if_icmpge       106
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I know lines 11 and 12 is about pushing the 2nd and 3rd arguments of the
 function (which are &lt;code&gt;startValue&lt;/code&gt; and &lt;code&gt;maxRange&lt;/code&gt;) to the stack to add
@@ -46,4 +44,4 @@ from &lt;code&gt;1d&lt;/code&gt; (iload_3) to &lt;code&gt;03&lt;/code&gt; (icons
 the code itself just continues as needed. And for some reason, that
 seems to be the only mistake I made then because the application now
 works flawlessly.&lt;/p&gt;
-&lt;p&gt;Hacking is fun.&lt;/p&gt;</content><category term="bytecode"></category><category term="dhex"></category><category term="java"></category></entry></feed>
+&lt;p&gt;Hacking is fun.&lt;/p&gt;</content><category term="Misc"></category><category term="bytecode"></category><category term="dhex"></category><category term="java"></category></entry></feed>

@@ -286,7 +286,7 @@ modules.</p>
 <p>Still, that shouldn't prohibit us from playing around with it to
 experiment with the CIL language construct. Consider the following CIL
 SELinux policy code:</p>
-<div class="highlight"><pre><span></span>; Declare a test_port_t type
+<div class="highlight"><pre><span></span><code>; Declare a test_port_t type
 (type test_port_t)
 ; Assign the type to the object_r role
 (roletype object_r test_port_t)
@@ -297,30 +297,27 @@ SELinux policy code:</p>
 
 ; Declare tcp:1440 as test_port_t
 (portcon tcp 1440 (system_u object_r test_port_t ((s0) (s0))))
-</pre></div>
-
+</code></pre></div>
 
 <p>The code declares a port type (<code>test_port_t</code>) and uses it for the TCP
 port 1440.</p>
 <p>In order to use this code, we have to build a policy file which includes
 all currently active CIL code, together with the test code:</p>
-<div class="highlight"><pre><span></span>~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
+</code></pre></div>
 
 <p>The result is a <code>policy.29</code> (the command forces version 29 as the
 current Linux kernel used on this system does not support version 30)
 file, which can now be copied to <code>/etc/selinux/mcs/policy</code>. Then, after
 having copied the file, load the new policy file using <code>load_policy</code>.</p>
 <p>And lo and behold, the port type is now available:</p>
-<div class="highlight"><pre><span></span>~# semanage port -l | grep 1440
+<div class="highlight"><pre><span></span><code>~# semanage port -l | grep 1440
 test_port_t           tcp      1440
-</pre></div>
-
+</code></pre></div>
 
 <p>To verify that it really is available and not just parsed by the
 userspace, let's connect to it and hope for a nice denial message:</p>
-<div class="highlight"><pre><span></span>~$ ssh -p 1440 localhost
+<div class="highlight"><pre><span></span><code>~$ ssh -p 1440 localhost
 ssh: connect to host localhost port 1440: Permission denied
 
 ~$ sudo ausearch -ts recent
@@ -329,7 +326,7 @@ type=PROCTITLE msg=audit(1434044145.829:296): proctitle=737368002D70003134343000
 type=SOCKADDR msg=audit(1434044145.829:296): saddr=0A0005A0000000000000000000000000000000000000000100000000
 type=SYSCALL msg=audit(1434044145.829:296): arch=c000003e syscall=42 success=no exit=-13 a0=3 a1=6d4d1ce050 a2=1c a3=0 items=0 ppid=2005 pid=18045 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001 egid=1001 sgid=1001 fsgid=1001 tty=pts0 ses=1 comm=&quot;ssh&quot; exe=&quot;/usr/bin/ssh&quot; subj=staff_u:staff_r:ssh_t:s0 key=(null)
 type=AVC msg=audit(1434044145.829:296): avc:  denied  { name_connect } for  pid=18045 comm=&quot;ssh&quot; dest=1440 scontext=staff_u:staff_r:ssh_t:s0 tcontext=system_u:object_r:test_port_t:s0 tclass=tcp_socket permissive=0
-</pre></div>
+</code></pre></div>
         </div>
 
         <!-- Neighbors -->

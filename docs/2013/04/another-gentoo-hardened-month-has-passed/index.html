@@ -260,9 +260,8 @@ crazy, I start seeing a pattern here.</p>
 <p>Anyway, it turns out that PaX/grSec and asan do not get along yet (ASAN
 assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):</p>
-<div class="highlight"><pre><span></span>ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
+</code></pre></div>
 
 <p>Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened

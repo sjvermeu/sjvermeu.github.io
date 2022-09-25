@@ -27,11 +27,10 @@ authentication that was being used by the end users.&lt;/p&gt;
 configurable is done through command arguments. The basic ones are of course the
 source and target definitions, as well as the authentication information for both
 sides.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ imapsync \
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync \
   --host1 src-host --user1 src-user --password1 src-pw --authmech1 LOGIN --ssl1 \
   --host2 dst-host --user2 dst-user --password2 dst-pw --authmech2 LOGIN --ssl2
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The use of the &lt;code&gt;--ssl1&lt;/code&gt; and &lt;code&gt;--ssl2&lt;/code&gt; is not to enable an older or newer version of
 the SSL/TLS protocol. It just enables the use of SSL/TLS for the source host (&lt;code&gt;--ssl1&lt;/code&gt;)
@@ -39,16 +38,14 @@ and destination host (&lt;code&gt;--ssl2&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;This would just start synchronizing messages, but we need to include the necessary
 directives to skip trash and spam mailboxes for instance. For this, the &lt;code&gt;--exclude&lt;/code&gt; parameter
 can be used:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ imapsync ... --exclude &amp;quot;Trash|Spam|Drafts&amp;quot;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync ... --exclude &amp;quot;Trash|Spam|Drafts&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;It is also possible to transform some mailbox names. For instance, if the source host
 uses &lt;code&gt;Sent&lt;/code&gt; as the mailbox for sent mail, while the target has &lt;code&gt;Sent Items&lt;/code&gt;, then the
 following would enable migrating mails between the right folders:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ imapsync ... --folder &amp;quot;Sent&amp;quot; --regextrans2 &amp;#39;s/Sent/Sent Items/&amp;#39;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ imapsync ... --folder &amp;quot;Sent&amp;quot; --regextrans2 &amp;#39;s/Sent/Sent Items/&amp;#39;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;Conclusions and interesting resources&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;Using the application was a breeze. I do recommend to create a test account on both sides
@@ -63,4 +60,4 @@ various online tutorials about &lt;code&gt;imapsync&lt;/code&gt;, such as &lt;/p
 &lt;li&gt;&lt;a href="https://wiki.zimbra.com/wiki/Guide_to_imapsync"&gt;Guide to imapsync&lt;/a&gt; on wiki.zimbra.com&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;The migration took a while, but without major issues. Within a few hours, the mailboxes of all
-users where correctly migrated.&lt;/p&gt;</content><category term="imapsync"></category></entry></feed>
+users where correctly migrated.&lt;/p&gt;</content><category term="Free-Software"></category><category term="imapsync"></category></entry></feed>

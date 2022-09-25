@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - libselinux</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/libselinux/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2014-07-09T20:35:00+02:00</updated><entry><title>Segmentation fault when emerging packages after libpcre upgrade?</title><link href="https://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/" rel="alternate"></link><published>2014-07-09T20:35:00+02:00</published><updated>2014-07-09T20:35:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-07-09:/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/</id><summary type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
 to the file system, with an error that looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
- * ERROR: dev-libs/libpcre-8.35::gentoo …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
+ * ERROR: dev-libs/libpcre-8 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
 to the file system, with an error that looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
  * ERROR: dev-libs/libpcre-8.35::gentoo failed:
  *   Failed to set SELinux security labels.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This has been &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=516608"&gt;reported as bug
 516608&lt;/a&gt; and, after some
 investigation, the cause is found. First the quick workaround:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# cd /etc/selinux/strict/contexts/files
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# cd /etc/selinux/strict/contexts/files
 ~# rm *.bin
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And do the same for the other SELinux policy stores on the system
 (targeted, mcs, mls, ...).&lt;/p&gt;
@@ -49,7 +47,7 @@ in time, so the workaround might be needed.&lt;/p&gt;
 considering that libselinux is most likely to be stabilized faster than
 any libpcre bump I let it go.&lt;/p&gt;
 &lt;p&gt;At least we have a solution for future upgrades; sorry for the noise.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; &lt;code&gt;libselinux-2.2.2-r5&lt;/code&gt; also has the fix included.&lt;/p&gt;</content><category term="file_contexts"></category><category term="fix"></category><category term="Gentoo"></category><category term="libselinux"></category><category term="pcre"></category></entry><entry><title>Switching context depending on user code-wise</title><link href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/" rel="alternate"></link><published>2014-01-12T22:43:00+01:00</published><updated>2014-01-12T22:43:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-12:/2014/01/switching-context-depending-on-user-code-wise/</id><summary type="html">&lt;p&gt;I blogged about how SELinux decides what the context should be for a
+&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; &lt;code&gt;libselinux-2.2.2-r5&lt;/code&gt; also has the fix included.&lt;/p&gt;</content><category term="SELinux"></category><category term="file_contexts"></category><category term="fix"></category><category term="Gentoo"></category><category term="libselinux"></category><category term="pcre"></category></entry><entry><title>Switching context depending on user code-wise</title><link href="https://blog.siphos.be/2014/01/switching-context-depending-on-user-code-wise/" rel="alternate"></link><published>2014-01-12T22:43:00+01:00</published><updated>2014-01-12T22:43:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-01-12:/2014/01/switching-context-depending-on-user-code-wise/</id><summary type="html">&lt;p&gt;I blogged about how SELinux decides what the context should be for a
 particular Linux user; how it checks the default context(s) and tells
 the SELinux-aware application on what the new context should be. Let's
 look into the C code that does so, and how an application should behave …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I blogged about how SELinux decides what the context should be for a
@@ -59,7 +57,7 @@ look into the C code that does so, and how an application should behave
 depending on the enforcing/permissive mode...&lt;/p&gt;
 &lt;p&gt;I use the following, extremely simple C that fork()'s and executes
 &lt;code&gt;id -Z&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
 #include &amp;lt;fcntl.h&amp;gt;
 #include &amp;lt;unistd.h&amp;gt;
 #include &amp;lt;sys/types.h&amp;gt;
@@ -114,14 +112,12 @@ int main(int argc, char * argv[]) {
   };
   return 0;
 };
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The code is ran as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ test myusername
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ test myusername
 staff_u:staff_r:staff_t
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As you can see, it shows the output of the &lt;code&gt;id -Z&lt;/code&gt; command. Let's
 enhance this code with some SELinux specific functions. The purpose of
@@ -131,21 +127,20 @@ invocation.&lt;/p&gt;
 &lt;p&gt;We will include the necessary SELinux code with &lt;code&gt;#ifdef SELINUX&lt;/code&gt;,
 allowing the application to be build without SELinux code if wanted.&lt;/p&gt;
 &lt;p&gt;First, add in the proper &lt;code&gt;#include&lt;/code&gt; directives.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#ifdef SELINUX
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#ifdef SELINUX
 #include &amp;lt;selinux/selinux.h&amp;gt;
 #include &amp;lt;selinux/flask.h&amp;gt;
 #include &amp;lt;selinux/av_permissions.h&amp;gt;
 #include &amp;lt;selinux/get_context_list.h&amp;gt;
 #endif
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Next, we create a function called &lt;em&gt;selinux_prepare_fork()&lt;/em&gt; which takes
 one input variable: the Linux user name for which we are going to
 transition (and thus run &lt;code&gt;id -Z&lt;/code&gt; for). This function can always be
 called, even if SELinux is not built in. If that happens, we return 0
 immediately.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/* selinux_prepare_fork - Initialize context switching
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/* selinux_prepare_fork - Initialize context switching
  *
  * Returns
  *  - 0 if everything is OK, 
@@ -160,8 +155,7 @@ int selinux_prepare_fork(char * name) {
   // ... this is where the remainder goes
 #endif
 };
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We include this call in the application above, and take into account the
 return codes passed on. As can be seen from the comment, if the
@@ -172,7 +166,7 @@ domain in which the application runs is permissive - in either case, the
 code will succeed. A returncode of -1 means that the code will most
 likely fail and thus the application should log an error and exit or
 break.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  pid_t child;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  pid_t child;
 
   rc = selinux_prepare_fork(argv[1]);
   if (rc &amp;lt; 0) {
@@ -186,12 +180,11 @@ break.&lt;/p&gt;
   };
 
   child = fork();
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now all we need to do is fill in the logic in &lt;em&gt;selinux_prepare_fork&lt;/em&gt;.
 Let's start with the variable declarations (boring stuff):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#ifndef SELINUX
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#ifndef SELINUX
   return 0;
 #else
   security_context_t newcon = 0;
@@ -203,14 +196,13 @@ Let's start with the variable declarations (boring stuff):&lt;/p&gt;
 
   char * sename = 0;
   char * selevel = 0;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With that out of the way, let's take our first step: we want to see if
 SELinux is enabled or not. Applications that are SELinux-aware should
 always check if SELinux itself is enabled and, if not, just continue
 with the (application) logic.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  /*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  /*
    * See if SELinux is enabled.
    * If not, then we can immediately tell the code
    * that everything is OK.
@@ -224,8 +216,7 @@ with the (application) logic.&lt;/p&gt;
     return 1;
   };
   out(DEBUG, &amp;quot;SELinux is enabled.\n&amp;quot;);
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As you can see, we use &lt;em&gt;is_selinux_enabled&lt;/em&gt; here to do just that. If
 it returns 0, then it is not enabled. A returncode of 1 means it is
@@ -236,7 +227,7 @@ permission issues that might be SELinux-related, but are not enforced
 through SELinux (and as such do not show up in any logs).&lt;/p&gt;
 &lt;p&gt;Next, see if SELinux is in permissive mode and register this (as we need
 this later for deciding to continue or not).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  /*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  /*
    * See if SELinux is in enforcing mode
    * or permissive mode
    */
@@ -249,8 +240,7 @@ this later for deciding to continue or not).&lt;/p&gt;
     out(WARN, &amp;quot;Could not check SELinux mode (security_getenforce() failed)\n&amp;quot;);
   }
   out(DEBUG, &amp;quot;SELinux mode is %s\n&amp;quot;, permissive ? &amp;quot;permissive&amp;quot; : &amp;quot;enforcing&amp;quot;);
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;em&gt;security_getenforce&lt;/em&gt; method will check the current SELinux mode
 (enforcing or permissive). If SELinux is in permissive mode, then the
@@ -265,7 +255,7 @@ SELinux-aware application in debugging mode. Often, applications that
 fail run too short to find out if their context is correct or not, and
 having it logged definitely helps. This step is not mandatory per se (as
 you will see from the code later).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  /*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  /*
    * Get the current SELinux context of the process.
    * Always interesting to log this for end users
    * trying to debug a possible issue.
@@ -279,8 +269,7 @@ you will see from the code later).&lt;/p&gt;
       return -1;
   };
   out(DEBUG, &amp;quot;Currently in SELinux context \&amp;quot;%s\&amp;quot;\n&amp;quot;, (char *) curcon);
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;em&gt;getcon()&lt;/em&gt; method places the current context in the &lt;em&gt;curcon&lt;/em&gt;
 variable. Note that from this point onwards, we should always
@@ -294,7 +283,7 @@ run the &lt;em&gt;fork()&lt;/em&gt; as it will fail anyway (or, it might succeed
 in the parent context which is not what the application should do).&lt;/p&gt;
 &lt;p&gt;Next, we try to find out what the SELinux user is for the given Linux
 account name.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  /*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  /*
    * Get the SELinux user given the Linux user
    * name passed on to this function.
    */
@@ -308,15 +297,14 @@ account name.&lt;/p&gt;
       return -1;
   };
   out(DEBUG, &amp;quot;SELinux user for Linux user \&amp;quot;%s\&amp;quot; is \&amp;quot;%s\&amp;quot;\n&amp;quot;, name, sename);
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;em&gt;getseuserbyname()&lt;/em&gt; method returns the SELinux name for the given
 Linux user. It also returns the MLS level (but we're not going to use
 that in the remainder of the code). Again, if it fails, we check the
 permissive state to see how to bail out.&lt;/p&gt;
 &lt;p&gt;Now get the context to which we should transition when calling &lt;code&gt;id -Z&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  /*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  /*
    * Find out what the context is that this process should transition
    * to.
    */
@@ -330,8 +318,7 @@ permissive state to see how to bail out.&lt;/p&gt;
       return -1;
   };
   out(DEBUG, &amp;quot;SELinux context to transition to is \&amp;quot;%s\&amp;quot;\n&amp;quot;, (char *) newcon);
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;em&gt;get_default_context()&lt;/em&gt; will do what I blogged about earlier.
 It'll check what the contexts are in the user-specific context files or
@@ -347,7 +334,7 @@ policy and see if a transition from the current context to the new
 context is allowed (class &lt;code&gt;process&lt;/code&gt;, privilege &lt;code&gt;transition&lt;/code&gt;). I know, to
 truly see if a transition is allowed, more steps should be checked, but
 let's stick with this one permission.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  /*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  /*
    * Now let&amp;#39;s look if we are allowed to transition to the new context.
    * We currently only check the transition access for the process class. However,
    * transitioning is a bit more complex (execute rights on target context, 
@@ -364,8 +351,7 @@ let's stick with this one permission.&lt;/p&gt;
     else
       return -1;
   };
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In the above code, I didn't yet check the result. This is done in two
 steps.&lt;/p&gt;
@@ -374,7 +360,7 @@ domain. Since a few years, SELinux supports permissive domains, so that
 a single domain is permissive even though the rest of the system is in
 enforcing mode. Currently, we only know if the system is in permissive
 mode or not.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  /* Validate the response 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  /* Validate the response 
    *
    * We are interested in two things:
    * - Is the transition allowed, but also
@@ -389,8 +375,7 @@ mode or not.&lt;/p&gt;
     out(DEBUG, &amp;quot;The SELINUX_AVD_FLAGS_PERMISSIVE flag is set, so domain is permissive.\n&amp;quot;);
     dom_permissive = 1;
   };
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;We check the flags provided to us by the SELinux subsystem and check if
 &lt;code&gt;SELINUX_AVD_FLAGS_PERMISSIVE&lt;/code&gt; is set. If it is, then the current domain
@@ -399,7 +384,7 @@ From this point onwards, &lt;code&gt;permissive=1&lt;/code&gt; or &lt;code&gt;do
 to tell the real application logic to continue (even if things would
 fail SELinux-wise) - the actions are executed by a permissive domain (or
 system) and thus should continue.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  if (!(avd.allowed &amp;amp; PROCESS__TRANSITION)) {
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  if (!(avd.allowed &amp;amp; PROCESS__TRANSITION)) {
     // The transition is denied
     if (permissive) {
       out(DEBUG, &amp;quot;Transition is not allowed by SELinux, but permissive mode is enabled. Continuing.\n&amp;quot;);
@@ -414,8 +399,7 @@ system) and thus should continue.&lt;/p&gt;
       return -1;
     };
   };
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In the second step, we checked if the requested operation (transition)
 is allowed or not. If denied, we log it, but do not break out of the
@@ -424,7 +408,7 @@ function if either &lt;code&gt;permissive&lt;/code&gt; (SELinux permissive mode)
 &lt;p&gt;Finally, we set the (new) context, telling the SELinux subsystem that
 the next &lt;em&gt;exec()&lt;/em&gt; done by the application should also switch the domain
 of the process to the new context (i.e. a domain transition):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  /*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;  /*
    * Set the context for the fork (process execution).
    */
   rc = setexeccon(newcon);
@@ -443,11 +427,10 @@ of the process to the new context (i.e. a domain transition):&lt;/p&gt;
 
   return 0;
 #endif
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's it - we free'd all our variables and can now have the application
 continue (taking into account the return code of this function). As
 mentioned before, a positive return code (0 or higher) means the logic
 should continue; a strictly negative return code means that the
-application should gracefully fail.&lt;/p&gt;</content><category term="default_context"></category><category term="domain"></category><category term="libselinux"></category><category term="selinux"></category><category term="selinux-aware"></category><category term="transition"></category></entry></feed>
+application should gracefully fail.&lt;/p&gt;</content><category term="SELinux"></category><category term="default_context"></category><category term="domain"></category><category term="libselinux"></category><category term="selinux"></category><category term="selinux-aware"></category><category term="transition"></category></entry></feed>

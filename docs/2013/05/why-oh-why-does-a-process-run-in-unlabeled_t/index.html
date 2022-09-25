@@ -16,7 +16,7 @@
     <meta name="keywords" content="policy, selinux, unlabeled">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="Why oh why does a process run in unlabeled_t?" />
-<meta property="og:description" content="If you notice that a process is running in the unlabeled_t domain, the first question to ask is how it got there. Well, one way is to have a process running in a known domain, like screen_t, after which the SELinux policy module that provides this domain is removed from …" />
+<meta property="og:description" content="If you notice that a process is running in the unlabeled_t domain, the first question to ask is how it got there. Well, one way is to have a process running in a known domain, like screen_t, after which the SELinux policy module that provides this domain is …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2013/05/why-oh-why-does-a-process-run-in-unlabeled_t/" />
 <meta property="og:type" content="article" />
@@ -235,25 +235,23 @@ first question to ask is how it got there.</p>
 <code>screen_t</code>, after which the SELinux policy module that provides this
 domain is removed from the system (or updated and the update does not
 contain the <code>screen_t</code> definition anymore):</p>
-<div class="highlight"><pre><span></span>test ~ # ps -eZ | grep screen
+<div class="highlight"><pre><span></span><code>test ~ # ps -eZ | grep screen
 root:sysadm_r:sysadm_screen_t    5047 ?        00:00:00 screen
 test ~ # semodule -r screen
 test ~ # ps -eZ | grep screen
 system_u:object_r:unlabeled_t    5047 ?        00:00:00 screen
-</pre></div>
-
+</code></pre></div>
 
 <p>In permissive mode, this will be visible easily; in enforcing mode, the
 domains you are running in might not be allowed to do anything with
 <code>unlabeled_t</code> files, directories and processes, so <strong>ps</strong> might not show
 it even though it still exists:</p>
-<div class="highlight"><pre><span></span>test audit # ps -eZ | grep 5047
+<div class="highlight"><pre><span></span><code>test audit # ps -eZ | grep 5047
 test audit # ls -dZ /proc/5047
 ls: cannot access /proc/5047: Permission denied
 test audit # tail audit.log | grep unlabeled
 type=AVC msg=audit(1368698097.494:27806): avc:  denied  { getattr } for  pid=4137 comm=&quot;bash&quot; path=&quot;/proc/5047&quot; dev=&quot;proc&quot; ino=6677 scontext=root:sysadm_r:sysadm_t tcontext=system_u:object_r:unlabeled_t tclass=dir
-</pre></div>
-
+</code></pre></div>
 
 <p>Notice that, if you reload the module, the process becomes visible
 again. That is because the process context itself (<code>screen_t</code>) is
@@ -319,7 +317,7 @@ transition to it. The above one is one way that this still can occur.</p>
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2013/05/why-oh-why-does-a-process-run-in-unlabeled_t/",
-    "description": "If you notice that a process is running in the unlabeled_t domain, the first question to ask is how it got there. Well, one way is to have a process running in a known domain, like screen_t, after which the SELinux policy module that provides this domain is removed from …"
+    "description": "If you notice that a process is running in the unlabeled_t domain, the first question to ask is how it got there. Well, one way is to have a process running in a known domain, like screen_t, after which the SELinux policy module that provides this domain is …"
 }
 </script>
     <!-- Disqus count -->

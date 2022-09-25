@@ -23,12 +23,11 @@ read/write to the video device, create your own skype-providing module
 (&lt;em&gt;myskype&lt;/em&gt;) with the exact same content (except for the module name at
 the first line) as the original skype module, except for the video
 device:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dev_read_sound(skype_t)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dev_read_sound(skype_t)
 # dev_read_video_dev(skype_t)
 dev_write_sound(skype_t)
 # dev_write_video_dev(skype_t)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Load in this policy, and you now have the &lt;code&gt;skype_t&lt;/code&gt; domain without the
 video access. You will get post-install failures when Gentoo pushes out
@@ -52,4 +51,4 @@ start stripping directories up to the fourth one.&lt;/p&gt;
 &lt;p&gt;This approach is also needed if you want to exclude rules from
 interfaces rather than from the &lt;code&gt;.te&lt;/code&gt; file: create a small patch and put
 it in &lt;code&gt;/etc/portage/patches&lt;/code&gt; for the &lt;code&gt;sec-policy/selinux-base&lt;/code&gt; package
-(as this provides the interfaces).&lt;/p&gt;</content><category term="ebuild"></category><category term="epatch_user"></category><category term="Gentoo"></category><category term="override"></category><category term="patch"></category><category term="policy"></category><category term="selinux"></category></entry></feed>
+(as this provides the interfaces).&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="epatch_user"></category><category term="Gentoo"></category><category term="override"></category><category term="patch"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

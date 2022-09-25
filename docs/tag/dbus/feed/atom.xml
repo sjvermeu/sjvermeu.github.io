@@ -35,11 +35,10 @@ service also inherits the &lt;code&gt;dnsmasq_t&lt;/code&gt; label.&lt;/p&gt;
 &lt;p&gt;The necessary permission checks for the &lt;code&gt;sysadm_t&lt;/code&gt; user domain to send
 messages to the dnsmasq service, and the dnsmasq service itself to
 register it as a service:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t self:dbus { acquire_svc send_msg };
 allow sysadm_t dnsmasq_t:dbus send_msg;
 allow dnsmasq_t sysadm_t:dbus send_msg;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;For the &lt;code&gt;sysadm_t&lt;/code&gt; domain, the two rules are needed as we usually not
 only want to send a message to a D-Bus service, but also receive a reply
@@ -47,23 +46,21 @@ only want to send a message to a D-Bus service, but also receive a reply
 inverse direction).&lt;/p&gt;
 &lt;p&gt;However, with the following XML snippet inside its service configuration
 file, owning a certain resource is checked against a different label:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;busconfig&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
   &amp;lt;selinux&amp;gt;
     &amp;lt;associate
       own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;
       context=&amp;quot;system_u:object_r:dnsmasq_dbus_t:s0&amp;quot; /&amp;gt;
   &amp;lt;/selinux&amp;gt;
 &amp;lt;/busconfig&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With this, the rules would become as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow dnsmasq_t dnsmasq_dbus_t:dbus acquire_svc;
 allow dnsmasq_t self:dbus send_msg;
 allow sysadm_t dnsmasq_t:dbus send_msg;
 allow dnsmasq_t sysadm_t:dbus send_msg;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Note that &lt;em&gt;only&lt;/em&gt; the access for acquiring a service based on a name
 (i.e. owning a service) is checked based on the different label. Sending
@@ -76,7 +73,7 @@ D-Bus to only allow services with a correct label. This ensures that
 other domains that might have enough privileges to interact with D-Bus
 and own a service cannot own these particular services. After all, other
 services don't usually have the privileges (policy-wise) to
-&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>D-Bus, quick recap</title><link href="https://blog.siphos.be/2014/06/d-bus-quick-recap/" rel="alternate"></link><published>2014-06-29T19:16:00+02:00</published><updated>2014-06-29T19:16:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-29:/2014/06/d-bus-quick-recap/</id><summary type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
+&lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="SELinux"></category><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>D-Bus, quick recap</title><link href="https://blog.siphos.be/2014/06/d-bus-quick-recap/" rel="alternate"></link><published>2014-06-29T19:16:00+02:00</published><updated>2014-06-29T19:16:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-06-29:/2014/06/d-bus-quick-recap/</id><summary type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
 some sort of IPC, but higher level than the POSIX IPC methods. After
 some reading, I think I start to understand how it works and how
 administrators can work with it. So a quick write-down is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I've never fully investigated the what and how of D-Bus. I know it is
@@ -100,18 +97,17 @@ messages through &lt;strong&gt;dbus-send&lt;/strong&gt;. For instance, the follo
 invokes the &lt;code&gt;org.freedesktop.ConsoleKit.Manager.Stop&lt;/code&gt; method provided by
 the object at &lt;code&gt;/org/freedesktop/ConsoleKit&lt;/code&gt; owned by the
 service/application at &lt;code&gt;org.freedesktop.ConsoleKit&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ dbus-send --system --print-reply 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ dbus-send --system --print-reply 
   --dest=org.freedesktop.ConsoleKit 
   /org/freedesktop/ConsoleKit/Manager 
   org.freedesktop.ConsoleKit.Manager.Stop
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;What I found most interesting however was to query the busses. You can
 do this with &lt;strong&gt;dbus-send&lt;/strong&gt; although it is much easier to use tools such
 as &lt;strong&gt;d-feet&lt;/strong&gt; or &lt;strong&gt;qdbus&lt;/strong&gt;.&lt;/p&gt;
 &lt;p&gt;To list current services on the system bus:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# qdbus --system
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system
 :1.1
  org.freedesktop.ConsoleKit
 :1.10
@@ -130,23 +126,21 @@ as &lt;strong&gt;d-feet&lt;/strong&gt; or &lt;strong&gt;qdbus&lt;/strong&gt;.&lt
 :1.8
 :1.9
 org.freedesktop.DBus
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The numbers are generated by D-Bus itself, the namespace-like strings
 are taken by the objects. To see what is provided by a particular
 service:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# qdbus --system org.freedesktop.PolicyKit1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1
 /
 /org
 /org/freedesktop
 /org/freedesktop/PolicyKit1
 /org/freedesktop/PolicyKit1/Authority
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The methods made available through one of these:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# qdbus --system org.freedesktop.PolicyKit1 /org/freedesktop/PolicyKit1/Authority
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# qdbus --system org.freedesktop.PolicyKit1 /org/freedesktop/PolicyKit1/Authority
 method QDBusVariant org.freedesktop.DBus.Properties.Get(QString interface_name, QString property_name)
 method QVariantMap org.freedesktop.DBus.Properties.GetAll(QString interface_name)
 ...
@@ -157,13 +151,12 @@ method void org.freedesktop.PolicyKit1.Authority.AuthenticationAgentResponse(QSt
 method void org.freedesktop.PolicyKit1.Authority.CancelCheckAuthorization(QString cancellation_id)
 signal void org.freedesktop.PolicyKit1.Authority.Changed()
 ...
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Access to methods and interfaces is governed through XML files in
 &lt;code&gt;/etc/dbus-1/system.d&lt;/code&gt; (or &lt;code&gt;session.d&lt;/code&gt; depending on the bus). Let's look
 at &lt;code&gt;/etc/dbus-1/system.d/dnsmasq.conf&lt;/code&gt; as an example:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;busconfig&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;lt;busconfig&amp;gt;
         &amp;lt;policy user=&amp;quot;root&amp;quot;&amp;gt;
                 &amp;lt;allow own=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
                 &amp;lt;allow send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
@@ -177,8 +170,7 @@ at &lt;code&gt;/etc/dbus-1/system.d/dnsmasq.conf&lt;/code&gt; as an example:&lt;
                 &amp;lt;deny send_destination=&amp;quot;uk.org.thekelleys.dnsmasq&amp;quot;/&amp;gt;
         &amp;lt;/policy&amp;gt;
 &amp;lt;/busconfig&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The configuration mentions that only the root Linux user can 'assign' a
 service/application to the &lt;code&gt;uk.org.thekelleys.dnsmasq&lt;/code&gt; name, and root
@@ -187,4 +179,4 @@ that no-one can own and send to this service/application name. As a
 result, only the Linux root user can interact with this object.&lt;/p&gt;
 &lt;p&gt;D-Bus also supports starting of services when a method is invoked
 (instead of running this service immediately). This is configured
-through &lt;code&gt;*.service&lt;/code&gt; files inside &lt;code&gt;/usr/share/dbus-1/system-services/&lt;/code&gt;.&lt;/p&gt;</content><category term="dbus"></category><category term="linux"></category></entry></feed>
+through &lt;code&gt;*.service&lt;/code&gt; files inside &lt;code&gt;/usr/share/dbus-1/system-services/&lt;/code&gt;.&lt;/p&gt;</content><category term="Free-Software"></category><category term="dbus"></category><category term="linux"></category></entry></feed>

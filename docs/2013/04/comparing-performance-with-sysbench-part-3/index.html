@@ -233,7 +233,7 @@ the benchmark application to look at the differences between the guest
 and host on my main laptop, and saw a major performance regression with
 the <em>memory</em> workload test. Let's view this again, using parameters more
 optimized to view the regressions:</p>
-<div class="highlight"><pre><span></span>$ sysbench --test=memory --memory-total-size=32M --memory-block-size=64 run
+<div class="highlight"><pre><span></span><code>$ sysbench --test=memory --memory-total-size=32M --memory-block-size=64 run
 Host:
   Operations performed: 524288 (2988653.44 ops/sec)
   32.00 MB transferred (182.41 MB/sec)
@@ -250,13 +250,12 @@ Host:
 Guest:
   Operations performed: 1 (   89.27 ops/sec)
   32.00 MB transferred (2856.77 MB/sec)
-</pre></div>
-
+</code></pre></div>
 
 <p>From looking at the code (gotta love Gentoo for making this obvious ;-)
 we know that the memory workload, with a single thread, does something
 like the following:</p>
-<div class="highlight"><pre><span></span>total_bytes = 0;
+<div class="highlight"><pre><span></span><code>total_bytes = 0;
 repeat until total_bytes &gt;= memory-total-size:
   thread_mutex_lock()
   total_bytes += memory-block-size
@@ -268,8 +267,7 @@ repeat until total_bytes &gt;= memory-total-size:
     write somevalue at pointer
     pointer++
   (stop event timer)
-</pre></div>
-
+</code></pre></div>
 
 <p>Given that the regression is most noticeable when the memory-block-size
 is very small, the part of the code whose execution count is much
@@ -279,15 +277,14 @@ increment and the start/stop of event timer.</p>
 impacted. In the above case, we have 524288 executions. However, if we
 run the mutex workload this number of times, we see that this hardly has
 any effect:</p>
-<div class="highlight"><pre><span></span>$ sysbench --test=mutex --mutex-num=1 --mutex-locks=524288 --mutex-loops=0 run
+<div class="highlight"><pre><span></span><code>$ sysbench --test=mutex --mutex-num=1 --mutex-locks=524288 --mutex-loops=0 run
 Host:      total time:        0.0275s
 Guest:     total time:        0.0286s
-</pre></div>
-
+</code></pre></div>
 
 <p>The code for the mutex workload, knowing that we run with one thread,
 looks like this:</p>
-<div class="highlight"><pre><span></span>mutex_locks = 524288
+<div class="highlight"><pre><span></span><code>mutex_locks = 524288
 (start event timer)
 do
   lock = get_mutex()
@@ -297,19 +294,17 @@ do
   mutex_locks--
 until mutex_locks = 0;
 (stop event timer)
-</pre></div>
-
+</code></pre></div>
 
 <p>To check if the timer might be the culprit, let's look for a benchmark
 that mainly does timer checks. The <em>cpu</em> workload can be used, when we
 tell sysbench that the prime to check is 3 (as its internal loop runs
 from 3 till the given number, and when the given number is 3 it skips
 the loop completely) and we ask for 524288 executions.</p>
-<div class="highlight"><pre><span></span>$ sysbench --test=cpu --cpu-max-prime=3 --max-requests=524288 run
+<div class="highlight"><pre><span></span><code>$ sysbench --test=cpu --cpu-max-prime=3 --max-requests=524288 run
 Host:  total time:  0.1640s
 Guest: total time: 21.0306s
-</pre></div>
-
+</code></pre></div>
 
 <p>Gotcha! Now, the event timer (again from looking at the code) contains
 two parts: getting the current time (using <code>clock_gettime()</code>) and
@@ -317,7 +312,7 @@ logging the start/stop (which is done in memory structures). Let's make
 a small test application that gets the current time (using the real-time
 clock as the sysbench application does) and see if we get similar
 results:</p>
-<div class="highlight"><pre><span></span>$ cat test.c
+<div class="highlight"><pre><span></span><code>$ cat test.c
 #include &lt;stdio.h&gt;
 #include &lt;time.h&gt;
 
@@ -332,38 +327,34 @@ $ gcc -lrt -o test test.c
 $ time ./test
 Host:  0m0.019s
 Guest: 0m5.030s
-</pre></div>
-
+</code></pre></div>
 
 <p>So given that the <code>clock_gettime()</code> is ran twice in the sysbench, we
 already have 10 seconds of overhead on the guest (and only 0,04s on the
 host). When such time-related functions are slow, it is wise to take a
 look at the clock source configured on the system. On Linux, you can
 check this by looking at <code>/sys/devices/system/clocksource/*</code>.</p>
-<div class="highlight"><pre><span></span># cd /sys/devices/system/clocksource/clocksource0
+<div class="highlight"><pre><span></span><code># cd /sys/devices/system/clocksource/clocksource0
 # cat current_clocksource
 kvm-clock
 # cat available_clocksource
 kvm-clock tsc hpet acpi_pm
-</pre></div>
-
+</code></pre></div>
 
 <p>Although kvm-clock is supposed to be the best clock source, let's switch
 to the tsc clock:</p>
-<div class="highlight"><pre><span></span># echo tsc &gt; current_clocksource
-</pre></div>
-
+<div class="highlight"><pre><span></span><code># echo tsc &gt; current_clocksource
+</code></pre></div>
 
 <p>If we rerun our test application, we get a much more appreciative
 result:</p>
-<div class="highlight"><pre><span></span>$ time ./test
+<div class="highlight"><pre><span></span><code>$ time ./test
 Host:  0m0.019s
 Guest: 0m0.024s
-</pre></div>
-
+</code></pre></div>
 
 <p>So, what does that mean for our previous benchmark results?</p>
-<div class="highlight"><pre><span></span>$ sysbench --test=cpu --cpu-max-prime=20000 run
+<div class="highlight"><pre><span></span><code>$ sysbench --test=cpu --cpu-max-prime=20000 run
 Host:            35,3049 sec
 Guest (before):  36,5582 sec
 Guest (now):     35,6416 sec
@@ -382,8 +373,7 @@ $ sysbench --test=threads --num-threads=128 --max-time=10s run
 Host:            9765 executions
 Guest (before):   512 executions
 Guest (now):      529 executions
-</pre></div>
-
+</code></pre></div>
 
 <p>So we notice that this small change has nice effects on some of the
 tests. The CPU benchmark improves from 3,55% overhead to 0,95%; fileio

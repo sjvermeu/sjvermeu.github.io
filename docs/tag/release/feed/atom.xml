@@ -17,7 +17,7 @@ the script, and decided to blog about it as other developers in the
 hardened team might one day be asked to make a release when I'm not
 available.&lt;/p&gt;
 &lt;p&gt;When the script is called, it spits out the usual help information.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sh release-prepare.sh -h
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sh release-prepare.sh -h
 Usage: release-prepare.sh
 
 Example: release-prepare.sh 2.20130424-r2 2.20130424-r3
@@ -35,8 +35,7 @@ to function properly:
   - REFPOLRELEASE should point to the current latest /release/ of the reference
     policy (so NOT to a checkout), extracted somewhere on the file system.
     E.g. export REFPOLRELEASE=&amp;quot;/home/user/local/refpolicy-20130424&amp;quot;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So first, we need to export three environment variables needed by the
 script:&lt;/p&gt;
@@ -51,7 +50,7 @@ script:&lt;/p&gt;
     repository and the upstream release).&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;After setting the variables, the script does its magic:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sh release-prepare.sh 2.20130424-r3 2.20130424-r4
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sh release-prepare.sh 2.20130424-r3 2.20130424-r4
 Creating patch 0001-full-patch-against-stable-release.patch... done
 Creating patch bundle for 2.20130424-r4... done
 Copying patch bundle into /usr/portage/distfiles and dev.g.o... done
@@ -71,8 +70,7 @@ version is deployed of course:
 sec-policy/selinux-alsa
 ...
 Only then do a &amp;#39;repoman commit -m &amp;#39;Release of 2.20130424-r4&amp;#39;&amp;#39;.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The script performs the following steps:&lt;/p&gt;
 &lt;ol&gt;
@@ -106,18 +104,18 @@ testing, the created ebuilds can be committed to the repository.&lt;/p&gt;
 &lt;p&gt;The last few steps have explicitly not been automated so the developer
 has the chance to update the ebuilds (in case more than just the policy
 contents has changed between releases) or do dry runs without affecting
-the &lt;code&gt;gentoo-x86&lt;/code&gt; repository.&lt;/p&gt;</content><category term="Gentoo"></category><category term="hardened"></category><category term="policy"></category><category term="release"></category><category term="selinux"></category></entry><entry><title>cvechecker 3.3 released</title><link href="https://blog.siphos.be/2013/09/cvechecker-3-3-released/" rel="alternate"></link><published>2013-09-16T16:06:00+02:00</published><updated>2013-09-16T16:06:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-09-16:/2013/09/cvechecker-3-3-released/</id><summary type="html">&lt;p&gt;I just uploaded a new release of &lt;a href="http://cvechecker.sf.net"&gt;cvechecker&lt;/a&gt;
+the &lt;code&gt;gentoo-x86&lt;/code&gt; repository.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="policy"></category><category term="release"></category><category term="selinux"></category></entry><entry><title>cvechecker 3.3 released</title><link href="https://blog.siphos.be/2013/09/cvechecker-3-3-released/" rel="alternate"></link><published>2013-09-16T16:06:00+02:00</published><updated>2013-09-16T16:06:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-09-16:/2013/09/cvechecker-3-3-released/</id><summary type="html">&lt;p&gt;I just uploaded a new release of &lt;a href="http://cvechecker.sf.net"&gt;cvechecker&lt;/a&gt;
 to the project files. The release is a (long overdue) bugfix release,
 but includes two small enhancements: support standard input for the
 binary list (so you can pipe the output of one command to cvechecker)
-and the introduction of the &lt;code&gt;CVECHECKER_CONFFILE&lt;/code&gt; variable …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just uploaded a new release of &lt;a href="http://cvechecker.sf.net"&gt;cvechecker&lt;/a&gt;
+and the introduction of the &lt;code&gt;CVECHECKER_CONFFILE …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;I just uploaded a new release of &lt;a href="http://cvechecker.sf.net"&gt;cvechecker&lt;/a&gt;
 to the project files. The release is a (long overdue) bugfix release,
 but includes two small enhancements: support standard input for the
 binary list (so you can pipe the output of one command to cvechecker)
 and the introduction of the &lt;code&gt;CVECHECKER_CONFFILE&lt;/code&gt; variable to refer to
 another location for the configuration file.&lt;/p&gt;
 &lt;p&gt;Big thanks to &lt;a href="http://mulhern-at-yocto.dreamwidth.org/"&gt;Anne Mulhern&lt;/a&gt;
-for the various patches submitted!&lt;/p&gt;</content><category term="cvechecker"></category><category term="release"></category></entry><entry><title>New SELinux userspace release</title><link href="https://blog.siphos.be/2013/04/new-selinux-userspace-release/" rel="alternate"></link><published>2013-04-26T03:50:00+02:00</published><updated>2013-04-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-26:/2013/04/new-selinux-userspace-release/</id><summary type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+for the various patches submitted!&lt;/p&gt;</content><category term="Security"></category><category term="cvechecker"></category><category term="release"></category></entry><entry><title>New SELinux userspace release</title><link href="https://blog.siphos.be/2013/04/new-selinux-userspace-release/" rel="alternate"></link><published>2013-04-26T03:50:00+02:00</published><updated>2013-04-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-26:/2013/04/new-selinux-userspace-release/</id><summary type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
 of the SELinux userspace utilities was recently announced. I have made
 the packages for Gentoo available and they should now be in the main
 tree (\~arch of course). During the testing of the packages however, I
@@ -144,4 +142,4 @@ again.&lt;/p&gt;
 &lt;a href="http://marc.info/?l=selinux&amp;amp;m=136692033821285&amp;amp;w=2"&gt;reported&lt;/a&gt; the bugs
 on the mailinglist of the userspace utilities as well. Hopefully they
 can look at them while I'm asleep so I can integrate fixes tomorrow more
-easily ;-)&lt;/p&gt;</content><category term="automation"></category><category term="regression"></category><category term="release"></category><category term="selinux"></category><category term="test"></category><category term="testing"></category><category term="userspace"></category></entry></feed>
+easily ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="automation"></category><category term="regression"></category><category term="release"></category><category term="selinux"></category><category term="test"></category><category term="testing"></category><category term="userspace"></category></entry></feed>

@@ -272,10 +272,9 @@ checked on the traffic is <em>ingress</em> (incoming) and <em>egress</em> (outgo
 traffic, and most policies set this through the following call (comment
 shows the underlying SELinux rules, where <em>tcp_send</em> and <em>tcp_recv</em>
 are - I think - obsolete):</p>
-<div class="highlight"><pre><span></span>corenet_tcp_sendrecv_generic_if(something_t)
+<div class="highlight"><pre><span></span><code>corenet_tcp_sendrecv_generic_if(something_t)
 # allow something_t netif_t:netif { tcp_send tcp_recv egress ingress };
-</pre></div>
-
+</code></pre></div>
 
 <p>Node definitions define which targets (nodes, which can be IP addresses
 or subnets) traffic meant for a particular socket is allow to originate
@@ -284,10 +283,9 @@ own node types and manage them using <strong>semanage node</strong>. The default
 I already covered in the previous post (<code>node_t</code>) and is allowed by most
 policies by default through the following call (where the <em>tcp_send</em>
 and <em>tcp_recv</em> are probably deprecated as well):</p>
-<div class="highlight"><pre><span></span>corenet_tcp_sendrecv_generic_node(something_t)
+<div class="highlight"><pre><span></span><code>corenet_tcp_sendrecv_generic_node(something_t)
 # allow something_t node_t:node { tcp_send tcp_recv sendto recvfrom };
-</pre></div>
-
+</code></pre></div>
 
 <p>Finally, peer definitions are based on the labels from the traffic. If
 the system uses NetLabel, then the target label will always be
@@ -298,37 +296,34 @@ this isn't the case as the peer label is transmitted by the peer itself.</p>
 <p>For NetLabel support, policies generally include two methods - one is to
 support unlabeled traffic (only needed the moment you have support for
 labeled traffic) and one is to allow the NetLabel'ed traffic:</p>
-<div class="highlight"><pre><span></span>corenet_all_recvfrom_unlabeled(something_t)
+<div class="highlight"><pre><span></span><code>corenet_all_recvfrom_unlabeled(something_t)
 # allow something_t unlabeled_t:peer recv;
 corenet_all_recvfrom_netlabel(something_t)
 # allow something_t netlabel_peer_t:peer recv;
-</pre></div>
-
+</code></pre></div>
 
 <p>In case of IPSec for instance, the peer will have a provided label, as
 is shown by the call for accepting hadoop traffic:</p>
-<div class="highlight"><pre><span></span>hadoop_recvfrom(something_t)
+<div class="highlight"><pre><span></span><code>hadoop_recvfrom(something_t)
 # allow something_t hadoop_t:peer recv;
-</pre></div>
-
+</code></pre></div>
 
 <p>However, this alone is not sufficient for labeled IPSec. We also need to
 allow the domain to be allowed to send anything towards an IPSec
 security association. There is an interface called
 <em>corenet_tcp_recvfrom_labeled</em> that takes two arguments which,
 amongst other things, enables <em>sendto</em> towards its association.</p>
-<div class="highlight"><pre><span></span>corenet_tcp_recvfrom_labeled(some_t, thing_t)
+<div class="highlight"><pre><span></span><code>corenet_tcp_recvfrom_labeled(some_t, thing_t)
 # allow { some_t thing_t} self:association sendto;
 # allow some_t thing_t:peer recv;
 # allow thing_t some_t:peer recv;
 # corenet_tcp_recvfrom_netlabel(some_t)
 # corenet_tcp_recvfrom_netlabel(thing_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>This interface is usually called within a <em>*_tcp_connect()</em> interface
 for a particular domain, like with the <em>mysql_tcp_connect</em> example:</p>
-<div class="highlight"><pre><span></span>interface(`mysql_tcp_connect&#39;,`
+<div class="highlight"><pre><span></span><code>interface(`mysql_tcp_connect&#39;,`
         gen_require(`
                 type mysqld_t;
         &#39;)
@@ -338,8 +333,7 @@ for a particular domain, like with the <em>mysql_tcp_connect</em> example:</p>
         corenet_tcp_connect_mysqld_port($1)
         corenet_sendrecv_mysqld_client_packets($1)
 &#39;)
-</pre></div>
-
+</code></pre></div>
 
 <p>When using peer labeling, the domain that is allowed something is based
 on the socket context of the application. Also, the rules when using

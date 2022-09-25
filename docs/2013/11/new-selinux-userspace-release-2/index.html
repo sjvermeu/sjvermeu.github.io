@@ -237,10 +237,9 @@ properly worked around), which is <a href="https://bugs.gentoo.org/show_bug.cgi?
 audit2allow does not want to generate refpolicy-style SELinux policy
 modules. Other than that, most infrastructural tests were successful.</p>
 <p>Two SELinux policy updates were needed:</p>
-<div class="highlight"><pre><span></span>manage_lnk_files_pattern(semanage_t, semanage_store_t, semanage_store_t)
+<div class="highlight"><pre><span></span><code>manage_lnk_files_pattern(semanage_t, semanage_store_t, semanage_store_t)
 selinux_read_policy(sysadm_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>The first one is sent upstream as I think it is an obvious one (new
 userspace now using symbolic links). The other one I'm not that sure of,

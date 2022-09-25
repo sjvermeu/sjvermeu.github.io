@@ -26,20 +26,20 @@ started. Sadly that wasn't the case, as the rc-* scripts always return
 0 (you'll need to parse the output).&lt;/p&gt;
 &lt;p&gt;So what I did now is to create a simple script called &lt;code&gt;runstatus&lt;/code&gt; which
 returns the state of services. It's crude, but seems to work:&lt;/p&gt;
-&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
 
 &lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
@@ -53,15 +53,14 @@ returns the state of services. It's crude, but seems to work:&lt;/p&gt;
 rc-status -a -C &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -q started &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 rc-status -a -C &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -q stopped &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
 &lt;p&gt;I then have the service provider (I now provide my own instead of
 patching the openrc one) call &lt;strong&gt;runstatus&lt;/strong&gt; to get the state of a
 service, as well as call it after trying to start a service. But as this
 is quite basic functioning, I'm wondering if I'm doing things the right
 way or not. Who else has experience with Puppet and Gentoo, and did you
-have to tweak things to get services and such working?&lt;/p&gt;</content><category term="Gentoo"></category><category term="openrc"></category><category term="provider"></category><category term="puppet"></category><category term="selinux"></category></entry><entry><title>Fiddling with puppet apply</title><link href="https://blog.siphos.be/2013/03/fiddling-with-puppet-apply/" rel="alternate"></link><published>2013-03-20T12:31:00+01:00</published><updated>2013-03-20T12:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-20:/2013/03/fiddling-with-puppet-apply/</id><summary type="html">&lt;p&gt;As part of a larger exercise, I am switching my local VM set from a
+have to tweak things to get services and such working?&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="openrc"></category><category term="provider"></category><category term="puppet"></category><category term="selinux"></category></entry><entry><title>Fiddling with puppet apply</title><link href="https://blog.siphos.be/2013/03/fiddling-with-puppet-apply/" rel="alternate"></link><published>2013-03-20T12:31:00+01:00</published><updated>2013-03-20T12:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-20:/2013/03/fiddling-with-puppet-apply/</id><summary type="html">&lt;p&gt;As part of a larger exercise, I am switching my local VM set from a
 more-or-less scripted manual configuration towards a fully
 Puppet-powered one. Of course, it still uses a lot of custom modules and
 is most likely too ugly to expose to the wider internet, but it does
@@ -76,9 +75,8 @@ Puppet master server - mainly because that master server is again a VM
 that might need to be build up and consumes some resources that I'd
 rather have free for other VMs. So what I do now is akin to the
 following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;All I have to do is make sure that the /mnt/puppet location is a shared
 resource (in my case, an NFSv4 read-only mount) which I can just mount
@@ -92,25 +90,23 @@ have a pam_rootok.so statement in the run_init PAM file to allow
 unattended calls towards rc-service).&lt;/p&gt;
 &lt;p&gt;A quick Google revealed that all I had to do was to add a &lt;em&gt;provider
 =&amp;gt; openrc&lt;/em&gt; in the service definitions, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;service { &amp;quot;net.eth0&amp;quot;:
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;service { &amp;quot;net.eth0&amp;quot;:
   provider =&amp;gt; openrc,
   ensure =&amp;gt; running,
 }
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As mentioned, I still manually patch the openrc provider (located in
 /usr/lib64/ruby/site_ruby/1.9.1/puppet/provider/service) so that the
 run_init command is known as well, and that all invocations of the
 rc-service is prepended with run_init:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
   commands :runinit =&amp;gt; &amp;#39;/usr/sbin/run_init&amp;#39;
   commands :rcservice =&amp;gt; &amp;#39;/sbin/rc-service&amp;#39;
 ...
  [command(:runinit), command(:rcservice), @resource[:name], :start ]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And the same for the stop and status definitions. I might use Portage'
 postinst hook to automatically apply the patch so I don't need to do
-this manually each time.&lt;/p&gt;</content><category term="provider"></category><category term="puppet"></category><category term="selinux"></category><category term="service"></category></entry></feed>
+this manually each time.&lt;/p&gt;</content><category term="Gentoo"></category><category term="provider"></category><category term="puppet"></category><category term="selinux"></category><category term="service"></category></entry></feed>

@@ -32,25 +32,22 @@ on my kernel configuration already, and Internet sources are not clear which one
 needed, so let's assume for now both are.&lt;/p&gt;
 &lt;p&gt;Next, the PAM module needs to be installed. On Gentoo, this is a matter of installing
 the &lt;code&gt;pam\_u2f&lt;/code&gt; package, as the necessary dependencies will be pulled in automatically:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# emerge pam_u2f
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge pam_u2f
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Next, for each user, a registration has to be made. This registration is needed for the
 U2F components to be able to correctly authenticate the use of a U2F key for a particular
 user. This is done with &lt;code&gt;pamu2fcfg&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ pamu2fcfg -u&amp;lt;username&amp;gt; &amp;gt; ~/.config/Yubico/u2f_keys
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ pamu2fcfg -u&amp;lt;username&amp;gt; &amp;gt; ~/.config/Yubico/u2f_keys
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The U2F USB key must be plugged in when the command is executed, as a succesful keypress (on the
 U2F device) is needed to complete the operation.&lt;/p&gt;
 &lt;p&gt;Finally, enable the use of the &lt;code&gt;pam\_u2f&lt;/code&gt; module in PAM. On my system, this is done
 through the &lt;code&gt;/etc/pam.d/system-local-login&lt;/code&gt; PAM configuration file used by all
 local logon services.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;auth     required     pam_u2f.so
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;auth     required     pam_u2f.so
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;strong&gt;Consider the problems you might face&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;When fiddling with PAM, it is important to keep in mind what could fail. During the setup, it
@@ -70,11 +67,10 @@ rebooted in single user mode.&lt;/p&gt;
 the proper rights to handle U2F, and because PAM just works in the address space (and thus SELinux
 domain) of the application, the necessary privileges need to be added to these services. My initial
 investigation revealed the following necessary policy rules (refpolicy-style);&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;udev_search_pids(...)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;udev_search_pids(...)
 udev_read_db(...)
 dev_rw_generic_usb_dev(...)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The first two rules are needed because the operation to trigger the USB key uses the udev tables
 to find out where the key is located/attached, before it interacts with it. This interaction is then
@@ -88,7 +84,7 @@ my password (or extracting it from memory) won't suffice to perform a successful
 &lt;p&gt;If you want to use a different two-factor authentication, check out the use of the &lt;a href="https://wiki.gentoo.org/wiki/Google_Authenticator"&gt;Google
 authenticator&lt;/a&gt;, another nice article on the Gentoo wiki. It is also possible to use Yubico keys
 for remote authentication, but that uses the OTP (One Time Password) functionality which isn't active
-on the Yubico keys that I own.&lt;/p&gt;</content><category term="gentoo"></category><category term="security"></category><category term="yubico"></category><category term="u2f"></category><category term="pam"></category></entry><entry><title>Using multiple OpenSSH daemons</title><link href="https://blog.siphos.be/2015/09/using-multiple-openssh-daemons/" rel="alternate"></link><published>2015-09-06T16:37:00+02:00</published><updated>2015-09-06T16:37:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-06:/2015/09/using-multiple-openssh-daemons/</id><summary type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
+on the Yubico keys that I own.&lt;/p&gt;</content><category term="Security"></category><category term="gentoo"></category><category term="security"></category><category term="yubico"></category><category term="u2f"></category><category term="pam"></category></entry><entry><title>Using multiple OpenSSH daemons</title><link href="https://blog.siphos.be/2015/09/using-multiple-openssh-daemons/" rel="alternate"></link><published>2015-09-06T16:37:00+02:00</published><updated>2015-09-06T16:37:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-06:/2015/09/using-multiple-openssh-daemons/</id><summary type="html">&lt;p&gt;I administer a couple of systems which provide interactive access by end users,
 and for this interactive access I position &lt;a href="http://www.openssh.com/"&gt;OpenSSH&lt;/a&gt;. 
 However, I also use this for administrative access to the system, and I tend to
 have harder security requirements for OpenSSH than most users do.&lt;/p&gt;
@@ -145,10 +141,9 @@ assigned).&lt;/p&gt;
 before access is granted. This allows the systems to force SSH key authentication first, and then -
 after succesful authentication - require the password to be passed on as well. Or a
 second step such as &lt;a href="https://wiki.archlinux.org/index.php/Google_Authenticator"&gt;Google Authenticator&lt;/a&gt;.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;AuthenticationMethods publickey,password
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;AuthenticationMethods publickey,password
 PasswordAuthentication yes
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I don't use the Google Authenticator, but the &lt;a href="https://developers.yubico.com/yubico-pam/"&gt;Yubico PAM module&lt;/a&gt;
 to require additional authentication through my U2F dongle (so ssh key, password
@@ -157,4 +152,4 @@ and u2f key). Don't consider this three-factor authentication: one thing I know
 of devices with a valid SSH key (laptop, tablet, mobile) which are of course targets
 for theft.&lt;/p&gt;
 &lt;p&gt;The chance that both one of those devices is stolen &lt;em&gt;together&lt;/em&gt; with the U2F
-dongle (which I don't keep attached to those devices of course) is somewhat less.&lt;/p&gt;</content><category term="openssh"></category><category term="ssh"></category><category term="u2f"></category><category term="selinux"></category></entry></feed>
+dongle (which I don't keep attached to those devices of course) is somewhat less.&lt;/p&gt;</content><category term="Free-Software"></category><category term="openssh"></category><category term="ssh"></category><category term="u2f"></category><category term="selinux"></category></entry></feed>

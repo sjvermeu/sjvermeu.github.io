@@ -253,25 +253,22 @@ then, after transitioning into the "simple" domain, is not part of the
 SELinux enforcements anymore whereas the rest of the system remains in
 SELinux enforcing mode.</p>
 <p>For instance, create a minuscule policy like so:</p>
-<div class="highlight"><pre><span></span>policy_module(testdom, 1.0)
+<div class="highlight"><pre><span></span><code>policy_module(testdom, 1.0)
 
 type testdom_t;
 type testdom_exec_t;
 init_daemon_domain(testdom_t, testdom_exec_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>Mark the executable for the daemon as <code>testdom_exec_t</code> (after building
 and loading the minuscule policy):</p>
-<div class="highlight"><pre><span></span>~# chcon -t testdom_exec_t /opt/something/bin/daemond
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~# chcon -t testdom_exec_t /opt/something/bin/daemond
+</code></pre></div>
 
 <p>Finally, tell SELinux that <code>testdom_t</code> is to be seen as a permissive
 domain:</p>
-<div class="highlight"><pre><span></span>~# semanage permissive -a testdom_t
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~# semanage permissive -a testdom_t
+</code></pre></div>
 
 <p>When finished, don't forget to remove the permissive bit
 (<code>semanage permissive -d testdom_t</code>) and unload/remove the SELinux

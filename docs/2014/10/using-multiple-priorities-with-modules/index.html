@@ -240,24 +240,22 @@ disabled or removed again.</p>
 <p>The "old" modules (pre-2.4) are loaded with priority 100. When policy
 modules with the 2.4 SELinux userspace series are loaded, they get
 loaded with priority 400. As a result, the following message occurs:</p>
-<div class="highlight"><pre><span></span>~# semodule -i screen.pp
+<div class="highlight"><pre><span></span><code>~# semodule -i screen.pp
 libsemanage.semanage_direct_install_info: Overriding screen module at lower priority 100 with module at priority 400
-</pre></div>
-
+</code></pre></div>
 
 <p>So unlike the previous situation, where the older module is substituted
 with the new one, we now have two "screen" modules loaded; the last one
 gets priority 400 and is active. To see all installed modules and
 priorities, use the <code>--list-modules</code> option:</p>
-<div class="highlight"><pre><span></span>~# semodule --list-modules=all | grep screen
+<div class="highlight"><pre><span></span><code>~# semodule --list-modules=all | grep screen
 100 screen     pp
 400 screen     pp
-</pre></div>
-
+</code></pre></div>
 
 <p>Older versions of modules can be removed by specifying the priority:</p>
-<div class="highlight"><pre><span></span>~# semodule -X 100 -r screen
-</pre></div>
+<div class="highlight"><pre><span></span><code>~# semodule -X 100 -r screen
+</code></pre></div>
         </div>
 
         <!-- Neighbors -->

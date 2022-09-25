@@ -242,13 +242,13 @@ changes behavior (or my scripts abused an error in the previous
 stylesheets that are fixed now). So right now the
 <a href="http://swift.siphos.be/linux_sea/linux_sea.epub">ePub</a> version should
 work again, and the code snippet below is what I use now to build it:</p>
-<div class="highlight"><pre><span></span>xsltproc --stringparam base.dir linuxsea-epub/OEBPS/ /usr/share/sgml/docbook/xsl-stylesheets/epub3/chunk.xsl LINUXSEA.xml;
+<div class="highlight"><pre><span></span><code>xsltproc --stringparam base.dir linuxsea-epub/OEBPS/ /usr/share/sgml/docbook/xsl-stylesheets/epub3/chunk.xsl LINUXSEA.xml;
 cp -r /path/to/src/linux_sea/images linuxsea-epub/OEBPS;
 cd linuxsea-epub;
 zip -X0 linux_sea.epub mimetype;
 zip -r -X9 linux_sea.epub META-INF OEBPS;
 mv linux_sea.epub ../;
-</pre></div>
+</code></pre></div>
         </div>
 
         <!-- Neighbors -->

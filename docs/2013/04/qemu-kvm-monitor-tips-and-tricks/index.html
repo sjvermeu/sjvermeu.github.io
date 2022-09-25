@@ -243,7 +243,7 @@ handle the VMs.</p>
 can enable it on the monitor using <strong>change vnc</strong> while getting details
 is done using <strong>info vnc</strong>. To disable VNC again, use <strong>change vnc
 none</strong>.</p>
-<div class="highlight"><pre><span></span>(qemu) info vnc
+<div class="highlight"><pre><span></span><code>(qemu) info vnc
 Server: disabled
 (qemu) change vnc 127.0.0.1:20
 (qemu) change vnc password
@@ -253,8 +253,7 @@ Server:
      address: 127.0.0.1:5920
         auth: vnc
 Client: none
-</pre></div>
-
+</code></pre></div>
 
 <p>Similarly, if you need to enable remote debugging, you can use the
 <strong>gdbserver</strong> option.</p>
@@ -265,14 +264,13 @@ enter <strong>info</strong> to get an overview of all supported commands.</p>
 <p>To easily manage block devices, you can see the current state of devices
 using <strong>info block</strong> and then use <strong>change &lt;blockdevice&gt;
 &lt;path&gt;</strong> to update it.</p>
-<div class="highlight"><pre><span></span>(qemu) info block
+<div class="highlight"><pre><span></span><code>(qemu) info block
 virtio0: removable=0 io-status=ok file=/srv/virt/gentoo/hardened2selinux/selinux-base.img ro=0 drv=qcow2 encrypted=0 bps=0 bps_rd=0 bps_wr=0 iops=0 iops_rd=0 iops_wr=0
 ide1-cd0: removable=1 locked=0 tray-open=0 io-status=ok [not inserted]
 floppy0: removable=1 locked=0 tray-open=0 [not inserted]
 sd0: removable=1 locked=0 tray-open=0 [not inserted]
 (qemu) change ide1-cd0 /srv/virt/media/systemrescuecd-x86-2.2.0.iso
-</pre></div>
-
+</code></pre></div>
 
 <p>To powerdown the system, use <strong>system_powerdown</strong>. If that fails, you
 can use <strong>quit</strong> to immediately shut down (terminate) the VM. To reset
@@ -284,12 +282,12 @@ migrations</a> between systems.</p>
 <strong>loadvm</strong>. This is interesting when you want to do potentially harmful
 changes on the system and want to easily revert back if things got
 broken.</p>
-<div class="highlight"><pre><span></span>(qemu) savevm 20130419
+<div class="highlight"><pre><span></span><code>(qemu) savevm 20130419
 (qemu) info snapshots
      ID        TAG                 VM SIZE                DATE       VM CLOCK
      1         20130419               224M 2013-04-19 12:05:16   00:00:17.294
 (qemu) loadvm 20130419
-</pre></div>
+</code></pre></div>
         </div>
 
         <!-- Neighbors -->

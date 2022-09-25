@@ -234,26 +234,23 @@
 host itself) that can be governed through SELinux policies. Unlike peer
 labeling, here the labels assigned to the network traffic is completely
 locally defined. Consider the following command:</p>
-<div class="highlight"><pre><span></span># iptables -t mangle -A INPUT -p tcp --src 192.168.1.2 --dport 443
+<div class="highlight"><pre><span></span><code># iptables -t mangle -A INPUT -p tcp --src 192.168.1.2 --dport 443
   -j SECMARK --selctx system_u:object_r:myauth_packet_t
-</pre></div>
-
+</code></pre></div>
 
 <p>With this command, packets that originate from the <em>192.168.1.2</em> host
 and arrive on port 443 (typically used for HTTPS traffic) are marked as
 <code>myauth_packet_t</code>. SELinux policy writers can then allow domains to
 receive this type of packets (or send) through the <em>packet</em> class:</p>
-<div class="highlight"><pre><span></span># Allow sockets with mydomain_t context to receive packets labeled myauth_packet_t
+<div class="highlight"><pre><span></span><code># Allow sockets with mydomain_t context to receive packets labeled myauth_packet_t
 allow mydomain_t myauth_packet_t:packet recv;
-</pre></div>
-
+</code></pre></div>
 
 <p>The SELinux policy modules enable this through the
 <em>corenet_sendrecv_&lt;type&gt;_{client,server}_packets</em> interfaces:</p>
-<div class="highlight"><pre><span></span>corenet_sendrecv_http_client_packets(mybrowser_t)
+<div class="highlight"><pre><span></span><code>corenet_sendrecv_http_client_packets(mybrowser_t)
 # allow mybrowser_t http_client_packet_t:packet { send recv };
-</pre></div>
-
+</code></pre></div>
 
 <p>As a common rule, packets are marked as client packets or server
 packets, depending on the role of the <em>domain</em>. In the above example,

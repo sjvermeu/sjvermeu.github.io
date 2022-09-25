@@ -17,7 +17,7 @@ all, we define a &lt;em&gt;role attribute&lt;/em&gt; called &lt;code&gt;incronta
 that gets this attribute assigned will be able to transition to the
 &lt;code&gt;incrontab_t&lt;/code&gt; domain.&lt;/p&gt;
 &lt;p&gt;We can accomplish this by editing the &lt;code&gt;incron.te&lt;/code&gt; file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(incron, 0.2)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(incron, 0.2)
 
 # Declare the incrontab_roles attribute
 attribute_role incrontab_roles;
@@ -28,13 +28,12 @@ type incrontab_exec_t;
 application_domain(incrontab_t, incrontab_exec_t)
 # Allow incrontab_t for all incrontab_roles 
 role incrontab_roles types incrontab_t;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Next, we need something where we can allow user domains to call
 incrontab. This will be done through an interface. Let's look at
 &lt;code&gt;incron.if&lt;/code&gt; with one such interface in it: the &lt;em&gt;incron_role&lt;/em&gt; interface.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;## inotify-based cron-like daemon
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;## inotify-based cron-like daemon
 
 #########################################
 ## &amp;lt;summary&amp;gt;
@@ -64,8 +63,7 @@ interface(`incron_role&amp;#39;,`
         ps_process_pattern($2, incrontab_t)
         allow $2 incrontab_t:process signal;
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The comments in the file are somewhat special: if the comments start
 with two hashes (&lt;code&gt;##&lt;/code&gt;) then it is taken into account while building the
@@ -78,30 +76,27 @@ Most of the time, you can use &lt;code&gt;signal_perms&lt;/code&gt; here but fro
 the application we see that the application is setuid root, so we don't
 want to grant too many privileges by default if they are not needed.&lt;/p&gt;
 &lt;p&gt;With this interface file created, we can rebuild the module and load it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile incron.pp
 # semodule -i incron.pp
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;But how to assign this interface to users? Well, what we want to do is
 something like the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;incron_role(user_r, user_t)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;incron_role(user_r, user_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When interfaces are part of the policy provided by the distribution, the
 definitions of it are stored in the proper location and you can easily
 add it. For instance, in Gentoo, if you want to allow the &lt;code&gt;user_r&lt;/code&gt; role
 and &lt;code&gt;user_t&lt;/code&gt; domain the &lt;em&gt;cron_role&lt;/em&gt; access (and assuming it doesn't
 have so already), then you can call &lt;strong&gt;selocal&lt;/strong&gt; as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal -a &amp;quot;cron_role(user_r, user_t)&amp;quot; -c &amp;quot;Granting user_t cron access&amp;quot; -Lb
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal -a &amp;quot;cron_role(user_r, user_t)&amp;quot; -c &amp;quot;Granting user_t cron access&amp;quot; -Lb
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;However, because the interface is currently not known yet, we need to
 create a second small policy that does this. Create a file (called
 &lt;code&gt;localuser.te&lt;/code&gt; or so) with the following content:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(localuser, 0.1)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(localuser, 0.1)
 
 gen_require(`
         type user_t;
@@ -109,20 +104,18 @@ gen_require(`
 &amp;#39;)
 
 incron_role(user_r, user_t)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now build the policies and load them. We'll now just build and load all
 the policies in the current directory (which will be the incron and
 localuser ones):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# make -f /usr/share/selinux/strict/include/Makefile
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# make -f /usr/share/selinux/strict/include/Makefile
 # semodule -i *.pp
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can now verify that the user is allowed to transition to the
 &lt;code&gt;incrontab_t&lt;/code&gt; domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# seinfo -ruser_r -x | grep incron
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# seinfo -ruser_r -x | grep incron
          incrontab_t
 # sesearch -s user_t -t incrontab_exec_t -AdCTS
 Found 1 semantic av rules:
@@ -130,10 +123,9 @@ Found 1 semantic av rules:
 
 Found 1 semantic te rules:
    type_transition user_t incrontab_exec_t : process incrontab_t;
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
-&lt;p&gt;Great, let's get to our first failure to resolve... in the next post ;-)&lt;/p&gt;</content><category term="incron"></category><category term="interface"></category><category term="policy"></category></entry><entry><title>Commandline SELinux policy helper functions</title><link href="https://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/" rel="alternate"></link><published>2013-05-18T03:50:00+02:00</published><updated>2013-05-18T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-18:/2013/05/commandline-selinux-policy-helper-functions/</id><summary type="html">&lt;p&gt;To work on SELinux policies, I use a couple of functions that I can call
+&lt;p&gt;Great, let's get to our first failure to resolve... in the next post ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="incron"></category><category term="interface"></category><category term="policy"></category></entry><entry><title>Commandline SELinux policy helper functions</title><link href="https://blog.siphos.be/2013/05/commandline-selinux-policy-helper-functions/" rel="alternate"></link><published>2013-05-18T03:50:00+02:00</published><updated>2013-05-18T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-18:/2013/05/commandline-selinux-policy-helper-functions/</id><summary type="html">&lt;p&gt;To work on SELinux policies, I use a couple of functions that I can call
 on the shell (command line): &lt;strong&gt;seshowif&lt;/strong&gt;, &lt;strong&gt;sefindif&lt;/strong&gt;, &lt;strong&gt;seshowdef&lt;/strong&gt;
 and &lt;strong&gt;sefinddef&lt;/strong&gt;. The idea behind the methods is that I want to search
 (&lt;em&gt;find&lt;/em&gt;) for an interface (&lt;em&gt;if&lt;/em&gt;) or definition (&lt;em&gt;def&lt;/em&gt;) that contains a
@@ -145,15 +137,14 @@ particular method or call. Or, if I know what the interface or
 definition is, I want to see it (&lt;em&gt;show&lt;/em&gt;).&lt;/p&gt;
 &lt;p&gt;For instance, to find the name of the interface that allows us to define
 file transitions from the &lt;code&gt;postfix_etc_t&lt;/code&gt; label:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefindif filetrans.*postfix_etc
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif filetrans.*postfix_etc
 contrib/postfix.if: interface(`postfix_config_filetrans&amp;#39;,`
 contrib/postfix.if:     filetrans_pattern($1, postfix_etc_t, $2, $3, $4)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Or to show the content of the &lt;em&gt;corenet_tcp_bind_http_port&lt;/em&gt;
 interface:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ seshowif corenet_tcp_bind_http_port
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ seshowif corenet_tcp_bind_http_port
 interface(`corenet_tcp_bind_http_port&amp;#39;,`
         gen_require(`
                 type http_port_t;
@@ -162,11 +153,10 @@ interface(`corenet_tcp_bind_http_port&amp;#39;,`
         allow $1 http_port_t:tcp_socket name_bind;
         allow $1 self:capability net_bind_service;
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;For the definitions, this is quite similar:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefinddef socket.*create
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefinddef socket.*create
 obj_perm_sets.spt:define(`create_socket_perms&amp;#39;, `{ create rw_socket_perms }&amp;#39;)
 obj_perm_sets.spt:define(`create_stream_socket_perms&amp;#39;, `{ create_socket_perms listen accept }&amp;#39;)
 obj_perm_sets.spt:define(`connected_socket_perms&amp;#39;, `{ create ioctl read getattr write setattr append bind getopt setopt shutdown }&amp;#39;)
@@ -180,8 +170,7 @@ define(`manage_files_pattern&amp;#39;,`
         allow $1 $2:dir rw_dir_perms;
         allow $1 $3:file manage_file_perms;
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I have these defined in my &lt;code&gt;~/.bashrc&lt;/code&gt; (they are simple
 &lt;a href="http://dev.gentoo.org/~swift/blog/01/selinux-funcs.txt"&gt;functions&lt;/a&gt;) and
@@ -189,4 +178,4 @@ are used on a daily basis here ;-) If you want to learn a bit more on
 developing SELinux policies for Gentoo, make sure you read the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux-development.xml"&gt;Gentoo
 Hardened SELinux
 Development&lt;/a&gt;
-guide.&lt;/p&gt;</content><category term="bash"></category><category term="definition"></category><category term="functions"></category><category term="interface"></category><category term="policy"></category><category term="selinux"></category><category term="support"></category></entry></feed>
+guide.&lt;/p&gt;</content><category term="SELinux"></category><category term="bash"></category><category term="definition"></category><category term="functions"></category><category term="interface"></category><category term="policy"></category><category term="selinux"></category><category term="support"></category></entry></feed>

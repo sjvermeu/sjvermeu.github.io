@@ -16,7 +16,7 @@
     <meta name="keywords" content="capabilities, grsecurity, linux, nosuid, selinux, tpe">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="Overview of Linux capabilities, part 2" />
-<meta property="og:description" content="As I&#39;ve (in a very high level) described capabilities and talked a bit on how to work with them, I started with a small overview of file-related capabilities. So next up are process-related capabilities (note, this isn&#39;t a conform terminology, more some categorization that I do myself). CAP_IPC_LOCK Allow the …" />
+<meta property="og:description" content="As I&#39;ve (in a very high level) described capabilities and talked a bit on how to work with them, I started with a small overview of file-related capabilities. So next up are process-related capabilities (note, this isn&#39;t a conform terminology, more some categorization that I do myself). CAP_IPC_LOCK …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/" />
 <meta property="og:type" content="article" />
@@ -292,7 +292,7 @@ govern correctly, but this post would be rather dull (given that the
 definitions of the above capabilities can be found from the manual page)
 if I wouldn't talk a bit more about its feasibility. Take a look at the
 following C application code:</p>
-<div class="highlight"><pre><span></span>#include &lt;errno.h&gt;
+<div class="highlight"><pre><span></span><code>#include &lt;errno.h&gt;
 #include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;sys/capability.h&gt;
@@ -308,22 +308,20 @@ int main(int argc, char ** argv) {
     printf(&quot;setresuid(): %s\n&quot;, strerror(errno));
   execve(&quot;/bin/sh&quot;, NULL, NULL);
 }
-</pre></div>
-
+</code></pre></div>
 
 <p>At first sight, it looks like an application to get root privileges
 (<em>setresuid()</em>) and then spawn a shell. If that application would be
 given <code>CAP_SETUID</code> and <code>CAP_SETGID</code> effectively, it would allow anyone
 who executed it to automatically get a root shell, wouldn't it?</p>
-<div class="highlight"><pre><span></span>$ gcc -o test -lcap test.c
+<div class="highlight"><pre><span></span><code>$ gcc -o test -lcap test.c
 # setcap cap_setuid,cap_setgid+ep test
 $ ./test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  =
 setresuid() failed: Operation not permitted
-</pre></div>
-
+</code></pre></div>
 
 <p>So what happened? After all, the two capabilities are set with the <em>+ep</em>
 flags given. Then why aren't these capabilities enabled? Well, this
@@ -331,23 +329,21 @@ binary was stored on a file system that is mounted with the <em>nosuid</em>
 option. As a result, this capability is <em>not</em> enabled and the
 application didn't work. If I move the file to another file system that
 doesn't have the <em>nosuid</em> option:</p>
-<div class="highlight"><pre><span></span>$ /usr/local/bin/test
+<div class="highlight"><pre><span></span><code>$ /usr/local/bin/test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  = cap_setgid,cap_setuid+ep
 setresuid() failed: Operation not permitted
-</pre></div>
-
+</code></pre></div>
 
 <p>So the capabilities now do get enabled, so why does this still fail?
 This now is due to SELinux:</p>
-<div class="highlight"><pre><span></span>type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&quot;test&quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&quot;test&quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
+</code></pre></div>
 
 <p>And if you enable grSecurity's TPE, we can't even start the binary to
 begin with:</p>
-<div class="highlight"><pre><span></span>$ ./test
+<div class="highlight"><pre><span></span><code>$ ./test
 -bash: ./test: Permission denied
 $ /lib/ld-linux-x86-64.so.2 /home/test/test
 /home/test/test: error while loading shared libraries: /home/test/test: failed to map segment from shared object: Permission denied
@@ -355,19 +351,17 @@ $ /lib/ld-linux-x86-64.so.2 /home/test/test
 # dmesg
 ...
 [ 5579.567842] grsec: From 192.168.100.1: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/test/test by /home/test/test[bash:4221] uid/euid:1002/1002 gid/egid:100/100, parent /bin/bash[bash:4195] uid/euid:1002/1002 gid/egid:100/100
-</pre></div>
-
+</code></pre></div>
 
 <p>When all these "security obstacles" are not enabled, then the call
 succeeds:</p>
-<div class="highlight"><pre><span></span>$ /usr/local/bin/test
+<div class="highlight"><pre><span></span><code>$ /usr/local/bin/test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  = cap_setgid,cap_setuid+ep
 setresuid() failed: Success
 root@hpl tmp #
-</pre></div>
-
+</code></pre></div>
 
 <p>This again shows how important it is to regularly review
 capability-enabled files on the file system, as this is a major security
@@ -375,10 +369,10 @@ problem that cannot be detected by only looking for setuid binaries, but
 also that securing a system is not limited to one or a few settings: one
 always has to take the entire setup into consideration, hardening the
 system so it becomes more difficult for malicious users to abuse it.</p>
-<div class="highlight"><pre><span></span># filecap -a
+<div class="highlight"><pre><span></span><code># filecap -a
 file                 capabilities
 /usr/local/bin/test     setgid, setuid
-</pre></div>
+</code></pre></div>
         </div>
 
         <!-- Neighbors -->
@@ -434,7 +428,7 @@ file                 capabilities
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/",
-    "description": "As I've (in a very high level) described capabilities and talked a bit on how to work with them, I started with a small overview of file-related capabilities. So next up are process-related capabilities (note, this isn't a conform terminology, more some categorization that I do myself). CAP_IPC_LOCK Allow the …"
+    "description": "As I've (in a very high level) described capabilities and talked a bit on how to work with them, I started with a small overview of file-related capabilities. So next up are process-related capabilities (note, this isn't a conform terminology, more some categorization that I do myself). CAP_IPC_LOCK …"
 }
 </script>
     <!-- Disqus count -->

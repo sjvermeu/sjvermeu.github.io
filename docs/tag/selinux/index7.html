@@ -205,7 +205,7 @@ Simplicity is a form of art... - selinux tag        </title>
 <a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/">cliffhanger</a>
 as <strong>incrond</strong> is still not working properly, and we got a few denials
 that needed to be resolved; here they are again for your convenience:</p>
-<div class="highlight"><pre><span></span>type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&quot;incrond …</pre></div></p>
+<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&quot;incrond …</code></pre></div></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -229,7 +229,7 @@ that needed to be resolved; here they are again for your convenience:</p>
 domain. As this domain will also be used to execute the user (and
 system) commands provided through the incrontabs, we need to consider
 how we are going to deal with this wide range of possible permissions
-that it might take. One …</p></p>
+that it might …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -253,7 +253,7 @@ to develop policies. Again, please be aware that this is my way of
 developing policies, other policy developers might have a different
 approach. We were working on the <strong>incrontab</strong> command, so let's
 continue with trying to create a new user incrontab:</p>
-<div class="highlight"><pre><span></span>$ incrontab -e …</pre></div></p>
+<div class="highlight"><pre><span></span><code>$ incrontab -e …</code></pre></div></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -276,9 +276,8 @@ continue with trying to create a new user incrontab:</p>
 allowed</a>
 to execute <strong>incrontab</strong>, let's fire it up and look at the denials to
 build up the policy.</p>
-<div class="highlight"><pre><span></span>$ incrontab --help
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>$ incrontab --help
+</code></pre></div>
 
 <p>That doesn't show much does it? Well, if you look into the <code>audit.log</code>
 (or <code>avc.log</code>) file, you'll notice a lot of denials …</p></p>
@@ -356,7 +355,7 @@ certain decisions are taken and why. At …</p></p>
 first question to ask is how it got there.</p>
 <p>Well, one way is to have a process running in a known domain, like
 <code>screen_t</code>, after which the SELinux policy module that provides this
-domain is removed from …</p></p>
+domain is …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -379,7 +378,7 @@ domain is removed from …</p></p>
 was to give some additional information on frequently occurring denials,
 such as the <em>dac_override</em> and <em>dac_read_search</em> capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
-developers often notice that these capabilities are triggered without …</p></p>
+developers often notice that these capabilities …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>

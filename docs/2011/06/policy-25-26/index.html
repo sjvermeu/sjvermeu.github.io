@@ -229,9 +229,8 @@ about it. Apparently, these new binary policy formats add support for
 filename transitions and non-process role transitions.</p>
 <p>Currently, when you initiate a type transition, you would use something
 like so:</p>
-<div class="highlight"><pre><span></span>type_transition mysqld_t mysql_db_t:sock_file mysqld_var_run_t;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>type_transition mysqld_t mysql_db_t:sock_file mysqld_var_run_t;
+</code></pre></div>
 
 <p>This statement sais that, if a process running in the <code>mysqld_t</code> domain
 creates a socket in a directory labelled with <code>mysql_db_t</code>, then this
@@ -243,10 +242,9 @@ component" and should be seen as what <strong>basename /path/to/something</stron
 returns). That allows processes running in the same domain and writing
 files in directories labelled with the same type to still have these
 files labelled specifically. A non-existing example:</p>
-<div class="highlight"><pre><span></span>type_transition puppet_t etc_t:file locale_t timezone;
+<div class="highlight"><pre><span></span><code>type_transition puppet_t etc_t:file locale_t timezone;
 type_transition puppet_t etc_t:file net_conf_t resolv.conf;
-</pre></div>
-
+</code></pre></div>
 
 <p>In the above example, if the <code>puppet_t</code> domain creates files in
 <path>/etc</path> (which is labelled <code>etc_t</code>) then based on the file it
@@ -258,9 +256,8 @@ transitions now also support non-process class transitions. <a href="http://perm
 post</a> that
 Harry Ciao made helps to describe it. The <code>role_transition</code> support in
 SELinux was previously used in the following way:</p>
-<div class="highlight"><pre><span></span>role_transition roleA_r some_exec_t roleB_r;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>role_transition roleA_r some_exec_t roleB_r;
+</code></pre></div>
 
 <p>What this statement indicates is that a domain running within <code>roleA_r</code>
 and that is executing <code>some_exec_t</code> will change its runtime role to
@@ -273,9 +270,8 @@ domain creates something new of a particular class and a role transition
 is declared for that, then the resulting new object will have the
 specified role assigned to it (rather than the default <code>object_r</code>). So
 for instance:</p>
-<div class="highlight"><pre><span></span>role_transition sysadm_r cron_spool_t:file sysadm_r;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>role_transition sysadm_r cron_spool_t:file sysadm_r;
+</code></pre></div>
 
 <p>If a domain running within the <code>sysadm_r</code> role creates a file in a
 directory labelled <code>cron_spool_t</code>, then the resulting file will have the

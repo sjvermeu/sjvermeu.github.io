@@ -247,17 +247,15 @@ or a <a href="https://forums.gentoo.org/viewtopic-t-822672.html">related thread<
 Forums.</p>
 <p>Luckily, storage is cheap (even SSD disks), so I quickly converted the qcow2 images
 into raw images:</p>
-<div class="highlight"><pre><span></span>~$ qemu-img convert root.qcow2 root.raw
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~$ qemu-img convert root.qcow2 root.raw
+</code></pre></div>
 
 <p>With the image now available in raw format, I can use the loop devices to mount
 the image(s) on my system:</p>
-<div class="highlight"><pre><span></span>~# losetup /dev/loop0 root.raw
+<div class="highlight"><pre><span></span><code>~# losetup /dev/loop0 root.raw
 ~# kpartx -a /dev/loop0
 ~# mount /dev/mapper/loop0p1 /mnt
-</pre></div>
-
+</code></pre></div>
 
 <p>The <code>kpartx</code> command will detect the partitions and ensure that those are
 available: the first partition becomes available at <code>/dev/loop0p1</code>, the
@@ -266,25 +264,22 @@ second <code>/dev/loop0p2</code> and so forth.</p>
 <p><strong>Placing a new password hash in the shadow file</strong></p>
 <p>A google search quickly revealed that the following command generates
 a shadow-compatible hash for a password:</p>
-<div class="highlight"><pre><span></span>~$ openssl passwd -1 MyMightyPassword
+<div class="highlight"><pre><span></span><code>~$ openssl passwd -1 MyMightyPassword
 $1$BHbMVz9i$qYHmULtXIY3dqZkyfW/oO.
-</pre></div>
-
+</code></pre></div>
 
 <p>The challenge wasn't to find the hash though, but to edit it:</p>
-<div class="highlight"><pre><span></span>~# vim /mnt/etc/shadow
+<div class="highlight"><pre><span></span><code>~# vim /mnt/etc/shadow
 vim: Permission denied
-</pre></div>
-
+</code></pre></div>
 
 <p>The image that I downloaded used SELinux (of course), which meant that the <code>shadow</code>
 file was labeled with <code>shadow_t</code> which I am not allowed to access. And I didn't
 want to put SELinux in permissive mode just for this (sometimes I /do/ have some
 time left, apparently).</p>
 <p>So I remounted the image, but now with the <code>context=</code> mount option, like so:</p>
-<div class="highlight"><pre><span></span>~# mount -o context=&quot;system_u:object_r:var_t:s0: /dev/loop0p1 /mnt
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~# mount -o context=&quot;system_u:object_r:var_t:s0: /dev/loop0p1 /mnt
+</code></pre></div>
 
 <p>Now all files are labeled with <code>var_t</code> which I do have permissions to edit. But
 I also need to take care that the files that I edited get the proper label again.
@@ -293,11 +288,10 @@ file in the root of the partition. Red Hat based distributions will pick this up
 and force a file system relabeling operation.</p>
 <p><strong>Unmounting the file system</strong></p>
 <p>After making the changes, I can now unmount the file system again:</p>
-<div class="highlight"><pre><span></span>~# umount /mnt
+<div class="highlight"><pre><span></span><code>~# umount /mnt
 ~# kpart -d /dev/loop0
 ~# losetup -d /dev/loop0
-</pre></div>
-
+</code></pre></div>
 
 <p>With that done, I had root access to the image and could start testing out
 my own set of commands.</p>

@@ -197,6 +197,32 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-using-booleans/">A SELinux policy for incron: using booleans</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 30 May 2013</span></span>
+                <p><p>After using a default set of directories to watch, and <a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/">allowing admins
+to mark other
+types</a>
+as such as well, let's consider another approach for making the policy
+more flexible: booleans. The idea now is that a boolean called
+<em>incron_notify_non_security_files</em> enables <strong>incrond</strong> to be
+notified on …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/boolean/">boolean</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/incron/">incron</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/">A SELinux policy for incron: marking types eligible for watching</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 29 May 2013</span></span>
@@ -205,9 +231,7 @@
 post</a> we made <strong>incrond</strong> able to watch <code>public_content_t</code> and
 <code>public_content_rw_t</code> types. However, this is not scalable, so we might
 want to be able to update the policy more dynamically with additional
-types. To accomplish this, we will make types eligible for watching
-through an attribute.</p>
-<p>So how …</p></p>
+types. To accomplish this, we will make types eligible for watching …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -231,7 +255,7 @@ through an attribute.</p>
 <a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-the-incrond-daemon/">cliffhanger</a>
 as <strong>incrond</strong> is still not working properly, and we got a few denials
 that needed to be resolved; here they are again for your convenience:</p>
-<div class="highlight"><pre><span></span>type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&quot;incrond …</pre></div></p>
+<div class="highlight"><pre><span></span><code>type=AVC msg=audit(1368734110.912:28353): avc:  denied  { getattr } for  pid=9716 comm=&quot;incrond …</code></pre></div></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -255,7 +279,7 @@ that needed to be resolved; here they are again for your convenience:</p>
 domain. As this domain will also be used to execute the user (and
 system) commands provided through the incrontabs, we need to consider
 how we are going to deal with this wide range of possible permissions
-that it might take. One …</p></p>
+that it might …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -279,7 +303,7 @@ to develop policies. Again, please be aware that this is my way of
 developing policies, other policy developers might have a different
 approach. We were working on the <strong>incrontab</strong> command, so let's
 continue with trying to create a new user incrontab:</p>
-<div class="highlight"><pre><span></span>$ incrontab -e …</pre></div></p>
+<div class="highlight"><pre><span></span><code>$ incrontab -e …</code></pre></div></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -302,9 +326,8 @@ continue with trying to create a new user incrontab:</p>
 allowed</a>
 to execute <strong>incrontab</strong>, let's fire it up and look at the denials to
 build up the policy.</p>
-<div class="highlight"><pre><span></span>$ incrontab --help
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>$ incrontab --help
+</code></pre></div>
 
 <p>That doesn't show much does it? Well, if you look into the <code>audit.log</code>
 (or <code>avc.log</code>) file, you'll notice a lot of denials …</p></p>
@@ -406,7 +429,7 @@ certain decisions are taken and why. At …</p></p>
 first question to ask is how it got there.</p>
 <p>Well, one way is to have a process running in a known domain, like
 <code>screen_t</code>, after which the SELinux policy module that provides this
-domain is removed from …</p></p>
+domain is …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -415,32 +438,6 @@ domain is removed from …</p></p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/unlabeled/">unlabeled</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/05/a-simple-ipv6-setup/">A simple IPv6 setup</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 20 May 2013</span></span>
-                <p><p>For internal communication between guests on my workstation, I use IPv6
-which is set up using the <em>Router Advertisement</em> "feature" of IPv6. The
-tools I use are <a href="http://www.thekelleys.org.uk/dnsmasq/doc.html">dnsmasq</a>
-for DNS/DHCP and router advertisement support, and
-<a href="http://roy.marples.name/projects/dhcpcd">dhcpcd</a> as client. It might be
-a total mess (grew almost organically until it …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/documentation.html">documentation</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/dhcpcd/">dhcpcd</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/dnsmasq/">dnsmasq</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ip6/">ip6</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ipv6/">ipv6</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ra/">ra</a>
                     </div>
                 </div>
             </div>

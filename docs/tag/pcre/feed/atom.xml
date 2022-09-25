@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - pcre</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/pcre/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2014-07-09T20:35:00+02:00</updated><entry><title>Segmentation fault when emerging packages after libpcre upgrade?</title><link href="https://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/" rel="alternate"></link><published>2014-07-09T20:35:00+02:00</published><updated>2014-07-09T20:35:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-07-09:/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/</id><summary type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
 to the file system, with an error that looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
- * ERROR: dev-libs/libpcre-8.35::gentoo …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
+ * ERROR: dev-libs/libpcre-8 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
 to the file system, with an error that looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
  * ERROR: dev-libs/libpcre-8.35::gentoo failed:
  *   Failed to set SELinux security labels.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This has been &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=516608"&gt;reported as bug
 516608&lt;/a&gt; and, after some
 investigation, the cause is found. First the quick workaround:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# cd /etc/selinux/strict/contexts/files
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# cd /etc/selinux/strict/contexts/files
 ~# rm *.bin
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And do the same for the other SELinux policy stores on the system
 (targeted, mcs, mls, ...).&lt;/p&gt;
@@ -49,7 +47,7 @@ in time, so the workaround might be needed.&lt;/p&gt;
 considering that libselinux is most likely to be stabilized faster than
 any libpcre bump I let it go.&lt;/p&gt;
 &lt;p&gt;At least we have a solution for future upgrades; sorry for the noise.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; &lt;code&gt;libselinux-2.2.2-r5&lt;/code&gt; also has the fix included.&lt;/p&gt;</content><category term="file_contexts"></category><category term="fix"></category><category term="Gentoo"></category><category term="libselinux"></category><category term="pcre"></category></entry><entry><title>Rebuilding SELinux contexts with sefcontext_compile</title><link href="https://blog.siphos.be/2013/07/rebuilding-selinux-contexts-with-sefcontext_compile/" rel="alternate"></link><published>2013-07-08T20:55:00+02:00</published><updated>2013-07-08T20:55:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-07-08:/2013/07/rebuilding-selinux-contexts-with-sefcontext_compile/</id><summary type="html">&lt;p&gt;A recent update of &lt;em&gt;libpcre&lt;/em&gt; caused the binary precompiled regular
+&lt;p&gt;&lt;em&gt;Edit:&lt;/em&gt; &lt;code&gt;libselinux-2.2.2-r5&lt;/code&gt; also has the fix included.&lt;/p&gt;</content><category term="SELinux"></category><category term="file_contexts"></category><category term="fix"></category><category term="Gentoo"></category><category term="libselinux"></category><category term="pcre"></category></entry><entry><title>Rebuilding SELinux contexts with sefcontext_compile</title><link href="https://blog.siphos.be/2013/07/rebuilding-selinux-contexts-with-sefcontext_compile/" rel="alternate"></link><published>2013-07-08T20:55:00+02:00</published><updated>2013-07-08T20:55:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-07-08:/2013/07/rebuilding-selinux-contexts-with-sefcontext_compile/</id><summary type="html">&lt;p&gt;A recent update of &lt;em&gt;libpcre&lt;/em&gt; caused the binary precompiled regular
 expression files of SELinux to become outdated (and even blatantly
 wrong). The details are in bug &lt;a href="https://bugs.gentoo.org/471718"&gt;471718&lt;/a&gt;
 but that doesn't help the users that are already facing the problem, nor
@@ -63,10 +61,9 @@ being labeled as &lt;em&gt;portage_tmp_t&lt;/em&gt; instead of the proper label)
 with &lt;strong&gt;matchpathcon&lt;/strong&gt; if the label is correct. If &lt;strong&gt;matchpathcon&lt;/strong&gt; sais
 that the label should be &lt;code&gt;&amp;lt;&amp;lt;none&amp;gt;&amp;gt;&lt;/code&gt; then you need to rebuild the SELinux
 context files:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd /etc/selinux/strict/contexts/files
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cd /etc/selinux/strict/contexts/files
 # for n in *.bin; do sefcontext_compile ${n%%.bin}; done
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;strong&gt;sefcontext_compile&lt;/strong&gt; command will rebuild the SELinux context
 files. When that has been done, &lt;strong&gt;matchpathcon&lt;/strong&gt; should show the right
@@ -79,4 +76,4 @@ itself, I'd rather not put too much SELinux logic in the ebuild unless
 it is pretty safeguarded...&lt;/p&gt;
 &lt;p&gt;In any case, it has also been documented in the &lt;a href="https://wiki.gentoo.org/wiki/SELinux/FAQ#File_labels_do_not_seem_to_be_set_anymore.2C_and_matchpathcon_sais_.3C.3Cnone.3E.3E"&gt;Gentoo SELinux
 FAQ&lt;/a&gt;
-on the Gentoo wiki.&lt;/p&gt;</content><category term="hardened"></category><category term="pcre"></category><category term="selinux"></category></entry></feed>
+on the Gentoo wiki.&lt;/p&gt;</content><category term="SELinux"></category><category term="hardened"></category><category term="pcre"></category><category term="selinux"></category></entry></feed>

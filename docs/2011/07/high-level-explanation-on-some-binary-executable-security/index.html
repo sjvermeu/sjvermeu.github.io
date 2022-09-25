@@ -233,15 +233,14 @@ called <a href="http://www.trapkit.de/tools/checksec.html">checksec.sh</a> that
 displays a few of those protections on a binary.</p>
 <p>So what can I find out of such a run? Let me show you the output on two
 binaries here:</p>
-<div class="highlight"><pre><span></span>~$ checksec.sh --file /opt/skype/skype
+<div class="highlight"><pre><span></span><code>~$ checksec.sh --file /opt/skype/skype
 RELRO           STACK CANARY      NX            PIE                     FILE
 No RELRO        Canary found      NX disabled   No PIE                  /opt/skype/skype
 
 ~$ checksec.sh --file /bin/bash
 RELRO           STACK CANARY      NX            PIE                     FILE
 Full RELRO      Canary found      NX enabled    PIE enabled             /bin/bash
-</pre></div>
-
+</code></pre></div>
 
 <p>It even comes with pretty colors (the "No RELRO" is red whereas "Full
 RELRO" is green). But beyond interpreting those colors (which should be
@@ -290,7 +289,7 @@ memory organization, making attacks that rely on the memory structure
 more difficult.</p>
 <p>But hold on, the checksec.sh application also supports detection for
 <code>FORTIFY_SOURCE</code>:</p>
-<div class="highlight"><pre><span></span>~$ checksec.sh --fortify-file /opt/skype/skype
+<div class="highlight"><pre><span></span><code>~$ checksec.sh --fortify-file /opt/skype/skype
  * FORTIFY_SOURCE support available (libc)    : Yes
 * Binary compiled with FORTIFY_SOURCE support: Yes
 
@@ -306,8 +305,7 @@ SUMMARY:
 * Number of FORTIFY-able functions in the executable : 25
 * Number of checked functions in the executable      : 0
 * Number of unchecked functions in the executable    : 25
-</pre></div>
-
+</code></pre></div>
 
 <p>In the given example, my system does support <code>FORTIFY_SOURCE</code> and the
 binary is supposedly built with this support as well, but the checks

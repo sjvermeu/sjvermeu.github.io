@@ -239,10 +239,9 @@ being labeled as <em>portage_tmp_t</em> instead of the proper label), check
 with <strong>matchpathcon</strong> if the label is correct. If <strong>matchpathcon</strong> sais
 that the label should be <code>&lt;&lt;none&gt;&gt;</code> then you need to rebuild the SELinux
 context files:</p>
-<div class="highlight"><pre><span></span># cd /etc/selinux/strict/contexts/files
+<div class="highlight"><pre><span></span><code># cd /etc/selinux/strict/contexts/files
 # for n in *.bin; do sefcontext_compile ${n%%.bin}; done
-</pre></div>
-
+</code></pre></div>
 
 <p>The <strong>sefcontext_compile</strong> command will rebuild the SELinux context
 files. When that has been done, <strong>matchpathcon</strong> should show the right

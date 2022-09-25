@@ -289,10 +289,9 @@ SELinux policy, or disable SELinux (actually switch it to permissive
 mode) if the Linux kernel has this enabled. By allowing users to load a
 new policy, they can basically create a SELinux policy module that
 grants them the necessary accesses towards the file:</p>
-<div class="highlight"><pre><span></span>allow sysadm_t ca_misc_file_t:file manage_file_perms;
+<div class="highlight"><pre><span></span><code>allow sysadm_t ca_misc_file_t:file manage_file_perms;
 allow sysadm_t ca_misc_file_t:dir manage_dir_perms;
-</pre></div>
-
+</code></pre></div>
 
 <p>So in order to prevent this, we have to make sure that these users can
 either not manipulate the SELinux policy - or make sure users on the
@@ -309,11 +308,10 @@ the context of a file. If the <code>ca_private_key_t</code> type would not be
 declared properly, then the type might be assigned an attribute that
 domains have privileges against. Consider the <code>file_type</code> attribute,
 granted to file types (at least the name makes sense ;-)</p>
-<div class="highlight"><pre><span></span># seinfo -tca_private_key_t -x
+<div class="highlight"><pre><span></span><code># seinfo -tca_private_key_t -x
   ca_private_key_t
     file_type
-</pre></div>
-
+</code></pre></div>
 
 <p>The moment a domain has been granted read access to the <code>file_type</code>
 files, then it has read access to the <code>ca_private_key_t</code> type. In other

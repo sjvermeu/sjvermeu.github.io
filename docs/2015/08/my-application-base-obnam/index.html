@@ -254,15 +254,14 @@ with obnam. So, how does it work?</p>
 I tell which directories need to be backed up, as well as which subdirectories
 or files (through expressions) can be left alone. For instance, I don't want
 obnam to backup ISO files as those have been downloaded anyway.</p>
-<div class="highlight"><pre><span></span><span class="k">[config]</span>
-<span class="na">repository</span> <span class="o">=</span> <span class="s">/srv/backup</span>
-<span class="na">root</span> <span class="o">=</span> <span class="s">/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home</span>
-<span class="na">exclude</span> <span class="o">=</span> <span class="s">\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*</span>
-<span class="na">exclude-caches</span> <span class="o">=</span> <span class="s">yes</span>
+<div class="highlight"><pre><span></span><code><span class="k">[config]</span><span class="w"></span>
+<span class="na">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">/srv/backup</span><span class="w"></span>
+<span class="na">root</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home</span><span class="w"></span>
+<span class="na">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*</span><span class="w"></span>
+<span class="na">exclude-caches</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">yes</span><span class="w"></span>
 
-<span class="na">keep</span> <span class="o">=</span> <span class="s">8h,14d,10w,12m,10y</span>
-</pre></div>
-
+<span class="na">keep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">8h,14d,10w,12m,10y</span><span class="w"></span>
+</code></pre></div>
 
 <p>The <code>root</code> parameter tells obnam which directories (and subdirectories) to
 back up. With <code>exclude</code> a particular set of files or directories can be
@@ -298,14 +297,12 @@ server. If I need to restore a file, I use <code>obnam ls</code> to see which fi
 need to restore (add in a <code>--generation=</code> to list the files of a different
 backup generation than the last one).</p>
 <p>Then, the command to restore is:</p>
-<div class="highlight"><pre><span></span>~# obnam restore --to=/var/restore /home/swift/Images/Processing/*.NCF
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~# obnam restore --to=/var/restore /home/swift/Images/Processing/*.NCF
+</code></pre></div>
 
 <p>Or I can restore immediately to the directory again:</p>
-<div class="highlight"><pre><span></span>~# obnam restore --to=/home/swift/Images/Processing /home/swift/Images/Processing/*.NCF
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~# obnam restore --to=/home/swift/Images/Processing /home/swift/Images/Processing/*.NCF
+</code></pre></div>
 
 <p>To support multiple clients, obnam by default identifies each client through
 the hostname. It is possible to use different names, but hostnames tend to be

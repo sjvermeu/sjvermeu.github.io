@@ -30,25 +30,22 @@ then, after transitioning into the "simple" domain, is not part of the
 SELinux enforcements anymore whereas the rest of the system remains in
 SELinux enforcing mode.&lt;/p&gt;
 &lt;p&gt;For instance, create a minuscule policy like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(testdom, 1.0)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(testdom, 1.0)
 
 type testdom_t;
 type testdom_exec_t;
 init_daemon_domain(testdom_t, testdom_exec_t)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Mark the executable for the daemon as &lt;code&gt;testdom_exec_t&lt;/code&gt; (after building
 and loading the minuscule policy):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# chcon -t testdom_exec_t /opt/something/bin/daemond
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# chcon -t testdom_exec_t /opt/something/bin/daemond
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Finally, tell SELinux that &lt;code&gt;testdom_t&lt;/code&gt; is to be seen as a permissive
 domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage permissive -a testdom_t
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage permissive -a testdom_t
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When finished, don't forget to remove the permissive bit
 (&lt;code&gt;semanage permissive -d testdom_t&lt;/code&gt;) and unload/remove the SELinux
@@ -56,4 +53,4 @@ policy module.&lt;/p&gt;
 &lt;p&gt;And that's it. If the daemon is now started (through a standard init
 script) it will run as &lt;code&gt;testdom_t&lt;/code&gt; and everything it does will be
 logged, but not enforced by SELinux. That might even help in
-understanding the application better.&lt;/p&gt;</content><category term="permissive"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category><category term="test"></category></entry></feed>
+understanding the application better.&lt;/p&gt;</content><category term="SELinux"></category><category term="permissive"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category><category term="test"></category></entry></feed>

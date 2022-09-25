@@ -204,15 +204,14 @@ Simplicity is a form of art... - selinux tag        </title>
                 <p><p>Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:</p>
-<div class="highlight"><pre><span></span>audit: audit_backlog=321 &gt; audit_backlog_limit=320
+<div class="highlight"><pre><span></span><code>audit: audit_backlog=321 &gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-</pre></div>
-
+</code></pre></div>
 
 <!-- PELICAN_END_SUMMMARY -->
 
-<p>The message shows up when certain audit events could not be …</p></p>
+<p>The message shows …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -333,7 +332,7 @@ messaging infrastructure, ...) and more. All components that are …</p></p>
 that it (well, the authdaemon that is part of Courier) wanted to access
 <code>/etc/shadow</code>, which is of course a big no-no. It doesn't take long to
 know that this is through the PAM support (more specifically,
-<code>pam_unix …</code></p></p>
+<code>pam …</code></p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -381,9 +380,8 @@ But they often don't take the time to …</p></p>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 02 November 2014</span></span>
                 <p><p>I just finished updating 102 packages. The change? Removing the
 following from the ebuilds:</p>
-<div class="highlight"><pre><span></span>DEPEND=&quot;selinux? ( sec-policy/selinux-${packagename} )&quot;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>DEPEND=&quot;selinux? ( sec-policy/selinux-${packagename} )&quot;
+</code></pre></div>
 
 <p>In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to

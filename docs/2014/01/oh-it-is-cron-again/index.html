@@ -228,15 +228,14 @@
         <!-- Article -->
         <div>
             <p>Today I was pointed to the following error:</p>
-<div class="highlight"><pre><span></span>test fcron[6722]: fcron[6722] 3.1.2 started
+<div class="highlight"><pre><span></span><code>test fcron[6722]: fcron[6722] 3.1.2 started
 test fcron[6722]: Cannot bind socket to &#39;/var/run/fcron.fifo&#39;: Permission denied
 test fcron[6722]:  &quot;at&quot; reboot jobs will only be run at computer&#39;s startup.
 test fcron[6722]: updating configuration from /var/spool/fcron
 test fcron[6722]: adding file systab Jan  3 17:51:19 test fcron[6722]: adding new file user
 test fcron[6722]: NO CONTEXT for user &quot;(null)&quot;: Invalid argument
 test fcron[6722]: ENTRYPOINT FAILED for user &quot;user&quot; (CONTEXT (null)) for file CONTEXT user_u:object_r:user_cron_spool_t:s0
-</pre></div>
-
+</code></pre></div>
 
 <p>First of all, the moment I notice that it is cron, I know I'm up for a
 few hours at it. Cron has been notoriously difficult to integrate with
@@ -248,7 +247,7 @@ simple SELinux policy thingie that one can easily ignore for now (I'll
 patch and upstream that in a minute). The problem is the <em>NO CONTEXT</em>
 stuff.</p>
 <p>The code looks as follows:</p>
-<div class="highlight"><pre><span></span>#ifdef SYSFCRONTAB
+<div class="highlight"><pre><span></span><code>#ifdef SYSFCRONTAB
     if(!strcmp(cf-&gt;cf_user, SYSFCRONTAB))
         user_name = &quot;system_u&quot;;
     else
@@ -268,8 +267,7 @@ stuff.</p>
                    , cf-&gt;cf_user, cf-&gt;cf_user_context, cf-&gt;cf_file_context);
             goto err;
         }
-</pre></div>
-
+</code></pre></div>
 
 <p>It wasn't obvious to me either, but from a quick look through the
 <a href="http://userspace.selinuxproject.org/trac/browser/libselinux/include/selinux/selinux.h">selinux.h</a>
@@ -313,7 +311,7 @@ deduction, that is.</p>
     and make sure it is mentioned as an entrypoint for the job domain</li>
 </ol>
 <p>Or, in some code:</p>
-<div class="highlight"><pre><span></span># ps -efZ | grep fcron | awk &#39;{print $1}&#39;
+<div class="highlight"><pre><span></span><code># ps -efZ | grep fcron | awk &#39;{print $1}&#39;
 system_u:system_r:crond_t
 # getseuser swift system_u:system_r:crond_t
 seuser: user_u
@@ -323,7 +321,7 @@ Context 0     user_u:user_r:cronjob_t
 # sesearch -s cronjob_t -t user_cron_spool_t -c file -p entrypoint -A
 Found 1 semantic av rules:
   allow cronjob_t user_cron_spool_t : file entrypoint ;
-</pre></div>
+</code></pre></div>
         </div>
 
         <!-- Neighbors -->

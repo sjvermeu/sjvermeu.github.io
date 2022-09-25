@@ -25,16 +25,15 @@ a common resource.&lt;/p&gt;
 (such as dmix) use IPC semaphores to allow multiple ALSA applications to
 connect to and use the sound subsystem. When an ALSA-enabled application
 is using the sound system, you'll see that a semaphore is active:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ipcs -s
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -s
 ------ Semaphore Arrays --------
 key        semid      owner      perms      nsems     
 0x0056a4d5 32768      swift      660        1
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;More information about a particular semaphore can be obtained using
 &lt;strong&gt;ipcs -s -i SEMID&lt;/strong&gt; where &lt;code&gt;SEMID&lt;/code&gt; is the value in the &lt;em&gt;semid&lt;/em&gt; column:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ipcs -s -i 32768
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -s -i 32768
 Semaphore Array semid=32768
 uid=1001         gid=18  cuid=1001       cgid=100
 mode=0660, access_perms=0660
@@ -43,8 +42,7 @@ otime = Sun Mar 30 12:33:46 2014
 ctime = Sun Mar 30 12:33:38 2014  
 semnum     value      ncount     zcount     pid       
 0          0          0          0          32061
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As with all IPC resources, we have information about the owner of the
 semaphore (&lt;code&gt;uid&lt;/code&gt; and &lt;code&gt;gid&lt;/code&gt;), the creator of the semaphore (&lt;code&gt;cuid&lt;/code&gt; and
@@ -62,19 +60,18 @@ to the shared memory, so that one process that wants to update a part of
 the shared memory takes a semaphore (a sort-of lock), makes the updates,
 and then increments the semaphore again.&lt;/p&gt;
 &lt;p&gt;You can see the currently defined shared memory using &lt;strong&gt;ipcs -m&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ipcs -m
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -m
 ------ Shared Memory Segments --------
 key        shmid      owner      perms      bytes      nattch     status      
 0x00000000 655370     swift      600        393216     2          dest
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Again, more information can be obtained through &lt;strong&gt;-i SHMID&lt;/strong&gt;. An
 interesting value to look at as well is the creator PID (just in case
 the process still runs, or through the audit logs) and the last PID used
 to operate on the shared memory (which also might no longer exist, but
 is still an important value to investigate).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ipcs -m -p
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ipcs -m -p
 ------ Shared Memory Creator/Last-op PIDs --------
 shmid      owner      cpid       lpid      
 655370     swift      6147       6017
@@ -82,8 +79,7 @@ shmid      owner      cpid       lpid
 ~$ ps -ef | grep -E &amp;#39;(6147|6017)&amp;#39;
 root      6017  6016  0 09:49 tty1     00:01:30 /usr/bin/X -nolisten tcp :0 -auth /home/swift/.serverauth.6000
 swift     6147     1  2 09:50 tty1     00:05:10 firefox
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In this case, the shared memory is most likely used to handle the UI of
 firefox towards the X server.&lt;/p&gt;
@@ -112,4 +108,4 @@ resource is created. Unlike the key, which can be used for multiple IPC
 resources, the identifier is unique. This is why the identifier is used
 in the &lt;strong&gt;ipcs -i&lt;/strong&gt; command rather than the key. Also, that means that if
 applications would properly document their IPC usage then we would
-easily know what an IPC resource is used for.&lt;/p&gt;</content><category term="ipc"></category><category term="ipcrm"></category><category term="ipcs"></category><category term="linux"></category><category term="msg"></category><category term="sem"></category><category term="shmem"></category></entry></feed>
+easily know what an IPC resource is used for.&lt;/p&gt;</content><category term="Free-Software"></category><category term="ipc"></category><category term="ipcrm"></category><category term="ipcs"></category><category term="linux"></category><category term="msg"></category><category term="sem"></category><category term="shmem"></category></entry></feed>

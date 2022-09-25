@@ -16,7 +16,7 @@
     <meta name="keywords" content="Gentoo, hardened, pam, rootok, run_init, selinux">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="Not needing run_init for password-less service management" />
-<meta property="og:description" content="One of the things that has been bugging me was why, even with having pam_rootok.so set in /etc/pam.d/run_init, I cannot enjoy passwordless service management without using run_init directly: # rc-service postgresql-9.2 status Authenticating root. Password: # run_init rc-service postgresql-9.2 status Authenticating root. * status: started So I …" />
+<meta property="og:description" content="One of the things that has been bugging me was why, even with having pam_rootok.so set in /etc/pam.d/run_init, I cannot enjoy passwordless service management without using run_init directly: # rc-service postgresql-9.2 status Authenticating root. Password: # run_init rc-service postgresql-9.2 status Authenticating root …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2013/04/not-needing-run_init-for-password-less-service-management/" />
 <meta property="og:type" content="article" />
@@ -238,15 +238,14 @@
             <p>One of the things that has been bugging me was why, even with having
 <code>pam_rootok.so</code> set in <code>/etc/pam.d/run_init</code>, I cannot enjoy
 passwordless service management without using <strong>run_init</strong> directly:</p>
-<div class="highlight"><pre><span></span># rc-service postgresql-9.2 status
+<div class="highlight"><pre><span></span><code># rc-service postgresql-9.2 status
 Authenticating root.
 Password:
 
 # run_init rc-service postgresql-9.2 status
 Authenticating root.
  * status: started
-</pre></div>
-
+</code></pre></div>
 
 <p>So I decided to <strong>strace</strong> the two commands and look for the
 differences. I found out that there is even a SELinux permission for
@@ -261,15 +260,14 @@ permissive, in which case it just continues) and only then it allows the
 do with how we integrate <strong>run_init</strong> in the scripts, because out of
 the trace I found that the previous context was also <em>run_init_t</em>
 (instead of <em>sysadm_t</em>):</p>
-<div class="highlight"><pre><span></span>20451 open(&quot;/proc/self/task/20451/attr/current&quot;, O_RDONLY) = 3
+<div class="highlight"><pre><span></span><code>20451 open(&quot;/proc/self/task/20451/attr/current&quot;, O_RDONLY) = 3
 20451 read(3, &quot;root:sysadm_r:run_init_t\0&quot;, 4095) = 25
 20451 close(3)                          = 0
 20451 gettid()                          = 20451
 20451 open(&quot;/proc/self/task/20451/attr/prev&quot;, O_RDONLY) = 3
 20451 read(3, &quot;root:sysadm_r:run_init_t\0&quot;, 4095) = 25
 20451 close(3)
-</pre></div>
-
+</code></pre></div>
 
 <p>Because there already is a transition to <em>run_init_t</em> upon calling the
 scripts, the underlying call to <strong>runscripts</strong> causes the "previous"
@@ -279,7 +277,7 @@ But by prepending the commands with <strong>run_init</strong> (which quickly cau
 the PAM functions to be called) the previous context is <em>sysadm_t</em>.</p>
 <p>I tested on a system with the following policy update, and this succeeds
 nicely.</p>
-<div class="highlight"><pre><span></span>policy_module(localruninit, 1.0)
+<div class="highlight"><pre><span></span><code>policy_module(localruninit, 1.0)
 
 gen_require(`
   class passwd { passwd chfn chsh rootok };
@@ -287,8 +285,7 @@ gen_require(`
 &#39;)
 
 allow run_init_t self:passwd rootok;
-</pre></div>
-
+</code></pre></div>
 
 <p>I'll probably add this in Gentoo's policy.</p>
         </div>
@@ -346,7 +343,7 @@ allow run_init_t self:passwd rootok;
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2013/04/not-needing-run_init-for-password-less-service-management/",
-    "description": "One of the things that has been bugging me was why, even with having pam_rootok.so set in /etc/pam.d/run_init, I cannot enjoy passwordless service management without using run_init directly: # rc-service postgresql-9.2 status Authenticating root. Password: # run_init rc-service postgresql-9.2 status Authenticating root. * status: started So I …"
+    "description": "One of the things that has been bugging me was why, even with having pam_rootok.so set in /etc/pam.d/run_init, I cannot enjoy passwordless service management without using run_init directly: # rc-service postgresql-9.2 status Authenticating root. Password: # run_init rc-service postgresql-9.2 status Authenticating root …"
 }
 </script>
     <!-- Disqus count -->

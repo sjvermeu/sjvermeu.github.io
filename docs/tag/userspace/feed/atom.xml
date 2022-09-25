@@ -29,10 +29,9 @@ enables manipulating the SELinux binary policies. This is a core library, and is
 the first SELinux userspace package that is installed on a system.&lt;/p&gt;
 &lt;p&gt;It contains one command, &lt;code&gt;chkcon&lt;/code&gt;, which allows users to validate if a specific
 security context exists within a binary policy file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ chkcon policy.29 user_u:user_r:mozilla_t:s0
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ chkcon policy.29 user_u:user_r:mozilla_t:s0
 user_u:user_r:mozilla_t:s0 is valid
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The package does contain two manpages of old commands which are no longer available
 (or I'm blind, either way, they're not installed and not found in the SELinux userspace
@@ -226,7 +225,7 @@ policy developers as it contains the &lt;code&gt;sesearch&lt;/code&gt; command -
 the active policy.&lt;/p&gt;
 &lt;p&gt;The above list is thus a picture of the SELinux userspace utilities, which is becoming
 quite a big application set now that some functionality is split off from the &lt;code&gt;policycoreutils&lt;/code&gt;
-package.&lt;/p&gt;</content><category term="gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Where does CIL play in the SELinux system?</title><link href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/" rel="alternate"></link><published>2015-06-13T23:12:00+02:00</published><updated>2015-06-13T23:12:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-13:/2015/06/where-does-cil-play-in-the-selinux-system/</id><summary type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
+package.&lt;/p&gt;</content><category term="SELinux"></category><category term="gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Where does CIL play in the SELinux system?</title><link href="https://blog.siphos.be/2015/06/where-does-cil-play-in-the-selinux-system/" rel="alternate"></link><published>2015-06-13T23:12:00+02:00</published><updated>2015-06-13T23:12:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-13:/2015/06/where-does-cil-play-in-the-selinux-system/</id><summary type="html">&lt;p&gt;SELinux policy developers already have a number of file formats to work
 with. Currently, policy code is written in a set of three files:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The &lt;code&gt;.te&lt;/code&gt; file contains the SELinux policy code (type
@@ -297,7 +296,7 @@ modules.&lt;/p&gt;
 &lt;p&gt;Still, that shouldn't prohibit us from playing around with it to
 experiment with the CIL language construct. Consider the following CIL
 SELinux policy code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;; Declare a test_port_t type
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;; Declare a test_port_t type
 (type test_port_t)
 ; Assign the type to the object_r role
 (roletype object_r test_port_t)
@@ -308,30 +307,27 @@ SELinux policy code:&lt;/p&gt;
 
 ; Declare tcp:1440 as test_port_t
 (portcon tcp 1440 (system_u object_r test_port_t ((s0) (s0))))
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The code declares a port type (&lt;code&gt;test_port_t&lt;/code&gt;) and uses it for the TCP
 port 1440.&lt;/p&gt;
 &lt;p&gt;In order to use this code, we have to build a policy file which includes
 all currently active CIL code, together with the test code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ secilc -c 29 /var/lib/selinux/mcs/active/modules/400/*/cil testport.cil
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The result is a &lt;code&gt;policy.29&lt;/code&gt; (the command forces version 29 as the
 current Linux kernel used on this system does not support version 30)
 file, which can now be copied to &lt;code&gt;/etc/selinux/mcs/policy&lt;/code&gt;. Then, after
 having copied the file, load the new policy file using &lt;code&gt;load_policy&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;And lo and behold, the port type is now available:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage port -l | grep 1440
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage port -l | grep 1440
 test_port_t           tcp      1440
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;To verify that it really is available and not just parsed by the
 userspace, let's connect to it and hope for a nice denial message:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ssh -p 1440 localhost
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ssh -p 1440 localhost
 ssh: connect to host localhost port 1440: Permission denied
 
 ~$ sudo ausearch -ts recent
@@ -340,7 +336,7 @@ type=PROCTITLE msg=audit(1434044145.829:296): proctitle=737368002D70003134343000
 type=SOCKADDR msg=audit(1434044145.829:296): saddr=0A0005A0000000000000000000000000000000000000000100000000
 type=SYSCALL msg=audit(1434044145.829:296): arch=c000003e syscall=42 success=no exit=-13 a0=3 a1=6d4d1ce050 a2=1c a3=0 items=0 ppid=2005 pid=18045 auid=1001 uid=1001 gid=1001 euid=1001 suid=1001 fsuid=1001 egid=1001 sgid=1001 fsgid=1001 tty=pts0 ses=1 comm=&amp;quot;ssh&amp;quot; exe=&amp;quot;/usr/bin/ssh&amp;quot; subj=staff_u:staff_r:ssh_t:s0 key=(null)
 type=AVC msg=audit(1434044145.829:296): avc:  denied  { name_connect } for  pid=18045 comm=&amp;quot;ssh&amp;quot; dest=1440 scontext=staff_u:staff_r:ssh_t:s0 tcontext=system_u:object_r:test_port_t:s0 tclass=tcp_socket permissive=0
-&lt;/pre&gt;&lt;/div&gt;</content><category term="cil"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Live SELinux userspace ebuilds</title><link href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/" rel="alternate"></link><published>2015-06-10T20:07:00+02:00</published><updated>2015-06-10T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-10:/2015/06/live-selinux-userspace-ebuilds/</id><summary type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="cil"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Live SELinux userspace ebuilds</title><link href="https://blog.siphos.be/2015/06/live-selinux-userspace-ebuilds/" rel="alternate"></link><published>2015-06-10T20:07:00+02:00</published><updated>2015-06-10T20:07:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-06-10:/2015/06/live-selinux-userspace-ebuilds/</id><summary type="html">&lt;p&gt;In between courses, I pushed out live ebuilds for the SELinux userspace
 applications: libselinux, policycoreutils, libsemanage, libsepol,
 sepolgen, checkpolicy and secilc. These live ebuilds (with Gentoo
 version 9999) pull in the current development code of the &lt;a href="https://github.com/SELinuxProject/selinux"&gt;SELinux
@@ -374,7 +370,7 @@ This is a new package, which is probably going to have an official
 release with a new userspace release. It allows for building CIL-based
 SELinux policy code, and was one of the drivers for me to create the
 live ebuilds as I'm experimenting with the CIL constructions. So expect
-more on that later.&lt;/p&gt;</content><category term="cil"></category><category term="Gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Moving closer to 2.4 stabilization</title><link href="https://blog.siphos.be/2015/04/moving-closer-to-2-4-stabilization/" rel="alternate"></link><published>2015-04-27T19:18:00+02:00</published><updated>2015-04-27T19:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-04-27:/2015/04/moving-closer-to-2-4-stabilization/</id><summary type="html">&lt;p&gt;The &lt;a href="https://github.com/SELinuxProject/selinux/wiki"&gt;SELinux userspace&lt;/a&gt;
+more on that later.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Moving closer to 2.4 stabilization</title><link href="https://blog.siphos.be/2015/04/moving-closer-to-2-4-stabilization/" rel="alternate"></link><published>2015-04-27T19:18:00+02:00</published><updated>2015-04-27T19:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-04-27:/2015/04/moving-closer-to-2-4-stabilization/</id><summary type="html">&lt;p&gt;The &lt;a href="https://github.com/SELinuxProject/selinux/wiki"&gt;SELinux userspace&lt;/a&gt;
 project has released version 2.4 in february this year, after release
 candidates have been tested for half a year. After its release, we at
 the &lt;a href="https://wiki.gentoo.org/wiki/Project:Hardened"&gt;Gentoo Hardened&lt;/a&gt;
@@ -392,7 +388,7 @@ proper migration from 2.3 to 2.4. The SELinux policy has been adjusted
 to allow the migrations to work, and a few final fixes are being tested
 so that we can safely transition our stable users from 2.3 to 2.4.
 Hopefully we'll be able to stabilize the userspace this month or
-beginning of next month.&lt;/p&gt;</content><category term="2.4"></category><category term="Gentoo"></category><category term="hardened"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Migrating to SELinux userspace 2.4 (small warning for users)</title><link href="https://blog.siphos.be/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/" rel="alternate"></link><published>2014-10-30T19:44:00+01:00</published><updated>2014-10-30T19:44:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</id><summary type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
+beginning of next month.&lt;/p&gt;</content><category term="Gentoo"></category><category term="2.4"></category><category term="Gentoo"></category><category term="hardened"></category><category term="selinux"></category><category term="userspace"></category></entry><entry><title>Migrating to SELinux userspace 2.4 (small warning for users)</title><link href="https://blog.siphos.be/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/" rel="alternate"></link><published>2014-10-30T19:44:00+01:00</published><updated>2014-10-30T19:44:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</id><summary type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
 (either globally or for the SELinux utilities in particular) will notice
 that the SELinux userspace will upgrade to version 2.4 (release
 candidate 5 for now). This upgrade comes with a manual step that needs
@@ -403,9 +399,8 @@ candidate 5 for now). This upgrade comes with a manual step that needs
 to be performed after upgrade. The information is mentioned as
 post-installation message of the &lt;code&gt;policycoreutils&lt;/code&gt; package, and
 basically sais that you need to execute:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
 module store (and the semanage related files) to be in
@@ -426,42 +421,38 @@ works, SELinux aware applications still work; the only thing that will
 fail are updates on the SELinux configuration through tools like
 &lt;strong&gt;semanage&lt;/strong&gt; or &lt;strong&gt;setsebool&lt;/strong&gt; - the latter when you want to persist
 boolean changes.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage fcontext -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -l
 ValueError: SELinux policy is not managed or store cannot be accessed.
 
 ~# setsebool -P allow_ptrace on
 Cannot set persistent booleans without managed policy.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
 migration. Note in the following that there is a warning about 'else'
 blocks that are no longer supported: that's okay, as far as I know (and
 it was mentioned on the upstream mailinglist as well as not something to
 worry about) it does not have any impact.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
 Migrating from /etc/selinux/mcs/modules/active to /var/lib/selinux/mcs/active
 Attempting to rebuild policy from /var/lib/selinux
 sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
 up. You can also rerun the command multiple times:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
 warning: Policy type mcs has already been migrated, but modules still exist in the old store. Skipping store.
 Attempting to rebuild policy from /var/lib/selinux
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# rm -rf /etc/selinux/mcs/modules
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So... don't worry - the change is small and does not break stuff. And
 for those wondering about CIL I'll talk about it in one of my next
-posts.&lt;/p&gt;</content><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>New SELinux userspace release</title><link href="https://blog.siphos.be/2013/04/new-selinux-userspace-release/" rel="alternate"></link><published>2013-04-26T03:50:00+02:00</published><updated>2013-04-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-26:/2013/04/new-selinux-userspace-release/</id><summary type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
+posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>New SELinux userspace release</title><link href="https://blog.siphos.be/2013/04/new-selinux-userspace-release/" rel="alternate"></link><published>2013-04-26T03:50:00+02:00</published><updated>2013-04-26T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-26:/2013/04/new-selinux-userspace-release/</id><summary type="html">&lt;p&gt;A new &lt;a href="http://userspace.selinuxproject.org/trac/wiki/Releases"&gt;release&lt;/a&gt;
 of the SELinux userspace utilities was recently announced. I have made
 the packages for Gentoo available and they should now be in the main
 tree (\~arch of course). During the testing of the packages however, I
@@ -488,4 +479,4 @@ again.&lt;/p&gt;
 &lt;a href="http://marc.info/?l=selinux&amp;amp;m=136692033821285&amp;amp;w=2"&gt;reported&lt;/a&gt; the bugs
 on the mailinglist of the userspace utilities as well. Hopefully they
 can look at them while I'm asleep so I can integrate fixes tomorrow more
-easily ;-)&lt;/p&gt;</content><category term="automation"></category><category term="regression"></category><category term="release"></category><category term="selinux"></category><category term="test"></category><category term="testing"></category><category term="userspace"></category></entry></feed>
+easily ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="automation"></category><category term="regression"></category><category term="release"></category><category term="selinux"></category><category term="test"></category><category term="testing"></category><category term="userspace"></category></entry></feed>

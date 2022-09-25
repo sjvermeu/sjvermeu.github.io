@@ -260,13 +260,12 @@ users that are interested can use the stylesheet as linked above to
 create their own PDFs of the documentation.</p>
 <p>Assuming you have a checkout of the Gentoo documentation, this process
 can be done as follows (example for the AMD64 handbook):</p>
-<div class="highlight"><pre><span></span>$ xsltproc docbook.xsl /path/to/handbook-amd64.xml &gt; /somewhere/handbook-amd64.docbook
+<div class="highlight"><pre><span></span><code>$ xsltproc docbook.xsl /path/to/handbook-amd64.xml &gt; /somewhere/handbook-amd64.docbook
 $ cd /somewhere
 $ xsltproc --output handbook-amd64.fo --stringparam paper.type A4   
  /usr/share/sgml/docbook/xsl-stylesheets/fo/docbook.xsl handbook-amd64.docbook
 $ fop handbook-amd64.fo handbook-amd64.pdf
-</pre></div>
-
+</code></pre></div>
 
 <p>The docbook stylesheets are offered by the
 <em>app-text/docbook-xsl-stylesheets</em> package whereas the <strong>fop</strong> command

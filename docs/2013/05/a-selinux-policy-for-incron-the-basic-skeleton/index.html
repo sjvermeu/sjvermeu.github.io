@@ -259,7 +259,7 @@ any) and files, etc.</p>
 <p>So let's take a look at the content of the <em>incron</em> package. On Gentoo,
 we can use <strong>qlist incron</strong> for this. In the output of <strong>qlist</strong>, I
 added comments to show you how contexts can be (easily) deduced.</p>
-<div class="highlight"><pre><span></span># Application binary for managing user crontabs. We want to give this a specific
+<div class="highlight"><pre><span></span><code># Application binary for managing user crontabs. We want to give this a specific
 # context because we want the application (which will manage the incrontabs in
 # /var/spool/incron) in a specific domain
 /usr/bin/incrontab  ## incrontab_exec_t
@@ -285,13 +285,12 @@ added comments to show you how contexts can be (easily) deduced.</p>
 # those users the sysadm_r role, we need to give this file a different
 # context as well.
 /etc/init.d/incrond ## incrond_initrc_exec_t
-</pre></div>
-
+</code></pre></div>
 
 <p>With this information at hand, and the behavior of the application we
 know from the previous post, can lead to the following <code>incron.fc</code> file,
 which defines the file contexts for the application.</p>
-<div class="highlight"><pre><span></span>/etc/incron.d(/.*)?     gen_context(system_u:object_r:incron_spool_t,s0)
+<div class="highlight"><pre><span></span><code>/etc/incron.d(/.*)?     gen_context(system_u:object_r:incron_spool_t,s0)
 
 /etc/rc\.d/init\.d/incrond      --      gen_context(system_u:object_r:incrond_initrc_exec_t,s0)
 
@@ -300,8 +299,7 @@ which defines the file contexts for the application.</p>
 /usr/sbin/incrond       --      gen_context(system_u:object_r:incrond_exec_t,s0)
 
 /var/spool/incron(/.*)?         gen_context(system_u:object_r:incron_spool_t,s0)
-</pre></div>
-
+</code></pre></div>
 
 <p>The syntax of this file closely follows the syntax that <strong>semanage
 fcontext</strong> takes - at least for the regular expressions in the
@@ -316,7 +314,7 @@ matches whatever class the path matches.</p>
 would look like so. I added in inline comments here to explain why
 certain lines are prepared, but generally this is omitted when the
 policy is <a href="http://oss.tresys.com/projects/refpolicy/">upstreamed</a>.</p>
-<div class="highlight"><pre><span></span>policy_module(incron, 0.1)
+<div class="highlight"><pre><span></span><code>policy_module(incron, 0.1)
 # The above line declares that this file is a SELinux policy file. Its name
 # is incron, so the file should saved as incron.te
 
@@ -350,8 +348,7 @@ application_domain(incrontab_t, incrontab_exec_t)
 # it will be used for regular files.
 type incron_spool_t;
 files_type(incron_spool_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>Knowing which interface calls, like <em>init_daemon_domain</em> and
 <em>application_domain</em>, we should use is not obvious at first. Most of
@@ -379,16 +376,14 @@ included). However, with the information currently at hand, we have our
 first policy module ready for building. Save the type enforcement rules
 in <code>incron.te</code> and the file contexts in <code>incron.fc</code> and you can then
 build the SELinux policy:</p>
-<div class="highlight"><pre><span></span># make -f /usr/share/selinux/strict/include/Makefile incron.pp
+<div class="highlight"><pre><span></span><code># make -f /usr/share/selinux/strict/include/Makefile incron.pp
 # semodule -i incron.pp
-</pre></div>
-
+</code></pre></div>
 
 <p>On Gentoo, you can then relabel the files and directories offered
 through the package using <strong>rlpkg</strong>:</p>
-<div class="highlight"><pre><span></span># rlpkg incron
-</pre></div>
-
+<div class="highlight"><pre><span></span><code># rlpkg incron
+</code></pre></div>
 
 <p>Next is to start looking at the <strong>incrontab</strong> application.</p>
         </div>

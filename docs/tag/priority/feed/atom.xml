@@ -12,21 +12,19 @@ disabled or removed again.&lt;/p&gt;
 &lt;p&gt;The "old" modules (pre-2.4) are loaded with priority 100. When policy
 modules with the 2.4 SELinux userspace series are loaded, they get
 loaded with priority 400. As a result, the following message occurs:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semodule -i screen.pp
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule -i screen.pp
 libsemanage.semanage_direct_install_info: Overriding screen module at lower priority 100 with module at priority 400
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So unlike the previous situation, where the older module is substituted
 with the new one, we now have two "screen" modules loaded; the last one
 gets priority 400 and is active. To see all installed modules and
 priorities, use the &lt;code&gt;--list-modules&lt;/code&gt; option:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semodule --list-modules=all | grep screen
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule --list-modules=all | grep screen
 100 screen     pp
 400 screen     pp
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Older versions of modules can be removed by specifying the priority:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semodule -X 100 -r screen
-&lt;/pre&gt;&lt;/div&gt;</content><category term="priorities"></category><category term="priority"></category><category term="selinux"></category><category term="semodule"></category></entry></feed>
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semodule -X 100 -r screen
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="SELinux"></category><category term="priorities"></category><category term="priority"></category><category term="selinux"></category><category term="semodule"></category></entry></feed>

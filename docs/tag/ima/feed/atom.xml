@@ -18,18 +18,16 @@ the first thing to look at is to see if this risk can be reduced. Of
 course, using an intrusion detection system like
 &lt;a href="https://wiki.gentoo.org/wiki/AIDE"&gt;AIDE&lt;/a&gt; helps, but even with Gentoo's
 &lt;strong&gt;qcheck&lt;/strong&gt; command you can test the integrity of the files:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# qcheck www-servers/apache
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# qcheck www-servers/apache
 Checking www-servers/apache-2.2.24 ...
   * 424 out of 424 files are good
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If the binary is modified, this would result in something equivalent to:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Checking www-servers/apache-2.2.24 ...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Checking www-servers/apache-2.2.24 ...
  MD5-DIGEST: /usr/sbin/apache2
   * 423 out of 424 files are good
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I don't know if the modified binary would otherwise work just fine, I
 have not been able to find exact details on the infected binary to (in a
@@ -42,9 +40,8 @@ the proper SELinux context on the file (if it overwrites the existing
 binary, then the context is retained, otherwise it gets the default
 context of &lt;code&gt;bin_t&lt;/code&gt;). If the context is wrong, then starting Apache
 results in:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;apache2: Syntax error on line 61 of /etc/apache2/httpd.conf: Cannot load /usr/lib64/apache2/modules/mod_actions.so into server: /usr/lib64/apache2/modules/mod_actions.so: cannot open shared object file: Permission denied
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This is because the modified binary stays in the calling domain context
 (&lt;code&gt;initrc_t&lt;/code&gt;). If you use a targeted policy, then this will not present
@@ -58,7 +55,7 @@ articles I read, the malware can do a reverse connect. That means that
 the domain will attempt to connect to an IP address provided by the
 attacker (in a specifically crafted URL). For SELinux, this means that
 the &lt;em&gt;name_connect&lt;/em&gt; permission is checked:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sesearch -s httpd_t -c tcp_socket -p name_connect -ACTS
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sesearch -s httpd_t -c tcp_socket -p name_connect -ACTS
 Found 20 semantic av rules:
    allow nsswitch_domain dns_port_t : tcp_socket { name_connect } ; 
 DT allow httpd_t port_type : tcp_socket { name_connect } ; [ httpd_can_network_connect ]
@@ -80,8 +77,7 @@ DT allow httpd_t pop_port_t : tcp_socket { name_connect } ; [ httpd_can_sendmail
 DT allow nsswitch_domain ocsp_port_t : tcp_socket { name_connect } ; [ allow_kerberos ]
 DT allow httpd_t gds_db_port_t : tcp_socket { name_connect } ; [ httpd_can_network_connect_db ]
 DT allow httpd_t gopher_port_t : tcp_socket { name_connect } ; [ httpd_can_network_relay ]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So by default, the Apache (&lt;code&gt;httpd_t&lt;/code&gt;) domain is allowed to connect to
 DNS port (to resolve hostnames). All other &lt;em&gt;name_connect&lt;/em&gt; calls depend
@@ -103,12 +99,11 @@ access to the shared memory. However, if this shared memory would need
 to be accessed by third party applications (the malware seems to grant
 read/write rights on everybody to this segment) SELinux will prevent
 this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sesearch -t httpd_t -c shm -ACTS
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sesearch -t httpd_t -c shm -ACTS
 Found 2 semantic av rules:
    allow unconfined_domain_type domain : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ; 
    allow httpd_t httpd_t : shm { create destroy getattr setattr read write associate unix_read unix_write lock } ;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Only unconfined domains and the &lt;code&gt;httpd_t&lt;/code&gt; domain itself have access to
 &lt;code&gt;httpd_t&lt;/code&gt; labeled shared memory.&lt;/p&gt;
@@ -119,7 +114,7 @@ this.&lt;/p&gt;
 &lt;p&gt;For now, it seems that a good system integrity approach is the most
 effective until we know more about how the malware-infected binary is
 written to the system in the first place (as this is better protected by
-MAC controls like SELinux).&lt;/p&gt;</content><category term="apache"></category><category term="cdorked"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category></entry><entry><title>Uploading selinuxnode test VM</title><link href="https://blog.siphos.be/2013/02/uploading-selinuxnode-test-vm/" rel="alternate"></link><published>2013-02-25T03:05:00+01:00</published><updated>2013-02-25T03:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-25:/2013/02/uploading-selinuxnode-test-vm/</id><summary type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
+MAC controls like SELinux).&lt;/p&gt;</content><category term="Security"></category><category term="apache"></category><category term="cdorked"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category></entry><entry><title>Uploading selinuxnode test VM</title><link href="https://blog.siphos.be/2013/02/uploading-selinuxnode-test-vm/" rel="alternate"></link><published>2013-02-25T03:05:00+01:00</published><updated>2013-02-25T03:05:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-25:/2013/02/uploading-selinuxnode-test-vm/</id><summary type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
 few hours), I'm uploading a new SELinux-enabled KVM guest image. This is
 not an update on the previous image though (it's a reinstalled system -
 after all, I use VMs for testing, so it makes sense to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;At the time of writing (but I'll delay the publication of this post a
@@ -171,7 +166,7 @@ next upload:&lt;/p&gt;
 the image with our mirrors so you can enjoy it. It'll be on the
 distfiles, under experimental/amd64/qemu-selinux (it has the 20130224
 date in the name, so you can see for yourself if the sync has already
-occurred or not).&lt;/p&gt;</content><category term="evm"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="ima"></category><category term="kvm"></category><category term="selinux"></category><category term="virtual"></category></entry><entry><title>Working on a new selinuxnode VM</title><link href="https://blog.siphos.be/2013/02/working-on-a-new-selinuxnode-vm/" rel="alternate"></link><published>2013-02-23T14:04:00+01:00</published><updated>2013-02-23T14:04:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-23:/2013/02/working-on-a-new-selinuxnode-vm/</id><summary type="html">&lt;p&gt;A long time ago, I made a &lt;a href="http://distfiles.gentoo.org/experimental/amd64/qemu-selinux/"&gt;SELinux enabled
+occurred or not).&lt;/p&gt;</content><category term="Gentoo"></category><category term="evm"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="ima"></category><category term="kvm"></category><category term="selinux"></category><category term="virtual"></category></entry><entry><title>Working on a new selinuxnode VM</title><link href="https://blog.siphos.be/2013/02/working-on-a-new-selinuxnode-vm/" rel="alternate"></link><published>2013-02-23T14:04:00+01:00</published><updated>2013-02-23T14:04:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-02-23:/2013/02/working-on-a-new-selinuxnode-vm/</id><summary type="html">&lt;p&gt;A long time ago, I made a &lt;a href="http://distfiles.gentoo.org/experimental/amd64/qemu-selinux/"&gt;SELinux enabled
 VM&lt;/a&gt; for
 people to play with, displaying a minimal Gentoo installation, including
 the hardening features it supports (PIE/PIC toolchain, grSecurity, PaX
@@ -207,4 +202,4 @@ IMA user list on this so it is still very much a work-in-progress.&lt;/p&gt;
 of 817 MB (instead of the 158 MB of the previous release), so I still
 have to correct my USE flags and doublecheck the installed applications.
 Anyway, definitely to be continued. Too bad time is a scarce resource
-:-(&lt;/p&gt;</content><category term="evm"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category><category term="selinuxnode"></category><category term="vm"></category></entry></feed>
+:-(&lt;/p&gt;</content><category term="Gentoo"></category><category term="evm"></category><category term="Gentoo"></category><category term="hardened"></category><category term="ima"></category><category term="selinux"></category><category term="selinuxnode"></category><category term="vm"></category></entry></feed>

@@ -32,36 +32,32 @@ restricted privileges of the user plus one capability, namely the
 &lt;p&gt;Let's take this &lt;strong&gt;ping&lt;/strong&gt; example to the next level: copy the binary
 (possibly relabel it as &lt;code&gt;ping_exec_t&lt;/code&gt; if you run with SELinux), make
 sure it does not hold the setuid and try it out:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cp ping anotherping
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cp ping anotherping
 # chcon -t ping_exec_t anotherping
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now as a regular user:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ping -c 1 127.0.0.1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ping -c 1 127.0.0.1
 PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
 64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.057 ms
 
 $ anotherping -c 1 127.0.0.1
 ping: icmp open socket: Operation not permitted
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Let's assign the binary with the &lt;code&gt;CAP_NET_RAW&lt;/code&gt; capability flag:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# setcap cap_net_raw+ep anotherping
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setcap cap_net_raw+ep anotherping
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And tadaa:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ anotherping -c 1 127.0.0.1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ anotherping -c 1 127.0.0.1
 PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
 64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.054 ms
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;What &lt;strong&gt;setcap&lt;/strong&gt; did was place an extended attribute to the file, which
 is a binary representation of the capabilities assigned to the
 application. The additional information (&lt;code&gt;+ep&lt;/code&gt;) means that the
 capability is &lt;em&gt;p&lt;/em&gt;ermitted and &lt;em&gt;e&lt;/em&gt;ffective.&lt;/p&gt;
 &lt;p&gt;So long for the primer, I'll talk about the various capabilities in a
-later post.&lt;/p&gt;</content><category term="capabilities"></category><category term="linux"></category><category term="ping"></category><category term="selinux"></category></entry></feed>
+later post.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category><category term="ping"></category><category term="selinux"></category></entry></feed>

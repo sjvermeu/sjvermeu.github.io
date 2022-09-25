@@ -11,9 +11,8 @@ access to &lt;code&gt;/sys&lt;/code&gt; is not something I like to see for a chr
 &lt;p&gt;Luckily, all other accesses are not needed, so I was able to create a
 static &lt;code&gt;/sys/fs/selinux&lt;/code&gt; directory structure in the chroot, and then
 just mount the SELinux file system on that:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -t selinuxfs none /var/chroot/sys/fs/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In hindsight, I probably could just have created a &lt;code&gt;/selinux&lt;/code&gt; location
 as that location, although deprecated, is still checked by the SELinux
@@ -22,21 +21,19 @@ libraries.&lt;/p&gt;
 Luckily it was purely for read operations, so I was first contemplating
 of copying the data and doing a &lt;strong&gt;chmod -R a-w
 /var/chroot/etc/selinux&lt;/strong&gt;, but then considered a bind-mount:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o bind,ro /etc/selinux /var/chroot/etc/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Alas, bad luck - the read-only flag is ignored during the mount, and the
 bind-mount is still read-write. A &lt;a href="http://lwn.net/Articles/281157/"&gt;simple article on
 lwn.net&lt;/a&gt; informed me about the
 solution: I need to do a remount afterwards to enable the read-only
 state:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# mount -o remount,ro /var/chroot/etc/selinux
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# mount -o remount,ro /var/chroot/etc/selinux
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Great! And because my brain isn't what it used to be, I just make a
-quick blog for future reference ;-)&lt;/p&gt;</content><category term="bind-mount"></category><category term="bindmount"></category><category term="mount"></category><category term="read-only"></category><category term="ro"></category><category term="selinux"></category></entry><entry><title>SELinux mount options</title><link href="https://blog.siphos.be/2013/05/selinux-mount-options/" rel="alternate"></link><published>2013-05-01T03:50:00+02:00</published><updated>2013-05-01T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-01:/2013/05/selinux-mount-options/</id><summary type="html">&lt;p&gt;When you read through the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux/selinux-handbook.xml"&gt;Gentoo Hardened SELinux
+quick blog for future reference ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="bind-mount"></category><category term="bindmount"></category><category term="mount"></category><category term="read-only"></category><category term="ro"></category><category term="selinux"></category></entry><entry><title>SELinux mount options</title><link href="https://blog.siphos.be/2013/05/selinux-mount-options/" rel="alternate"></link><published>2013-05-01T03:50:00+02:00</published><updated>2013-05-01T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-01:/2013/05/selinux-mount-options/</id><summary type="html">&lt;p&gt;When you read through the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux/selinux-handbook.xml"&gt;Gentoo Hardened SELinux
 handbook&lt;/a&gt;,
 you'll notice that we sometimes update &lt;code&gt;/etc/fstab&lt;/code&gt; with some
 SELinux-specific settings. So, what are these settings about and are
@@ -49,9 +46,8 @@ SELinux-specific settings. So, what are these settings about and are
 there more of them?&lt;/p&gt;
 &lt;p&gt;First of all, let's look at a particular example from the installation
 instructions so you see what I am talking about:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;tmpfs  /tmp  tmpfs  defaults,noexec,nosuid,rootcontext=system_u:object_r:tmp_t  0 0
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;tmpfs  /tmp  tmpfs  defaults,noexec,nosuid,rootcontext=system_u:object_r:tmp_t  0 0
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;What the &lt;em&gt;rootcontext=&lt;/em&gt; option does here is to set the context of the
 "root" of that file system (meaning, the context of &lt;code&gt;/tmp&lt;/code&gt; in the
@@ -79,4 +75,4 @@ files are labeled &lt;code&gt;tmp_t&lt;/code&gt;, the file system context itself
 &lt;code&gt;tmpfs_t&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;It is important to know that, if you use one of these mount options,
 &lt;em&gt;context=&lt;/em&gt; is mutually exclusive to the other options as it "forces" the
-context on all resources (including the filesystem class).&lt;/p&gt;</content><category term="mount"></category><category term="selinux"></category></entry></feed>
+context on all resources (including the filesystem class).&lt;/p&gt;</content><category term="SELinux"></category><category term="mount"></category><category term="selinux"></category></entry></feed>

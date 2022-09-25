@@ -245,15 +245,14 @@ particular method or call. Or, if I know what the interface or
 definition is, I want to see it (<em>show</em>).</p>
 <p>For instance, to find the name of the interface that allows us to define
 file transitions from the <code>postfix_etc_t</code> label:</p>
-<div class="highlight"><pre><span></span>$ sefindif filetrans.*postfix_etc
+<div class="highlight"><pre><span></span><code>$ sefindif filetrans.*postfix_etc
 contrib/postfix.if: interface(`postfix_config_filetrans&#39;,`
 contrib/postfix.if:     filetrans_pattern($1, postfix_etc_t, $2, $3, $4)
-</pre></div>
-
+</code></pre></div>
 
 <p>Or to show the content of the <em>corenet_tcp_bind_http_port</em>
 interface:</p>
-<div class="highlight"><pre><span></span>$ seshowif corenet_tcp_bind_http_port
+<div class="highlight"><pre><span></span><code>$ seshowif corenet_tcp_bind_http_port
 interface(`corenet_tcp_bind_http_port&#39;,`
         gen_require(`
                 type http_port_t;
@@ -262,11 +261,10 @@ interface(`corenet_tcp_bind_http_port&#39;,`
         allow $1 http_port_t:tcp_socket name_bind;
         allow $1 self:capability net_bind_service;
 &#39;)
-</pre></div>
-
+</code></pre></div>
 
 <p>For the definitions, this is quite similar:</p>
-<div class="highlight"><pre><span></span>$ sefinddef socket.*create
+<div class="highlight"><pre><span></span><code>$ sefinddef socket.*create
 obj_perm_sets.spt:define(`create_socket_perms&#39;, `{ create rw_socket_perms }&#39;)
 obj_perm_sets.spt:define(`create_stream_socket_perms&#39;, `{ create_socket_perms listen accept }&#39;)
 obj_perm_sets.spt:define(`connected_socket_perms&#39;, `{ create ioctl read getattr write setattr append bind getopt setopt shutdown }&#39;)
@@ -280,8 +278,7 @@ define(`manage_files_pattern&#39;,`
         allow $1 $2:dir rw_dir_perms;
         allow $1 $3:file manage_file_perms;
 &#39;)
-</pre></div>
-
+</code></pre></div>
 
 <p>I have these defined in my <code>~/.bashrc</code> (they are simple
 <a href="http://dev.gentoo.org/~swift/blog/01/selinux-funcs.txt">functions</a>) and

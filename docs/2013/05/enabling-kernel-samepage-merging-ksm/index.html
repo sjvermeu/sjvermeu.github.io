@@ -272,14 +272,13 @@ those projects.</p>
 (all configured to take at most 1.5 Gb of memory). Together, they take
 just a little over 1 Gb of memory (sum of their resident set sizes).
 When I consult KSM, I get the following information:</p>
-<div class="highlight"><pre><span></span> # grep -H &#39;&#39; /sys/kernel/mm/ksm/pages_*
+<div class="highlight"><pre><span></span><code> # grep -H &#39;&#39; /sys/kernel/mm/ksm/pages_*
 /sys/kernel/mm/ksm/pages_shared:48911
 /sys/kernel/mm/ksm/pages_sharing:90090
 /sys/kernel/mm/ksm/pages_to_scan:100
 /sys/kernel/mm/ksm/pages_unshared:123002
 /sys/kernel/mm/ksm/pages_volatile:1035
-</pre></div>
-
+</code></pre></div>
 
 <p>The <code>pages_shared</code> tells me that 48911 pages are shared (which means
 about 191 Mb) through 90090 references (<code>pages_sharing</code> - meaning the

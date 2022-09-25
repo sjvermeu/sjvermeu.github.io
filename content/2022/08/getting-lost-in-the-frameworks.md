@@ -14,6 +14,8 @@ naturally - in adopting one or more of these frameworks or specifications.
 While having references and specifications isn't a bad thing, there are
 always pros and cons.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **The benefits of frameworks and specifications**
 
 The main benefit in having a proper framework or specification, for whatever
@@ -187,4 +189,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1563143657586585603).
 
-<!-- PELICAN_END_SUMMARY -->

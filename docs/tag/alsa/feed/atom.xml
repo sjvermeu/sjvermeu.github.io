@@ -37,7 +37,7 @@ those domains access to each others' semaphores and shared memory. And
 although SELinux booleans can help, this would mean that for each
 application domain, something like the following policy would need to
 be, optionally, allowed:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# For the mplayer_t domain:
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# For the mplayer_t domain:
 optional_policy(`
   tunable_policy(`use_alsa&amp;#39;,`
     mozilla_rw_semaphores(mplayer_t)
@@ -53,8 +53,7 @@ optional_policy(`
     chromium_tmpfs_rw_files(mplayer_t)
   &amp;#39;)
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And this for all domains that are ALSA-enabled. Every time a new
 application is added that knows ALSA, the same code needs to be added to
@@ -64,18 +63,17 @@ create separate booleans for each domain if we want to. Not that that
 will make it more manageable.&lt;/p&gt;
 &lt;p&gt;One way of dealing with this would be to use attributes. Say we have a
 policy like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;attribute alsadomain;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;attribute alsadomain;
 attribute alsatmpfsfile;
 
 allow alsadomain alsadomain:sem rw_sem_perms;
 allow alsadomain alsadomain:shm rw_shm_perms;
 allow alsadomain alsatmpfsfile:file rw_file_perms;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;By assigning the attribute to the proper domains whenever ALSA support
 is needed, we can toggle this more easily:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# In alsa.if
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# In alsa.if
 interface(`alsa_domain&amp;#39;,`
   gen_require(`
     attribute alsadomain;
@@ -92,8 +90,7 @@ optional_policy(`
     alsa_domain(mplayer_t, mplayer_tmpfs_t)
   &amp;#39;)
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That would solve the problem of needlessly adding more calls in a policy
 for every ALSA application. And hey, we can probably live with either a
@@ -103,13 +100,12 @@ toggle this according to our needs.&lt;/p&gt;
 assignments inside a &lt;code&gt;tunable_policy&lt;/code&gt; code: attributes are part of the
 non-conditional part of a SELinux policy. The solution would be to
 create build-time conditionals (rather than run-time):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ifdef(`use_alsa&amp;#39;,`
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ifdef(`use_alsa&amp;#39;,`
   optional_policy(`
     alsa_domain(mplayer_t, mplayer_tmpfs_t)
   &amp;#39;)
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This does mean that &lt;code&gt;use_alsa&lt;/code&gt; has to be known when the policy is built.
 For Gentoo, that's not that bad, as policies are part of separate
@@ -130,4 +126,4 @@ need to keep this in mind when using package-local USE flag definitions.&lt;/p&g
 SELinux policy for Gentoo (as upstream will not use this setup, and as
 such patches from upstream might need a few manual corrections before
 they apply to our tree). However, I gladly take that up if it means my
-system will have somewhat better confinement.&lt;/p&gt;</content><category term="alsa"></category><category term="policy"></category><category term="selinux"></category></entry></feed>
+system will have somewhat better confinement.&lt;/p&gt;</content><category term="Gentoo"></category><category term="alsa"></category><category term="policy"></category><category term="selinux"></category></entry></feed>

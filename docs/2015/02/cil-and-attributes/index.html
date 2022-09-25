@@ -236,19 +236,18 @@ higher) will convert the policy into CIL language, and then build the
 binary policy. When the policy supports type attributes, these are of
 course also made available in the CIL code. For instance the
 <code>admindomain</code> attribute from the <code>userdomain</code> module:</p>
-<div class="highlight"><pre><span></span>...
+<div class="highlight"><pre><span></span><code>...
 (typeattribute admindomain)
 (typeattribute userdomain)
 (typeattribute unpriv_userdomain)
 (typeattribute user_home_content_type)
-</pre></div>
-
+</code></pre></div>
 
 <p>Interfaces provided by the module are also applied. You won't find the
 interface CIL code in <code>/var/lib/selinux/mcs/active/modules</code> though; the
 code at that location is already "expanded" and filled in. So for the
 <code>sysadm_t</code> domain we have:</p>
-<div class="highlight"><pre><span></span># Equivalent of
+<div class="highlight"><pre><span></span><code># Equivalent of
 # gen_require(`
 #   attribute admindomain;
 #   attribute userdomain;
@@ -261,27 +260,24 @@ code at that location is already "expanded" and filled in. So for the
 (typeattributeset cil_gen_require userdomain)
 (typeattributeset userdomain (sysadm_t ))
 ...
-</pre></div>
-
+</code></pre></div>
 
 <p>However, when checking which domains use the <code>admindomain</code> attribute,
 notice the following:</p>
-<div class="highlight"><pre><span></span>~# seinfo -aadmindomain -x
+<div class="highlight"><pre><span></span><code>~# seinfo -aadmindomain -x
 ERROR: Provided attribute (admindomain) is not a valid attribute name.
-</pre></div>
-
+</code></pre></div>
 
 <p>But don't panic - this has a reason: as long as there is no SELinux rule
 applied towards the <code>admindomain</code> attribute, then the SELinux policy
 compiler will drop the attribute from the final policy. This can be
 confirmed by adding a single, cosmetic rule, like so:</p>
-<div class="highlight"><pre><span></span>## allow admindomain admindomain:process sigchld;
+<div class="highlight"><pre><span></span><code>## allow admindomain admindomain:process sigchld;
 
 ~# seinfo -aadmindomain -x
    admindomain
       sysadm_t
-</pre></div>
-
+</code></pre></div>
 
 <p>So there you go. That does mean that if something previously used the
 attribute assignation for any decisions (like "for each domain assigned

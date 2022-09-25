@@ -196,6 +196,31 @@ Simplicity is a form of art... - Articles by Sven Vermeulen        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2013/09/a-bug-please/">A bug please...</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 30 September 2013</span></span>
+                <p><p>I know contacting me (or other developers) through IRC is often fast,
+but having a bug report on our <a href="https://bugs.gentoo.org">bugzilla</a> is
+very important to me and other developers. Allow me to explain a bit
+why.</p>
+<p>First of all, <em>IRC is ephemeral</em>. If we are not immediately on IRC
+noticing it …</p></p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/gentoo.html">gentoo</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/bugreport/">bugreport</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/bugs/">bugs</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/bugzilla/">bugzilla</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2013/09/it-has-finally-arrived-selinux-system-administration/">It has finally arrived: SELinux System Administration</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 27 September 2013</span></span>
@@ -295,8 +320,8 @@ going to talk …</p></p>
 place for now (no revocation send out yet) - was 0x5DFAB3ECCDBA2FDB and
 was a 1024 bit DSA key. The new one, 0x2EDD52403B68AF47, is a 4096 bit
 RSA key. It also has the following preferences:</p>
-<div class="highlight"><pre><span></span>gpg&gt; showpref
-[ultimate] (1 …</pre></div></p>
+<div class="highlight"><pre><span></span><code>gpg&gt; showpref
+[ultimate] (1 …</code></pre></div></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -318,7 +343,7 @@ RSA key. It also has the following preferences:</p>
 to the project files. The release is a (long overdue) bugfix release,
 but includes two small enhancements: support standard input for the
 binary list (so you can pipe the output of one command to cvechecker)
-and the introduction of the <code>CVECHECKER_CONFFILE</code> variable …</p></p>
+and the introduction of the <code>CVECHECKER_CONFFILE …</code></p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -367,10 +392,9 @@ here, everybody is happy with the current leads so they are re-elected …</p></
                 <p><p>I had issues umounting my NFSv4 shares on an IPv6-only network. When
 trying to umount the share, it said that it couldn't find the mount in
 <code>/proc/mounts</code>:</p>
-<div class="highlight"><pre><span></span>~# umount /mnt/nfs/portage
+<div class="highlight"><pre><span></span><code>~# umount /mnt/nfs/portage
 /mnt/nfs/portage was not found in /proc/mounts
-</pre></div>
-
+</code></pre></div>
 
 <p>The solution: copy <code>/proc/mounts</code> to <code>/etc/mtab</code>, and …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
@@ -398,7 +422,7 @@ trying to umount the share, it said that it couldn't find the mount in
 done on request of the administrator for certain packages. For instance,
 for the <code>dev-db/postgresql-server</code> package we can call its
 <code>pkg_config()</code> phase to create the PostgreSQL instance and configure it
-so that the configuration of the database is stored …</p></p>
+so that the configuration of the database is …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -407,31 +431,6 @@ so that the configuration of the database is stored …</p></p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/gentoo/">gentoo</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/pkg_config/">pkg_config</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/portage/">portage</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2013/08/network-routing-based-on-selinux/">Network routing based on SELinux?</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 21 August 2013</span></span>
-                <p><p>Today we had a question on #selinux if it was possible to route traffic
-of a specific process using SELinux. The answer to this is "no",
-although it has to be explained a bit in more detail.</p>
-<p>SELinux does not route traffic. SELinux is a local mandatory access
-control system …</p></p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ipsec/">ipsec</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/netlabel/">netlabel</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/networking/">networking</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/secmark/">secmark</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
                     </div>
                 </div>

@@ -11,15 +11,14 @@ particular method or call. Or, if I know what the interface or
 definition is, I want to see it (&lt;em&gt;show&lt;/em&gt;).&lt;/p&gt;
 &lt;p&gt;For instance, to find the name of the interface that allows us to define
 file transitions from the &lt;code&gt;postfix_etc_t&lt;/code&gt; label:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefindif filetrans.*postfix_etc
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefindif filetrans.*postfix_etc
 contrib/postfix.if: interface(`postfix_config_filetrans&amp;#39;,`
 contrib/postfix.if:     filetrans_pattern($1, postfix_etc_t, $2, $3, $4)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Or to show the content of the &lt;em&gt;corenet_tcp_bind_http_port&lt;/em&gt;
 interface:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ seshowif corenet_tcp_bind_http_port
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ seshowif corenet_tcp_bind_http_port
 interface(`corenet_tcp_bind_http_port&amp;#39;,`
         gen_require(`
                 type http_port_t;
@@ -28,11 +27,10 @@ interface(`corenet_tcp_bind_http_port&amp;#39;,`
         allow $1 http_port_t:tcp_socket name_bind;
         allow $1 self:capability net_bind_service;
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;For the definitions, this is quite similar:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sefinddef socket.*create
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sefinddef socket.*create
 obj_perm_sets.spt:define(`create_socket_perms&amp;#39;, `{ create rw_socket_perms }&amp;#39;)
 obj_perm_sets.spt:define(`create_stream_socket_perms&amp;#39;, `{ create_socket_perms listen accept }&amp;#39;)
 obj_perm_sets.spt:define(`connected_socket_perms&amp;#39;, `{ create ioctl read getattr write setattr append bind getopt setopt shutdown }&amp;#39;)
@@ -46,8 +44,7 @@ define(`manage_files_pattern&amp;#39;,`
         allow $1 $2:dir rw_dir_perms;
         allow $1 $3:file manage_file_perms;
 &amp;#39;)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I have these defined in my &lt;code&gt;~/.bashrc&lt;/code&gt; (they are simple
 &lt;a href="http://dev.gentoo.org/~swift/blog/01/selinux-funcs.txt"&gt;functions&lt;/a&gt;) and
@@ -55,4 +52,4 @@ are used on a daily basis here ;-) If you want to learn a bit more on
 developing SELinux policies for Gentoo, make sure you read the &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux-development.xml"&gt;Gentoo
 Hardened SELinux
 Development&lt;/a&gt;
-guide.&lt;/p&gt;</content><category term="bash"></category><category term="definition"></category><category term="functions"></category><category term="interface"></category><category term="policy"></category><category term="selinux"></category><category term="support"></category></entry></feed>
+guide.&lt;/p&gt;</content><category term="SELinux"></category><category term="bash"></category><category term="definition"></category><category term="functions"></category><category term="interface"></category><category term="policy"></category><category term="selinux"></category><category term="support"></category></entry></feed>

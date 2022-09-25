@@ -301,9 +301,8 @@ But they often don't take the time to …</p></p>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 02 November 2014</span></span>
                 <p><p>I just finished updating 102 packages. The change? Removing the
 following from the ebuilds:</p>
-<div class="highlight"><pre><span></span>DEPEND=&quot;selinux? ( sec-policy/selinux-${packagename} )&quot;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>DEPEND=&quot;selinux? ( sec-policy/selinux-${packagename} )&quot;
+</code></pre></div>
 
 <p>In the past, we needed this construction in both DEPEND and RDEPEND.
 Recently however, the SELinux eclass got updated with some logic to

@@ -16,7 +16,7 @@
     <meta name="keywords" content="context, selinux, user">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="How logins get their SELinux user context" />
-<meta property="og:description" content="Sometimes, especially when users are converting their systems to be SELinux-enabled, their user context is wrong. An example would be when, after logon (in permissive mode), the user is in the system_u:system_r:local_login_t domain instead of a user domain like staff_u:staff_r:staff_t. So, how does a login get …" />
+<meta property="og:description" content="Sometimes, especially when users are converting their systems to be SELinux-enabled, their user context is wrong. An example would be when, after logon (in permissive mode), the user is in the system_u:system_r:local_login_t domain instead of a user domain like staff_u:staff_r:staff …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2013/04/how-logins-get-their-selinux-user-context/" />
 <meta property="og:type" content="article" />
@@ -258,12 +258,11 @@ type that has the <code>init_script_file_type</code> attribute set, and a
 transition from <code>init_t</code> to <code>initrc_t</code> is defined when such files are
 executed). When the bootup is finally completed, <strong>init</strong> launches the
 <em>getty</em> processes. The commands are mentioned in <code>/etc/inittab</code>:</p>
-<div class="highlight"><pre><span></span>$ grep getty /etc/inittab
+<div class="highlight"><pre><span></span><code>$ grep getty /etc/inittab
 c1:12345:respawn:/sbin/agetty --noclear 38400 tty1 linux
 c2:2345:respawn:/sbin/agetty 38400 tty2 linux
 ...
-</pre></div>
-
+</code></pre></div>
 
 <p>These binaries are also explicitly labeled <code>getty_exec_t</code>. As a result,
 the <strong>getty</strong> (or <strong>agetty</strong>) processes run in the <code>getty_t</code> domain
@@ -279,11 +278,10 @@ Gentoo systems, this by default points to the <code>system-local-login</code>
 definitions which points to the <code>system-login</code> definitions. And in this
 definition, especially under the sessions section, we find a reference
 to <code>pam_selinux.so</code>:</p>
-<div class="highlight"><pre><span></span>session         required        pam_selinux.so close
+<div class="highlight"><pre><span></span><code>session         required        pam_selinux.so close
 ...
 session         required        pam_selinux.so multiple open
-</pre></div>
-
+</code></pre></div>
 
 <p>Now here is where some of the magic starts (see my post on <a href="http://blog.siphos.be/2012/12/using-pam_selinux-to-switch-contexts/">Using
 pam_selinux to switch
@@ -292,10 +290,9 @@ for the gritty details). The methods inside the <code>pam_selinux.so</code> bina
 will look up what the context should be for a user login. For instance,
 when the <em>root</em> user logs on, it has SELinux checking what SELinux user
 <em>root</em> is mapped to, equivalent to running <strong>semanage login -l</strong>:</p>
-<div class="highlight"><pre><span></span>$ semanage login -l | grep ^root
+<div class="highlight"><pre><span></span><code>$ semanage login -l | grep ^root
 root                      root
-</pre></div>
-
+</code></pre></div>
 
 <p>In this case, the SELinux user for root is <em>root</em>, but this is not
 always the case (that login and user are the same). For instance, my
@@ -306,7 +303,7 @@ is done by checking the <code>default_contexts</code> file (such as the one in
 (and are) placed in the <code>users</code> subdirectory) based on the context of
 the process that is asking SELinux what the default context should be.
 In our case, it is the <strong>login</strong> process running as <code>local_login_t</code>:</p>
-<div class="highlight"><pre><span></span>$ grep -HR local_login_t /etc/selinux/strict/contexts/*
+<div class="highlight"><pre><span></span><code>$ grep -HR local_login_t /etc/selinux/strict/contexts/*
 default_contexts:system_r:local_login_t user_r:user_t staff_r:staff_t sysadm_r:sysadm_t unconfined_r:unconfined_t
 users/unconfined_u:system_r:local_login_t               unconfined_r:unconfined_t
 users/guest_u:system_r:local_login_t            guest_r:guest_t
@@ -314,22 +311,19 @@ users/user_u:system_r:local_login_t             user_r:user_t
 users/staff_u:system_r:local_login_t            staff_r:staff_t sysadm_r:sysadm_t
 users/root:system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
 users/xguest_u:system_r:local_login_t   xguest_r:xguest_t
-</pre></div>
-
+</code></pre></div>
 
 <p>Since we are verifying this for the <em>root</em> SELinux user, the following
 line of the <code>users/root</code> file is what matters:</p>
-<div class="highlight"><pre><span></span>system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
+</code></pre></div>
 
 <p>Here, SELinux looks for the first match in that line that the user has
 access to. This is defined by the roles that the user is allowed to
 access:</p>
-<div class="highlight"><pre><span></span>$ semanage user -l | grep root
+<div class="highlight"><pre><span></span><code>$ semanage user -l | grep root
 root            staff_r sysadm_r
-</pre></div>
-
+</code></pre></div>
 
 <p>As <em>root</em> is allowed both the <em>staff_r</em> and <em>sysadm_r</em> roles, the
 first one found <em>in the default context file</em> that matches will be used.
@@ -337,11 +331,10 @@ So it is <em>not</em> the order in which the roles are displayed in the
 <strong>semanage user -l</strong> output that matters, but the order of the contexts
 in the <em>default context</em> file. In the example, this is
 <code>sysadm_r:sysadm_t</code>:</p>
-<div class="highlight"><pre><span></span>system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
+<div class="highlight"><pre><span></span><code>system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
                         &lt;-----------+-----------&gt; &lt;-------+-------&gt; &lt;------+------&gt; &lt;-----+-----&gt;
                                     `- no matching role   `- first (!)     `- second      `- no match
-</pre></div>
-
+</code></pre></div>
 
 <p>Now that we know what the context <em>should</em> be, this is used for the
 first execution that the process (still <strong>login</strong>) will do. So <strong>login</strong>
@@ -405,7 +398,7 @@ new context is set (being <code>root:sysadm_r:sysadm_t</code>) for the shell.</p
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2013/04/how-logins-get-their-selinux-user-context/",
-    "description": "Sometimes, especially when users are converting their systems to be SELinux-enabled, their user context is wrong. An example would be when, after logon (in permissive mode), the user is in the system_u:system_r:local_login_t domain instead of a user domain like staff_u:staff_r:staff_t. So, how does a login get …"
+    "description": "Sometimes, especially when users are converting their systems to be SELinux-enabled, their user context is wrong. An example would be when, after logon (in permissive mode), the user is in the system_u:system_r:local_login_t domain instead of a user domain like staff_u:staff_r:staff …"
 }
 </script>
     <!-- Disqus count -->

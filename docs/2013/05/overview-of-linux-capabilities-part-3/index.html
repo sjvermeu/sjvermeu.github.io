@@ -16,7 +16,7 @@
     <meta name="keywords" content="capabilities, capsh, libcap, linux">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="Overview of Linux capabilities, part 3" />
-<meta property="og:description" content="In previous posts I talked about capabilities and gave an introduction to how this powerful security feature within Linux can be used (and also exploited). I also covered a few capabilities, so let&#39;s wrap this up with the remainder of them. CAP_AUDIT_CONTROL Enable and disable kernel auditing; change auditing filter …" />
+<meta property="og:description" content="In previous posts I talked about capabilities and gave an introduction to how this powerful security feature within Linux can be used (and also exploited). I also covered a few capabilities, so let&#39;s wrap this up with the remainder of them. CAP_AUDIT_CONTROL Enable and disable kernel auditing; change …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-3/" />
 <meta property="og:type" content="article" />
@@ -347,7 +347,7 @@ for the <code>SECBIT_KEEP_CAPS</code> security bit, the others are preserved on 
 when <em>fork()</em> is used).</p>
 <p>As a user or admin, you can also see capability-related information
 through the <code>/proc</code> file system:</p>
-<div class="highlight"><pre><span></span> # grep ^Cap /proc/$$/status
+<div class="highlight"><pre><span></span><code> # grep ^Cap /proc/$$/status
 CapInh: 0000000000000000
 CapPrm: 0000001fffffffff
 CapEff: 0000001fffffffff
@@ -358,8 +358,7 @@ CapInh: 0000000000000000
 CapPrm: 0000000000000000
 CapEff: 0000000000000000
 CapBnd: 0000001fffffffff
-</pre></div>
-
+</code></pre></div>
 
 <p>The capabilities listed therein are bitmasks for the various
 capabilities. The mask <code>1FFFFFFFFF</code> holds 37 positions, which match the
@@ -370,7 +369,7 @@ capabilities of running processes in a more human readable format. But
 another tool provided by the <code>sys-libs/libcap</code> is interested as well to
 look at: <strong>capsh</strong>. The tool offers many capability-related features,
 including decoding the <code>status</code> fields:</p>
-<div class="highlight"><pre><span></span>$ capsh --decode=0000001fffffffff
+<div class="highlight"><pre><span></span><code>$ capsh --decode=0000001fffffffff
 0x0000001fffffffff=cap_chown,cap_dac_override,cap_dac_read_search,
 cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,
 cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,
@@ -380,8 +379,7 @@ cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,
 cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,
 cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,
 cap_syslog,35,36
-</pre></div>
-
+</code></pre></div>
 
 <p>Next to fancy decoding, <strong>capsh</strong> can also launch a shell with reduced
 capabilities. This makes it a good utility for jailing chroots even
@@ -441,7 +439,7 @@ more.</p>
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-3/",
-    "description": "In previous posts I talked about capabilities and gave an introduction to how this powerful security feature within Linux can be used (and also exploited). I also covered a few capabilities, so let's wrap this up with the remainder of them. CAP_AUDIT_CONTROL Enable and disable kernel auditing; change auditing filter …"
+    "description": "In previous posts I talked about capabilities and gave an introduction to how this powerful security feature within Linux can be used (and also exploited). I also covered a few capabilities, so let's wrap this up with the remainder of them. CAP_AUDIT_CONTROL Enable and disable kernel auditing; change …"
 }
 </script>
     <!-- Disqus count -->

@@ -20,17 +20,16 @@ policy-wise) and then run the offending application through &lt;strong&gt;strace
 (or attach to the running process if it is a daemon). For instance, to
 debug a &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463222"&gt;tmux issue&lt;/a&gt; we
 had with the policy not that long ago:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# setsebool allow_ptrace on
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setsebool allow_ptrace on
 # strace -o strace.log -f -s 256 tmux
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The resulting log file (strace.log) might seem daunting at first to look
 at. What you see are the system calls that the process is performing,
 together with their options but also the return code of each call. This
 is especially important as SELinux, if it denies something, often
 returns something like EACCESS (Permission Denied).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;7313  futex(0x349e016f080, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;7313  futex(0x349e016f080, FUTEX_WAKE_PRIVATE, 2147483647) = 0
 7313  futex(0x5aad58fd84, FUTEX_WAKE_PRIVATE, 2147483647) = 0
 7313  stat(&amp;quot;/&amp;quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
 7313  stat(&amp;quot;/home&amp;quot;, {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
@@ -38,8 +37,7 @@ returns something like EACCESS (Permission Denied).&lt;/p&gt;
 7313  stat(&amp;quot;/home/swift/.pki&amp;quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}) = 0
 7313  stat(&amp;quot;/home/swift/.pki/nssdb&amp;quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}) = 0
 7313  statfs(&amp;quot;/home/swift/.pki/nssdb&amp;quot;, 0x3c3cab6fa50) = -1 EACCES (Permission denied)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Most (if not all) of the methods shown in a strace log are documented
 through manpages, so you can quickly find out that &lt;code&gt;futex()&lt;/code&gt; is about
@@ -47,23 +45,21 @@ fast user-space locking, &lt;code&gt;stat()&lt;/code&gt; (&lt;strong&gt;man 2 st
 about the method instead of the application) is about getting file
 status and &lt;code&gt;statfs()&lt;/code&gt; is for getting file system statistics.&lt;/p&gt;
 &lt;p&gt;The most common permission issues you'll find are file related:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;7313  open(&amp;quot;/proc/filesystems&amp;quot;, O_RDONLY) = -1 EACCES (Permission denied)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;7313  open(&amp;quot;/proc/filesystems&amp;quot;, O_RDONLY) = -1 EACCES (Permission denied)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In the above case, you notice that the application is trying to open the
 &lt;code&gt;/proc/filesystems&lt;/code&gt; file read-only. In the SELinux logs, this might be
 displayed as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit.log:type=AVC msg=audit(1365794728.180:3192): avc:  denied  { read } for  
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit.log:type=AVC msg=audit(1365794728.180:3192): avc:  denied  { read } for  
 pid=860 comm=&amp;quot;nacl_helper_boo&amp;quot; name=&amp;quot;filesystems&amp;quot; dev=&amp;quot;proc&amp;quot; ino=4026532034 
 scontext=staff_u:staff_r:chromium_naclhelper_t tcontext=system_u:object_r:proc_t tclass=file
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now the case of &lt;strong&gt;tmux&lt;/strong&gt; before was not an obvious one. In the end, I
 compared the strace output's of two runs (one in enforcing and one in
 permissive) to find what the difference would be. This is the result:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Enforcing:
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Enforcing:
 
 10905 fcntl(9, F_GETFL) = 0x8000 (flags O_RDONLY|O_LARGEFILE) 
 10905 fcntl(9, F_SETFL, O_RDONLY|O_NONBLOCK|O_LARGEFILE) = 0
@@ -72,8 +68,7 @@ Permissive:
 
 10905 fcntl(9, F_GETFL) = 0x8002 (flags O_RDWR|O_LARGEFILE) 
 10905 fcntl(9, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You notice the difference? In enforcing-mode, one of the flags on the
 file descriptor has &lt;code&gt;O_RDONLY&lt;/code&gt; whereas the one in permissive mode as
@@ -81,11 +76,10 @@ file descriptor has &lt;code&gt;O_RDONLY&lt;/code&gt; whereas the one in permiss
 read-only whereas in permissive-mode is read-write. What we then do in
 the strace logs is to see where this file descriptor (with id=9) comes
 from:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;10905 dup(0)     = 9
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;10905 dup(0)     = 9
 10905 dup(1)     = 10
 10905 dup(2)     = 11
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As the man-pages sais, &lt;code&gt;dup()&lt;/code&gt; duplicates a file descriptor. And
 because, by convention, the first three file descriptors of an
@@ -102,7 +96,7 @@ some investigation, we found out that using &lt;strong&gt;newrole&lt;/strong&gt;
 changes the flags of the standard input (as then provided by
 &lt;strong&gt;newrole&lt;/strong&gt;) from &lt;code&gt;O_RDWR&lt;/code&gt; to &lt;code&gt;O_RDONLY&lt;/code&gt; (code snippet from &lt;code&gt;newrole.c&lt;/code&gt;
 - look at the first call to &lt;code&gt;open()&lt;/code&gt;):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/* Close the tty and reopen descriptors 0 through 2 */
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;/* Close the tty and reopen descriptors 0 through 2 */
 if (ttyn) {
         if (close(fd) || close(0) || close(1) || close(2)) {
                 fprintf(stderr, _(&amp;quot;Could not close descriptors.\n&amp;quot;));
@@ -121,8 +115,7 @@ if (ttyn) {
                 goto err_close_pam;
         fcntl(fd, F_SETFL, fcntl(fd, F_GETFL, 0) &amp;amp; ~O_NONBLOCK);
 }
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Such obscure problems are much easier to detect and troubleshoot thanks
-to tools like &lt;strong&gt;strace&lt;/strong&gt;.&lt;/p&gt;</content><category term="debug"></category><category term="selinux"></category><category term="strace"></category></entry></feed>
+to tools like &lt;strong&gt;strace&lt;/strong&gt;.&lt;/p&gt;</content><category term="SELinux"></category><category term="debug"></category><category term="selinux"></category><category term="strace"></category></entry></feed>

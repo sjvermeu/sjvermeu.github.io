@@ -120,7 +120,7 @@ the ‘mostly workplace’ side of things.&lt;/p&gt;
 and services function, how they are set up, etc. would make my job harder,
 so tracking their progress and architecture is effort that pays off.&lt;/p&gt;
 &lt;p&gt;In a later post I’ll explain what I document about services and solutions
-and how I do it when I have some time to spend.&lt;/p&gt;</content><category term="architecture"></category><category term="overview"></category><category term="service"></category><category term="landscape"></category><category term="catalog"></category><category term="capability"></category></entry><entry><title>Fiddling with puppet apply</title><link href="https://blog.siphos.be/2013/03/fiddling-with-puppet-apply/" rel="alternate"></link><published>2013-03-20T12:31:00+01:00</published><updated>2013-03-20T12:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-20:/2013/03/fiddling-with-puppet-apply/</id><summary type="html">&lt;p&gt;As part of a larger exercise, I am switching my local VM set from a
+and how I do it when I have some time to spend.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="overview"></category><category term="service"></category><category term="landscape"></category><category term="catalog"></category><category term="capability"></category></entry><entry><title>Fiddling with puppet apply</title><link href="https://blog.siphos.be/2013/03/fiddling-with-puppet-apply/" rel="alternate"></link><published>2013-03-20T12:31:00+01:00</published><updated>2013-03-20T12:31:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-03-20:/2013/03/fiddling-with-puppet-apply/</id><summary type="html">&lt;p&gt;As part of a larger exercise, I am switching my local VM set from a
 more-or-less scripted manual configuration towards a fully
 Puppet-powered one. Of course, it still uses a lot of custom modules and
 is most likely too ugly to expose to the wider internet, but it does
@@ -135,9 +135,8 @@ Puppet master server - mainly because that master server is again a VM
 that might need to be build up and consumes some resources that I'd
 rather have free for other VMs. So what I do now is akin to the
 following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# puppet apply --modulepath /mnt/puppet/modules /mnt/puppet/manifests/site.pp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;All I have to do is make sure that the /mnt/puppet location is a shared
 resource (in my case, an NFSv4 read-only mount) which I can just mount
@@ -151,25 +150,23 @@ have a pam_rootok.so statement in the run_init PAM file to allow
 unattended calls towards rc-service).&lt;/p&gt;
 &lt;p&gt;A quick Google revealed that all I had to do was to add a &lt;em&gt;provider
 =&amp;gt; openrc&lt;/em&gt; in the service definitions, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;service { &amp;quot;net.eth0&amp;quot;:
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;service { &amp;quot;net.eth0&amp;quot;:
   provider =&amp;gt; openrc,
   ensure =&amp;gt; running,
 }
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As mentioned, I still manually patch the openrc provider (located in
 /usr/lib64/ruby/site_ruby/1.9.1/puppet/provider/service) so that the
 run_init command is known as well, and that all invocations of the
 rc-service is prepended with run_init:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;...
   commands :runinit =&amp;gt; &amp;#39;/usr/sbin/run_init&amp;#39;
   commands :rcservice =&amp;gt; &amp;#39;/sbin/rc-service&amp;#39;
 ...
  [command(:runinit), command(:rcservice), @resource[:name], :start ]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And the same for the stop and status definitions. I might use Portage'
 postinst hook to automatically apply the patch so I don't need to do
-this manually each time.&lt;/p&gt;</content><category term="provider"></category><category term="puppet"></category><category term="selinux"></category><category term="service"></category></entry></feed>
+this manually each time.&lt;/p&gt;</content><category term="Gentoo"></category><category term="provider"></category><category term="puppet"></category><category term="selinux"></category><category term="service"></category></entry></feed>

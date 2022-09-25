@@ -9,7 +9,7 @@ covered a few capabilities, so let's wrap this up with the remainder of
 them.&lt;/p&gt;
 &lt;dl&gt;
 &lt;dt&gt;CAP_AUDIT_CONTROL&lt;/dt&gt;
-&lt;dd&gt;Enable and disable kernel auditing; change auditing filter …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+&lt;dd&gt;Enable and disable kernel auditing; change …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;I&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/"&gt;talked&lt;/a&gt;
@@ -125,7 +125,7 @@ for the &lt;code&gt;SECBIT_KEEP_CAPS&lt;/code&gt; security bit, the others are p
 when &lt;em&gt;fork()&lt;/em&gt; is used).&lt;/p&gt;
 &lt;p&gt;As a user or admin, you can also see capability-related information
 through the &lt;code&gt;/proc&lt;/code&gt; file system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; # grep ^Cap /proc/$$/status
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep ^Cap /proc/$$/status
 CapInh: 0000000000000000
 CapPrm: 0000001fffffffff
 CapEff: 0000001fffffffff
@@ -136,8 +136,7 @@ CapInh: 0000000000000000
 CapPrm: 0000000000000000
 CapEff: 0000000000000000
 CapBnd: 0000001fffffffff
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The capabilities listed therein are bitmasks for the various
 capabilities. The mask &lt;code&gt;1FFFFFFFFF&lt;/code&gt; holds 37 positions, which match the
@@ -148,7 +147,7 @@ capabilities of running processes in a more human readable format. But
 another tool provided by the &lt;code&gt;sys-libs/libcap&lt;/code&gt; is interested as well to
 look at: &lt;strong&gt;capsh&lt;/strong&gt;. The tool offers many capability-related features,
 including decoding the &lt;code&gt;status&lt;/code&gt; fields:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ capsh --decode=0000001fffffffff
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ capsh --decode=0000001fffffffff
 0x0000001fffffffff=cap_chown,cap_dac_override,cap_dac_read_search,
 cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,
 cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,
@@ -158,12 +157,11 @@ cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,
 cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,
 cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,
 cap_syslog,35,36
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Next to fancy decoding, &lt;strong&gt;capsh&lt;/strong&gt; can also launch a shell with reduced
 capabilities. This makes it a good utility for jailing chroots even
-more.&lt;/p&gt;</content><category term="capabilities"></category><category term="capsh"></category><category term="libcap"></category><category term="linux"></category></entry><entry><title>Overview of Linux capabilities, part 2</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/" rel="alternate"></link><published>2013-05-05T03:50:00+02:00</published><updated>2013-05-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-05:/2013/05/overview-of-linux-capabilities-part-2/</id><summary type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+more.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="capsh"></category><category term="libcap"></category><category term="linux"></category></entry><entry><title>Overview of Linux capabilities, part 2</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/" rel="alternate"></link><published>2013-05-05T03:50:00+02:00</published><updated>2013-05-05T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-05:/2013/05/overview-of-linux-capabilities-part-2/</id><summary type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
 capabilities&lt;/a&gt;
 and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
 them&lt;/a&gt;,
@@ -172,8 +170,7 @@ I started with a small overview of
 capabilities. So next up are process-related capabilities (note, this
 isn't a conform terminology, more some categorization that I do myself).&lt;/p&gt;
 &lt;dl&gt;
-&lt;dt&gt;CAP_IPC_LOCK&lt;/dt&gt;
-&lt;dd&gt;Allow the …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+&lt;dt&gt;CAP_IPC_LOCK …&lt;/dt&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
 capabilities&lt;/a&gt;
 and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
 them&lt;/a&gt;,
@@ -230,7 +227,7 @@ govern correctly, but this post would be rather dull (given that the
 definitions of the above capabilities can be found from the manual page)
 if I wouldn't talk a bit more about its feasibility. Take a look at the
 following C application code:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#include &amp;lt;errno.h&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#include &amp;lt;errno.h&amp;gt;
 #include &amp;lt;stdio.h&amp;gt;
 #include &amp;lt;string.h&amp;gt;
 #include &amp;lt;sys/capability.h&amp;gt;
@@ -246,22 +243,20 @@ int main(int argc, char ** argv) {
     printf(&amp;quot;setresuid(): %s\n&amp;quot;, strerror(errno));
   execve(&amp;quot;/bin/sh&amp;quot;, NULL, NULL);
 }
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;At first sight, it looks like an application to get root privileges
 (&lt;em&gt;setresuid()&lt;/em&gt;) and then spawn a shell. If that application would be
 given &lt;code&gt;CAP_SETUID&lt;/code&gt; and &lt;code&gt;CAP_SETGID&lt;/code&gt; effectively, it would allow anyone
 who executed it to automatically get a root shell, wouldn't it?&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ gcc -o test -lcap test.c
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ gcc -o test -lcap test.c
 # setcap cap_setuid,cap_setgid+ep test
 $ ./test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  =
 setresuid() failed: Operation not permitted
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So what happened? After all, the two capabilities are set with the &lt;em&gt;+ep&lt;/em&gt;
 flags given. Then why aren't these capabilities enabled? Well, this
@@ -269,23 +264,21 @@ binary was stored on a file system that is mounted with the &lt;em&gt;nosuid&lt;
 option. As a result, this capability is &lt;em&gt;not&lt;/em&gt; enabled and the
 application didn't work. If I move the file to another file system that
 doesn't have the &lt;em&gt;nosuid&lt;/em&gt; option:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ /usr/local/bin/test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  = cap_setgid,cap_setuid+ep
 setresuid() failed: Operation not permitted
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So the capabilities now do get enabled, so why does this still fail?
 This now is due to SELinux:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&amp;quot;test&amp;quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1367393377.342:4778): avc:  denied  { setuid } for  pid=21418 comm=&amp;quot;test&amp;quot; capability=7  scontext=staff_u:staff_r:staff_t tcontext=staff_u:staff_r:staff_t tclass=capability
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And if you enable grSecurity's TPE, we can't even start the binary to
 begin with:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ./test
 -bash: ./test: Permission denied
 $ /lib/ld-linux-x86-64.so.2 /home/test/test
 /home/test/test: error while loading shared libraries: /home/test/test: failed to map segment from shared object: Permission denied
@@ -293,19 +286,17 @@ $ /lib/ld-linux-x86-64.so.2 /home/test/test
 # dmesg
 ...
 [ 5579.567842] grsec: From 192.168.100.1: denied untrusted exec (due to not being in trusted group and file in non-root-owned directory) of /home/test/test by /home/test/test[bash:4221] uid/euid:1002/1002 gid/egid:100/100, parent /bin/bash[bash:4195] uid/euid:1002/1002 gid/egid:100/100
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When all these "security obstacles" are not enabled, then the call
 succeeds:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ /usr/local/bin/test
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ /usr/local/bin/test
 cap_setuid and cap_setgid: 1
  = cap_setgid,cap_setuid+ep
  = cap_setgid,cap_setuid+ep
 setresuid() failed: Success
 root@hpl tmp #
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This again shows how important it is to regularly review
 capability-enabled files on the file system, as this is a major security
@@ -313,10 +304,10 @@ problem that cannot be detected by only looking for setuid binaries, but
 also that securing a system is not limited to one or a few settings: one
 always has to take the entire setup into consideration, hardening the
 system so it becomes more difficult for malicious users to abuse it.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# filecap -a
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# filecap -a
 file                 capabilities
 /usr/local/bin/test     setgid, setuid
-&lt;/pre&gt;&lt;/div&gt;</content><category term="capabilities"></category><category term="grsecurity"></category><category term="linux"></category><category term="nosuid"></category><category term="selinux"></category><category term="tpe"></category></entry><entry><title>Overview of Linux capabilities, part 1</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/" rel="alternate"></link><published>2013-05-04T03:50:00+02:00</published><updated>2013-05-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-04:/2013/05/overview-of-linux-capabilities-part-1/</id><summary type="html">&lt;p&gt;In the
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="grsecurity"></category><category term="linux"></category><category term="nosuid"></category><category term="selinux"></category><category term="tpe"></category></entry><entry><title>Overview of Linux capabilities, part 1</title><link href="https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/" rel="alternate"></link><published>2013-05-04T03:50:00+02:00</published><updated>2013-05-04T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-04:/2013/05/overview-of-linux-capabilities-part-1/</id><summary type="html">&lt;p&gt;In the
 &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;,
 I talked about capabilities and how they can be used to allow processes
@@ -342,9 +333,8 @@ want to know which SELinux domains are "granted" a particular
 capability, you can look this up using &lt;strong&gt;sesearch&lt;/strong&gt;. The capability is
 either in the &lt;em&gt;capability&lt;/em&gt; or &lt;em&gt;capability2&lt;/em&gt; class, and is named after
 the capability itself, without the &lt;code&gt;CAP_&lt;/code&gt; prefix:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sesearch -c capability -p chown -A
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ sesearch -c capability -p chown -A
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;dl&gt;
 &lt;dt&gt;CAP_CHOWN&lt;/dt&gt;
@@ -391,15 +381,14 @@ However, when you start confining those applications, it becomes
 apparent that they require this capability. Another example is when you
 run user applications, as root, like when trying to play a movie or
 music file with &lt;strong&gt;mplayer&lt;/strong&gt; when this file is owned by a regular user:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_read_search } for
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_read_search } for
 pid=8153 comm=&amp;quot;mplayer&amp;quot; capability=2  scontext=staff_u:sysadm_r:mplayer_t
 tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
 
 type=AVC msg=audit(1367145131.860:18785): avc:  denied  { dac_override } for
 pid=8153 comm=&amp;quot;mplayer&amp;quot; capability=1  scontext=staff_u:sysadm_r:mplayer_t
 tcontext=staff_u:sysadm_r:mplayer_t tclass=capability
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Notice the time stamp: both checks are triggered at the same time. What
 happens is that the Linux security hooks first check for
@@ -418,7 +407,7 @@ rather to properly close the file descriptor or flushing caches, etc.&lt;/p&gt;
 &lt;p&gt;BTW, on my system, only 5 SELinux domains hold the &lt;em&gt;lease&lt;/em&gt; capability.&lt;/p&gt;
 &lt;p&gt;There are 37 capabilities known by the Linux kernel at this time. The
 above list has 9 file related ones. So perhaps next I can talk about
-process capabilities.&lt;/p&gt;</content><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Restricting and granting capabilities</title><link href="https://blog.siphos.be/2013/05/restricting-and-granting-capabilities/" rel="alternate"></link><published>2013-05-03T03:50:00+02:00</published><updated>2013-05-03T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-03:/2013/05/restricting-and-granting-capabilities/</id><summary type="html">&lt;p&gt;As
+process capabilities.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Restricting and granting capabilities</title><link href="https://blog.siphos.be/2013/05/restricting-and-granting-capabilities/" rel="alternate"></link><published>2013-05-03T03:50:00+02:00</published><updated>2013-05-03T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-03:/2013/05/restricting-and-granting-capabilities/</id><summary type="html">&lt;p&gt;As
 &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro"&gt;capabilities&lt;/a&gt;
 are a way for running processes with some privileges, without having the
 need to grant them root privileges, it is important to understand that
@@ -451,7 +440,7 @@ instead (&lt;em&gt;+p&lt;/em&gt;). That doesn't mean that the capability is in e
 rather that it is in a sort-of permitted set. Applications that are
 granted a certain permission this way can either use this capability if
 the user is allowed to have it, or won't otherwise.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# setcap cap_net_raw+p anotherping
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setcap cap_net_raw+p anotherping
 
 # vim /etc/pam.d/system-login
 ... add in something like
@@ -460,19 +449,17 @@ auth     required     pam_cap.so
 # vim /etc/security/capability.conf
 ... add in something like
 cap_net_raw           user1
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The logic used with capabilities can be described as follows (it is not
 as difficult as it looks):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;        pI&amp;#39; = pI
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;        pI&amp;#39; = pI
   (***) pP&amp;#39; = fP | (fI &amp;amp; pI)
         pE&amp;#39; = pP&amp;#39; &amp;amp; fE          [NB. fE is 0 or ~0]
 
   I=Inheritable, P=Permitted, E=Effective // p=process, f=file
   &amp;#39; indicates post-exec().
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So, for instance, the second line reads "The permitted set of
 capabilities of the newly forked process is set to the permitted set of
@@ -483,21 +470,19 @@ inherited capabilities of the parent process."&lt;/p&gt;
 particular capabilities set. With &lt;strong&gt;filecap&lt;/strong&gt; you can list which
 capabilities are in the effective set of files found on the file system
 (for instance, &lt;em&gt;+ep&lt;/em&gt;).&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# filecap 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# filecap 
 file                 capabilities
 /bin/anotherping     net_raw
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Similarly, with &lt;strong&gt;pscap&lt;/strong&gt; you can see the capabilities set on running
 processes.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# pscap -a
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# pscap -a
 ppid  pid   name        command           capabilities
 6148  6152  root        bash              full
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-
-&lt;p&gt;It might be wise to take this up in the daily audit reports.&lt;/p&gt;</content><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Capabilities, a short intro</title><link href="https://blog.siphos.be/2013/05/capabilities-a-short-intro/" rel="alternate"></link><published>2013-05-02T03:50:00+02:00</published><updated>2013-05-02T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-02:/2013/05/capabilities-a-short-intro/</id><summary type="html">&lt;p&gt;Capabilities. You probably have heard of them already, but when you
+&lt;p&gt;It might be wise to take this up in the daily audit reports.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category></entry><entry><title>Capabilities, a short intro</title><link href="https://blog.siphos.be/2013/05/capabilities-a-short-intro/" rel="alternate"></link><published>2013-05-02T03:50:00+02:00</published><updated>2013-05-02T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-02:/2013/05/capabilities-a-short-intro/</id><summary type="html">&lt;p&gt;Capabilities. You probably have heard of them already, but when you
 start developing SELinux policies, you'll notice that you come in closer
 contact with them than before. This is because SELinux, when
 applications want to do something "root-like", checks the capability of
@@ -530,36 +515,32 @@ restricted privileges of the user plus one capability, namely the
 &lt;p&gt;Let's take this &lt;strong&gt;ping&lt;/strong&gt; example to the next level: copy the binary
 (possibly relabel it as &lt;code&gt;ping_exec_t&lt;/code&gt; if you run with SELinux), make
 sure it does not hold the setuid and try it out:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cp ping anotherping
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# cp ping anotherping
 # chcon -t ping_exec_t anotherping
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now as a regular user:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ping -c 1 127.0.0.1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ ping -c 1 127.0.0.1
 PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
 64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.057 ms
 
 $ anotherping -c 1 127.0.0.1
 ping: icmp open socket: Operation not permitted
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Let's assign the binary with the &lt;code&gt;CAP_NET_RAW&lt;/code&gt; capability flag:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# setcap cap_net_raw+ep anotherping
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# setcap cap_net_raw+ep anotherping
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And tadaa:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ anotherping -c 1 127.0.0.1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ anotherping -c 1 127.0.0.1
 PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
 64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.054 ms
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;What &lt;strong&gt;setcap&lt;/strong&gt; did was place an extended attribute to the file, which
 is a binary representation of the capabilities assigned to the
 application. The additional information (&lt;code&gt;+ep&lt;/code&gt;) means that the
 capability is &lt;em&gt;p&lt;/em&gt;ermitted and &lt;em&gt;e&lt;/em&gt;ffective.&lt;/p&gt;
 &lt;p&gt;So long for the primer, I'll talk about the various capabilities in a
-later post.&lt;/p&gt;</content><category term="capabilities"></category><category term="linux"></category><category term="ping"></category><category term="selinux"></category></entry></feed>
+later post.&lt;/p&gt;</content><category term="Security"></category><category term="capabilities"></category><category term="linux"></category><category term="ping"></category><category term="selinux"></category></entry></feed>

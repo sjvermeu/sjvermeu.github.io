@@ -263,7 +263,7 @@ those domains access to each others' semaphores and shared memory. And
 although SELinux booleans can help, this would mean that for each
 application domain, something like the following policy would need to
 be, optionally, allowed:</p>
-<div class="highlight"><pre><span></span># For the mplayer_t domain:
+<div class="highlight"><pre><span></span><code># For the mplayer_t domain:
 optional_policy(`
   tunable_policy(`use_alsa&#39;,`
     mozilla_rw_semaphores(mplayer_t)
@@ -279,8 +279,7 @@ optional_policy(`
     chromium_tmpfs_rw_files(mplayer_t)
   &#39;)
 &#39;)
-</pre></div>
-
+</code></pre></div>
 
 <p>And this for all domains that are ALSA-enabled. Every time a new
 application is added that knows ALSA, the same code needs to be added to
@@ -290,18 +289,17 @@ create separate booleans for each domain if we want to. Not that that
 will make it more manageable.</p>
 <p>One way of dealing with this would be to use attributes. Say we have a
 policy like so:</p>
-<div class="highlight"><pre><span></span>attribute alsadomain;
+<div class="highlight"><pre><span></span><code>attribute alsadomain;
 attribute alsatmpfsfile;
 
 allow alsadomain alsadomain:sem rw_sem_perms;
 allow alsadomain alsadomain:shm rw_shm_perms;
 allow alsadomain alsatmpfsfile:file rw_file_perms;
-</pre></div>
-
+</code></pre></div>
 
 <p>By assigning the attribute to the proper domains whenever ALSA support
 is needed, we can toggle this more easily:</p>
-<div class="highlight"><pre><span></span># In alsa.if
+<div class="highlight"><pre><span></span><code># In alsa.if
 interface(`alsa_domain&#39;,`
   gen_require(`
     attribute alsadomain;
@@ -318,8 +316,7 @@ optional_policy(`
     alsa_domain(mplayer_t, mplayer_tmpfs_t)
   &#39;)
 &#39;)
-</pre></div>
-
+</code></pre></div>
 
 <p>That would solve the problem of needlessly adding more calls in a policy
 for every ALSA application. And hey, we can probably live with either a
@@ -329,13 +326,12 @@ toggle this according to our needs.</p>
 assignments inside a <code>tunable_policy</code> code: attributes are part of the
 non-conditional part of a SELinux policy. The solution would be to
 create build-time conditionals (rather than run-time):</p>
-<div class="highlight"><pre><span></span>ifdef(`use_alsa&#39;,`
+<div class="highlight"><pre><span></span><code>ifdef(`use_alsa&#39;,`
   optional_policy(`
     alsa_domain(mplayer_t, mplayer_tmpfs_t)
   &#39;)
 &#39;)
-</pre></div>
-
+</code></pre></div>
 
 <p>This does mean that <code>use_alsa</code> has to be known when the policy is built.
 For Gentoo, that's not that bad, as policies are part of separate

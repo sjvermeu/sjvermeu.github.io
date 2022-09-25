@@ -251,7 +251,7 @@ depends on the Ubuntu LTS support, and as it is not clear which kernel
 that distribution will use for LTS, the grSecurity team can also not say
 what kernel it will be. (So please stop asking ;-)</p>
 <p>grsecurity 3.0 is out, with the following commit message:</p>
-<div class="highlight"><pre><span></span>commit 4f48151d49f2697c3e2e108a50513a8d61fb150d
+<div class="highlight"><pre><span></span><code>commit 4f48151d49f2697c3e2e108a50513a8d61fb150d
 Author: Brad Spengler 
 Date:   Sun Nov 24 17:47:14 2013 -0500
 
@@ -275,8 +275,7 @@ Date:   Sun Nov 24 17:47:14 2013 -0500
     to the task at the time its role was first applied or changed.  This resolves
     long-standing usability problems with the use of role_allowed_ip and matches
     the policies created by learning.
-</pre></div>
-
+</code></pre></div>
 
 <p>The new version requires the use of <code>&gt;=gradm-3.0</code>. Some hardened-sources
 packages already contain the 3.0 patchset (currently in testing). In a
@@ -295,9 +294,8 @@ with the latest evolutions of the reference policy. If you want to use
 these, use the <code>-9999</code> ebuilds for the SELinux policy packages. This can
 be accomplished with the following line in
 <path>package.accept_keywords</path>:</p>
-<div class="highlight"><pre><span></span>sec-policy/* **
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>sec-policy/* **
+</code></pre></div>
 
 <p>Recently, revision 5 of the SELinux policies has been pushed to the tree
 (currently in testing). This one also contains a few required changes to
@@ -338,7 +336,7 @@ profile inherited to a certain extend.</p>
 <p>Another idea is to use a more dependency-based syntax (similar to OpenRC
 dependency system for init scripts), which not only allows for proper
 stacking and the necessary flexibility, but also improves readability:</p>
-<div class="highlight"><pre><span></span>before {
+<div class="highlight"><pre><span></span><code>before {
   hardened/linux/amd64
 }
 after {
@@ -347,8 +345,7 @@ after {
 depends {
   targets/desktop/gnome
 }
-</pre></div>
-
+</code></pre></div>
 
 <p>The next few months will be interesting to see how this will evolve ;-)</p>
 <p><em>Documentation</em></p>

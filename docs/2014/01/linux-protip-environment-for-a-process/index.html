@@ -234,7 +234,7 @@ a process, you can see them in that process' <code>/proc/${PID}/environ</code>
 file. The file however shows the environment variables on one line, with
 a null character as separator. With a simple <strong>sed</strong> you can show it
 with newlines instead:</p>
-<div class="highlight"><pre><span></span>~$ sed -e &quot;s:\x0:\n:g&quot; /proc/144320/environ
+<div class="highlight"><pre><span></span><code>~$ sed -e &quot;s:\x0:\n:g&quot; /proc/144320/environ
 TERM=xterm
 SHELL=/bin/bash
 OLDPWD=/home/swift/docs
@@ -246,8 +246,7 @@ MAIL=/var/mail/root
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/opt/bin
 PWD=/var/db/pkg/eix
 ...
-</pre></div>
-
+</code></pre></div>
 
 <p>The trick is to use <code>\x0</code> (hexcode 0) for the null character, which the
 <strong>sed</strong> command then replaces with a newline.</p>

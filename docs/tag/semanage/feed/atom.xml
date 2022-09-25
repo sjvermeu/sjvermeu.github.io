@@ -30,25 +30,22 @@ then, after transitioning into the "simple" domain, is not part of the
 SELinux enforcements anymore whereas the rest of the system remains in
 SELinux enforcing mode.&lt;/p&gt;
 &lt;p&gt;For instance, create a minuscule policy like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;policy_module(testdom, 1.0)
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;policy_module(testdom, 1.0)
 
 type testdom_t;
 type testdom_exec_t;
 init_daemon_domain(testdom_t, testdom_exec_t)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Mark the executable for the daemon as &lt;code&gt;testdom_exec_t&lt;/code&gt; (after building
 and loading the minuscule policy):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# chcon -t testdom_exec_t /opt/something/bin/daemond
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# chcon -t testdom_exec_t /opt/something/bin/daemond
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Finally, tell SELinux that &lt;code&gt;testdom_t&lt;/code&gt; is to be seen as a permissive
 domain:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage permissive -a testdom_t
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage permissive -a testdom_t
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When finished, don't forget to remove the permissive bit
 (&lt;code&gt;semanage permissive -d testdom_t&lt;/code&gt;) and unload/remove the SELinux
@@ -56,7 +53,7 @@ policy module.&lt;/p&gt;
 &lt;p&gt;And that's it. If the daemon is now started (through a standard init
 script) it will run as &lt;code&gt;testdom_t&lt;/code&gt; and everything it does will be
 logged, but not enforced by SELinux. That might even help in
-understanding the application better.&lt;/p&gt;</content><category term="permissive"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category><category term="test"></category></entry><entry><title>Migrating to SELinux userspace 2.4 (small warning for users)</title><link href="https://blog.siphos.be/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/" rel="alternate"></link><published>2014-10-30T19:44:00+01:00</published><updated>2014-10-30T19:44:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</id><summary type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
+understanding the application better.&lt;/p&gt;</content><category term="SELinux"></category><category term="permissive"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category><category term="test"></category></entry><entry><title>Migrating to SELinux userspace 2.4 (small warning for users)</title><link href="https://blog.siphos.be/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/" rel="alternate"></link><published>2014-10-30T19:44:00+01:00</published><updated>2014-10-30T19:44:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-10-30:/2014/10/migrating-to-selinux-userspace-2-4-small-warning-for-users/</id><summary type="html">&lt;p&gt;In a few moments, SELinux users which have the \~arch KEYWORDS set
 (either globally or for the SELinux utilities in particular) will notice
 that the SELinux userspace will upgrade to version 2.4 (release
 candidate 5 for now). This upgrade comes with a manual step that needs
@@ -67,9 +64,8 @@ candidate 5 for now). This upgrade comes with a manual step that needs
 to be performed after upgrade. The information is mentioned as
 post-installation message of the &lt;code&gt;policycoreutils&lt;/code&gt; package, and
 basically sais that you need to execute:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The reason is that the SELinux utilities expect the SELinux policy
 module store (and the semanage related files) to be in
@@ -90,46 +86,41 @@ works, SELinux aware applications still work; the only thing that will
 fail are updates on the SELinux configuration through tools like
 &lt;strong&gt;semanage&lt;/strong&gt; or &lt;strong&gt;setsebool&lt;/strong&gt; - the latter when you want to persist
 boolean changes.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# semanage fcontext -l
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# semanage fcontext -l
 ValueError: SELinux policy is not managed or store cannot be accessed.
 
 ~# setsebool -P allow_ptrace on
 Cannot set persistent booleans without managed policy.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you get those errors or warnings, all that is left to do is to do the
 migration. Note in the following that there is a warning about 'else'
 blocks that are no longer supported: that's okay, as far as I know (and
 it was mentioned on the upstream mailinglist as well as not something to
 worry about) it does not have any impact.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store
 Migrating from /etc/selinux/mcs/modules/active to /var/lib/selinux/mcs/active
 Attempting to rebuild policy from /var/lib/selinux
 sysnetwork: Warning: &amp;#39;else&amp;#39; blocks in optional statements are unsupported in CIL. Dropping from output.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can also add in &lt;code&gt;-c&lt;/code&gt; so that the old policy module store is cleaned
 up. You can also rerun the command multiple times:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# /usr/libexec/selinux/semanage_migrate_store -c
 warning: Policy type mcs has already been migrated, but modules still exist in the old store. Skipping store.
 Attempting to rebuild policy from /var/lib/selinux
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can manually clean up the old policy module store like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# rm -rf /etc/selinux/mcs/modules
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rm -rf /etc/selinux/mcs/modules
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;So... don't worry - the change is small and does not break stuff. And
 for those wondering about CIL I'll talk about it in one of my next
-posts.&lt;/p&gt;</content><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>If things are weird, check for policy.29</title><link href="https://blog.siphos.be/2014/04/if-things-are-weird-check-for-policy-29/" rel="alternate"></link><published>2014-04-17T21:01:00+02:00</published><updated>2014-04-17T21:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-17:/2014/04/if-things-are-weird-check-for-policy-29/</id><summary type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
+posts.&lt;/p&gt;</content><category term="Gentoo"></category><category term="cil"></category><category term="Gentoo"></category><category term="migrate"></category><category term="selinux"></category><category term="semanage"></category><category term="upgrade"></category><category term="userspace"></category></entry><entry><title>If things are weird, check for policy.29</title><link href="https://blog.siphos.be/2014/04/if-things-are-weird-check-for-policy-29/" rel="alternate"></link><published>2014-04-17T21:01:00+02:00</published><updated>2014-04-17T21:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-17:/2014/04/if-things-are-weird-check-for-policy-29/</id><summary type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
-issue that has been resolved in our current SELinux policy repository
-but …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
+issue that has been resolved in our current SELinux policy repository …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
 issue that has been resolved in our current SELinux policy repository
@@ -152,4 +143,4 @@ disappointing.&lt;/p&gt;
 &lt;p&gt;Anyway - if you see weird behavior, check both the &lt;code&gt;semanage.conf&lt;/code&gt; file
 (and set &lt;code&gt;policy-version = 28&lt;/code&gt;) as well as the contents of your
 &lt;code&gt;/etc/selinux/*/policy&lt;/code&gt; directory. If you see any &lt;code&gt;policy.*&lt;/code&gt; that isn't
-version 28, delete them.&lt;/p&gt;</content><category term="load_policy"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category></entry></feed>
+version 28, delete them.&lt;/p&gt;</content><category term="SELinux"></category><category term="load_policy"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category></entry></feed>

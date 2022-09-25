@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"><channel><title>Simplicity is a form of art... - salt</title><link>https://blog.siphos.be/</link><description></description><lastBuildDate>Sun, 27 Mar 2016 13:32:00 +0200</lastBuildDate><item><title>Template was specified incorrectly</title><link>https://blog.siphos.be/2016/03/template-was-specified-incorrectly/</link><description>&lt;p&gt;After reorganizing my salt configuration, I received the following error:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[ERROR   ] Template was specified incorrectly: False
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[ERROR   ] Template was specified incorrectly: False
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Enabling some debugging on the command gave me a slight pointer why this occurred:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[DEBUG   ] Could not find file from saltenv 'testing', u'salt://top.sls'
 [DEBUG   ] No contents loaded for env: testing
 [DEBUG   ] compile template: False
 [ERROR   ] Template was specified incorrectly: False
-&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;I was using a single top file as recommended by Salt, but apparently it was still
 looking for top files in the other environments.&lt;/p&gt;
 &lt;p&gt;Yet, if I split the top files across the environments, I got the following warning:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
-&lt;/pre&gt;&lt;/div&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[WARNING ] Top file merge strategy set to 'merge' and multiple top files found. Top file merging order is undefined; for better results use 'same' option
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;So what's all this about?&lt;/p&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 27 Mar 2016 13:32:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2016-03-27:/2016/03/template-was-specified-incorrectly/</guid><category>salt</category></item><item><title>Using salt-ssh with agent forwarding</title><link>https://blog.siphos.be/2016/03/using-salt-ssh-with-agent-forwarding/</link><description>&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 27 Mar 2016 13:32:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2016-03-27:/2016/03/template-was-specified-incorrectly/</guid><category>Free-Software</category><category>salt</category></item><item><title>Using salt-ssh with agent forwarding</title><link>https://blog.siphos.be/2016/03/using-salt-ssh-with-agent-forwarding/</link><description>&lt;p&gt;Part of a system's security is to reduce the attack surface. Following this principle,
 I want to see if I can switch from using regular salt minions for a saltstack managed
 system set towards &lt;code&gt;salt-ssh&lt;/code&gt;. This would allow to do some system management over SSH
 instead of ZeroMQ.&lt;/p&gt;
@@ -22,4 +22,4 @@ instead of ZeroMQ.&lt;/p&gt;
 important, which is greatly reduced with &lt;code&gt;salt-ssh&lt;/code&gt;), and the security exposure of the
 salt minions over ZeroMQ is also not that insecure (especially not when a local firewall
 ensures that only connections from the salt master are allowed). But playing doesn't hurt.&lt;/p&gt;
-</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 26 Mar 2016 19:57:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2016-03-26:/2016/03/using-salt-ssh-with-agent-forwarding/</guid><category>salt</category></item></channel></rss>
+</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 26 Mar 2016 19:57:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2016-03-26:/2016/03/using-salt-ssh-with-agent-forwarding/</guid><category>Free-Software</category><category>salt</category></item></channel></rss>

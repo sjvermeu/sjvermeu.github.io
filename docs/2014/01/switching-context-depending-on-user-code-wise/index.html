@@ -242,7 +242,7 @@ look into the C code that does so, and how an application should behave
 depending on the enforcing/permissive mode...</p>
 <p>I use the following, extremely simple C that fork()'s and executes
 <code>id -Z</code>:</p>
-<div class="highlight"><pre><span></span>#include &lt;stdio.h&gt;
+<div class="highlight"><pre><span></span><code>#include &lt;stdio.h&gt;
 #include &lt;fcntl.h&gt;
 #include &lt;unistd.h&gt;
 #include &lt;sys/types.h&gt;
@@ -297,14 +297,12 @@ int main(int argc, char * argv[]) {
   };
   return 0;
 };
-</pre></div>
-
+</code></pre></div>
 
 <p>The code is ran as follows:</p>
-<div class="highlight"><pre><span></span>~$ test myusername
+<div class="highlight"><pre><span></span><code>~$ test myusername
 staff_u:staff_r:staff_t
-</pre></div>
-
+</code></pre></div>
 
 <p>As you can see, it shows the output of the <code>id -Z</code> command. Let's
 enhance this code with some SELinux specific functions. The purpose of
@@ -314,21 +312,20 @@ invocation.</p>
 <p>We will include the necessary SELinux code with <code>#ifdef SELINUX</code>,
 allowing the application to be build without SELinux code if wanted.</p>
 <p>First, add in the proper <code>#include</code> directives.</p>
-<div class="highlight"><pre><span></span>#ifdef SELINUX
+<div class="highlight"><pre><span></span><code>#ifdef SELINUX
 #include &lt;selinux/selinux.h&gt;
 #include &lt;selinux/flask.h&gt;
 #include &lt;selinux/av_permissions.h&gt;
 #include &lt;selinux/get_context_list.h&gt;
 #endif
-</pre></div>
-
+</code></pre></div>
 
 <p>Next, we create a function called <em>selinux_prepare_fork()</em> which takes
 one input variable: the Linux user name for which we are going to
 transition (and thus run <code>id -Z</code> for). This function can always be
 called, even if SELinux is not built in. If that happens, we return 0
 immediately.</p>
-<div class="highlight"><pre><span></span>/* selinux_prepare_fork - Initialize context switching
+<div class="highlight"><pre><span></span><code>/* selinux_prepare_fork - Initialize context switching
  *
  * Returns
  *  - 0 if everything is OK, 
@@ -343,8 +340,7 @@ int selinux_prepare_fork(char * name) {
   // ... this is where the remainder goes
 #endif
 };
-</pre></div>
-
+</code></pre></div>
 
 <p>We include this call in the application above, and take into account the
 return codes passed on. As can be seen from the comment, if the
@@ -355,7 +351,7 @@ domain in which the application runs is permissive - in either case, the
 code will succeed. A returncode of -1 means that the code will most
 likely fail and thus the application should log an error and exit or
 break.</p>
-<div class="highlight"><pre><span></span>  pid_t child;
+<div class="highlight"><pre><span></span><code>  pid_t child;
 
   rc = selinux_prepare_fork(argv[1]);
   if (rc &lt; 0) {
@@ -369,12 +365,11 @@ break.</p>
   };
 
   child = fork();
-</pre></div>
-
+</code></pre></div>
 
 <p>Now all we need to do is fill in the logic in <em>selinux_prepare_fork</em>.
 Let's start with the variable declarations (boring stuff):</p>
-<div class="highlight"><pre><span></span>#ifndef SELINUX
+<div class="highlight"><pre><span></span><code>#ifndef SELINUX
   return 0;
 #else
   security_context_t newcon = 0;
@@ -386,14 +381,13 @@ Let's start with the variable declarations (boring stuff):</p>
 
   char * sename = 0;
   char * selevel = 0;
-</pre></div>
-
+</code></pre></div>
 
 <p>With that out of the way, let's take our first step: we want to see if
 SELinux is enabled or not. Applications that are SELinux-aware should
 always check if SELinux itself is enabled and, if not, just continue
 with the (application) logic.</p>
-<div class="highlight"><pre><span></span>  /*
+<div class="highlight"><pre><span></span><code>  /*
    * See if SELinux is enabled.
    * If not, then we can immediately tell the code
    * that everything is OK.
@@ -407,8 +401,7 @@ with the (application) logic.</p>
     return 1;
   };
   out(DEBUG, &quot;SELinux is enabled.\n&quot;);
-</pre></div>
-
+</code></pre></div>
 
 <p>As you can see, we use <em>is_selinux_enabled</em> here to do just that. If
 it returns 0, then it is not enabled. A returncode of 1 means it is
@@ -419,7 +412,7 @@ permission issues that might be SELinux-related, but are not enforced
 through SELinux (and as such do not show up in any logs).</p>
 <p>Next, see if SELinux is in permissive mode and register this (as we need
 this later for deciding to continue or not).</p>
-<div class="highlight"><pre><span></span>  /*
+<div class="highlight"><pre><span></span><code>  /*
    * See if SELinux is in enforcing mode
    * or permissive mode
    */
@@ -432,8 +425,7 @@ this later for deciding to continue or not).</p>
     out(WARN, &quot;Could not check SELinux mode (security_getenforce() failed)\n&quot;);
   }
   out(DEBUG, &quot;SELinux mode is %s\n&quot;, permissive ? &quot;permissive&quot; : &quot;enforcing&quot;);
-</pre></div>
-
+</code></pre></div>
 
 <p>The <em>security_getenforce</em> method will check the current SELinux mode
 (enforcing or permissive). If SELinux is in permissive mode, then the
@@ -448,7 +440,7 @@ SELinux-aware application in debugging mode. Often, applications that
 fail run too short to find out if their context is correct or not, and
 having it logged definitely helps. This step is not mandatory per se (as
 you will see from the code later).</p>
-<div class="highlight"><pre><span></span>  /*
+<div class="highlight"><pre><span></span><code>  /*
    * Get the current SELinux context of the process.
    * Always interesting to log this for end users
    * trying to debug a possible issue.
@@ -462,8 +454,7 @@ you will see from the code later).</p>
       return -1;
   };
   out(DEBUG, &quot;Currently in SELinux context \&quot;%s\&quot;\n&quot;, (char *) curcon);
-</pre></div>
-
+</code></pre></div>
 
 <p>The <em>getcon()</em> method places the current context in the <em>curcon</em>
 variable. Note that from this point onwards, we should always
@@ -477,7 +468,7 @@ run the <em>fork()</em> as it will fail anyway (or, it might succeed, but run
 in the parent context which is not what the application should do).</p>
 <p>Next, we try to find out what the SELinux user is for the given Linux
 account name.</p>
-<div class="highlight"><pre><span></span>  /*
+<div class="highlight"><pre><span></span><code>  /*
    * Get the SELinux user given the Linux user
    * name passed on to this function.
    */
@@ -491,15 +482,14 @@ account name.</p>
       return -1;
   };
   out(DEBUG, &quot;SELinux user for Linux user \&quot;%s\&quot; is \&quot;%s\&quot;\n&quot;, name, sename);
-</pre></div>
-
+</code></pre></div>
 
 <p>The <em>getseuserbyname()</em> method returns the SELinux name for the given
 Linux user. It also returns the MLS level (but we're not going to use
 that in the remainder of the code). Again, if it fails, we check the
 permissive state to see how to bail out.</p>
 <p>Now get the context to which we should transition when calling <code>id -Z</code>:</p>
-<div class="highlight"><pre><span></span>  /*
+<div class="highlight"><pre><span></span><code>  /*
    * Find out what the context is that this process should transition
    * to.
    */
@@ -513,8 +503,7 @@ permissive state to see how to bail out.</p>
       return -1;
   };
   out(DEBUG, &quot;SELinux context to transition to is \&quot;%s\&quot;\n&quot;, (char *) newcon);
-</pre></div>
-
+</code></pre></div>
 
 <p>The <em>get_default_context()</em> will do what I blogged about earlier.
 It'll check what the contexts are in the user-specific context files or
@@ -530,7 +519,7 @@ policy and see if a transition from the current context to the new
 context is allowed (class <code>process</code>, privilege <code>transition</code>). I know, to
 truly see if a transition is allowed, more steps should be checked, but
 let's stick with this one permission.</p>
-<div class="highlight"><pre><span></span>  /*
+<div class="highlight"><pre><span></span><code>  /*
    * Now let&#39;s look if we are allowed to transition to the new context.
    * We currently only check the transition access for the process class. However,
    * transitioning is a bit more complex (execute rights on target context, 
@@ -547,8 +536,7 @@ let's stick with this one permission.</p>
     else
       return -1;
   };
-</pre></div>
-
+</code></pre></div>
 
 <p>In the above code, I didn't yet check the result. This is done in two
 steps.</p>
@@ -557,7 +545,7 @@ domain. Since a few years, SELinux supports permissive domains, so that
 a single domain is permissive even though the rest of the system is in
 enforcing mode. Currently, we only know if the system is in permissive
 mode or not.</p>
-<div class="highlight"><pre><span></span>  /* Validate the response 
+<div class="highlight"><pre><span></span><code>  /* Validate the response 
    *
    * We are interested in two things:
    * - Is the transition allowed, but also
@@ -572,8 +560,7 @@ mode or not.</p>
     out(DEBUG, &quot;The SELINUX_AVD_FLAGS_PERMISSIVE flag is set, so domain is permissive.\n&quot;);
     dom_permissive = 1;
   };
-</pre></div>
-
+</code></pre></div>
 
 <p>We check the flags provided to us by the SELinux subsystem and check if
 <code>SELINUX_AVD_FLAGS_PERMISSIVE</code> is set. If it is, then the current domain
@@ -582,7 +569,7 @@ From this point onwards, <code>permissive=1</code> or <code>dom_permissive=1</co
 to tell the real application logic to continue (even if things would
 fail SELinux-wise) - the actions are executed by a permissive domain (or
 system) and thus should continue.</p>
-<div class="highlight"><pre><span></span>  if (!(avd.allowed &amp; PROCESS__TRANSITION)) {
+<div class="highlight"><pre><span></span><code>  if (!(avd.allowed &amp; PROCESS__TRANSITION)) {
     // The transition is denied
     if (permissive) {
       out(DEBUG, &quot;Transition is not allowed by SELinux, but permissive mode is enabled. Continuing.\n&quot;);
@@ -597,8 +584,7 @@ system) and thus should continue.</p>
       return -1;
     };
   };
-</pre></div>
-
+</code></pre></div>
 
 <p>In the second step, we checked if the requested operation (transition)
 is allowed or not. If denied, we log it, but do not break out of the
@@ -607,7 +593,7 @@ function if either <code>permissive</code> (SELinux permissive mode) or
 <p>Finally, we set the (new) context, telling the SELinux subsystem that
 the next <em>exec()</em> done by the application should also switch the domain
 of the process to the new context (i.e. a domain transition):</p>
-<div class="highlight"><pre><span></span>  /*
+<div class="highlight"><pre><span></span><code>  /*
    * Set the context for the fork (process execution).
    */
   rc = setexeccon(newcon);
@@ -626,8 +612,7 @@ of the process to the new context (i.e. a domain transition):</p>
 
   return 0;
 #endif
-</pre></div>
-
+</code></pre></div>
 
 <p>That's it - we free'd all our variables and can now have the application
 continue (taking into account the return code of this function). As

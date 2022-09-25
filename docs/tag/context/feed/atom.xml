@@ -3,8 +3,7 @@
 SELinux-enabled, their user context is wrong. An example would be when,
 after logon (in permissive mode), the user is in the
 &lt;code&gt;system_u:system_r:local_login_t&lt;/code&gt; domain instead of a user domain like
-&lt;code&gt;staff_u:staff_r:staff_t&lt;/code&gt;.&lt;br&gt;
-So, how does a login get …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes, especially when users are converting their systems to be
+&lt;code&gt;staff_u:staff_r:staff …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes, especially when users are converting their systems to be
 SELinux-enabled, their user context is wrong. An example would be when,
 after logon (in permissive mode), the user is in the
 &lt;code&gt;system_u:system_r:local_login_t&lt;/code&gt; domain instead of a user domain like
@@ -33,12 +32,11 @@ type that has the &lt;code&gt;init_script_file_type&lt;/code&gt; attribute set, 
 transition from &lt;code&gt;init_t&lt;/code&gt; to &lt;code&gt;initrc_t&lt;/code&gt; is defined when such files are
 executed). When the bootup is finally completed, &lt;strong&gt;init&lt;/strong&gt; launches the
 &lt;em&gt;getty&lt;/em&gt; processes. The commands are mentioned in &lt;code&gt;/etc/inittab&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ grep getty /etc/inittab
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ grep getty /etc/inittab
 c1:12345:respawn:/sbin/agetty --noclear 38400 tty1 linux
 c2:2345:respawn:/sbin/agetty 38400 tty2 linux
 ...
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;These binaries are also explicitly labeled &lt;code&gt;getty_exec_t&lt;/code&gt;. As a result,
 the &lt;strong&gt;getty&lt;/strong&gt; (or &lt;strong&gt;agetty&lt;/strong&gt;) processes run in the &lt;code&gt;getty_t&lt;/code&gt; domain
@@ -54,11 +52,10 @@ Gentoo systems, this by default points to the &lt;code&gt;system-local-login&lt;
 definitions which points to the &lt;code&gt;system-login&lt;/code&gt; definitions. And in this
 definition, especially under the sessions section, we find a reference
 to &lt;code&gt;pam_selinux.so&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;session         required        pam_selinux.so close
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;session         required        pam_selinux.so close
 ...
 session         required        pam_selinux.so multiple open
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now here is where some of the magic starts (see my post on &lt;a href="http://blog.siphos.be/2012/12/using-pam_selinux-to-switch-contexts/"&gt;Using
 pam_selinux to switch
@@ -67,10 +64,9 @@ for the gritty details). The methods inside the &lt;code&gt;pam_selinux.so&lt;/c
 will look up what the context should be for a user login. For instance,
 when the &lt;em&gt;root&lt;/em&gt; user logs on, it has SELinux checking what SELinux user
 &lt;em&gt;root&lt;/em&gt; is mapped to, equivalent to running &lt;strong&gt;semanage login -l&lt;/strong&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ semanage login -l | grep ^root
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ semanage login -l | grep ^root
 root                      root
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In this case, the SELinux user for root is &lt;em&gt;root&lt;/em&gt;, but this is not
 always the case (that login and user are the same). For instance, my
@@ -81,7 +77,7 @@ is done by checking the &lt;code&gt;default_contexts&lt;/code&gt; file (such as 
 (and are) placed in the &lt;code&gt;users&lt;/code&gt; subdirectory) based on the context of
 the process that is asking SELinux what the default context should be.
 In our case, it is the &lt;strong&gt;login&lt;/strong&gt; process running as &lt;code&gt;local_login_t&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ grep -HR local_login_t /etc/selinux/strict/contexts/*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ grep -HR local_login_t /etc/selinux/strict/contexts/*
 default_contexts:system_r:local_login_t user_r:user_t staff_r:staff_t sysadm_r:sysadm_t unconfined_r:unconfined_t
 users/unconfined_u:system_r:local_login_t               unconfined_r:unconfined_t
 users/guest_u:system_r:local_login_t            guest_r:guest_t
@@ -89,22 +85,19 @@ users/user_u:system_r:local_login_t             user_r:user_t
 users/staff_u:system_r:local_login_t            staff_r:staff_t sysadm_r:sysadm_t
 users/root:system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
 users/xguest_u:system_r:local_login_t   xguest_r:xguest_t
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Since we are verifying this for the &lt;em&gt;root&lt;/em&gt; SELinux user, the following
 line of the &lt;code&gt;users/root&lt;/code&gt; file is what matters:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Here, SELinux looks for the first match in that line that the user has
 access to. This is defined by the roles that the user is allowed to
 access:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ semanage user -l | grep root
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ semanage user -l | grep root
 root            staff_r sysadm_r
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As &lt;em&gt;root&lt;/em&gt; is allowed both the &lt;em&gt;staff_r&lt;/em&gt; and &lt;em&gt;sysadm_r&lt;/em&gt; roles, the
 first one found &lt;em&gt;in the default context file&lt;/em&gt; that matches will be used.
@@ -112,11 +105,10 @@ So it is &lt;em&gt;not&lt;/em&gt; the order in which the roles are displayed in 
 &lt;strong&gt;semanage user -l&lt;/strong&gt; output that matters, but the order of the contexts
 in the &lt;em&gt;default context&lt;/em&gt; file. In the example, this is
 &lt;code&gt;sysadm_r:sysadm_t&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;system_r:local_login_t  unconfined_r:unconfined_t sysadm_r:sysadm_t staff_r:staff_t user_r:user_t
                         &amp;lt;-----------+-----------&amp;gt; &amp;lt;-------+-------&amp;gt; &amp;lt;------+------&amp;gt; &amp;lt;-----+-----&amp;gt;
                                     `- no matching role   `- first (!)     `- second      `- no match
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Now that we know what the context &lt;em&gt;should&lt;/em&gt; be, this is used for the
 first execution that the process (still &lt;strong&gt;login&lt;/strong&gt;) will do. So &lt;strong&gt;login&lt;/strong&gt;
@@ -124,4 +116,4 @@ changes the Linux user (if applicable) and invokes the shell of that
 user. Because this is the first execution that is done by &lt;strong&gt;login&lt;/strong&gt;, the
 new context is set (being &lt;code&gt;root:sysadm_r:sysadm_t&lt;/code&gt;) for the shell.&lt;/p&gt;
 &lt;p&gt;And that is why, if you run &lt;strong&gt;id -Z&lt;/strong&gt;, it returns the user context
-(&lt;code&gt;root:sysadm_r:sysadm_t&lt;/code&gt;) if everything works out fine ;-)&lt;/p&gt;</content><category term="context"></category><category term="selinux"></category><category term="user"></category></entry></feed>
+(&lt;code&gt;root:sysadm_r:sysadm_t&lt;/code&gt;) if everything works out fine ;-)&lt;/p&gt;</content><category term="SELinux"></category><category term="context"></category><category term="selinux"></category><category term="user"></category></entry></feed>

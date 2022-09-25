@@ -248,12 +248,11 @@ implemented.</p>
 <p><strong>The policy</strong></p>
 <p>But first things first. Let's look at a simple policy for restricting
 access to <code>/etc/private</code>:</p>
-<div class="highlight"><pre><span></span>policy_module(myprivate, 1.0)
+<div class="highlight"><pre><span></span><code>policy_module(myprivate, 1.0)
 
 type etc_private_t;
 fs_associate(etc_private_t)
-</pre></div>
-
+</code></pre></div>
 
 <p>This simple policy introduces a type (<code>etc_private_t</code>) which is allowed
 to be used for files (it associates with a file system). <em>Do not</em> use
@@ -264,16 +263,14 @@ assign it to a type, someone or something needs to have the privileges
 to change the security context of a file and directory to this type. If
 we would just load this policy and try to do this from a privileged
 account, it would fail:</p>
-<div class="highlight"><pre><span></span>~# chcon -t etc_private_t /etc/private
+<div class="highlight"><pre><span></span><code>~# chcon -t etc_private_t /etc/private
 chcon: failed to change context of &#39;/etc/private&#39; to &#39;system_u:object_r:etc_private_t:s0&#39;: Permission denied
-</pre></div>
-
+</code></pre></div>
 
 <p>With the following rule, the <code>sysadm_t</code> domain (which I use for system
 administration) is allowed to change the context to <code>etc_private_t</code>:</p>
-<div class="highlight"><pre><span></span>allow sysadm_t etc_private_t:{dir file} relabelto;
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>allow sysadm_t etc_private_t:{dir file} relabelto;
+</code></pre></div>
 
 <p>With this in place, the administrator can label resources as
 <code>etc_private_t</code> without having read access to these resources
@@ -284,18 +281,16 @@ that he has read access to.</p>
 <p>But this policy is not sufficient. One way that administrators can
 easily access the resources is to disable SELinux controls (as in, put
 the system in permissive mode):</p>
-<div class="highlight"><pre><span></span>~# cat /etc/private/README
+<div class="highlight"><pre><span></span><code>~# cat /etc/private/README
 cat: /etc/private/README: Permission denied
 ~# setenforce 0
 ~# cat /etc/private/README
 Hello World!
-</pre></div>
-
+</code></pre></div>
 
 <p>To prevent this, enable the <em>secure_mode_policyload</em> SELinux boolean:</p>
-<div class="highlight"><pre><span></span>~# setsebool secure_mode_policyload on
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>~# setsebool secure_mode_policyload on
+</code></pre></div>
 
 <p>This will prevent any policy and SELinux state manipulation... including
 permissive mode, but also including loading additional SELinux policies

@@ -255,7 +255,7 @@ instead (<em>+p</em>). That doesn't mean that the capability is in effect, but
 rather that it is in a sort-of permitted set. Applications that are
 granted a certain permission this way can either use this capability if
 the user is allowed to have it, or won't otherwise.</p>
-<div class="highlight"><pre><span></span># setcap cap_net_raw+p anotherping
+<div class="highlight"><pre><span></span><code># setcap cap_net_raw+p anotherping
 
 # vim /etc/pam.d/system-login
 ... add in something like
@@ -264,19 +264,17 @@ auth     required     pam_cap.so
 # vim /etc/security/capability.conf
 ... add in something like
 cap_net_raw           user1
-</pre></div>
-
+</code></pre></div>
 
 <p>The logic used with capabilities can be described as follows (it is not
 as difficult as it looks):</p>
-<div class="highlight"><pre><span></span>        pI&#39; = pI
+<div class="highlight"><pre><span></span><code>        pI&#39; = pI
   (***) pP&#39; = fP | (fI &amp; pI)
         pE&#39; = pP&#39; &amp; fE          [NB. fE is 0 or ~0]
 
   I=Inheritable, P=Permitted, E=Effective // p=process, f=file
   &#39; indicates post-exec().
-</pre></div>
-
+</code></pre></div>
 
 <p>So, for instance, the second line reads "The permitted set of
 capabilities of the newly forked process is set to the permitted set of
@@ -287,19 +285,17 @@ inherited capabilities of the parent process."</p>
 particular capabilities set. With <strong>filecap</strong> you can list which
 capabilities are in the effective set of files found on the file system
 (for instance, <em>+ep</em>).</p>
-<div class="highlight"><pre><span></span># filecap 
+<div class="highlight"><pre><span></span><code># filecap 
 file                 capabilities
 /bin/anotherping     net_raw
-</pre></div>
-
+</code></pre></div>
 
 <p>Similarly, with <strong>pscap</strong> you can see the capabilities set on running
 processes.</p>
-<div class="highlight"><pre><span></span># pscap -a
+<div class="highlight"><pre><span></span><code># pscap -a
 ppid  pid   name        command           capabilities
 6148  6152  root        bash              full
-</pre></div>
-
+</code></pre></div>
 
 <p>It might be wise to take this up in the daily audit reports.</p>
         </div>

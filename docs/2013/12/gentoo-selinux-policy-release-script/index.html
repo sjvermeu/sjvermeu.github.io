@@ -245,7 +245,7 @@ the script, and decided to blog about it as other developers in the
 hardened team might one day be asked to make a release when I'm not
 available.</p>
 <p>When the script is called, it spits out the usual help information.</p>
-<div class="highlight"><pre><span></span>$ sh release-prepare.sh -h
+<div class="highlight"><pre><span></span><code>$ sh release-prepare.sh -h
 Usage: release-prepare.sh
 
 Example: release-prepare.sh 2.20130424-r2 2.20130424-r3
@@ -263,8 +263,7 @@ to function properly:
   - REFPOLRELEASE should point to the current latest /release/ of the reference
     policy (so NOT to a checkout), extracted somewhere on the file system.
     E.g. export REFPOLRELEASE=&quot;/home/user/local/refpolicy-20130424&quot;
-</pre></div>
-
+</code></pre></div>
 
 <p>So first, we need to export three environment variables needed by the
 script:</p>
@@ -279,7 +278,7 @@ script:</p>
     repository and the upstream release).</li>
 </ul>
 <p>After setting the variables, the script does its magic:</p>
-<div class="highlight"><pre><span></span>$ sh release-prepare.sh 2.20130424-r3 2.20130424-r4
+<div class="highlight"><pre><span></span><code>$ sh release-prepare.sh 2.20130424-r3 2.20130424-r4
 Creating patch 0001-full-patch-against-stable-release.patch... done
 Creating patch bundle for 2.20130424-r4... done
 Copying patch bundle into /usr/portage/distfiles and dev.g.o... done
@@ -299,8 +298,7 @@ version is deployed of course:
 sec-policy/selinux-alsa
 ...
 Only then do a &#39;repoman commit -m &#39;Release of 2.20130424-r4&#39;&#39;.
-</pre></div>
-
+</code></pre></div>
 
 <p>The script performs the following steps:</p>
 <ol>

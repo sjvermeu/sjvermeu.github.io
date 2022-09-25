@@ -229,25 +229,23 @@
         <div>
             <p>While developing an init script which has to switch user, I got a couple of
 errors from SELinux and the system itself:</p>
-<div class="highlight"><pre><span></span><span class="go">~# rc-service hadoop-namenode format</span>
+<div class="highlight"><pre><span></span><code><span class="go">~# rc-service hadoop-namenode format</span>
 <span class="go">Authenticating root.</span>
 <span class="go"> * Formatting HDFS ...</span>
 <span class="go">su: Authentication service cannot retrieve authentication info</span>
-<span class="go">(Ignored)</span>
-</pre></div>
-
+<span class="gp gp-VirtualEnv">(Ignored)</span>
+</code></pre></div>
 
 
 
 <p>The authentication log shows entries such as the following:</p>
-<div class="highlight"><pre><span></span>Sep 14 20:20:05 localhost unix_chkpwd[5522]: could not obtain user info (hdfs)
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>Sep 14 20:20:05 localhost unix_chkpwd[5522]: could not obtain user info (hdfs)
+</code></pre></div>
 
 <p>I've always had issues with getting su to work properly again. Now that I have
 what I think is a working set, let me document it for later (as I still need to
 review why they are needed):</p>
-<div class="highlight"><pre><span></span><span class="c1"># Allow initrc_t to use unix_chkpwd to check entries</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># Allow initrc_t to use unix_chkpwd to check entries</span>
 <span class="c1"># Without it gives the retrieval failure</span>
 <span class="n">auth_domtrans_chk_passwd</span><span class="p">(</span><span class="n">initrc_t</span><span class="p">)</span>
 
@@ -257,8 +255,7 @@ review why they are needed):</p>
 
 <span class="c1"># Allow initrc_t to honor the pam_rootok setting</span>
 <span class="n">allow</span> <span class="n">initrc_t</span> <span class="nb">self</span><span class="ss">:passwd</span> <span class="p">{</span> <span class="n">passwd</span> <span class="n">rootok</span> <span class="p">};</span>
-</pre></div>
-
+</code></pre></div>
 
 <p>With these SELinux rules, switching the user works as expected from within an
 init script.</p>

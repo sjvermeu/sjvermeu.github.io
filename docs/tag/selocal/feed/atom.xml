@@ -21,7 +21,7 @@ distributed otherwise. It is a command-line application that you feed
 single policy rules at one at a time. Each rule can be accompanied with
 a single-line comment, making it obvious for the user to know why he
 added the rule in the first place.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal --help
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --help
 Usage: selocal [] []
 
 Command can be one of:
@@ -41,8 +41,7 @@ The option -a requires that a rule is given, like so:
   selocal -a &amp;quot;dbadm_role_change(staff_r)&amp;quot;
 The option -d requires that a line number, as shown by the --list, is given, like so:
   selocal -d 12
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Let's say that you need to launch a small script you written as a
 daemon, but you want this to run while you are still in the &lt;em&gt;staff_t&lt;/em&gt;
@@ -50,25 +49,22 @@ domain (it is a user-sided daemon you use personally). As regular
 &lt;em&gt;staff_t&lt;/em&gt; isn't allowed to have processes bind on generic ports/nodes,
 you need to enhance the SELinux policy a bit. With &lt;strong&gt;selocal&lt;/strong&gt;, you can
 do so as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal --add &amp;quot;corenet_tcp_bind_generic_node(staff_t)&amp;quot; --comment &amp;quot;Launch local webserv.py daemon&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --add &amp;quot;corenet_tcp_bind_generic_node(staff_t)&amp;quot; --comment &amp;quot;Launch local webserv.py daemon&amp;quot;
 # selocal --add &amp;quot;corenet_tcp_bind_generic_port(staff_t)&amp;quot; --comment &amp;quot;Launch local webserv.my daemon&amp;quot;
 # selocal --build --load
 (some output on building the policy module)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When finished, the local policy is enhanced with the two mentioned
 rules. You can query which rules are currently stored in the policy:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal --list
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --list
 12: corenet_tcp_bind_generic_node(staff_t) # Launch local webserv.py daemon
 13: corenet_tcp_bind_generic_port(staff_t) # Launch local webserv.py daemon
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you need to delete a rule, just pass the line number:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# selocal --delete 13
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# selocal --delete 13
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Having this tool around also makes it easier to test out changes
 suggested through bugreports. When I test such changes, I add in the bug
@@ -80,4 +76,4 @@ name.&lt;/p&gt;
 &lt;p&gt;I hope this tool helps users with their quest on using SELinux. Feedback
 and comments are always appreciated! It is a small bash script and might
 still have a few bugs in it, but I have been using it for a few months
-so most quirks should be handled.&lt;/p&gt;</content><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="selocal"></category></entry></feed>
+so most quirks should be handled.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="policy"></category><category term="selinux"></category><category term="selocal"></category></entry></feed>

@@ -2,22 +2,20 @@
 <feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - audit</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/tag/audit/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2015-05-10T14:18:00+02:00</updated><entry><title>Audit buffering and rate limiting</title><link href="https://blog.siphos.be/2015/05/audit-buffering-and-rate-limiting/" rel="alternate"></link><published>2015-05-10T14:18:00+02:00</published><updated>2015-05-10T14:18:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-05-10:/2015/05/audit-buffering-and-rate-limiting/</id><summary type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
-&lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+&lt;p&gt;The message shows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
@@ -27,9 +25,8 @@ might be either ignored, sent through the kernel logging infrastructure
 or even have the system panic. And if the messages are sent to the
 kernel log then they might show up, but even that log has its
 limitations, which can lead to output similar to the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;__ratelimit: 53 callbacks suppressed
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;__ratelimit: 53 callbacks suppressed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In this post, I want to give some pointers in configuring the audit
 subsystem as well as understand these messages...&lt;/p&gt;
@@ -37,11 +34,10 @@ subsystem as well as understand these messages...&lt;/p&gt;
 &lt;p&gt;If you take a look at the audit processes running on the system, you'll
 notice that (assuming Linux auditing is used of course) two processes
 are running:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ps -ef | grep audit
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# ps -ef | grep audit
 root      1483     1  0 10:11 ?        00:00:00 /sbin/auditd
 root      1486     2  0 10:11 ?        00:00:00 [kauditd]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;code&gt;/sbin/auditd&lt;/code&gt; daemon is the user-space audit daemon. It &lt;a href="http://man7.org/linux/man-pages/man3/audit_open.3.html"&gt;registers
 itself&lt;/a&gt; with the
@@ -83,10 +79,9 @@ chapter&lt;/a&gt;
 worth reading, but many others exist as well.&lt;/p&gt;
 &lt;p&gt;There is a useful command related to the subject of the audit backlog
 queue. It queries the audit subsystem for its current status:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# auditctl -s
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# auditctl -s
 AUDIT_STATUS: enabled=1 flag=1 pid=1483 rate_limit=0 backlog_limit=8192 lost=3 backlog=0
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The command displays not only the audit state (enabled or not) but also
 the settings for rate limits (on the audit backlog) and backlog limit.
@@ -102,11 +97,10 @@ but is usually left at the default (which is 1, being to switch to the
 kernel log subsystem).&lt;/p&gt;
 &lt;p&gt;Before that is done, the message is displayed which reveals the cause of
 the failure handling:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
 audit: audit_lost=44395 audit_rate_limit=0 audit_backlog_limit=320
 audit: backlog limit exceeded
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In this case, the backlog queue was set to contain at most 320 entries
 (which is low for a production system) and more messages were being
@@ -119,19 +113,17 @@ limit exceeded" if that was the limitation that was triggered.&lt;/p&gt;
 the system, then the "dropped" messages are sent to the kernel log
 subsystem. The calls however are also governed through a configurable
 limitation: it uses a rate limit which can be set through &lt;code&gt;sysctl&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sysctl -a | grep kernel.printk_rate
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# sysctl -a | grep kernel.printk_rate
 kernel.printk_ratelimit = 5
 kernel.printk_ratelimit_burst = 10
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In the above example, this system allows one message every 5 seconds,
 but does allow a burst of up to 10 messages at once. When the rate
 limitation kicks in, then the kernel will log (at most one per second)
 the number of suppressed events:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;[40676.545099] __ratelimit: 246 callbacks suppressed
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Although this limit is kernel-wide, not all kernel log events are
 governed through it. It is the caller subsystem (in our case, the audit
@@ -150,20 +142,19 @@ not to make this setting too low. I personally set it to 8192.&lt;/p&gt;
 which is the case when dealing with new or experimental SELinux
 policies. It would also result in missing security-important events. It
 is the audit subsystem, after all. So tune it properly, and enjoy the
-power of Linux' audit subsystem.&lt;/p&gt;</content><category term="audit"></category><category term="kernel"></category><category term="security"></category><category term="selinux"></category></entry><entry><title>The weird "audit_access" permission</title><link href="https://blog.siphos.be/2013/05/the-weird-audit_access-permission/" rel="alternate"></link><published>2013-05-19T03:50:00+02:00</published><updated>2013-05-19T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-19:/2013/05/the-weird-audit_access-permission/</id><summary type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
+power of Linux' audit subsystem.&lt;/p&gt;</content><category term="Free-Software"></category><category term="audit"></category><category term="kernel"></category><category term="security"></category><category term="selinux"></category></entry><entry><title>The weird "audit_access" permission</title><link href="https://blog.siphos.be/2013/05/the-weird-audit_access-permission/" rel="alternate"></link><published>2013-05-19T03:50:00+02:00</published><updated>2013-05-19T03:50:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-05-19:/2013/05/the-weird-audit_access-permission/</id><summary type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
 was to give some additional information on frequently occurring denials,
 such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
-developers often notice that these capabilities are triggered without …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
+developers often notice that these capabilities …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
 was to give some additional information on frequently occurring denials,
 such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
 developers often notice that these capabilities are triggered without a
 real need for them. So in the majority of cases, the policy developer
 wants to disable auditing of this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;dontaudit &amp;lt;somedomain&amp;gt; self:capability { dac_read_search dac_override };
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;dontaudit &amp;lt;somedomain&amp;gt; self:capability { dac_read_search dac_override };
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When applications wants to search through directories not owned by the
 user as which the application runs, &lt;em&gt;both&lt;/em&gt; capabilities will be checked
@@ -180,7 +171,7 @@ get information about files, but other than that don't do anything with
 the files. When this occurs and the domain does not have read, write or
 execute permissions on the target, then the denial is shown even when
 the application doesn't really read, write or execute the file.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#include &amp;lt;stdio.h&amp;gt;
 #include &amp;lt;unistd.h&amp;gt;
 
 int main(int argc, char ** argv) {
@@ -195,8 +186,7 @@ $ check /var/lib/logrotate.status
 $ tail -1 /var/log/audit.log
 ...
 type=AVC msg=audit(1367400559.273:5224): avc:  denied  { read } for  pid=12270 comm=&amp;quot;test&amp;quot; name=&amp;quot;logrotate.status&amp;quot; dev=&amp;quot;dm-3&amp;quot; ino=2849 scontext=staff_u:staff_r:staff_t tcontext=system_u:object_r:logrotate_var_lib_t tclass=file
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This gives the impression that the application is doing nasty stuff,
 even when it is merely checking permissions. One way would be to
@@ -213,4 +203,4 @@ effect. The purpose of the permission is to allow policy developers to
 not audit access checks without really dontauditing other, possibly
 malicious, attempts. In other words, checking the access can be
 dontaudited while actually attempting to use the access (reading,
-writing or executing the file) will still result in the proper denial.&lt;/p&gt;</content><category term="access"></category><category term="audit"></category><category term="audit_access"></category><category term="selinux"></category></entry></feed>
+writing or executing the file) will still result in the proper denial.&lt;/p&gt;</content><category term="SELinux"></category><category term="access"></category><category term="audit"></category><category term="audit_access"></category><category term="selinux"></category></entry></feed>

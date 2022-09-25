@@ -21,9 +21,8 @@ crazy, I start seeing a pattern here.&lt;/p&gt;
 &lt;p&gt;Anyway, it turns out that PaX/grSec and asan do not get along yet (ASAN
 assumes/uses hardcoded userland address space size values, which breaks
 when UDEREF is set as it pitches a bit from the size):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ERROR: AddressSanitizer failed to allocate 0x20000001000 (2199023259648) bytes at address 0x0ffffffff000
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Given that this is hardcoded in the resulting binaries, it isn't
 sufficient to change the size value from 47 bits to 46 bits as hardened
@@ -96,7 +95,7 @@ Integrity&lt;/a&gt;
 subproject.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Media&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;If you don't do it already, start following
-&lt;a href="https://twitter.com/GentooHardened"&gt;@GentooHardened&lt;/a&gt; ;-)&lt;/p&gt;</content><category term="asan"></category><category term="gcc"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="integrity"></category><category term="irc"></category><category term="meeting"></category><category term="pax"></category><category term="selinux"></category><category term="uderef"></category></entry><entry><title>Integrity checking with AIDE</title><link href="https://blog.siphos.be/2013/04/integrity-checking-with-aide/" rel="alternate"></link><published>2013-04-11T17:02:00+02:00</published><updated>2013-04-11T17:02:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-11:/2013/04/integrity-checking-with-aide/</id><summary type="html">&lt;p&gt;As to at least do some progress in the integrity part of Gentoo Hardened
+&lt;a href="https://twitter.com/GentooHardened"&gt;@GentooHardened&lt;/a&gt; ;-)&lt;/p&gt;</content><category term="Gentoo"></category><category term="asan"></category><category term="gcc"></category><category term="Gentoo"></category><category term="grsecurity"></category><category term="hardened"></category><category term="integrity"></category><category term="irc"></category><category term="meeting"></category><category term="pax"></category><category term="selinux"></category><category term="uderef"></category></entry><entry><title>Integrity checking with AIDE</title><link href="https://blog.siphos.be/2013/04/integrity-checking-with-aide/" rel="alternate"></link><published>2013-04-11T17:02:00+02:00</published><updated>2013-04-11T17:02:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-04-11:/2013/04/integrity-checking-with-aide/</id><summary type="html">&lt;p&gt;As to at least do some progress in the integrity part of Gentoo Hardened
 (a subproject I'd like to extend towards greater heights), I dediced to
 write up a &lt;a href="https://wiki.gentoo.org/wiki/AIDE"&gt;small guide&lt;/a&gt; on how to
 work with &lt;a href="http://aide.sourceforge.net"&gt;AIDE&lt;/a&gt;. The tool is simple enough
@@ -118,4 +117,4 @@ next).&lt;/p&gt;
 appreciated. It provides, in my opinion, a secure way of scanning
 systems even if they are completely compromised (in other words you
 couldn't trust anything running inside the guest or running with the
-libraries or software within the guest).&lt;/p&gt;</content><category term="aide"></category><category term="integrity"></category></entry></feed>
+libraries or software within the guest).&lt;/p&gt;</content><category term="Documentation"></category><category term="aide"></category><category term="integrity"></category></entry></feed>

@@ -42,14 +42,13 @@ those projects.&lt;/p&gt;
 (all configured to take at most 1.5 Gb of memory). Together, they take
 just a little over 1 Gb of memory (sum of their resident set sizes).
 When I consult KSM, I get the following information:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; # grep -H &amp;#39;&amp;#39; /sys/kernel/mm/ksm/pages_*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt; # grep -H &amp;#39;&amp;#39; /sys/kernel/mm/ksm/pages_*
 /sys/kernel/mm/ksm/pages_shared:48911
 /sys/kernel/mm/ksm/pages_sharing:90090
 /sys/kernel/mm/ksm/pages_to_scan:100
 /sys/kernel/mm/ksm/pages_unshared:123002
 /sys/kernel/mm/ksm/pages_volatile:1035
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;code&gt;pages_shared&lt;/code&gt; tells me that 48911 pages are shared (which means
 about 191 Mb) through 90090 references (&lt;code&gt;pages_sharing&lt;/code&gt; - meaning the
@@ -62,4 +61,4 @@ marked with the &lt;code&gt;MADV_MERGEABLE&lt;/code&gt; advise flag but are not 
 processes.&lt;/p&gt;
 &lt;p&gt;If you want to use KSM yourself, configure your kernel with &lt;code&gt;CONFIG_KSM&lt;/code&gt;
 and start KSM by echo'ing the value "1" into &lt;code&gt;/sys/kernel/mm/ksm/run&lt;/code&gt;.
-That's all there is to it.&lt;/p&gt;</content><category term="cow"></category><category term="ksm"></category><category term="kvm"></category><category term="linux"></category><category term="virtualization"></category></entry></feed>
+That's all there is to it.&lt;/p&gt;</content><category term="Free-Software"></category><category term="cow"></category><category term="ksm"></category><category term="kvm"></category><category term="linux"></category><category term="virtualization"></category></entry></feed>

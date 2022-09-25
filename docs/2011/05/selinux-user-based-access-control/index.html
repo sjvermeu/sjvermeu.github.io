@@ -16,7 +16,7 @@
     <meta name="keywords" content="">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="SELinux User-Based Access Control" />
-<meta property="og:description" content="Within the reference policy, support is given to a feature called UBAC constraints. Here, UBAC stands for User Based Access Control. The idea behind the constraint is that any activity between two types (say foo_t and bar_t) can be prohibited if the user contexts of the resources that are using …" />
+<meta property="og:description" content="Within the reference policy, support is given to a feature called UBAC constraints. Here, UBAC stands for User Based Access Control. The idea behind the constraint is that any activity between two types (say foo_t and bar_t) can be prohibited if the user contexts of the resources that …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2011/05/selinux-user-based-access-control/" />
 <meta property="og:type" content="article" />
@@ -232,27 +232,25 @@ resources that are using those types are different. So even though
 <code>user1:user_r:foo_t</code> will not be able to read a file labeled
 <code>user2:user_r:bar_t</code>. The policy defines the constraint like so (taken
 from <code>policy/constraints</code> and rewritten in a more readable code):</p>
-<div class="highlight"><pre><span></span>Action is okay if
+<div class="highlight"><pre><span></span><code>Action is okay if
   user1 == user2, or
   user1 == system_u, or
   user2 == system_u, or
   type1 is not a UBAC constrained type, or
   type2 is not a UBAC constrained type
-</pre></div>
-
+</code></pre></div>
 
 <p>So the constraint only denies an activity if the users involved are not
 <code>system_u</code> (that would render your system useless), not the same, and
 <em>both types are ubac constrained types</em>. The latter is, within the
 policy, set using type attributes:</p>
-<div class="highlight"><pre><span></span>~$ seinfo -aubac_constrained_type -x
+<div class="highlight"><pre><span></span><code>~$ seinfo -aubac_constrained_type -x
 ubac_constrained_type
    screen_var_run_t
    admin_crontab_t
    links_input_xevent_t
    ...
-</pre></div>
-
+</code></pre></div>
 
 <p>Some domains are also UBAC exempt (currently I know of the <code>sysadm_t</code>
 domain - cfr the <code>ubacproc</code> and <code>ubacfile</code> attributes), meaning that
@@ -358,7 +356,7 @@ documentation.</p>
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2011/05/selinux-user-based-access-control/",
-    "description": "Within the reference policy, support is given to a feature called UBAC constraints. Here, UBAC stands for User Based Access Control. The idea behind the constraint is that any activity between two types (say foo_t and bar_t) can be prohibited if the user contexts of the resources that are using …"
+    "description": "Within the reference policy, support is given to a feature called UBAC constraints. Here, UBAC stands for User Based Access Control. The idea behind the constraint is that any activity between two types (say foo_t and bar_t) can be prohibited if the user contexts of the resources that …"
 }
 </script>
     <!-- Disqus count -->

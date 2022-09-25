@@ -237,18 +237,16 @@ modules directly.</p>
 
 <p>With this I mean that a CIL policy as mentioned in the previous post can
 be loaded like a prebuilt <code>.pp</code> module:</p>
-<div class="highlight"><pre><span></span>~# semodule -i test.cil
+<div class="highlight"><pre><span></span><code>~# semodule -i test.cil
 ~# semodule -l | grep test
 test
-</pre></div>
-
+</code></pre></div>
 
 <p>That's all that is to it. Loading the module resulted in the test port
 to be immediately declared and available:</p>
-<div class="highlight"><pre><span></span>~# semanage port -l | grep test
+<div class="highlight"><pre><span></span><code>~# semanage port -l | grep test
 test_port_t                    tcp      1440
-</pre></div>
-
+</code></pre></div>
 
 <p>In hindsight, it makes sense that it is this easy. After all, support
 for the old-style policy language is done by converting it into CIL when

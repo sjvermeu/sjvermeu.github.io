@@ -1,162 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - Architecture</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/category/architecture/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2022-08-26T13:00:00+02:00</updated><entry><title>Getting lost in the frameworks</title><link href="https://blog.siphos.be/2022/08/getting-lost-in-the-frameworks/" rel="alternate"></link><published>2022-08-26T13:00:00+02:00</published><updated>2022-08-26T13:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-08-26:/2022/08/getting-lost-in-the-frameworks/</id><summary type="html">&lt;p&gt;The IT world is littered with frameworks, best practices, reference
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Simplicity is a form of art... - Architecture</title><link href="https://blog.siphos.be/" rel="alternate"></link><link href="https://blog.siphos.be/category/architecture/feed/atom.xml" rel="self"></link><id>https://blog.siphos.be/</id><updated>2022-09-25T13:00:00+02:00</updated><entry><title>Sustainability in IT</title><link href="https://blog.siphos.be/2022/09/sustainability-in-IT/" rel="alternate"></link><published>2022-09-25T13:00:00+02:00</published><updated>2022-09-25T13:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-09-25:/2022/09/sustainability-in-IT/</id><content type="html">&lt;p&gt;For one of the projects I'm currently involved in, we want to have a better
+view on sustainability within IT and see what we (IT) can contribute in light
+of the sustainability strategy of the company. For IT infrastructure, one would
+think that selecting more power-efficient infrastructure is the way to go, as
+well as selecting products whose manufacturing process takes special attention
+to sustainability. &lt;/p&gt;
+&lt;p&gt;There are other areas to consider as well, though. Reusability of IT
+infrastructure and optimal resource consumption are at least two other
+attention points that deserve plenty of attention. But let's start at the
+manufacturing process...&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Certifications for products and companies&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Eco certifications are a good start in the selection process. By selecting
+products with the right certification, companies can initiate their sustainable
+IT strategy with a good start. Such certifications look at the product and
+manufacturing, and see if they use proper materials, create products that
+can have extended lifetimes in the circular (reuse) economy, ensure the
+manufacturing processes use renewable energy and do not have harmful 
+emissions, safeguard clean water, etc.&lt;/p&gt;
+&lt;p&gt;In the preliminary phase I am right now, I do not know yet which 
+certifications make most sense to pursue and request. Sustainability is
+becoming big business, so plenty of certifications exist as well. From a
+cursory search, I'd reckon that the following certifications are worth more
+time:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://ecovadis.com/"&gt;EcoVadis&lt;/a&gt; provides business sustainability ratings
+  that not only cover the ecological aspect, but also social and ethical
+  performance.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.iso.org/iso-14001-environmental-management.html"&gt;ISO 14001&lt;/a&gt;
+  covers environmental management, looking at organizations' processes and
+  systematic improvements contributing to sustainability.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.carbonneutral.com/"&gt;Carbon Neutral&lt;/a&gt; focus on transparency
+  in measurements and disclosure of emissions, and how the company is
+  progressing in their strategy to reduce the impact on the environment.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://tcocertified.com/"&gt;TCO Certified&lt;/a&gt; attempts to address all
+  stages of a manufacturing process, from material selection over social 
+  responsibility and hazardous substances up to electronic waste and 
+  circular economy.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.energystar.gov/"&gt;Energy Star&lt;/a&gt; focuses on energy efficiency,
+  and tries to use standardized methods for scoring appliances (including
+  computers and servers).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Power efficiency&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A second obvious part is on power efficiency. Especially in data center
+environments, which is the area that I'm interested in, power efficiency
+also influences the data center's capability of providing sufficient
+cooling to the servers and appliances. Roughly speaking, a 500 Watt
+server generates twice as much heat as a 250 Watt server. Now, that's
+oversimplifying, but for calculating heat dissipation in a data center,
+the maximum power of infrastructure is generally used for the calculations.&lt;/p&gt;
+&lt;p&gt;Now, we could start looking for servers with lower power consumption. But
+a 250 Watt server is most likely going to be less powerful (computing-wise)
+than a 500 Watt server. Hence, power efficiency should be considered in
+line with the purpose of the server, and thus also the workloads that it
+would have to process.&lt;/p&gt;
+&lt;p&gt;We can use benchmarks, like &lt;a href="https://www.spec.org/cpu2017/"&gt;SPEC's CPU 2017&lt;/a&gt;
+or &lt;a href="https://www.spec.org/benchmarks.html"&gt;SPEC's Cloud IaaS 2018&lt;/a&gt; benchmarks,
+to compare the performance of systems. Knowing the server's performance
+for given workloads and the power consumption, allows architects to optimize
+the infrastructure.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Heat management (and more) in the data center&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A large consumer of power in a data center environment are the environmental
+controls, with the cooling systems taking a big chunk out of the total
+power consumption. Optimizing the heat management in the data center has a
+significant impact on the power consumption. Such optimizations are not solely
+about reducing the electricity bill, but also about reusing the latent heat
+for other purposes. For instance, data center heat can be used to heat up
+nearby buildings.&lt;/p&gt;
+&lt;p&gt;A working group of the European Commission, the European Energy Efficiency
+Platform (E3P), publishes an annual set of best practices in the &lt;a href="https://e3p.jrc.ec.europa.eu/publications/2022-best-practice-guidelines-eu-code-conduct-data-centre-energy-efficiency"&gt;EU Code
+of Conduct on Data Center Energy Efficiency&lt;/a&gt;
+which covers areas such as airflow design patterns, operating temperature
+and humidity ranges, power management features in servers and appliances, 
+infrastructure design aspects (like virtualization and appropriate, but no
+over-engineered redundancy), etc.&lt;/p&gt;
+&lt;p&gt;This practice goes much beyond the heat management alone (and is worth
+a complete read), covering the complete data center offering. Combining
+these practices with other areas of data center design (such as redundancy
+levels, covered by data center tiering) allows for companies that are looking
+at new data centers to overhaul their infrastructure and be much better
+prepared for sustainable IT.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Circular ecosystem&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Another part that often comes up in sustainability measures is how reusable
+the infrastructure components are after their "first life". Infrastructure
+systems, which frequently renew after 4 to 5 years of activity, can be resold
+rather than destroyed. The same can be said for individual components.&lt;/p&gt;
+&lt;p&gt;Companies that deal with sensitive data regularly employ "Do Not Return" clauses
+in the purchases of storage devices. Disks are not returned if they are
+faulty, or just swapped for higher density disks. Instead, they are routinely
+destroyed to make sure no data leakage occurs.&lt;/p&gt;
+&lt;p&gt;Instead of destroying otherwise perfect disks (or disks that still have
+reusable components) companies could either opt for degaussing (which still
+renders the disk unusable, but has better recyclability than destroyed
+disks) or data wiping (generally through certified methods that guarantee
+the data cannot be retrieved).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Extended lifecycle&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Systems are often working perfectly beyond their 4 to 5 year lifespan.
+Still, these systems are process-wise automatically renewed to get more
+efficient and powerful systems in place. But that might not always be necessary
+- beyond even the circular ecosystem remarks above (where such systems could be
+resold), these systems can even get extended lifecycle within the company.&lt;/p&gt;
+&lt;p&gt;If there is no need for a more powerful system, and the efficiency of
+the system is still high (or the efficiency can be improved through
+minor updates), companies can seek out ways to prolong the use of the
+systems. In previous projects, I advised that big data nodes can
+perfectly remain inside the cluster after their regular lifetime, as the
+platform software (Hadoop) can easily cope with failures if those would
+occur.&lt;/p&gt;
+&lt;p&gt;Systems can also be used to host non-production environments or support
+lab environments. Or they can be refurbished to ensure maximal efficiency
+while still being used in production. Microsoft for instance has a program
+called &lt;a href="https://customers.microsoft.com/en-us/story/1431789627332547010-microsoft-circular-centers"&gt;Microsoft Circular Centers&lt;/a&gt;
+which aims at a zero-waste sustainability within the data center, through
+reuse, repurpose and recycling.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Right-sizing the infrastructure&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Right-sizing is to select and design infrastructure to deal with the
+workload, but not more. Having a set of systems at full capacity is
+better than having twice as many systems at half capacity, as this leads
+to power inefficiencies.&lt;/p&gt;
+&lt;p&gt;To accomplish right-sizing isn't as easy as selecting the right server
+for a particular workload. Workload is distributed, and systems are
+virtualized. Virtualization allows for much better right-sizing as you
+can distribute workload more optimally.&lt;/p&gt;
+&lt;p&gt;Companies with large amounts of systems can more efficiently distribute
+workload across their systems, making it easier to have a good consumption
+pattern. Smaller companies will notice that they need to design for
+the burst and maximum usage, whereas the average usage is far, far below
+that threshold. &lt;/p&gt;
+&lt;p&gt;Using cloud resources can help to deal with bursts and higher demand, while
+still having resources on-premise to deal with the regular workload. Such
+hybrid designs, however, can be complex, so make sure to address this with
+the right profiles (yes, I'm making a stand for architects here ;-)&lt;/p&gt;
+&lt;p&gt;Standardizing your infrastructure also makes this easier to accomplish.
+If the vast majority of servers are of the same architecture, and you
+standardize on as few operating systems, programming languages and what
+not, you can more easily distribute workload than when these systems
+have different architectures and purposes.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Automated workload and power management&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Large environments will regularly have servers and infrastructure that is not
+continuously used at near full capacity. Workloads are frequently following a
+certain curve, such as higher demand during the day and lower at night.
+Larger platforms use this curve to schedule appropriate workload (like
+running heavy batch workload at night while keeping the systems available
+for operational workload at day) so that the resources are more optimally
+used.&lt;/p&gt;
+&lt;p&gt;By addressing workload management and aligning power management, companies
+can improve their power usage by reducing active systems when there are less
+resource needs. This can be done gradually, such as putting CPUs in lower
+power modes (CPU power takes roughly 30% of a system's total power usage),
+but can expand to complete hosts being put in idle state.&lt;/p&gt;
+&lt;p&gt;We can even make designs where servers are shut down when unused. While
+this is frequently frowned upon, citing possible impact on hardware
+failures as well as reduced reactivity to sudden workload demand, proper
+shutdown techniques do offer significant power savings (as per a
+research article titled &lt;a href="https://www.researchgate.net/publication/323356951_Quantifying_the_Impact_of_Shutdown_Techniques_for_Energy-Efficient_Data_Centers"&gt;Quantifying the Impact of Shutdown Techniques
+for Energy-Efficient Data Centers&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Conclusion&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Sustainability within IT focuses on several improvements and requirements.
+Certification helps in finding and addressing these, but this is not
+critical in any company's strategy. Companies can address sustainability
+easily without certification, but with proper attention and design.&lt;/p&gt;
+&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
+email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/TODO"&gt;discussion on
+Twitter&lt;/a&gt;.&lt;/p&gt;
+</content><category term="Architecture"></category><category term="sustainability"></category></entry><entry><title>Getting lost in the frameworks</title><link href="https://blog.siphos.be/2022/08/getting-lost-in-the-frameworks/" rel="alternate"></link><published>2022-08-26T13:00:00+02:00</published><updated>2022-08-26T13:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-08-26:/2022/08/getting-lost-in-the-frameworks/</id><summary type="html">&lt;p&gt;The IT world is littered with frameworks, best practices, reference
 architectures and more. In an ever-lasting attempt to standardize IT,
 we often get lost in too many standards or specifications. For consultants,
 this is a gold-mine, as they jump in to support companies - for a fee, 
 naturally - in adopting one or more of these frameworks or specifications.&lt;/p&gt;
 &lt;p&gt;While having references and specifications isn't a bad thing, there are
 always pros and cons.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;The benefits of frameworks and specifications&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;The main benefit in having a proper framework or specification, for whatever
-task is ahead of you, is that you don't have to reinvent the wheel. If a
-framework or specification is well-written, with a good scope aligned with
-what you need, then using this will speed up implementations.&lt;/p&gt;
-&lt;p&gt;Some organizations will even require their outsourcing activities to be
-according to a certain framework or specification. This will ensure that the
-development results are aligned with how the organization works, improving
-integration and validation.&lt;/p&gt;
-&lt;p&gt;The integration part is a major aspect of standardization as well. As we've
-learned from the more physical equivalents (like paper standards, or standards
-in construction) having standardized deliverables ensures for efficient
-integration, economical comparisons, and more.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;The downsides of frameworks and specifications&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;An often cited downside of standardization (and thus also reflecting the use
-of frameworks or specifications) is that it stifles innovation, and if the
-framework or specification addresses the end product itself, it might result
-in the company struggling to find a unique selling proposal.&lt;/p&gt;
-&lt;p&gt;Frameworks are also often incomplete. Most of the time, that is by design, as
-the framework's authors do not want to remove all of the organization's
-inputs. I've talked about &lt;a href="https://en.wikipedia.org/wiki/ITIL"&gt;ITIL&lt;/a&gt; and 
-&lt;a href="https://www.isaca.org/resources/cobit"&gt;CObIT&lt;/a&gt; in the past already. Both
-are frameworks which leave implementation details open to the organization.
-For some companies, that means the benefit of quick adoption and efficiency
-might become more challenging to attain.&lt;/p&gt;
-&lt;p&gt;One of the issues I'm often facing is that there are too many frameworks and
-specifications. While any decent one will try to show how it aligns with
-other frameworks (while expressing its own benefits, of course), it is very
-likely that an organization who adopted one framework will be confronted with
-the need (be it through a merger and acquisition, market expansion, insourcing
-and outsourcing endeavors or other) to adopt another one. Tailoring an
-organization to multiple frameworks is a hassle, especially if there are
-requirements for certifications.&lt;/p&gt;
-&lt;p&gt;Many companies also easily fall in the trap that they have to adhere to
-a framework or specification completely and company-wide. This not only
-jeopardizes innovation (as mentioned earlier) but also has the downside of
-becoming the target by itself. Rather than focusing on attaining the benefits,
-the company focuses on attaining alignment with the framework. This not only
-impacts the responsiveness of the organization, but can also lead to employee
-dissatisfaction.&lt;/p&gt;
-&lt;p&gt;Finally, plenty of frameworks or specifications can only be accessed after
-paying serious amounts of money. For documents that are meant to provide
-efficiency and improved integrations, this is a major nuisance.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;There are too damn many&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Let me elaborate a bit on the "too many frameworks". I'm currently working
-on a resource (that I'll make public later, when it has a bit more body to it)
-where I also consider including a maturity approach. Maturity, or maturity
-levels, are a way for an organization to measure the current state of something
-(in my case, of an IT process) as well as define where the organization wants
-to be, and at what pace.&lt;/p&gt;
-&lt;p&gt;The maturity model approach that I grew up with is &lt;a href="https://cmmiinstitute.com/"&gt;ISACA's
-CMMI&lt;/a&gt; or &lt;em&gt;Capability Maturity Model Integration&lt;/em&gt;.
-CMMI prescribes five maturity levels:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Incomplete (work may or may not be completed, no established goals, processes
-  are only partially defined)&lt;/li&gt;
-&lt;li&gt;Initial (unpredictable and reactive, work gets completed but often delayed
-  and over budget)&lt;/li&gt;
-&lt;li&gt;Managed (some management is applied, processes are planned, performed,
-  measured and controlled, but there are still lots of issues to address)&lt;/li&gt;
-&lt;li&gt;Defined (more proactive than reactive, there are organization-wide standards,
-  and guidance exists across projects, programs and portfolios)&lt;/li&gt;
-&lt;li&gt;Quantitatively managed (higher degree of measurement and control,
-  using quantitative data to determine predictable processes)&lt;/li&gt;
-&lt;li&gt;Optimizing (stable and flexible processes, constant state of improving)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;While this framework also expresses other things than just the five maturity
-levels, this seems to be the most common starting point for maturity
-efforts.&lt;/p&gt;
-&lt;p&gt;But CMMI isn't the only one out there. Process maturity can also be evaluated
-by OMG's &lt;a href="https://www.omg.org/spec/BPMM/1.0/About-BPMM/"&gt;Business Process Maturity Model
-(BPMM)&lt;/a&gt; which also defines
-five maturity levels:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Level 1 isn't explicitly defined further, let's keep it at &lt;em&gt;Initial&lt;/em&gt;&lt;/li&gt;
-&lt;li&gt;Managed&lt;/li&gt;
-&lt;li&gt;Standardized&lt;/li&gt;
-&lt;li&gt;Predictable&lt;/li&gt;
-&lt;li&gt;Innovating&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;What about the &lt;a href="https://www.tmmi.org/tmmi-model/"&gt;TMMi model&lt;/a&gt;, which has - 
-you guessed it - five maturity levels:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Initial&lt;/li&gt;
-&lt;li&gt;Managed&lt;/li&gt;
-&lt;li&gt;Defined&lt;/li&gt;
-&lt;li&gt;Measured&lt;/li&gt;
-&lt;li&gt;Optimization&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;There are also frameworks that specialize for specific domains. Given that
-this blog is about IT, I have to mention &lt;a href="https://en.wikipedia.org/wiki/ISO/IEC_33001"&gt;ISO/IEC
-33001&lt;/a&gt;, which is a revision of
-ISO/IEC 15504, aka the &lt;em&gt;Software Process Improvement and Capability
- Determination (SPICE)&lt;/em&gt; methodology. It has five (well, six if you also
-count the "you have not even started" level) maturity models for the
-processes as well:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Incomplete (level 0)&lt;/li&gt;
-&lt;li&gt;Performed&lt;/li&gt;
-&lt;li&gt;Managed&lt;/li&gt;
-&lt;li&gt;Established&lt;/li&gt;
-&lt;li&gt;Predictable&lt;/li&gt;
-&lt;li&gt;Optimizing&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;ITIL also has a capability maturity model in it, which also is expressed in
-five levels.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Many frameworks are paywalled&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Many larger IT frameworks are also paywalled, making it harder for individuals
-to easily get access to them. CMMI v2.0 for instance is not publicly accessible,
-whereas its previous version seems to be. ISO is notorious for being hard to
-find. ITIL and CObIT are also paywalled.&lt;/p&gt;
-&lt;p&gt;While there is plenty of information "out there" on all these standards, 
-frameworks and specifications, you need to grab, collect and disseminate all
-information separately which is a major nuisance. Many online resources are
-also presented by companies (including consultancy firms) which means you
-need to take care and know that these resources are opinionated.&lt;/p&gt;
-&lt;p&gt;Personally, I try to learn from the publicly available resources in the
-following order:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Get access to as many public resources from the framework owner as possible.
-   While this often only gives a general feeling on the framework, it is defined
-   by the framework owner itself and the least opinionated (well, the framework
-   itself is opinionated, but the resources about it will try to give a full
-   feeling on what the framework is about).&lt;/li&gt;
-&lt;li&gt;Learn more from online resources that are attempting to combine knowledge
-   from multiple sources (like Wikipedia), and from sources that are specialized
-   in the domain itself without being commercially affiliated with one specific
-   framework.&lt;/li&gt;
-&lt;li&gt;Learn more from academic research on the matter (through &lt;a href="https://scholar.google.com"&gt;Google
-   Scholar&lt;/a&gt;).&lt;/li&gt;
-&lt;li&gt;Read up on the matter in communities from people that are already
-   knowledgeable in the matter.&lt;/li&gt;
-&lt;li&gt;Finish with resources available from commercially affiliated companies or
-   consultants.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;strong&gt;It is not about the framework but about the benefits&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;I want to conclude here with the notion that adherence to the frameworks
-should be to attain the benefits. I'm currently very strongly involved in
-IT asset management endeavors, and while ensuring that the IT asset management
-process is as good as possible, I know that there are subdivisions in the 
-company where this adherence with a highly optimized IT asset management
-process isn't beneficial (especially when this subdivision is completely
-separate from the rest and has a much more specific, specialized purpose).&lt;/p&gt;
-&lt;p&gt;The scope of the IT asset management process is also not something you want
-to address for all possible assets. Some assets are much more involved in risk
-processes and cost structures than others, so the "maturity" to attain is
-also specific to the scope.&lt;/p&gt;
-&lt;p&gt;Always keep in mind what you want to reach and why. &lt;/p&gt;
-&lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
-email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1563143657586585603"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;The IT world is littered with frameworks, best practices, reference
 architectures and more. In an ever-lasting attempt to standardize IT,
 we often get lost in too many standards or specifications. For consultants,
@@ -164,6 +176,8 @@ this is a gold-mine, as they jump in to support companies - for a fee,
 naturally - in adopting one or more of these frameworks or specifications.&lt;/p&gt;
 &lt;p&gt;While having references and specifications isn't a bad thing, there are
 always pros and cons.&lt;/p&gt;
+
+
 &lt;p&gt;&lt;strong&gt;The benefits of frameworks and specifications&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;The main benefit in having a proper framework or specification, for whatever
 task is ahead of you, is that you don't have to reinvent the wheel. If a
@@ -314,8 +328,7 @@ also specific to the scope.&lt;/p&gt;
 &lt;p&gt;Always keep in mind what you want to reach and why. &lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1563143657586585603"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;
-</content><category term="framework"></category><category term="CMMI"></category><category term="ISO"></category></entry><entry><title>Containers are the new IaaS</title><link href="https://blog.siphos.be/2022/05/containers-are-the-new-iaas/" rel="alternate"></link><published>2022-05-21T13:00:00+02:00</published><updated>2022-05-21T13:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-05-21:/2022/05/containers-are-the-new-iaas/</id><summary type="html">&lt;p&gt;At work, as with many other companies, we're actively investing in new
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="framework"></category><category term="CMMI"></category><category term="ISO"></category></entry><entry><title>Containers are the new IaaS</title><link href="https://blog.siphos.be/2022/05/containers-are-the-new-iaas/" rel="alternate"></link><published>2022-05-21T13:00:00+02:00</published><updated>2022-05-21T13:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-05-21:/2022/05/containers-are-the-new-iaas/</id><summary type="html">&lt;p&gt;At work, as with many other companies, we're actively investing in new
 platforms, including container platforms and public cloud. We use Kubernetes
 based container platforms both on-premise and in the cloud, but are also very
 adamant that the container platforms should only be used for application
@@ -442,7 +455,7 @@ products can be more challenging than when it is only for internally developed
 products.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1527975405730336768"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="kubernetes"></category><category term="container"></category><category term="iaas"></category><category term="infrastructure"></category><category term="virtual-machine"></category></entry><entry><title>Defining what an IT asset is</title><link href="https://blog.siphos.be/2022/02/defining-what-an-it-asset-is/" rel="alternate"></link><published>2022-02-13T13:00:00+01:00</published><updated>2022-02-13T13:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-02-13:/2022/02/defining-what-an-it-asset-is/</id><summary type="html">&lt;p&gt;One of the main IT processes that a company should strive to have in place
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="kubernetes"></category><category term="container"></category><category term="iaas"></category><category term="infrastructure"></category><category term="virtual-machine"></category></entry><entry><title>Defining what an IT asset is</title><link href="https://blog.siphos.be/2022/02/defining-what-an-it-asset-is/" rel="alternate"></link><published>2022-02-13T13:00:00+01:00</published><updated>2022-02-13T13:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-02-13:/2022/02/defining-what-an-it-asset-is/</id><summary type="html">&lt;p&gt;One of the main IT processes that a company should strive to have in place
 is a decent IT asset management system. It facilitates knowing what assets
 you own, where they are, who the owner is, and provides a foundation for
 numerous other IT processes.&lt;/p&gt;
@@ -602,7 +615,7 @@ more tangible for the organization. Most online resources use such classes
 as IT assets, rather than attempting to derive a workable definition.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1492833029907173380"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="asset-management"></category><category term="cobit"></category><category term="itil"></category></entry><entry><title>An IT conceptual data model</title><link href="https://blog.siphos.be/2022/01/an-it-conceptual-data-model/" rel="alternate"></link><published>2022-01-17T10:00:00+01:00</published><updated>2022-01-17T10:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-01-17:/2022/01/an-it-conceptual-data-model/</id><summary type="html">&lt;p&gt;This time a much shorter post, as I've been asked to share this information
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="asset-management"></category><category term="cobit"></category><category term="itil"></category></entry><entry><title>An IT conceptual data model</title><link href="https://blog.siphos.be/2022/01/an-it-conceptual-data-model/" rel="alternate"></link><published>2022-01-17T10:00:00+01:00</published><updated>2022-01-17T10:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-01-17:/2022/01/an-it-conceptual-data-model/</id><summary type="html">&lt;p&gt;This time a much shorter post, as I've been asked to share this information
 recently and found that it, by itself, is already useful enough to publish. It
 is a conceptual data model for IT services.&lt;/p&gt;
 </summary><content type="html">&lt;p&gt;This time a much shorter post, as I've been asked to share this information
@@ -628,7 +641,7 @@ but perhaps in the long term I could make it a conceptual one (explaining what
 the attributes are of each concept).&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1483002656478093315"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="cdm"></category><category term="asset-management"></category><category term="configuration-management"></category></entry><entry><title>Ownership and responsibilities for infrastructure services</title><link href="https://blog.siphos.be/2022/01/ownership-and-responsibilities-for-infrastructure-services/" rel="alternate"></link><published>2022-01-13T09:00:00+01:00</published><updated>2022-01-13T09:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-01-13:/2022/01/ownership-and-responsibilities-for-infrastructure-services/</id><summary type="html">&lt;p&gt;In a perfect world, using infrastructure or technology services would be
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="cdm"></category><category term="asset-management"></category><category term="configuration-management"></category></entry><entry><title>Ownership and responsibilities for infrastructure services</title><link href="https://blog.siphos.be/2022/01/ownership-and-responsibilities-for-infrastructure-services/" rel="alternate"></link><published>2022-01-13T09:00:00+01:00</published><updated>2022-01-13T09:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2022-01-13:/2022/01/ownership-and-responsibilities-for-infrastructure-services/</id><summary type="html">&lt;p&gt;In a perfect world, using infrastructure or technology services would be
 seamless, without impact, without risks. It would auto-update, tailor to
 the user needs, detect when new features are necessary, adapt, etc. But
 while this is undoubtedly what vendors are saying their product delivers,
@@ -973,7 +986,7 @@ assuming everybody can deal with it, nor are all responsibilities equally
 visible to the end-user.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1481535279861280769"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="RACI"></category><category term="responsibilities"></category></entry><entry><title>The pleasures of having DTAP</title><link href="https://blog.siphos.be/2021/12/the-pleasures-of-having-DTAP/" rel="alternate"></link><published>2021-12-30T12:00:00+01:00</published><updated>2021-12-30T12:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-12-30:/2021/12/the-pleasures-of-having-DTAP/</id><summary type="html">&lt;p&gt;No, not Diphtheria, Tetanus, and Pertussis (vaccine), but &lt;em&gt;Development,
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="RACI"></category><category term="responsibilities"></category></entry><entry><title>The pleasures of having DTAP</title><link href="https://blog.siphos.be/2021/12/the-pleasures-of-having-DTAP/" rel="alternate"></link><published>2021-12-30T12:00:00+01:00</published><updated>2021-12-30T12:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-12-30:/2021/12/the-pleasures-of-having-DTAP/</id><summary type="html">&lt;p&gt;No, not Diphtheria, Tetanus, and Pertussis (vaccine), but &lt;em&gt;Development,
 Test, Acceptance, and Production (DTAP)&lt;/em&gt;: different environments that,
 together with a well-working release management process, provide a way to
 get higher quality and reduced risks in production. DTAP is an important
@@ -1190,7 +1203,7 @@ with. The implementation details make or break how well-adjusted the DTAP
 approach is for modern development processes and regulatory requirements.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1476505537047109635"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="DTAP"></category><category term="environments"></category><category term="zoning"></category><category term="development"></category><category term="test"></category><category term="acceptance"></category><category term="production"></category></entry><entry><title>Creating an enterprise open source policy</title><link href="https://blog.siphos.be/2021/11/creating-an-enterprise-open-source-policy/" rel="alternate"></link><published>2021-11-20T15:00:00+01:00</published><updated>2021-11-20T15:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-11-20:/2021/11/creating-an-enterprise-open-source-policy/</id><summary type="html">&lt;p&gt;Nowadays it is impossible to ignore, or even prevent open source from being
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="DTAP"></category><category term="environments"></category><category term="zoning"></category><category term="development"></category><category term="test"></category><category term="acceptance"></category><category term="production"></category></entry><entry><title>Creating an enterprise open source policy</title><link href="https://blog.siphos.be/2021/11/creating-an-enterprise-open-source-policy/" rel="alternate"></link><published>2021-11-20T15:00:00+01:00</published><updated>2021-11-20T15:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-11-20:/2021/11/creating-an-enterprise-open-source-policy/</id><summary type="html">&lt;p&gt;Nowadays it is impossible to ignore, or even prevent open source from being
 active within the enterprise world. Even if a company only wants to use
 commercially backed solutions, many - if not most - of these are built with, and
 are using open source software.&lt;/p&gt;
@@ -1448,7 +1461,7 @@ source, having it published might eliminate the fear of engineers and developers
 to suggest certain open source projects.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1462043477835976705"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="opensource"></category><category term="enterprise"></category><category term="legal"></category><category term="compliance"></category></entry><entry><title>Hybrid cloud can be very complex</title><link href="https://blog.siphos.be/2021/11/hybrid-cloud-can-be-very-complex/" rel="alternate"></link><published>2021-11-08T20:00:00+01:00</published><updated>2021-11-08T20:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-11-08:/2021/11/hybrid-cloud-can-be-very-complex/</id><summary type="html">&lt;p&gt;I am not an advocate for hybrid cloud architectures. Or at least, not the
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="opensource"></category><category term="enterprise"></category><category term="legal"></category><category term="compliance"></category></entry><entry><title>Hybrid cloud can be very complex</title><link href="https://blog.siphos.be/2021/11/hybrid-cloud-can-be-very-complex/" rel="alternate"></link><published>2021-11-08T20:00:00+01:00</published><updated>2021-11-08T20:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-11-08:/2021/11/hybrid-cloud-can-be-very-complex/</id><summary type="html">&lt;p&gt;I am not an advocate for hybrid cloud architectures. Or at least, not the
 definition for hybrid cloud that assumes one (cloud or on premise) environment
 is just an extension of another (cloud or on premise) environment. While such
 architectures seem to be simple and fruitful - you can easily add some capacity
@@ -1703,7 +1716,7 @@ separate environments, and where you manage each environment using the
 strengths of that environment.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1457745672304840709"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="hybrid"></category><category term="cloud"></category></entry><entry><title>Transparent encryption is not a silver bullet</title><link href="https://blog.siphos.be/2021/10/transparent-encryption-is-not-a-silver-bullet/" rel="alternate"></link><published>2021-10-19T08:20:00+02:00</published><updated>2021-10-19T08:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-10-19:/2021/10/transparent-encryption-is-not-a-silver-bullet/</id><summary type="html">&lt;p&gt;Transparent encryption is relatively easy to implement, but without
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="hybrid"></category><category term="cloud"></category></entry><entry><title>Transparent encryption is not a silver bullet</title><link href="https://blog.siphos.be/2021/10/transparent-encryption-is-not-a-silver-bullet/" rel="alternate"></link><published>2021-10-19T08:20:00+02:00</published><updated>2021-10-19T08:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-10-19:/2021/10/transparent-encryption-is-not-a-silver-bullet/</id><summary type="html">&lt;p&gt;Transparent encryption is relatively easy to implement, but without
 understanding what it actually means or why you are implementing it, you will
 probably make the assumption that this will prevent the data from being
 accessed by unauthorized users. Nothing can be further from the truth.&lt;/p&gt;
@@ -1908,7 +1921,7 @@ company already has other means to cover the threats that it does handle.&lt;/p&
 application, database and system interactions they are situated.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1450345580778110980"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="encryption"></category><category term="transparent"></category><category term="luks"></category><category term="dm-crypt"></category></entry><entry><title>Evaluating the zero trust hype</title><link href="https://blog.siphos.be/2021/10/evaluating-the-zero-trust-hype/" rel="alternate"></link><published>2021-10-05T00:00:00+02:00</published><updated>2021-10-05T00:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-10-05:/2021/10/evaluating-the-zero-trust-hype/</id><summary type="html">&lt;p&gt;Security vendors are touting the benefits of "zero trust" as the new way to
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="encryption"></category><category term="transparent"></category><category term="luks"></category><category term="dm-crypt"></category></entry><entry><title>Evaluating the zero trust hype</title><link href="https://blog.siphos.be/2021/10/evaluating-the-zero-trust-hype/" rel="alternate"></link><published>2021-10-05T00:00:00+02:00</published><updated>2021-10-05T00:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-10-05:/2021/10/evaluating-the-zero-trust-hype/</id><summary type="html">&lt;p&gt;Security vendors are touting the benefits of "zero trust" as the new way to
 approach security and security-conscious architecturing. But while there are
 principles within the zero trust mindset that came up in the last dozen years,
 most of the content in zero trust discussions is tied to age-old security
@@ -2086,7 +2099,7 @@ company has a good security posture, including the flexibility to adjust as the
 environment evolves.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1445380710706073613"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="zero-trust"></category><category term="security"></category><category term="enterprise"></category><category term="network-security"></category></entry><entry><title>Scale is a cloud threat</title><link href="https://blog.siphos.be/2021/09/scale-is-a-cloud-threat/" rel="alternate"></link><published>2021-09-28T17:00:00+02:00</published><updated>2021-09-28T17:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-28:/2021/09/scale-is-a-cloud-threat/</id><summary type="html">&lt;p&gt;Not that long ago, a vulnerability was found in &lt;a href="https://docs.microsoft.com/en-us/azure/cosmos-db/"&gt;Microsoft Azure Cosmos
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="zero-trust"></category><category term="security"></category><category term="enterprise"></category><category term="network-security"></category></entry><entry><title>Scale is a cloud threat</title><link href="https://blog.siphos.be/2021/09/scale-is-a-cloud-threat/" rel="alternate"></link><published>2021-09-28T17:00:00+02:00</published><updated>2021-09-28T17:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-28:/2021/09/scale-is-a-cloud-threat/</id><summary type="html">&lt;p&gt;Not that long ago, a vulnerability was found in &lt;a href="https://docs.microsoft.com/en-us/azure/cosmos-db/"&gt;Microsoft Azure Cosmos
 DB&lt;/a&gt;, a NoSQL SaaS database
 within the Microsoft Azure cloud. The vulnerability, which is dubbed
 &lt;a href="https://chaosdb.wiz.io/"&gt;ChaosDB&lt;/a&gt; by the &lt;a href="https://twitter.com/wiz_io"&gt;Wiz Research
@@ -2229,7 +2242,7 @@ as "innovation inhibitors" if they would recommend changes and improvements to
 tackle these risks.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1442867880639401989"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="cloud"></category><category term="vulnerability"></category></entry><entry><title>Naming conventions</title><link href="https://blog.siphos.be/2021/09/naming-conventions/" rel="alternate"></link><published>2021-09-15T19:00:00+02:00</published><updated>2021-09-15T19:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-15:/2021/09/naming-conventions/</id><summary type="html">&lt;p&gt;Naming conventions. Picking the right naming convention is easy if you are all
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="cloud"></category><category term="vulnerability"></category></entry><entry><title>Naming conventions</title><link href="https://blog.siphos.be/2021/09/naming-conventions/" rel="alternate"></link><published>2021-09-15T19:00:00+02:00</published><updated>2021-09-15T19:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-15:/2021/09/naming-conventions/</id><summary type="html">&lt;p&gt;Naming conventions. Picking the right naming convention is easy if you are all
 by yourself, but hard when you need to agree upon the conventions in a larger
 group. Everybody has an opinion on naming conventions, and once you decide
 on it, you do expect everybody to follow through on it.&lt;/p&gt;
@@ -2272,9 +2285,8 @@ more complex for users to deal with. You might be able to read and understand
 the naming convention immediately upon seeing it, but are all the other
 stakeholders equally invested in understanding the naming conventions? &lt;/p&gt;
 &lt;p&gt;Say that you have a hostname that looks like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sppchypkc05m01.reg1.internal.company.com
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sppchypkc05m01.reg1.internal.company.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;While I can tell you that this name comes from the following convention, it
 might be overdoing things:&lt;/p&gt;
@@ -2291,9 +2303,8 @@ might be overdoing things:&lt;/p&gt;
 &lt;p&gt;Even if you still want to include this information, using separators might make
 this more obvious. For instance, for the given name, I would suggest splitting
 this as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sppc-hypk-c05m01.reg1.internal.company.com
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;sppc-hypk-c05m01.reg1.internal.company.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The first two parts are then global naming convention requirements, with the
 first set being about the type of system whereas the second is about ownership,
@@ -2402,7 +2413,7 @@ and &lt;code&gt;*.edu&lt;/code&gt; already reveals many examples.&lt;/p&gt;
 accepting that some information might be better exposed elsewhere.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1438175688444596227"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="naming"></category></entry><entry><title>Location view of infrastructure</title><link href="https://blog.siphos.be/2021/09/location-view-of-infrastructure/" rel="alternate"></link><published>2021-09-07T18:00:00+02:00</published><updated>2021-09-07T18:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-07:/2021/09/location-view-of-infrastructure/</id><summary type="html">&lt;p&gt;In this last post on the infrastructure domain, I cover the fifth and final
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="naming"></category></entry><entry><title>Location view of infrastructure</title><link href="https://blog.siphos.be/2021/09/location-view-of-infrastructure/" rel="alternate"></link><published>2021-09-07T18:00:00+02:00</published><updated>2021-09-07T18:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-07:/2021/09/location-view-of-infrastructure/</id><summary type="html">&lt;p&gt;In this last post on the infrastructure domain, I cover the fifth and final
 viewpoint that is important for an infrastructure domain representation, and
 that is the &lt;em&gt;location view&lt;/em&gt;. As mentioned in previous posts, the viewpoints I
 think are most representative of the infrastructure domain are:&lt;/p&gt;
@@ -2549,7 +2560,7 @@ different viewpoints might come up. But for a holistic view of the
 infrastructure domain, I think these five cover it well.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1435271642507264000"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="architecture"></category><category term="location"></category><category term="network"></category><category term="virtualization"></category><category term="protocol"></category></entry><entry><title>Process view of infrastructure</title><link href="https://blog.siphos.be/2021/09/process-view-of-infrastructure/" rel="alternate"></link><published>2021-09-01T11:20:00+02:00</published><updated>2021-09-01T11:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-01:/2021/09/process-view-of-infrastructure/</id><summary type="html">&lt;p&gt;In my &lt;a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/"&gt;previous post&lt;/a&gt;,
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="location"></category><category term="network"></category><category term="virtualization"></category><category term="protocol"></category></entry><entry><title>Process view of infrastructure</title><link href="https://blog.siphos.be/2021/09/process-view-of-infrastructure/" rel="alternate"></link><published>2021-09-01T11:20:00+02:00</published><updated>2021-09-01T11:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-09-01:/2021/09/process-view-of-infrastructure/</id><summary type="html">&lt;p&gt;In my &lt;a href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/"&gt;previous post&lt;/a&gt;,
 I started with the five different views that would support a good view of
 what infrastructure would be. I believe these views (component, location,
 process, service, and zoning) cover the breadth of the domain. The post also
@@ -2905,7 +2916,7 @@ which is often shared with other IT domains, the location view is something
 that is often more exclusive for the infrastructure domain.&lt;/p&gt;
 &lt;p&gt;Feedback? Comments? Don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1432996739846397957"&gt;discussion on
-Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="architecture"></category><category term="process"></category></entry><entry><title>Component view of infrastructure</title><link href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/" rel="alternate"></link><published>2021-08-27T21:10:00+02:00</published><updated>2021-08-27T21:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-08-27:/2021/08/component-view-of-infrastructure/</id><summary type="html">&lt;p&gt;IT architects try to use views and viewpoints to convey the target architecture
+Twitter&lt;/a&gt;.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="process"></category></entry><entry><title>Component view of infrastructure</title><link href="https://blog.siphos.be/2021/08/component-view-of-infrastructure/" rel="alternate"></link><published>2021-08-27T21:10:00+02:00</published><updated>2021-08-27T21:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-08-27:/2021/08/component-view-of-infrastructure/</id><summary type="html">&lt;p&gt;IT architects try to use views and viewpoints to convey the target architecture
 to the various stakeholders. Each stakeholder has their own interests in the
 architecture and wants to see their requirements fulfilled. A core
 role of the architect is to understand these requirements and make sure the
@@ -3082,7 +3093,7 @@ embedded. I want my blog to be simple and straightforward, so I decided to not
 have any other third-party services with it for now.&lt;/p&gt;
 &lt;p&gt;So, if you have feedback or comments, don't hesitate to &lt;a href="mailto:sven.vermeulen@siphos.be"&gt;drop me an
 email&lt;/a&gt;, or join the &lt;a href="https://twitter.com/infrainsight/status/1431332634370711552"&gt;discussion on
-Twitter&lt;/a&gt;&lt;/p&gt;</content><category term="architecture"></category><category term="component"></category><category term="viewpoint"></category></entry><entry><title>Disaster recovery in the public cloud</title><link href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/" rel="alternate"></link><published>2021-07-30T20:00:00+02:00</published><updated>2021-07-30T20:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-30:/2021/07/disaster-recovery-in-the-public-cloud/</id><summary type="html">&lt;p&gt;The public cloud is a different beast than an on-premise environment, and that
+Twitter&lt;/a&gt;&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="component"></category><category term="viewpoint"></category></entry><entry><title>Disaster recovery in the public cloud</title><link href="https://blog.siphos.be/2021/07/disaster-recovery-in-the-public-cloud/" rel="alternate"></link><published>2021-07-30T20:00:00+02:00</published><updated>2021-07-30T20:00:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-30:/2021/07/disaster-recovery-in-the-public-cloud/</id><summary type="html">&lt;p&gt;The public cloud is a different beast than an on-premise environment, and that
 also reflects itself on how we (should) look at the processes that are
 actively steering infrastructure designs and architecture. One of these
 is the business continuity, severe incident handling, and the
@@ -3283,7 +3294,7 @@ disaster at hand. Mature your cloud endeavours so that regional outages
 are not a problem anymore (moving them away from the 'disaster' board), and 
 properly map all dependencies you have through the public cloud exercises so
 that you can build up a good view on what possible threats exist that would
-require a well-coordinated approach to tackle the event.&lt;/p&gt;</content><category term="architecture"></category><category term="cloud"></category><category term="DRP"></category></entry><entry><title>What is the infrastructure domain?</title><link href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/" rel="alternate"></link><published>2021-07-19T15:20:00+02:00</published><updated>2021-07-19T15:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-19:/2021/07/what-is-the-infrastructure-domain/</id><summary type="html">&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
+require a well-coordinated approach to tackle the event.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="cloud"></category><category term="DRP"></category></entry><entry><title>What is the infrastructure domain?</title><link href="https://blog.siphos.be/2021/07/what-is-the-infrastructure-domain/" rel="alternate"></link><published>2021-07-19T15:20:00+02:00</published><updated>2021-07-19T15:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-19:/2021/07/what-is-the-infrastructure-domain/</id><summary type="html">&lt;p&gt;In my job as domain architect for "infrastructure", I often come across
 stakeholders that have no common understanding of what infrastructure means in
 an enterprise architecture. Since then, I am trying to figure out a way to
 easily explain it - to find a common, generic view on what infrastructure
@@ -3514,7 +3525,7 @@ to start from, which is not obvious when trying to convey something to outside
 or indirect stakeholders.&lt;/p&gt;
 &lt;p&gt;Few frameworks have a reference that is directly consumable by non-architect
 stakeholders. The most tangible ones seem to be related to the IT processes, but
-those still require an IT mindset to interpret.&lt;/p&gt;</content><category term="architecture"></category><category term="pattern"></category></entry><entry><title>Organizing service documentation</title><link href="https://blog.siphos.be/2021/07/organizing-service-documentation/" rel="alternate"></link><published>2021-07-08T09:20:00+02:00</published><updated>2021-07-08T09:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-08:/2021/07/organizing-service-documentation/</id><summary type="html">&lt;p&gt;As I mentioned in &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
+those still require an IT mindset to interpret.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="pattern"></category></entry><entry><title>Organizing service documentation</title><link href="https://blog.siphos.be/2021/07/organizing-service-documentation/" rel="alternate"></link><published>2021-07-08T09:20:00+02:00</published><updated>2021-07-08T09:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-07-08:/2021/07/organizing-service-documentation/</id><summary type="html">&lt;p&gt;As I mentioned in &lt;a href="https://blog.siphos.be/2021/06/an-it-services-overview/"&gt;An IT services overview&lt;/a&gt;
 I try to keep track of the architecture and designs of the IT services and
 solutions in a way that I feel helps me keep in touch with all the various
 services and solutions out there. Similar to how system administrators try to
@@ -3668,13 +3679,12 @@ put time and effort to track it myself (at least for the services and solutions
 that I am interested in).&lt;/p&gt;
 &lt;p&gt;The historical information I track myself is not a copy/paste of the meeting
 minutes of those entries. I try to use a single paragraph explaination, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ARB  2020/12/05     &amp;quot;Switch of PostgreSQL authentication provider to PAM+sssd&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;ARB  2020/12/05     &amp;quot;Switch of PostgreSQL authentication provider to PAM+sssd&amp;quot;
     Approval to switch the authentication provider of the PostgreSQL
     database assets from the internal authentication to a PAM-supported
     method, and use the RHEL sssd solution as a facilitator. Link with
     Active Directory.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;code&gt;ARB&lt;/code&gt; is the name of the decision body (here it could be the &lt;em&gt;Architecture
 Review Board&lt;/em&gt;) and tells me where I can find more details if needed. I don't
@@ -3682,11 +3692,10 @@ really bother with trying to add actual links, because that takes time and often
 the links become invalid after we switch from one solution to another.&lt;/p&gt;
 &lt;p&gt;Since then, I also started adding information related to the service that isn't
 just decision body oriented:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Incident    2021/06/08  &amp;quot;Fastly major outage&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;Incident    2021/06/08  &amp;quot;Fastly major outage&amp;quot;
     A major outage occurred on Fastly, a widely used cloud edge provider,
     between 09:47 UTC and 12:35 UTC. This impacted service ABC and DEF.
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Incidents can be internal or external, and if they are internal I'll document
 the incident and root cause analysis numbers associated with the incident as
@@ -3735,7 +3744,7 @@ documenting information. Good documentation, in my opinion, comes from a good
 structure and a coherent way of working. If you do it yourself, then of course
 it is coherent, but it takes time and effort to maintain it. If you collaborate
 on it, you have to make sure everybody follows the same practices and agreements
-- so don't make them too complex.&lt;/p&gt;</content><category term="architecture"></category><category term="documentation"></category><category term="structure"></category><category term="wiki"></category></entry><entry><title>Not sure if TOSCA will grow further</title><link href="https://blog.siphos.be/2021/06/not-sure-if-TOSCA-will-grow-further/" rel="alternate"></link><published>2021-06-30T14:30:00+02:00</published><updated>2021-06-30T14:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-06-30:/2021/06/not-sure-if-TOSCA-will-grow-further/</id><summary type="html">&lt;p&gt;TOSCA is an OASIS open standard, and is an abbreviation for &lt;em&gt;Topology and
+- so don't make them too complex.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="documentation"></category><category term="structure"></category><category term="wiki"></category></entry><entry><title>Not sure if TOSCA will grow further</title><link href="https://blog.siphos.be/2021/06/not-sure-if-TOSCA-will-grow-further/" rel="alternate"></link><published>2021-06-30T14:30:00+02:00</published><updated>2021-06-30T14:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-06-30:/2021/06/not-sure-if-TOSCA-will-grow-further/</id><summary type="html">&lt;p&gt;TOSCA is an OASIS open standard, and is an abbreviation for &lt;em&gt;Topology and
 Orchestration Specification for Cloud Applications&lt;/em&gt;. It provides a
 domain-specific language to describe how an application should be deployed
 in the cloud (the topology), which and how many resources it needs, as well
@@ -3780,7 +3789,7 @@ resource requirements.&lt;/p&gt;
 be a PostgreSQL database system with a certain administration password,
 and within the database system we define two databases with their
 own user roles:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;topology_template:
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;topology_template:
   ...
   node_templates:
     db_server:
@@ -3804,8 +3813,7 @@ own user roles:&lt;/p&gt;
           type: tosca.artifacts.File
       requirements:
         - host: postgresql
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The parameters can, and should be further parameterized. TOSCA supports
 declaring inputs that are provided upon deployment so you can safely
@@ -3933,7 +3941,7 @@ here:&lt;/p&gt;
 &lt;li&gt;&lt;a href="https://www.youtube.com/watch?v=NHYRESmE6uA"&gt;OCB: AMA on TOSCA the Topology and Orchestration Specification for Cloud Applications - Tal Liron&lt;/a&gt;
   is an hour-long briefing that covers TOSCA not only in theory but also applies
   it in practice, and covers some of the new features that are coming up.&lt;/li&gt;
-&lt;/ul&gt;</content><category term="architecture"></category><category term="cloud"></category><category term="TOSCA"></category><category term="OASIS"></category><category term="topology"></category><category term="orchestration"></category><category term="infrastructure"></category><category term="IaC"></category><category term="NFV"></category></entry><entry><title>Integrating or customizing SaaS within your own cloud environment</title><link href="https://blog.siphos.be/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/" rel="alternate"></link><published>2021-06-23T15:10:00+02:00</published><updated>2021-06-23T15:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-06-23:/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/</id><summary type="html">&lt;p&gt;Software as a Service (SaaS) solutions are often a quick way to get new
+&lt;/ul&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="cloud"></category><category term="TOSCA"></category><category term="OASIS"></category><category term="topology"></category><category term="orchestration"></category><category term="infrastructure"></category><category term="IaC"></category><category term="NFV"></category></entry><entry><title>Integrating or customizing SaaS within your own cloud environment</title><link href="https://blog.siphos.be/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/" rel="alternate"></link><published>2021-06-23T15:10:00+02:00</published><updated>2021-06-23T15:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-06-23:/2021/06/integrating-or-customizing-SaaS-within-your-own-cloud-environment/</id><summary type="html">&lt;p&gt;Software as a Service (SaaS) solutions are often a quick way to get new
 capabilities into an organization’s portfolio. Smaller SaaS solutions are
 simple, web-based solutions which barely integrate with the organization’s
 other solutions, besides the identity and access management (which is often
@@ -4063,7 +4071,7 @@ availability, security and the like.&lt;/p&gt;
 how fine-grained this can be implemented and how the accountability is
 assigned. See if an intermediate account can be used where both you and
 the SaaS provider have administrative access to, while keeping the rest
-of the organization’s data and solutions elsewhere.&lt;/p&gt;</content><category term="architecture"></category><category term="cloud"></category><category term="SaaS"></category><category term="integration"></category><category term="customization"></category></entry><entry><title>An IT services overview</title><link href="https://blog.siphos.be/2021/06/an-it-services-overview/" rel="alternate"></link><published>2021-06-14T17:30:00+02:00</published><updated>2021-06-14T17:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-06-14:/2021/06/an-it-services-overview/</id><summary type="html">&lt;p&gt;My current role within the company I work for is “domain architect”, part
+of the organization’s data and solutions elsewhere.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="cloud"></category><category term="SaaS"></category><category term="integration"></category><category term="customization"></category></entry><entry><title>An IT services overview</title><link href="https://blog.siphos.be/2021/06/an-it-services-overview/" rel="alternate"></link><published>2021-06-14T17:30:00+02:00</published><updated>2021-06-14T17:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-06-14:/2021/06/an-it-services-overview/</id><summary type="html">&lt;p&gt;My current role within the company I work for is “domain architect”, part
 of the enterprise architects teams. The domain I am accountable for is 
 “infrastructure”, which can be seen as a very broad one. Now, I’ve been
 maintaining an overview of our IT services before I reached that role, 
@@ -4184,7 +4192,7 @@ the ‘mostly workplace’ side of things.&lt;/p&gt;
 and services function, how they are set up, etc. would make my job harder,
 so tracking their progress and architecture is effort that pays off.&lt;/p&gt;
 &lt;p&gt;In a later post I’ll explain what I document about services and solutions
-and how I do it when I have some time to spend.&lt;/p&gt;</content><category term="architecture"></category><category term="overview"></category><category term="service"></category><category term="landscape"></category><category term="catalog"></category><category term="capability"></category></entry><entry><title>Virtualization vs abstraction</title><link href="https://blog.siphos.be/2021/06/virtualization-vs-abstraction/" rel="alternate"></link><published>2021-06-03T10:10:00+02:00</published><updated>2021-06-03T10:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-06-03:/2021/06/virtualization-vs-abstraction/</id><summary type="html">&lt;p&gt;When an organization has an extensively large, and heterogeneous
+and how I do it when I have some time to spend.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="overview"></category><category term="service"></category><category term="landscape"></category><category term="catalog"></category><category term="capability"></category></entry><entry><title>Virtualization vs abstraction</title><link href="https://blog.siphos.be/2021/06/virtualization-vs-abstraction/" rel="alternate"></link><published>2021-06-03T10:10:00+02:00</published><updated>2021-06-03T10:10:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2021-06-03:/2021/06/virtualization-vs-abstraction/</id><summary type="html">&lt;p&gt;When an organization has an extensively large, and heterogeneous
 infrastructure, infrastructure architects will attempt to make itless
 complex and chaotic by introducing and maintaining a certain degree of
 standardization. While many might consider standardization as a
@@ -4408,7 +4416,7 @@ infrastructure. But virtualization isn't a prerequisite for SDI.&lt;/p&gt;
 &lt;p&gt;When you're confronted with chaos and complexity, don't immediately start
 removing technologies under the purview of "rationalization". Consider your
 options on abstraction and virtualization, but be aware of the pros and cons
-of each.&lt;/p&gt;</content><category term="architecture"></category><category term="virtualization"></category><category term="abstraction"></category></entry><entry><title>Abstracting infrastructure complexity</title><link href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/" rel="alternate"></link><published>2020-12-25T23:00:00+01:00</published><updated>2020-12-25T23:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2020-12-25:/2020/12/abstracting-infrastructure-complexity/</id><summary type="html">&lt;p&gt;IT is complex. Some even consider it to be more magic than reality. And with
+of each.&lt;/p&gt;</content><category term="Architecture"></category><category term="architecture"></category><category term="virtualization"></category><category term="abstraction"></category></entry><entry><title>Abstracting infrastructure complexity</title><link href="https://blog.siphos.be/2020/12/abstracting-infrastructure-complexity/" rel="alternate"></link><published>2020-12-25T23:00:00+01:00</published><updated>2020-12-25T23:00:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2020-12-25:/2020/12/abstracting-infrastructure-complexity/</id><summary type="html">&lt;p&gt;IT is complex. Some even consider it to be more magic than reality. And with
 the ongoing evolutions and inventions, the complexity is not really going
 away. Sure, some IT areas are becoming easier to understand, but that is often
 offset with new areas being explored.&lt;/p&gt;
@@ -4611,7 +4619,7 @@ known to our environment. But even if that isn't reached, the abstraction is
 a huge help for me to assess and understand the multitude of technologies
 that are out there, be it our mainframe setup, the SAN offerings, the
 network switching setup, the databases, messaging services, cloud
-landing zones, firewall setups, container platforms and more.&lt;/p&gt;</content><category term="infrastructure"></category><category term="archimate"></category></entry><entry><title>Working on infra strategy</title><link href="https://blog.siphos.be/2020/10/working-on-infra-strategy/" rel="alternate"></link><published>2020-10-04T13:20:00+02:00</published><updated>2020-10-04T13:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2020-10-04:/2020/10/working-on-infra-strategy/</id><summary type="html">&lt;p&gt;After a long hiatus, I'm ready to take up blogging again on my public blog.
+landing zones, firewall setups, container platforms and more.&lt;/p&gt;</content><category term="Architecture"></category><category term="infrastructure"></category><category term="archimate"></category></entry><entry><title>Working on infra strategy</title><link href="https://blog.siphos.be/2020/10/working-on-infra-strategy/" rel="alternate"></link><published>2020-10-04T13:20:00+02:00</published><updated>2020-10-04T13:20:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2020-10-04:/2020/10/working-on-infra-strategy/</id><summary type="html">&lt;p&gt;After a long hiatus, I'm ready to take up blogging again on my public blog.
 With my day job becoming more intensive and my side-job taking the remainder
 of the time, I've since quit my work on the Gentoo project. I am in process
 of releasing a new edition of the SELinux System Administration book, so I'll
@@ -4789,7 +4797,7 @@ formulate their specific solution visions (and for a handful of solutions I'm
 also directly involved).&lt;/p&gt;
 &lt;p&gt;We'll see how it pans out.&lt;/p&gt;
 &lt;p&gt;So, do you think this is a sensible approach I took? How did you tackle
-communication and collaboration of such initiatives during COVID-19 measures? &lt;/p&gt;</content></entry><entry><title>Project prioritization</title><link href="https://blog.siphos.be/2017/07/project-prioritization/" rel="alternate"></link><published>2017-07-18T20:40:00+02:00</published><updated>2017-07-18T20:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-07-18:/2017/07/project-prioritization/</id><summary type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
+communication and collaboration of such initiatives during COVID-19 measures? &lt;/p&gt;</content><category term="Architecture"></category></entry><entry><title>Project prioritization</title><link href="https://blog.siphos.be/2017/07/project-prioritization/" rel="alternate"></link><published>2017-07-18T20:40:00+02:00</published><updated>2017-07-18T20:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-07-18:/2017/07/project-prioritization/</id><summary type="html">&lt;p&gt;&lt;sub&gt;This is a long read, skip to “Prioritizing the projects and changes” for the
 approach details...&lt;/sub&gt;&lt;/p&gt;
 &lt;p&gt;Organizations and companies generally have an IT workload (dare I say,
 backlog?) which needs to be properly assessed, prioritized and taken up.
@@ -5047,7 +5055,7 @@ both value stream agnostic criteria (like in the past) as well as value stream
 specific ones.&lt;/p&gt;
 &lt;p&gt;The methodology is furthest progressed in one value stream (with focus of around
 1000 projects) and is being taken up by two others (they are still looking at
-what their stream-specific criteria are before switching).&lt;/p&gt;</content><category term="pmo"></category><category term="strategy"></category><category term="SAFe"></category><category term="prioritization"></category><category term="project"></category></entry><entry><title>Structuring infrastructural deployments</title><link href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/" rel="alternate"></link><published>2017-06-07T20:40:00+02:00</published><updated>2017-06-07T20:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-06-07:/2017/06/structuring-infrastructural-deployments/</id><summary type="html">&lt;p&gt;Many organizations struggle with the all-time increase in IP address
+what their stream-specific criteria are before switching).&lt;/p&gt;</content><category term="Architecture"></category><category term="pmo"></category><category term="strategy"></category><category term="SAFe"></category><category term="prioritization"></category><category term="project"></category></entry><entry><title>Structuring infrastructural deployments</title><link href="https://blog.siphos.be/2017/06/structuring-infrastructural-deployments/" rel="alternate"></link><published>2017-06-07T20:40:00+02:00</published><updated>2017-06-07T20:40:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2017-06-07:/2017/06/structuring-infrastructural-deployments/</id><summary type="html">&lt;p&gt;Many organizations struggle with the all-time increase in IP address
 allocation and the accompanying need for segmentation. In the past, governing
 the segments within the organization means keeping close control over the
 service deployments, firewall rules, etc.&lt;/p&gt;
@@ -5372,7 +5380,7 @@ already prevalent in the organization, and new environments (due to mergers and
 acquisitions) are directed to this new situation.&lt;/p&gt;
 &lt;p&gt;Still, we know we have a large exercise ahead before it is finished, but I
 believe that it will benefit us greatly, not only from a security point of
-view, but also clarity and manageability of the environment.&lt;/p&gt;</content><category term="segmentation"></category><category term="zoning"></category><category term="deployments"></category><category term="landscape"></category></entry><entry><title>Switching focus at work</title><link href="https://blog.siphos.be/2015/09/switching-focus-at-work/" rel="alternate"></link><published>2015-09-20T13:29:00+02:00</published><updated>2015-09-20T13:29:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-20:/2015/09/switching-focus-at-work/</id><summary type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
+view, but also clarity and manageability of the environment.&lt;/p&gt;</content><category term="Architecture"></category><category term="segmentation"></category><category term="zoning"></category><category term="deployments"></category><category term="landscape"></category></entry><entry><title>Switching focus at work</title><link href="https://blog.siphos.be/2015/09/switching-focus-at-work/" rel="alternate"></link><published>2015-09-20T13:29:00+02:00</published><updated>2015-09-20T13:29:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-09-20:/2015/09/switching-focus-at-work/</id><summary type="html">&lt;p&gt;Since 2010, I was at work responsible for the infrastructure architecture of 
 a couple of technological domains, namely databases and scheduling/workload 
 automation. It brought me in contact with many vendors, many technologies
 and most importantly, many teams within the organization. The focus domain
@@ -5425,7 +5433,7 @@ I've been working on this Hadoop design for a while now (but then it was togethe
 with my previous function at work) and given the evolving nature of Hadoop (and
 the various services that surround it) I'm confident that it will not be the last
 time I'm looking at it. &lt;/p&gt;
-&lt;p&gt;Now let me hope I can keep things manageable ;-)&lt;/p&gt;</content><category term="work"></category><category term="hadoop"></category><category term="docker"></category></entry><entry><title>Making the case for multi-instance support</title><link href="https://blog.siphos.be/2015/08/making-the-case-for-multi-instance-support/" rel="alternate"></link><published>2015-08-22T12:45:00+02:00</published><updated>2015-08-22T12:45:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-22:/2015/08/making-the-case-for-multi-instance-support/</id><summary type="html">&lt;p&gt;With the high attention that technologies such as &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
+&lt;p&gt;Now let me hope I can keep things manageable ;-)&lt;/p&gt;</content><category term="Architecture"></category><category term="work"></category><category term="hadoop"></category><category term="docker"></category></entry><entry><title>Making the case for multi-instance support</title><link href="https://blog.siphos.be/2015/08/making-the-case-for-multi-instance-support/" rel="alternate"></link><published>2015-08-22T12:45:00+02:00</published><updated>2015-08-22T12:45:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2015-08-22:/2015/08/making-the-case-for-multi-instance-support/</id><summary type="html">&lt;p&gt;With the high attention that technologies such as &lt;a href="https://www.docker.com/"&gt;Docker&lt;/a&gt;,
 &lt;a href="https://coreos.com/blog/rocket/"&gt;Rocket&lt;/a&gt; and the like get (I recommend to look at 
 &lt;a href="https://github.com/p8952/bocker"&gt;Bocker&lt;/a&gt; by Peter Wilmott as well ;-), I
 still find it important that technologies are well capable of supporting a
@@ -5548,4 +5556,4 @@ the right configuration from its name.&lt;/p&gt;
 &lt;code&gt;/etc/init.d/postgresql&lt;/code&gt; could then look for its configuration in &lt;code&gt;/var/lib/postgresql/pgsql-inst1&lt;/code&gt;
 (or &lt;code&gt;/etc/postgresql/pgsql-inst1&lt;/code&gt;). &lt;/p&gt;
 &lt;p&gt;Just like supporting &lt;a href="http://blog.siphos.be/2013/05/the-linux-d-approach/"&gt;.d directories&lt;/a&gt;,
-I consider multi-instance support an important non-functional requirement for software.&lt;/p&gt;</content></entry></feed>
+I consider multi-instance support an important non-functional requirement for software.&lt;/p&gt;</content><category term="Architecture"></category></entry></feed>

@@ -16,7 +16,7 @@
     <meta name="keywords" content="file_contexts, fix, Gentoo, libselinux, pcre">
 <meta property="og:site_name" content="Simplicity is a form of art..." />
 <meta property="og:title" content="Segmentation fault when emerging packages after libpcre upgrade?" />
-<meta property="og:description" content="SELinux users might be facing failures when emerge is merging a package to the file system, with an error that looks like so: &gt;&gt;&gt; Setting SELinux security labels /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault /usr/sbin/setfiles &#34;${file_contexts_path}&#34; -r &#34;${D}&#34; &#34;${D}&#34; * ERROR: dev-libs/libpcre-8.35::gentoo …" />
+<meta property="og:description" content="SELinux users might be facing failures when emerge is merging a package to the file system, with an error that looks like so: &gt;&gt;&gt; Setting SELinux security labels /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault /usr/sbin/setfiles &#34;${file_contexts_path}&#34; -r &#34;${D}&#34; &#34;${D}&#34; * ERROR: dev-libs/libpcre-8 …" />
 <meta property="og:locale" content="en_US" />
 <meta property="og:url" content="https://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/" />
 <meta property="og:type" content="article" />
@@ -235,20 +235,18 @@
         <div>
             <p>SELinux users might be facing failures when emerge is merging a package
 to the file system, with an error that looks like so:</p>
-<div class="highlight"><pre><span></span>&gt;&gt;&gt; Setting SELinux security labels
+<div class="highlight"><pre><span></span><code>&gt;&gt;&gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &quot;${file_contexts_path}&quot; -r &quot;${D}&quot; &quot;${D}&quot;
  * ERROR: dev-libs/libpcre-8.35::gentoo failed:
  *   Failed to set SELinux security labels.
-</pre></div>
-
+</code></pre></div>
 
 <p>This has been <a href="https://bugs.gentoo.org/show_bug.cgi?id=516608">reported as bug
 516608</a> and, after some
 investigation, the cause is found. First the quick workaround:</p>
-<div class="highlight"><pre><span></span>~# cd /etc/selinux/strict/contexts/files
+<div class="highlight"><pre><span></span><code>~# cd /etc/selinux/strict/contexts/files
 ~# rm *.bin
-</pre></div>
-
+</code></pre></div>
 
 <p>And do the same for the other SELinux policy stores on the system
 (targeted, mcs, mls, ...).</p>
@@ -335,7 +333,7 @@ any libpcre bump I let it go.</p>
     },
     "image": "https://blog.siphos.be/favicon.ico",
     "url": "https://blog.siphos.be/2014/07/segmentation-fault-when-emerging-packages-after-libpcre-upgrade/",
-    "description": "SELinux users might be facing failures when emerge is merging a package to the file system, with an error that looks like so: >>> Setting SELinux security labels /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault /usr/sbin/setfiles "${file_contexts_path}" -r "${D}" "${D}" * ERROR: dev-libs/libpcre-8.35::gentoo …"
+    "description": "SELinux users might be facing failures when emerge is merging a package to the file system, with an error that looks like so: >>> Setting SELinux security labels /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault /usr/sbin/setfiles "${file_contexts_path}" -r "${D}" "${D}" * ERROR: dev-libs/libpcre-8 …"
 }
 </script>
     <!-- Disqus count -->

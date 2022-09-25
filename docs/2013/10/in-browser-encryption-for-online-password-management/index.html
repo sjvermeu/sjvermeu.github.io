@@ -279,7 +279,7 @@ code will create the hash of the password (and user name) to use as the
 field. It then also stores the site password in the local session
 storage in the browser. The code is triggered through the <em>onSubmit</em>
 handler of the form.</p>
-<div class="highlight"><pre><span></span>function storeAppPassword() {
+<div class="highlight"><pre><span></span><code>function storeAppPassword() {
   var sitepw = document.getElementById(&#39;password&#39;);
   var siteus = document.getElementById(&#39;login&#39;);
   var userpw = document.getElementById(&#39;userpassword&#39;);
@@ -287,8 +287,7 @@ handler of the form.</p>
   sessionStorage.setItem(&#39;userpassword&#39;, userpw.value);
   sitepw.value = hex_sha1(siteus.value + userpw.value);
 }
-</pre></div>
-
+</code></pre></div>
 
 <p>Now I need to make sure that the fields that need to be encrypted (the
 various user ids and passwords that are stored on the site) are
@@ -296,7 +295,7 @@ encrypted before they are sent to the server, and decrypted after having
 received them by the browser. For instance, if the fields are within a
 form, the following javascript function could be triggered on the
 <em>onSubmit</em> handler again:</p>
-<div class="highlight"><pre><span></span>function encryptFields() {
+<div class="highlight"><pre><span></span><code>function encryptFields() {
   var useridFld = document.getElementById(&#39;userid&#39;);
   var passwordFld = document.getElementById(&#39;password&#39;);
   var notesFld = document.getElementById(&#39;notes&#39;);
@@ -306,14 +305,12 @@ form, the following javascript function could be triggered on the
   passwordFld.value = Aes.Ctr.encrypt(passwordFld.value, pw, 256);
   notesFld.value = Aes.Ctr.encrypt(notesFld.value, pw, 256);
 }
-</pre></div>
-
+</code></pre></div>
 
 <p>Similarly, to decrypt the fields (inside the same form), that part of
 the code would become:</p>
-<div class="highlight"><pre><span></span>useridFld.value = Aes.Ctr.decrypt(useridFld.value, pw, 256);
-</pre></div>
-
+<div class="highlight"><pre><span></span><code>useridFld.value = Aes.Ctr.decrypt(useridFld.value, pw, 256);
+</code></pre></div>
 
 <p>Decryption of the fields can be called by a simple javascript call at
 the end of the page.</p>

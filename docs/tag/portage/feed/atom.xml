@@ -17,7 +17,7 @@ was not tampered with by me in an attempt to create a Gentoo botnet). I
 haven't needed it in a while anymore, but I still try to update the list
 every two months, which I just did with the snapshot of January 20th
 this year.&lt;/p&gt;
-&lt;p&gt;I hope it at least helps a few other admins out there.&lt;/p&gt;</content><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="tree"></category></entry><entry><title>Stepping through the build process with ebuild</title><link href="https://blog.siphos.be/2014/04/stepping-through-the-build-process-with-ebuild/" rel="alternate"></link><published>2014-04-20T11:59:00+02:00</published><updated>2014-04-20T11:59:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-20:/2014/04/stepping-through-the-build-process-with-ebuild/</id><summary type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
+&lt;p&gt;I hope it at least helps a few other admins out there.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="tree"></category></entry><entry><title>Stepping through the build process with ebuild</title><link href="https://blog.siphos.be/2014/04/stepping-through-the-build-process-with-ebuild/" rel="alternate"></link><published>2014-04-20T11:59:00+02:00</published><updated>2014-04-20T11:59:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-20:/2014/04/stepping-through-the-build-process-with-ebuild/</id><summary type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
 slightly modified. As I don't use the tool myself (it was a
 user-reported issue) I decided to quickly drum up a live ebuild for the
 application and install it (as the patch was in the upstream …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today I had to verify a patch that I pushed upstream but which was
@@ -38,28 +38,25 @@ need the fcron documentation right now, so how about I just continue?&lt;/p&gt;
 in the build phase (&lt;em&gt;compile&lt;/em&gt;) and at the end (documentation was the
 last step), I tell Portage that it should assume the build has
 completed:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.compiled
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Then I tell Portage to install the (built) files into the &lt;code&gt;images/&lt;/code&gt;
 directory:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The installation phase fails again (with the same error as during the
 build, which is logical as the &lt;code&gt;Makefile&lt;/code&gt; can't install files that
 haven't been properly build yet.) As documentation is the last step, I
 tell Portage to assume the installation phase has completed as well,
 continuing with the merging of the files to the life file system:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.installed
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# touch /var/portage/portage/sys-process/fcron-9999/.installed
 ~# ebuild /home/swift/dev/gentoo.overlay/sys-process/fcron/fcron-9999.ebuild qmerge
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Et voila, &lt;code&gt;fcron-9999&lt;/code&gt; is now installed on the system, ready to validate
-the patch I had to check.&lt;/p&gt;</content><category term="ebuild"></category><category term="phase"></category><category term="portage"></category></entry><entry><title>Upgrading old Gentoo installations</title><link href="https://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/" rel="alternate"></link><published>2013-12-29T14:18:00+01:00</published><updated>2013-12-29T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-29:/2013/12/upgrading-old-gentoo-installations/</id><summary type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
+the patch I had to check.&lt;/p&gt;</content><category term="Gentoo"></category><category term="ebuild"></category><category term="phase"></category><category term="portage"></category></entry><entry><title>Upgrading old Gentoo installations</title><link href="https://blog.siphos.be/2013/12/upgrading-old-gentoo-installations/" rel="alternate"></link><published>2013-12-29T14:18:00+01:00</published><updated>2013-12-29T14:18:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-12-29:/2013/12/upgrading-old-gentoo-installations/</id><summary type="html">&lt;p&gt;Today I got "pinged" on &lt;a href="https://bugs.gentoo.org/show_bug.cgi?id=463240"&gt;bug
 #463240&lt;/a&gt; about the
 difficulty of upgrading a Gentoo Linux deployment after a long time of
 inactivity on the system. We already have an &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;Upgrading
@@ -101,7 +98,7 @@ period which should be sufficient for most users to gradually upgrade
 their systems.&lt;/p&gt;
 &lt;p&gt;Considering I've used this method a few times already I'm going to add
 them to the &lt;a href="https://wiki.gentoo.org/wiki/Upgrading_Gentoo"&gt;upgrading
-instructions&lt;/a&gt; as well.&lt;/p&gt;</content><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="upgrade"></category></entry><entry><title>The mix of libffi with other changes</title><link href="https://blog.siphos.be/2013/11/the-mix-of-libffi-with-other-changes/" rel="alternate"></link><published>2013-11-03T10:27:00+01:00</published><updated>2013-11-03T10:27:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-11-03:/2013/11/the-mix-of-libffi-with-other-changes/</id><summary type="html">&lt;p&gt;I &lt;a href="http://blog.siphos.be/2013/04/securely-handling-libffi/"&gt;once again&lt;/a&gt;
+instructions&lt;/a&gt; as well.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="portage"></category><category term="snapshot"></category><category term="upgrade"></category></entry><entry><title>The mix of libffi with other changes</title><link href="https://blog.siphos.be/2013/11/the-mix-of-libffi-with-other-changes/" rel="alternate"></link><published>2013-11-03T10:27:00+01:00</published><updated>2013-11-03T10:27:00+01:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-11-03:/2013/11/the-mix-of-libffi-with-other-changes/</id><summary type="html">&lt;p&gt;I &lt;a href="http://blog.siphos.be/2013/04/securely-handling-libffi/"&gt;once again&lt;/a&gt;
 came across libffi. Not only does the libffi approach fight with SELinux
 alone, it also triggers the TPE (Trusted Path Execution) protections in
 grSecurity. And when I tried to reinstall Portage, Portage seemed to
@@ -120,23 +117,21 @@ to add the &lt;code&gt;portage&lt;/code&gt; Linux user, as well as the Linux acc
 use to run emerge with (even just things like &lt;strong&gt;emerge --info&lt;/strong&gt;) in the
 &lt;code&gt;wheel&lt;/code&gt; group. This group is exempt from TPE protections (unless you
 configured a different group in your kernel for this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# zgrep CONFIG_GRKERNSEC_TPE_TRUSTED_GID /proc/config.gz
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# zgrep CONFIG_GRKERNSEC_TPE_TRUSTED_GID /proc/config.gz
 CONFIG_GRKERNSEC_TPE_TRUSTED_GID=10
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Next we also need to allow the &lt;code&gt;portage_t&lt;/code&gt; domain to execute files
 labeled with &lt;code&gt;portage_tmpfs_t&lt;/code&gt;. You can do this by creating your own
 SELinux policy module with the following content (or use selocal):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;can_exec(portage_t, portage_tmpfs_t)
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;can_exec(portage_t, portage_tmpfs_t)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This works around the libffi issue for now. A better solution still has
 to be implemented (as discussed in the previous post).&lt;/p&gt;
 &lt;p&gt;With regards to the portage installation failing, you'll notice this
 quickly when you get an error like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# emerge -1 portage
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# emerge -1 portage
 Calculating dependencies  ... done!
 Traceback (most recent call last):
   File &amp;quot;/usr/bin/emerge&amp;quot;, line 50, in &amp;lt;module&amp;gt;
@@ -167,13 +162,12 @@ b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/prepin
 b&amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib.so&amp;#39;, 
 &amp;quot;[Errno 13] Permission denied: &amp;#39;/var/tmp/portage/._portage_reinstall_.osj370/bin/ebuild-helpers/newlib.so&amp;#39;&amp;quot;), 
 [...]
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And the errors go on and on and on.&lt;/p&gt;
 &lt;p&gt;I've been able to get it working again by allowing the following SELinux
 permissions:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow portage_t portage_tmp_t:dir relabel_dir_perms;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t portage_tmp_t:dir relabel_dir_perms;
 allow portage_t portage_tmp_t:lnk_file relabel_lnk_file_perms;
 allow portage_t bin_t:dir relabel_dir_perms;
 allow portage_t bin_t:file relabel_file_perms;
@@ -182,23 +176,20 @@ allow portage_t portage_exec_t:file relabel_file_perms;
 allow portage_t portage_fetch_exec_t:file relabel_file_perms;
 allow portage_t lib_t:dir relabel_dir_perms;
 allow portage_t lib_t:file relabel_file_perms;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;You can somewhat shorten this by combining types (but this doesn't work
 with selocal for now):&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;allow portage_t { portage_tmp_t bin_t lib_t}:dir relabel_dir_perms;
 allow portage_t { portage_tmp_t bin_t }:lnk_file relabel_lnk_file_perms;
 allow portage_t { bin_t portage_exec_t portage_fetch_exec_t lib_t}:file relabel_file_perms;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;At the end of the emerge process (when the new portage is installed) you
 might want to reset the labels of all files provided by the portage
 package:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# rlpkg portage
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# rlpkg portage
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;These changes have not been passed into the policy yet as I first need
 to find out why exactly they are needed, and as you can see from &lt;a href="http://dev.gentoo.org/devaway/"&gt;the
@@ -212,7 +203,7 @@ promises here.&lt;/p&gt;
 binaries and Portage python libraries, which is why we need to support
 relabel operations on the files. Support for this is now in the policy
 repository.&lt;/p&gt;
-&lt;/p&gt;</content><category term="Gentoo"></category><category term="hardened"></category><category term="libffi"></category><category term="portage"></category><category term="selinux"></category></entry><entry><title>Underestimated or underused: Portage (e)logging</title><link href="https://blog.siphos.be/2013/09/underestimated-or-underused-portage-elogging/" rel="alternate"></link><published>2013-09-25T10:09:00+02:00</published><updated>2013-09-25T10:09:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-09-25:/2013/09/underestimated-or-underused-portage-elogging/</id><summary type="html">&lt;p&gt;Within 30 minutes of each other, two people on the &lt;code&gt;#gentoo&lt;/code&gt; channel
+&lt;/p&gt;</content><category term="Security"></category><category term="Gentoo"></category><category term="hardened"></category><category term="libffi"></category><category term="portage"></category><category term="selinux"></category></entry><entry><title>Underestimated or underused: Portage (e)logging</title><link href="https://blog.siphos.be/2013/09/underestimated-or-underused-portage-elogging/" rel="alternate"></link><published>2013-09-25T10:09:00+02:00</published><updated>2013-09-25T10:09:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-09-25:/2013/09/underestimated-or-underused-portage-elogging/</id><summary type="html">&lt;p&gt;Within 30 minutes of each other, two people on the &lt;code&gt;#gentoo&lt;/code&gt; channel
 asked if Portage kept logs of the messages displayed during the build
 and installation of a package. Of course, the answer is a sounding "yes"
 - and depending on your needs, you can even save more of the logging …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Within 30 minutes of each other, two people on the &lt;code&gt;#gentoo&lt;/code&gt; channel
@@ -232,7 +223,7 @@ about something useful or important (usually &lt;code&gt;elog&lt;/code&gt;), a p
 that might occur (&lt;code&gt;ewarn&lt;/code&gt;) or even a problem that was found (&lt;code&gt;eerror&lt;/code&gt;).
 Let's look at a snippet of the &lt;code&gt;app-admin/eselect-postgresql-1.0.10&lt;/code&gt;
 package:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pkg_postinst() {
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;pkg_postinst() {
     ewarn &amp;quot;If you are updating from app-admin/eselect-postgresql-0.4 or older, run:&amp;quot;
     ewarn
     ewarn &amp;quot;    eselect postgresql update&amp;quot;
@@ -242,8 +233,7 @@ package:&lt;/p&gt;
     elog &amp;quot;    eselect postgresql list&amp;quot;
     elog &amp;quot;    eselect postgresql set &amp;quot;
 }
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Here, the developer warns the administrator that, if an upgrade of the
 package from version 0.4 or older occurred, an additional action needs
@@ -251,17 +241,16 @@ to be taken. For others, he informs the administrators how to mark the
 proper active PostgreSQL slot (using the &lt;code&gt;elog&lt;/code&gt; methods).&lt;/p&gt;
 &lt;p&gt;Portage will save this information by default in &lt;code&gt;/var/log/portage/elog&lt;/code&gt;
 as separate files for each deployment:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ ls /var/log/portage/elog/*eselect-postgres*
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ ls /var/log/portage/elog/*eselect-postgres*
 /var/log/portage/elog/app-admin:eselect-postgresql-1.0.10:20130818-184756.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-131631.log
 /var/log/portage/elog/app-admin:eselect-postgresql-1.2.0:20130915-200851.log
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If &lt;code&gt;FEATURES="split-elog"&lt;/code&gt; is set in your &lt;code&gt;make.conf&lt;/code&gt; file, then the
 elog files will be stored in separate category subdirectories. Below is
 the content of such a single file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ cat /var/log/portage/elog/app-admin\:eselect-postgresql-1.0.10\:20130818-184756.log
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ cat /var/log/portage/elog/app-admin\:eselect-postgresql-1.0.10\:20130818-184756.log
 INFO: setup
 Package:    app-admin/eselect-postgresql-1.0.10
 Repository: gentoo
@@ -278,8 +267,7 @@ LOG: postinst
 You should set your desired PostgreSQL slot:
     eselect postgresql list
     eselect postgresql set &amp;lt;slot&amp;gt;
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;In the file, package information is provided, and each set of logging
 paragraphs is accompanied with information where in the build process
@@ -297,12 +285,11 @@ build logs? In that case, you need to define &lt;code&gt;PORT_LOGDIR&lt;/code&gt
 &lt;code&gt;make.conf&lt;/code&gt; file. This variable has to point to a location where Portage
 (which usually runs as the &lt;code&gt;portage&lt;/code&gt; Linux user) has write access to and
 where it is allowed to store the build logs:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~$ grep PORT_LOGDIR /etc/portage/make.conf 
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~$ grep PORT_LOGDIR /etc/portage/make.conf 
 PORT_LOGDIR=&amp;quot;/var/log/portage&amp;quot;
 ~$ ls -ldZ /var/log/portage/
 drwxrwsr-x. 3 portage portage system_u:object_r:portage_log_t 679936 Sep 24 13:12 /var/log/portage/
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With the variable set, build logs will be provided for each emerge (and
 unmerge) operation of the package. These logs contain everything shown
@@ -321,11 +308,11 @@ elogging, build logging can also be done in category subdirectories. If
 &lt;code&gt;FEATURES="split-log"&lt;/code&gt; is set, the build logs will be stored in
 &lt;code&gt;${PORT_LOGDIR}/build/&amp;lt;category&amp;gt;&lt;/code&gt; instead of &lt;code&gt;${PORT_LOGDIR}&lt;/code&gt; directly.&lt;/p&gt;
 &lt;p&gt;Hopefully this post brings some users closer to this nice feature of
-Portage.&lt;/p&gt;</content><category term="elog"></category><category term="Gentoo"></category><category term="logging"></category><category term="portage"></category></entry><entry><title>Why our policies don't like emerge --config</title><link href="https://blog.siphos.be/2013/08/why-our-policies-dont-like-emerge-config/" rel="alternate"></link><published>2013-08-23T11:53:00+02:00</published><updated>2013-08-23T11:53:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/why-our-policies-dont-like-emerge-config/</id><summary type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
+Portage.&lt;/p&gt;</content><category term="Gentoo"></category><category term="elog"></category><category term="Gentoo"></category><category term="logging"></category><category term="portage"></category></entry><entry><title>Why our policies don't like emerge --config</title><link href="https://blog.siphos.be/2013/08/why-our-policies-dont-like-emerge-config/" rel="alternate"></link><published>2013-08-23T11:53:00+02:00</published><updated>2013-08-23T11:53:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2013-08-23:/2013/08/why-our-policies-dont-like-emerge-config/</id><summary type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
 done on request of the administrator for certain packages. For instance,
 for the &lt;code&gt;dev-db/postgresql-server&lt;/code&gt; package we can call its
 &lt;code&gt;pkg_config()&lt;/code&gt; phase to create the PostgreSQL instance and configure it
-so that the configuration of the database is stored …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
+so that the configuration of the database is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
 done on request of the administrator for certain packages. For instance,
 for the &lt;code&gt;dev-db/postgresql-server&lt;/code&gt; package we can call its
 &lt;code&gt;pkg_config()&lt;/code&gt; phase to create the PostgreSQL instance and configure it
@@ -352,13 +339,12 @@ code in Portage, something I'd rather not do (introduces additional
 complexity and maintenance).&lt;/p&gt;
 &lt;p&gt;Another possibility would be to have administrators explicitly state
 that no transition should occur, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;~# runcon -t sysadm_t emerge --config =dev-db/postgresql-server-9.2.4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With a minor addition to the policy, this gave me a good hope... until I
 noticed that &lt;strong&gt;emerge&lt;/strong&gt; underlyingly calls &lt;strong&gt;ebuild&lt;/strong&gt; and &lt;strong&gt;ebuild.sh&lt;/strong&gt;,
 both labeled as &lt;code&gt;portage_exec_t&lt;/code&gt;, so these calls transition to
 &lt;code&gt;portage_t&lt;/code&gt; again.&lt;/p&gt;
 &lt;p&gt;I'm going to look further into this - there are quite a few options
-still open.&lt;/p&gt;</content><category term="Gentoo"></category><category term="pkg_config"></category><category term="portage"></category><category term="selinux"></category></entry></feed>
+still open.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="pkg_config"></category><category term="portage"></category><category term="selinux"></category></entry></feed>

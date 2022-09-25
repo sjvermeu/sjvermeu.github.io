@@ -20,10 +20,9 @@ dates supported for z/OS data sets. And to implement this, I am
 considering to use extended attributes.&lt;/p&gt;
 &lt;p&gt;The idea is simple: when working with a file, I want to be able to
 immediately set an expiration date to it:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ strace -o strace.log ...
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;$ strace -o strace.log ...
 $ expdate +7d strace.log
-&lt;/pre&gt;&lt;/div&gt;
-
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This would set an extended attribute named &lt;code&gt;user.expiration&lt;/code&gt; with the
 value being the number of seconds since epoch (which you can obtain
@@ -41,4 +40,4 @@ their last modification time. Setting the expiration dates manually
 after creating the files is prone to be forgotten after a while. And
 perhaps introduce the flexibility of setting an &lt;code&gt;user.expire_after&lt;/code&gt;
 attribute is well, telling that the file can be removed if it hasn't
-been touched (modification time) in at least XX number of days.&lt;/p&gt;</content><category term="attributes"></category><category term="expiration"></category><category term="extended-attributes"></category><category term="linux"></category><category term="xattr"></category></entry></feed>
+been touched (modification time) in at least XX number of days.&lt;/p&gt;</content><category term="Free-Software"></category><category term="attributes"></category><category term="expiration"></category><category term="extended-attributes"></category><category term="linux"></category><category term="xattr"></category></entry></feed>
