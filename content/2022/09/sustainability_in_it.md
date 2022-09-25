@@ -117,7 +117,7 @@ the data cannot be retrieved).
 
 **Extended lifecycle**
 
-Systems are often working perfectly beyond their 4 to 5 year lifespan.
+Systems are often working perfectly beyond their 4 to 5 year lifespans.
 Still, these systems are process-wise automatically renewed to get more
 efficient and powerful systems in place. But that might not always be necessary
 - beyond even the circular ecosystem remarks above (where such systems could be
@@ -174,8 +174,8 @@ continuously used at near full capacity. Workloads are frequently following a
 certain curve, such as higher demand during the day and lower at night.
 Larger platforms use this curve to schedule appropriate workload (like
 running heavy batch workload at night while keeping the systems available
-for operational workload at day) so that the resources are more optimally
-used.
+for operational workload during the day) so that the resources are more
+optimally used.
 
 By addressing workload management and aligning power management, companies
 can improve their power usage by reducing active systems when there are less
@@ -199,6 +199,6 @@ easily without certification, but with proper attention and design.
 
 Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
-Twitter](https://twitter.com/infrainsight/status/TODO).
+Twitter](https://twitter.com/infrainsight/status/1573941352844464128).
 
 <!-- PELICAN_END_SUMMARY -->
