@@ -256,7 +256,7 @@ started. Sadly that wasn't the case, as the rc-* scripts always return
 0 (you'll need to parse the output).</p>
 <p>So what I did now is to create a simple script called <code>runstatus</code> which
 returns the state of services. It's crude, but seems to work:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -269,7 +269,7 @@ returns the state of services. It's crude, but seems to work:</p>
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
-<span class="normal">14</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
 <span class="nv">SERVICENAME</span><span class="o">=</span><span class="nv">$1</span><span class="p">;</span>
 
@@ -280,11 +280,11 @@ returns the state of services. It's crude, but seems to work:</p>
 <span class="c1"># 3 - if not running</span>
 <span class="c1"># 4 - if unknown</span>
 
-rc-status -a -C <span class="p">|</span> grep <span class="si">${</span><span class="nv">SERVICENAME</span><span class="si">}</span> <span class="p">|</span> grep -q started <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="m">0</span><span class="p">;</span>
-rc-status -a -C <span class="p">|</span> grep <span class="si">${</span><span class="nv">SERVICENAME</span><span class="si">}</span> <span class="p">|</span> grep -q stopped <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="m">3</span><span class="p">;</span>
-<span class="nb">exit</span> <span class="m">4</span><span class="p">;</span>
-</code></pre></div>
-</td></tr></table>
+rc-status<span class="w"> </span>-a<span class="w"> </span>-C<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="si">${</span><span class="nv">SERVICENAME</span><span class="si">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span>started<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">0</span><span class="p">;</span>
+rc-status<span class="w"> </span>-a<span class="w"> </span>-C<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="si">${</span><span class="nv">SERVICENAME</span><span class="si">}</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span>stopped<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">exit</span><span class="w"> </span><span class="m">3</span><span class="p">;</span>
+<span class="nb">exit</span><span class="w"> </span><span class="m">4</span><span class="p">;</span>
+</code></pre></div></td></tr></table></div>
+
 <p>I then have the service provider (I now provide my own instead of
 patching the openrc one) call <strong>runstatus</strong> to get the state of a
 service, as well as call it after trying to start a service. But as this

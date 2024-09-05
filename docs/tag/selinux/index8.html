@@ -311,7 +311,7 @@ networking …</p></p>
 reflects this into the policy).</p>
 <p>When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are <em>tcp_socket</em> and
-<em>udp_socket</em> (depending on the protocol). There used to be …</p></p>
+<em>udp_socket</em> (depending on the protocol). There used to be <em>node</em> and …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -339,7 +339,8 @@ I started with a small overview of
 capabilities. So next up are process-related capabilities (note, this
 isn't a conform terminology, more some categorization that I do myself).</p>
 <dl>
-<dt>CAP_IPC_LOCK …</dt></dl></p>
+<dt>CAP_IPC_LOCK</dt>
+<dd>Allow the …</dd></dl></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>
@@ -437,7 +438,8 @@ behind the scenes. But when it fails, it fails bad …</p></p>
 SELinux-enabled, their user context is wrong. An example would be when,
 after logon (in permissive mode), the user is in the
 <code>system_u:system_r:local_login_t</code> domain instead of a user domain like
-<code>staff_u:staff_r:staff …</code></p></p>
+<code>staff_u:staff_r:staff_t</code>.<br>
+So, how does a login get …</p></p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
                     </div>

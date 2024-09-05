@@ -257,7 +257,7 @@ create a binary package but will not be merged on the system. When you
 later update your system, including binary packages, those packages that
 have been build during the night will be merged quickly, reducing the
 build load on your system while you are working on it.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -273,25 +273,25 @@ build load on your system while you are working on it.</p>
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
-<span class="normal">17</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="ch">#!/bin/sh</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="ch">#!/bin/sh</span>
 
 <span class="nv">LIST</span><span class="o">=</span><span class="k">$(</span>mktemp<span class="k">)</span><span class="p">;</span>
 
-emerge -puDN --color<span class="o">=</span>n --columns --quiet<span class="o">=</span>y world <span class="p">|</span> awk <span class="s1">&#39;{print $2}&#39;</span> &gt; <span class="si">${</span><span class="nv">LIST</span><span class="si">}</span><span class="p">;</span>
+emerge<span class="w"> </span>-puDN<span class="w"> </span>--color<span class="o">=</span>n<span class="w"> </span>--columns<span class="w"> </span>--quiet<span class="o">=</span>y<span class="w"> </span>world<span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $2}&#39;</span><span class="w"> </span>&gt;<span class="w"> </span><span class="si">${</span><span class="nv">LIST</span><span class="si">}</span><span class="p">;</span>
 
-<span class="k">for</span> PACKAGE <span class="k">in</span> <span class="k">$(</span>cat <span class="si">${</span><span class="nv">LIST</span><span class="si">}</span><span class="k">)</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span>PACKAGE<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span><span class="si">${</span><span class="nv">LIST</span><span class="si">}</span><span class="k">)</span><span class="p">;</span>
 <span class="k">do</span>
-  <span class="nb">printf</span> <span class="s2">&quot;Building binary package for </span><span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span><span class="s2">... &quot;</span>
-  emerge -uN --quiet-build --quiet<span class="o">=</span>y --buildpkgonly <span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span><span class="p">;</span>
-  <span class="k">if</span> <span class="o">[[</span> <span class="nv">$?</span> -eq <span class="m">0</span> <span class="o">]]</span><span class="p">;</span>
-  <span class="k">then</span>
-    <span class="nb">echo</span> <span class="s2">&quot;ok&quot;</span><span class="p">;</span>
-  <span class="k">else</span>
-    <span class="nb">echo</span> <span class="s2">&quot;failed&quot;</span><span class="p">;</span>
-  <span class="k">fi</span>
+<span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s2">&quot;Building binary package for </span><span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span><span class="s2">... &quot;</span>
+<span class="w">  </span>emerge<span class="w"> </span>-uN<span class="w"> </span>--quiet-build<span class="w"> </span>--quiet<span class="o">=</span>y<span class="w"> </span>--buildpkgonly<span class="w"> </span><span class="si">${</span><span class="nv">PACKAGE</span><span class="si">}</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="nv">$?</span><span class="w"> </span>-eq<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span>
+<span class="w">  </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ok&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">else</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;failed&quot;</span><span class="p">;</span>
+<span class="w">  </span><span class="k">fi</span>
 <span class="k">done</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
+
 <p>I ran this a couple of days ago when <em>-uDN world</em> showed 46 package
 updates (including a few hefty ones like chromium). After running this
 script, 35 of them had a binary package ready so the <em>-uDN world</em> now

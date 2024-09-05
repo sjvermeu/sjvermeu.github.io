@@ -250,11 +250,11 @@ review why they are needed):</p>
 <span class="n">auth_domtrans_chk_passwd</span><span class="p">(</span><span class="n">initrc_t</span><span class="p">)</span>
 
 <span class="c1"># Allow initrc_t to query selinux access, otherwise avc assertion</span>
-<span class="n">allow</span> <span class="n">initrc_t</span> <span class="nb">self</span><span class="ss">:netlink_selinux_socket</span> <span class="p">{</span> <span class="n">bind</span> <span class="n">create</span> <span class="n">read</span> <span class="p">};</span>
+<span class="n">allow</span><span class="w"> </span><span class="n">initrc_t</span><span class="w"> </span><span class="nb">self</span><span class="ss">:netlink_selinux_socket</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">bind</span><span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="p">};</span>
 <span class="n">selinux_compute_access_vector</span><span class="p">(</span><span class="n">initrc_t</span><span class="p">)</span>
 
 <span class="c1"># Allow initrc_t to honor the pam_rootok setting</span>
-<span class="n">allow</span> <span class="n">initrc_t</span> <span class="nb">self</span><span class="ss">:passwd</span> <span class="p">{</span> <span class="n">passwd</span> <span class="n">rootok</span> <span class="p">};</span>
+<span class="n">allow</span><span class="w"> </span><span class="n">initrc_t</span><span class="w"> </span><span class="nb">self</span><span class="ss">:passwd</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">passwd</span><span class="w"> </span><span class="n">rootok</span><span class="w"> </span><span class="p">};</span>
 </code></pre></div>
 
 <p>With these SELinux rules, switching the user works as expected from within an

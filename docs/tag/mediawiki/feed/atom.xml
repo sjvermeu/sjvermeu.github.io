@@ -24,21 +24,21 @@ the conversion from markdown to HTML is not what I hoped it was.&lt;/p&gt;
 &lt;p&gt;The restructured text is then converted to HTML using &lt;code&gt;rst2html.py&lt;/code&gt;. In the end,
 I use the following function (for conversion, once):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Convert GuideXML to RestructedText and to HTML&lt;/span&gt;
-gxml2html&lt;span class="o"&gt;()&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
-  &lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;1&lt;/span&gt;&lt;span class="p"&gt;%%.xml&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+gxml2html&lt;span class="o"&gt;()&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;{&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;1&lt;/span&gt;&lt;span class="p"&gt;%%.xml&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-  &lt;span class="c1"&gt;# Convert to Mediawiki syntax&lt;/span&gt;
-  xsltproc ~/dev-cvs/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl &lt;span class="nv"&gt;$1&lt;/span&gt; &amp;gt; &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.mediawiki
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;# Convert to Mediawiki syntax&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;xsltproc&lt;span class="w"&gt; &lt;/span&gt;~/dev-cvs/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&amp;gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.mediawiki
 
-  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -f &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.mediawiki &lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
-    &lt;span class="c1"&gt;# Convert to restructured text&lt;/span&gt;
-    pandoc -f mediawiki -t rst -s -S -o &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.rst &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.mediawiki&lt;span class="p"&gt;;&lt;/span&gt;
-  &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.mediawiki&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;# Convert to restructured text&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;pandoc&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;mediawiki&lt;span class="w"&gt; &lt;/span&gt;-t&lt;span class="w"&gt; &lt;/span&gt;rst&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;-S&lt;span class="w"&gt; &lt;/span&gt;-o&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.rst&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.mediawiki&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
 
-  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; -f &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.rst &lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
-    &lt;span class="c1"&gt;# Use your own stylesheet links (use full https URLs for this)&lt;/span&gt;
-    rst2html.py  --stylesheet&lt;span class="o"&gt;=&lt;/span&gt;link-to-bootstrap.min.css,link-to-tyrian.min.css --link-stylesheet &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.rst &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.html
-  &lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;-f&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.rst&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="c1"&gt;# Use your own stylesheet links (use full https URLs for this)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;rst2html.py&lt;span class="w"&gt;  &lt;/span&gt;--stylesheet&lt;span class="o"&gt;=&lt;/span&gt;link-to-bootstrap.min.css,link-to-tyrian.min.css&lt;span class="w"&gt; &lt;/span&gt;--link-stylesheet&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.rst&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;basefile&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.html
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;span class="o"&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 

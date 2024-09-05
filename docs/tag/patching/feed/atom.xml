@@ -29,15 +29,15 @@ ebuilds is that we can simply copy them and commit in order to make a new releas
 &lt;p&gt;So, in case of the patch backporting, the necessary patch files are first moved
 into the &lt;code&gt;files/&lt;/code&gt; subdirectory of the package. Then, the live ebuild is updated
 to use the new patches:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gu"&gt;@@ -88,6 +85,8 @@ src_prepare() {&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&amp;quot;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&amp;quot;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&amp;quot;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&amp;quot;&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="w"&gt; &lt;/span&gt;       fi&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="gu"&gt;@@ -88,6 +85,8 @@ src_prepare() {&lt;/span&gt;
+&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0070-remove-symlink-attempt-fails-with-gentoo-sandbox-approach.patch&amp;quot;
+&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0110-build-mcstrans-bug-472912.patch&amp;quot;
+&lt;span class="w"&gt; &lt;/span&gt;               epatch &amp;quot;${FILESDIR}/0120-build-failure-for-mcscolor-for-CONTEXT__CONTAINS.patch&amp;quot;
+&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0130-Only-invoke-RPM-on-RPM-enabled-Linux-distributions-bug-534682.patch&amp;quot;&lt;/span&gt;
+&lt;span class="gi"&gt;+               epatch &amp;quot;${FILESDIR}/0140-Set-self.sename-to-sename-after-calling-semanage-bug-557370.patch&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt; &lt;/span&gt;       fi
 
-&lt;span class="w"&gt; &lt;/span&gt;       # rlpkg is more useful than fixfiles&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="w"&gt; &lt;/span&gt;       # rlpkg is more useful than fixfiles
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The patches themselves do not apply for the live ebuilds themselves (they are

@@ -304,7 +304,7 @@ request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt
 Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
 what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
 &lt;p&gt;The answer can be found in &lt;code&gt;/usr/src/linux/include/linux/socket.h&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When checking audit logs, you might come across applications that
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF_ATMPVC …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When checking audit logs, you might come across applications that
 request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt;##&lt;/code&gt; being an integer.
 Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
 what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
@@ -723,7 +723,7 @@ covered a few capabilities, so let's wrap this up with the remainder of
 them.&lt;/p&gt;
 &lt;dl&gt;
 &lt;dt&gt;CAP_AUDIT_CONTROL&lt;/dt&gt;
-&lt;dd&gt;Enable and disable kernel auditing; change …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
+&lt;dd&gt;Enable and disable kernel auditing; change auditing filter …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;In &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/"&gt;I&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/"&gt;talked&lt;/a&gt;
@@ -884,7 +884,8 @@ I started with a small overview of
 capabilities. So next up are process-related capabilities (note, this
 isn't a conform terminology, more some categorization that I do myself).&lt;/p&gt;
 &lt;dl&gt;
-&lt;dt&gt;CAP_IPC_LOCK …&lt;/dt&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+&lt;dt&gt;CAP_IPC_LOCK&lt;/dt&gt;
+&lt;dd&gt;Allow the …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
 capabilities&lt;/a&gt;
 and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
 them&lt;/a&gt;,

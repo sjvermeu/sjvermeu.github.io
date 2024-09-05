@@ -4,7 +4,9 @@
 post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
 &lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
 want to be able to update the policy more dynamically with additional
-types. To accomplish this, we will make types eligible for watching …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the
+types. To accomplish this, we will make types eligible for watching
+through an attribute.&lt;/p&gt;
+&lt;p&gt;So how …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the
 &lt;a herf="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/"&gt;previous
 post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
 &lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
@@ -248,7 +250,7 @@ miscfiles_read_public_files(incrond_t)
 domain. As this domain will also be used to execute the user (and
 system) commands provided through the incrontabs, we need to consider
 how we are going to deal with this wide range of possible permissions
-that it might …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With &lt;code&gt;incrontab_t&lt;/code&gt; (hopefully) complete, let's look at the &lt;code&gt;incrond_t&lt;/code&gt;
+that it might take. One …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With &lt;code&gt;incrontab_t&lt;/code&gt; (hopefully) complete, let's look at the &lt;code&gt;incrond_t&lt;/code&gt;
 domain. As this domain will also be used to execute the user (and
 system) commands provided through the incrontabs, we need to consider
 how we are going to deal with this wide range of possible permissions

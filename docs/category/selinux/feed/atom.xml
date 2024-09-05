@@ -559,11 +559,11 @@ review why they are needed):&lt;/p&gt;
 &lt;span class="n"&gt;auth_domtrans_chk_passwd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Allow initrc_t to query selinux access, otherwise avc assertion&lt;/span&gt;
-&lt;span class="n"&gt;allow&lt;/span&gt; &lt;span class="n"&gt;initrc_t&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:netlink_selinux_socket&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;bind&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="n"&gt;read&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:netlink_selinux_socket&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
 &lt;span class="n"&gt;selinux_compute_access_vector&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Allow initrc_t to honor the pam_rootok setting&lt;/span&gt;
-&lt;span class="n"&gt;allow&lt;/span&gt; &lt;span class="n"&gt;initrc_t&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:passwd&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;passwd&lt;/span&gt; &lt;span class="n"&gt;rootok&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:passwd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;passwd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;rootok&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With these SELinux rules, switching the user works as expected from within an
@@ -619,14 +619,14 @@ In it, we wanted to allow &lt;code&gt;mozilla_t&lt;/code&gt; to send and receive
 example didn't use an interface-like construction for this, so let's see
 how this would be dealt with.&lt;/p&gt;
 &lt;p&gt;First, the module is slightly adjusted to create a &lt;em&gt;macro&lt;/em&gt; called &lt;code&gt;myhttp_sendrecv_client_packet&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt; &lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Another module would then call this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt; &lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's it. When the policy modules are both loaded, then the &lt;code&gt;mozilla_t&lt;/code&gt; domain is able
@@ -636,24 +636,24 @@ to send and receive &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; labeled pack
 for the interfaces, CIL is able to use namespaces. It allows to create an almost
 object-like approach for policy development.&lt;/p&gt;
 &lt;p&gt;The above &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; definition could be written as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;myhttp&lt;/span&gt;
-  &lt;span class="c1"&gt;; MyHTTP client packet&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt; &lt;span class="nv"&gt;object_r&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;client_packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;; MyHTTP client packet&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt; &lt;span class="nv"&gt;sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
-  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;sendrecv_client_packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The other module looks as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;mozilla&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt; &lt;span class="nv"&gt;myhttp.sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp.sendrecv_client_packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -975,7 +975,7 @@ allowed any access to &lt;code&gt;unlabeled_t&lt;/code&gt;.&lt;/p&gt;
 &lt;li&gt;Allow &lt;code&gt;unlabeled_t&lt;/code&gt; for all domains.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;To allow the latter, we can load a SELinux rule like the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;unlabeled_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;unlabeled_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This will allow all domains to send and receive packets of the &lt;code&gt;unlabeled_t&lt;/code&gt; type.
@@ -997,14 +997,14 @@ connection, as all other web browsers and other HTTP-aware applications will hav
 policy rules enabled to send and receive that packet type. Instead, we are going
 to create a new packet type to use.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;;; Definition of myhttp_client_packet_t&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt; &lt;span class="nv"&gt;object_r&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;client_packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
 &lt;span class="c1"&gt;;; Grant the use to mozilla_t&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Putting the above in a &lt;code&gt;myhttppacket.cil&lt;/code&gt; file and loading it allows the type
@@ -1875,7 +1875,7 @@ much reusable.&lt;/p&gt;</content><category term="SELinux"></category><category 
 that it (well, the authdaemon that is part of Courier) wanted to access
 &lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
 know that this is through the PAM support (more specifically,
-&lt;code&gt;pam …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
+&lt;code&gt;pam_unix …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
 that it (well, the authdaemon that is part of Courier) wanted to access
 &lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
 know that this is through the PAM support (more specifically,
@@ -2021,7 +2021,7 @@ hope it is as good a read for you as I hope it to be.&lt;/p&gt;</content><catego
 to the file system, with an error that looks like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
- * ERROR: dev-libs/libpcre-8 …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
+ * ERROR: dev-libs/libpcre-8.35::gentoo …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;SELinux users might be facing failures when emerge is merging a package
 to the file system, with an error that looks like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; Setting SELinux security labels
 /usr/lib64/portage/bin/misc-functions.sh: line 1112: 23719 Segmentation fault      /usr/sbin/setfiles &amp;quot;${file_contexts_path}&amp;quot; -r &amp;quot;${D}&amp;quot; &amp;quot;${D}&amp;quot;
@@ -2309,7 +2309,8 @@ Hopefully such patches can be made available in the kernel and user
 space utilities soon.&lt;/p&gt;</content><category term="SELinux"></category><category term="constrain"></category><category term="constraints"></category><category term="dot"></category><category term="graphviz"></category><category term="seinfo"></category><category term="selinux"></category></entry><entry><title>If things are weird, check for policy.29</title><link href="https://blog.siphos.be/2014/04/if-things-are-weird-check-for-policy-29/" rel="alternate"></link><published>2014-04-17T21:01:00+02:00</published><updated>2014-04-17T21:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-17:/2014/04/if-things-are-weird-check-for-policy-29/</id><summary type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
-issue that has been resolved in our current SELinux policy repository …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
+issue that has been resolved in our current SELinux policy repository
+but …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
 issue that has been resolved in our current SELinux policy repository
@@ -2334,7 +2335,10 @@ disappointing.&lt;/p&gt;
 &lt;code&gt;/etc/selinux/*/policy&lt;/code&gt; directory. If you see any &lt;code&gt;policy.*&lt;/code&gt; that isn't
 version 28, delete them.&lt;/p&gt;</content><category term="SELinux"></category><category term="load_policy"></category><category term="policy"></category><category term="selinux"></category><category term="semanage"></category></entry><entry><title>Decoding the hex-coded path information in AVC denials</title><link href="https://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/" rel="alternate"></link><published>2014-03-30T16:37:00+02:00</published><updated>2014-03-30T16:37:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-30:/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/</id><summary type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
 human readable, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;To know what this …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
 human readable, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -2784,7 +2788,7 @@ application should gracefully fail.&lt;/p&gt;</content><category term="SELinux">
 was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
 that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
 &lt;p&gt;I used a simple script (which I've been using for a while already)
-called &lt;strong&gt;seshowtree …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
 was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
 that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
 &lt;p&gt;I used a simple script (which I've been using for a while already)
@@ -3608,7 +3612,7 @@ types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
 more flexible: booleans. The idea now is that a boolean called
 &lt;em&gt;incron_notify_non_security_files&lt;/em&gt; enables &lt;strong&gt;incrond&lt;/strong&gt; to be
-notified on …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+notified on changes on all possible …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
 to mark other
 types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
@@ -3665,7 +3669,9 @@ granting too many rights automatically.&lt;/p&gt;</content><category term="SELin
 post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
 &lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
 want to be able to update the policy more dynamically with additional
-types. To accomplish this, we will make types eligible for watching …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the
+types. To accomplish this, we will make types eligible for watching
+through an attribute.&lt;/p&gt;
+&lt;p&gt;So how …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the
 &lt;a herf="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/"&gt;previous
 post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
 &lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
@@ -3909,7 +3915,7 @@ miscfiles_read_public_files(incrond_t)
 domain. As this domain will also be used to execute the user (and
 system) commands provided through the incrontabs, we need to consider
 how we are going to deal with this wide range of possible permissions
-that it might …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With &lt;code&gt;incrontab_t&lt;/code&gt; (hopefully) complete, let's look at the &lt;code&gt;incrond_t&lt;/code&gt;
+that it might take. One …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With &lt;code&gt;incrontab_t&lt;/code&gt; (hopefully) complete, let's look at the &lt;code&gt;incrond_t&lt;/code&gt;
 domain. As this domain will also be used to execute the user (and
 system) commands provided through the incrontabs, we need to consider
 how we are going to deal with this wide range of possible permissions
@@ -4761,7 +4767,7 @@ instead - which will be for the next post.&lt;/p&gt;</content><category term="SE
 first question to ask is how it got there.&lt;/p&gt;
 &lt;p&gt;Well, one way is to have a process running in a known domain, like
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
-domain is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you notice that a process is running in the &lt;code&gt;unlabeled_t&lt;/code&gt; domain, the
+domain is removed from …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you notice that a process is running in the &lt;code&gt;unlabeled_t&lt;/code&gt; domain, the
 first question to ask is how it got there.&lt;/p&gt;
 &lt;p&gt;Well, one way is to have a process running in a known domain, like
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
@@ -4797,7 +4803,7 @@ transition to it. The above one is one way that this still can occur.&lt;/p&gt;<
 was to give some additional information on frequently occurring denials,
 such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
-developers often notice that these capabilities …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
+developers often notice that these capabilities are triggered without …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
 was to give some additional information on frequently occurring denials,
 such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
@@ -5068,7 +5074,7 @@ all ears.&lt;/p&gt;</content><category term="SELinux"></category><category term=
 reflects this into the policy).&lt;/p&gt;
 &lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
-&lt;em&gt;udp_socket&lt;/em&gt; (depending on the protocol). There used to be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
+&lt;em&gt;udp_socket&lt;/em&gt; (depending on the protocol). There used to be &lt;em&gt;node&lt;/em&gt; and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
 reflects this into the policy).&lt;/p&gt;
 &lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
@@ -5173,7 +5179,8 @@ context on all resources (including the filesystem class).&lt;/p&gt;</content><c
 SELinux-enabled, their user context is wrong. An example would be when,
 after logon (in permissive mode), the user is in the
 &lt;code&gt;system_u:system_r:local_login_t&lt;/code&gt; domain instead of a user domain like
-&lt;code&gt;staff_u:staff_r:staff …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes, especially when users are converting their systems to be
+&lt;code&gt;staff_u:staff_r:staff_t&lt;/code&gt;.&lt;br&gt;
+So, how does a login get …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes, especially when users are converting their systems to be
 SELinux-enabled, their user context is wrong. An example would be when,
 after logon (in permissive mode), the user is in the
 &lt;code&gt;system_u:system_r:local_login_t&lt;/code&gt; domain instead of a user domain like
@@ -6106,7 +6113,7 @@ do not trust this.&lt;/p&gt;</content><category term="SELinux"></category></entr
 constraints&lt;/em&gt;. Here, UBAC stands for &lt;em&gt;User Based Access Control&lt;/em&gt;. The
 idea behind the constraint is that any activity between two types (say
 &lt;code&gt;foo_t&lt;/code&gt; and &lt;code&gt;bar_t&lt;/code&gt;) can be prohibited if the user contexts of the
-resources that …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Within the reference policy, support is given to a feature called &lt;em&gt;UBAC
+resources that are using …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Within the reference policy, support is given to a feature called &lt;em&gt;UBAC
 constraints&lt;/em&gt;. Here, UBAC stands for &lt;em&gt;User Based Access Control&lt;/em&gt;. The
 idea behind the constraint is that any activity between two types (say
 &lt;code&gt;foo_t&lt;/code&gt; and &lt;code&gt;bar_t&lt;/code&gt;) can be prohibited if the user contexts of the
@@ -6409,7 +6416,8 @@ parties. If you're interested in SELinux and want to give it a try with
 Gentoo Hardened, this might be the document you are looking for.&lt;/p&gt;</content><category term="SELinux"></category></entry><entry><title>SELinux enforcing for console activity</title><link href="https://blog.siphos.be/2010/10/selinux-enforcing-for-console-activity/" rel="alternate"></link><published>2010-10-30T21:30:00+02:00</published><updated>2010-10-30T21:30:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2010-10-30:/2010/10/selinux-enforcing-for-console-activity/</id><summary type="html">&lt;p&gt;I'm now able to boot into my system with SELinux in enforcing mode
 (without unconfined domains), do standard system administration tasks as
 root / sysadm_r (including the relevant Portage activities) and work as
-a regular user as long as I don't want to run in Xorg. I'm not going to …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I'm now able to boot into my system with SELinux in enforcing mode
+a regular user as long as I don't want to run in Xorg. I'm not going to
+focus …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I'm now able to boot into my system with SELinux in enforcing mode
 (without unconfined domains), do standard system administration tasks as
 root / sysadm_r (including the relevant Portage activities) and work as
 a regular user as long as I don't want to run in Xorg. I'm not going to

@@ -66,7 +66,7 @@ allowed any access to &lt;code&gt;unlabeled_t&lt;/code&gt;.&lt;/p&gt;
 &lt;li&gt;Allow &lt;code&gt;unlabeled_t&lt;/code&gt; for all domains.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;To allow the latter, we can load a SELinux rule like the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;unlabeled_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;unlabeled_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This will allow all domains to send and receive packets of the &lt;code&gt;unlabeled_t&lt;/code&gt; type.
@@ -88,14 +88,14 @@ connection, as all other web browsers and other HTTP-aware applications will hav
 policy rules enabled to send and receive that packet type. Instead, we are going
 to create a new packet type to use.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;;; Definition of myhttp_client_packet_t&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt; &lt;span class="nv"&gt;object_r&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;client_packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
 &lt;span class="c1"&gt;;; Grant the use to mozilla_t&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Putting the above in a &lt;code&gt;myhttppacket.cil&lt;/code&gt; file and loading it allows the type

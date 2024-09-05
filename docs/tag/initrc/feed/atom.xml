@@ -30,11 +30,11 @@ review why they are needed):&lt;/p&gt;
 &lt;span class="n"&gt;auth_domtrans_chk_passwd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Allow initrc_t to query selinux access, otherwise avc assertion&lt;/span&gt;
-&lt;span class="n"&gt;allow&lt;/span&gt; &lt;span class="n"&gt;initrc_t&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:netlink_selinux_socket&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;bind&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="n"&gt;read&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:netlink_selinux_socket&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
 &lt;span class="n"&gt;selinux_compute_access_vector&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Allow initrc_t to honor the pam_rootok setting&lt;/span&gt;
-&lt;span class="n"&gt;allow&lt;/span&gt; &lt;span class="n"&gt;initrc_t&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:passwd&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;passwd&lt;/span&gt; &lt;span class="n"&gt;rootok&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:passwd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;passwd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;rootok&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With these SELinux rules, switching the user works as expected from within an

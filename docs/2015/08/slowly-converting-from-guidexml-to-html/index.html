@@ -254,21 +254,21 @@ the conversion from markdown to HTML is not what I hoped it was.</p>
 <p>The restructured text is then converted to HTML using <code>rst2html.py</code>. In the end,
 I use the following function (for conversion, once):</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Convert GuideXML to RestructedText and to HTML</span>
-gxml2html<span class="o">()</span> <span class="o">{</span>
-  <span class="nv">basefile</span><span class="o">=</span><span class="si">${</span><span class="nv">1</span><span class="p">%%.xml</span><span class="si">}</span><span class="p">;</span>
+gxml2html<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="nv">basefile</span><span class="o">=</span><span class="si">${</span><span class="nv">1</span><span class="p">%%.xml</span><span class="si">}</span><span class="p">;</span>
 
-  <span class="c1"># Convert to Mediawiki syntax</span>
-  xsltproc ~/dev-cvs/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl <span class="nv">$1</span> &gt; <span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.mediawiki
+<span class="w">  </span><span class="c1"># Convert to Mediawiki syntax</span>
+<span class="w">  </span>xsltproc<span class="w"> </span>~/dev-cvs/gentoo/xml/htdocs/xsl/guidexml2wiki.xsl<span class="w"> </span><span class="nv">$1</span><span class="w"> </span>&gt;<span class="w"> </span><span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.mediawiki
 
-  <span class="k">if</span> <span class="o">[</span> -f <span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.mediawiki <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
-    <span class="c1"># Convert to restructured text</span>
-    pandoc -f mediawiki -t rst -s -S -o <span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.rst <span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.mediawiki<span class="p">;</span>
-  <span class="k">fi</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.mediawiki<span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="c1"># Convert to restructured text</span>
+<span class="w">    </span>pandoc<span class="w"> </span>-f<span class="w"> </span>mediawiki<span class="w"> </span>-t<span class="w"> </span>rst<span class="w"> </span>-s<span class="w"> </span>-S<span class="w"> </span>-o<span class="w"> </span><span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.rst<span class="w"> </span><span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.mediawiki<span class="p">;</span>
+<span class="w">  </span><span class="k">fi</span>
 
-  <span class="k">if</span> <span class="o">[</span> -f <span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.rst <span class="o">]</span> <span class="p">;</span> <span class="k">then</span>
-    <span class="c1"># Use your own stylesheet links (use full https URLs for this)</span>
-    rst2html.py  --stylesheet<span class="o">=</span>link-to-bootstrap.min.css,link-to-tyrian.min.css --link-stylesheet <span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.rst <span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.html
-  <span class="k">fi</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.rst<span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="c1"># Use your own stylesheet links (use full https URLs for this)</span>
+<span class="w">    </span>rst2html.py<span class="w">  </span>--stylesheet<span class="o">=</span>link-to-bootstrap.min.css,link-to-tyrian.min.css<span class="w"> </span>--link-stylesheet<span class="w"> </span><span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.rst<span class="w"> </span><span class="si">${</span><span class="nv">basefile</span><span class="si">}</span>.html
+<span class="w">  </span><span class="k">fi</span>
 <span class="o">}</span>
 </code></pre></div>
 

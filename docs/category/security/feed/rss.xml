@@ -106,7 +106,7 @@ RSA key. It also has the following preferences:&lt;/p&gt;
 to the project files. The release is a (long overdue) bugfix release,
 but includes two small enhancements: support standard input for the
 binary list (so you can pipe the output of one command to cvechecker)
-and the introduction of the &lt;code&gt;CVECHECKER_CONFFILE …&lt;/code&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 16 Sep 2013 16:06:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-09-16:/2013/09/cvechecker-3-3-released/</guid><category>Security</category><category>cvechecker</category><category>release</category></item><item><title>Putting OVAL at work</title><link>https://blog.siphos.be/2013/08/putting-oval-at-work/</link><description>&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
+and the introduction of the &lt;code&gt;CVECHECKER_CONFFILE&lt;/code&gt; variable …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 16 Sep 2013 16:06:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-09-16:/2013/09/cvechecker-3-3-released/</guid><category>Security</category><category>cvechecker</category><category>release</category></item><item><title>Putting OVAL at work</title><link>https://blog.siphos.be/2013/08/putting-oval-at-work/</link><description>&lt;p&gt;When we look at the &lt;a href="http://scap.nist.gov/"&gt;SCAP security standards&lt;/a&gt;,
 you might get the feeling of "How does this work". The underlying
 interfaces, like OVAL and XCCDF, might seem a bit daunting to implement.&lt;/p&gt;
 &lt;p&gt;This is correct, but you need to remember that the standards are
@@ -136,7 +136,7 @@ covered a few capabilities, so let's wrap this up with the remainder of
 them.&lt;/p&gt;
 &lt;dl&gt;
 &lt;dt&gt;CAP_AUDIT_CONTROL&lt;/dt&gt;
-&lt;dd&gt;Enable and disable kernel auditing; change …&lt;/dd&gt;&lt;/dl&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 06 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-06:/2013/05/overview-of-linux-capabilities-part-3/</guid><category>Security</category><category>capabilities</category><category>capsh</category><category>libcap</category><category>linux</category></item><item><title>Overview of Linux capabilities, part 2</title><link>https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/</link><description>&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+&lt;dd&gt;Enable and disable kernel auditing; change auditing filter …&lt;/dd&gt;&lt;/dl&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Mon, 06 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-06:/2013/05/overview-of-linux-capabilities-part-3/</guid><category>Security</category><category>capabilities</category><category>capsh</category><category>libcap</category><category>linux</category></item><item><title>Overview of Linux capabilities, part 2</title><link>https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-2/</link><description>&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
 capabilities&lt;/a&gt;
 and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
 them&lt;/a&gt;,
@@ -145,7 +145,8 @@ I started with a small overview of
 capabilities. So next up are process-related capabilities (note, this
 isn't a conform terminology, more some categorization that I do myself).&lt;/p&gt;
 &lt;dl&gt;
-&lt;dt&gt;CAP_IPC_LOCK …&lt;/dt&gt;&lt;/dl&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 05 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-05:/2013/05/overview-of-linux-capabilities-part-2/</guid><category>Security</category><category>capabilities</category><category>grsecurity</category><category>linux</category><category>nosuid</category><category>selinux</category><category>tpe</category></item><item><title>Overview of Linux capabilities, part 1</title><link>https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/</link><description>&lt;p&gt;In the
+&lt;dt&gt;CAP_IPC_LOCK&lt;/dt&gt;
+&lt;dd&gt;Allow the …&lt;/dd&gt;&lt;/dl&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sun, 05 May 2013 03:50:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-05-05:/2013/05/overview-of-linux-capabilities-part-2/</guid><category>Security</category><category>capabilities</category><category>grsecurity</category><category>linux</category><category>nosuid</category><category>selinux</category><category>tpe</category></item><item><title>Overview of Linux capabilities, part 1</title><link>https://blog.siphos.be/2013/05/overview-of-linux-capabilities-part-1/</link><description>&lt;p&gt;In the
 &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;previous&lt;/a&gt;
 &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;posts&lt;/a&gt;,
 I talked about capabilities and how they can be used to allow processes
@@ -175,7 +176,7 @@ mitigate the results of a succesfull exploit against software. So what
 about the recent &lt;a href="http://www.postgresql.org/support/security/faq/2013-04-04/"&gt;PostgreSQL
 vulnerability&lt;/a&gt;?&lt;/p&gt;
 &lt;p&gt;When correctly configured, the PostgreSQL daemon will run in the
-&lt;code&gt;postgresql_t&lt;/code&gt; domain. In …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 16 Apr 2013 14:00:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-04-16:/2013/04/what-could-selinux-have-done-to-mitigate-the-postgresql-vulnerability/</guid><category>Security</category><category>postgresql</category><category>selinux</category><category>vulnerability</category></item><item><title>How far reaching vulnerabilities can go</title><link>https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/</link><description>&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
+&lt;code&gt;postgresql_t&lt;/code&gt; domain. In SELinux-speak …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Tue, 16 Apr 2013 14:00:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2013-04-16:/2013/04/what-could-selinux-have-done-to-mitigate-the-postgresql-vulnerability/</guid><category>Security</category><category>postgresql</category><category>selinux</category><category>vulnerability</category></item><item><title>How far reaching vulnerabilities can go</title><link>https://blog.siphos.be/2013/04/how-far-reaching-vulnerabilities-can-go/</link><description>&lt;p&gt;If you follow the news a bit, you know that PostgreSQL has had a
 significant security vulnerability. The PostgreSQL team announced it up
 front and communicated how they would deal with the vulnerability (which
 basically comes down to saying that it is severe, that the public
@@ -193,7 +194,7 @@ now has information about additional settings: stackprotector, read-only
 data, restrict access to /dev/mem, disable /proc/kcore and restrict
 kernel syslog (dmesg). One suggestion he made didn't make it to the
 guide (about CONFIG_DEBUG_STACKOVERFLOW) since I can't find any
-resources …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 21 Jul 2012 21:06:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2012-07-21:/2012/07/hardening-the-linux-kernel-updates/</guid><category>Security</category></item><item><title>Hardening the Linux kernel</title><link>https://blog.siphos.be/2012/07/hardening-the-linux-kernel/</link><description>&lt;p&gt;I have moved out the kernel configuration settings (and &lt;strong&gt;sysctl&lt;/strong&gt;
+resources about the …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 21 Jul 2012 21:06:00 +0200</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2012-07-21:/2012/07/hardening-the-linux-kernel-updates/</guid><category>Security</category></item><item><title>Hardening the Linux kernel</title><link>https://blog.siphos.be/2012/07/hardening-the-linux-kernel/</link><description>&lt;p&gt;I have moved out the kernel configuration settings (and &lt;strong&gt;sysctl&lt;/strong&gt;
 stuff) from the &lt;a href="https://dev.gentoo.org/~swift/docs/security_benchmarks/gentoo.html"&gt;Hardening Gentoo Linux
 benchmark&lt;/a&gt;
 into its own &lt;a href="https://dev.gentoo.org/~swift/docs/security_benchmarks/kernel.html"&gt;Hardening the Linux
@@ -276,7 +277,7 @@ site&lt;/a&gt;, contains a helper script that
 returns potential version detection rules for your system if the current
 cvechecker database doesn't detect your software. The script is
 currently available for Gentoo (called &lt;strong&gt;cverules_gentoo&lt;/strong&gt;) but other
-distributions can be easily added. The …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 27 Nov 2010 17:59:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2010-11-27:/2010/11/helping-with-version-detection-rules-in-cvechecker/</guid><category>Security</category></item><item><title>Delta processing in cvechecker</title><link>https://blog.siphos.be/2010/11/delta-processing-in-cvechecker/</link><description>&lt;p&gt;The &lt;a href="http://cvechecker.sourceforge.net"&gt;cvechecker&lt;/a&gt; application will
+distributions can be easily added. The actual …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Sven Vermeulen</dc:creator><pubDate>Sat, 27 Nov 2010 17:59:00 +0100</pubDate><guid isPermaLink="false">tag:blog.siphos.be,2010-11-27:/2010/11/helping-with-version-detection-rules-in-cvechecker/</guid><category>Security</category></item><item><title>Delta processing in cvechecker</title><link>https://blog.siphos.be/2010/11/delta-processing-in-cvechecker/</link><description>&lt;p&gt;The &lt;a href="http://cvechecker.sourceforge.net"&gt;cvechecker&lt;/a&gt; application will
 support delta file processing as well as higher version matching with
 its next release. The functionality is currently in version control and
 I still have to work out quite a few things before they can go live, but

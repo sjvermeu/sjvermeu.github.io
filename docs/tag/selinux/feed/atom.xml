@@ -651,11 +651,11 @@ review why they are needed):&lt;/p&gt;
 &lt;span class="n"&gt;auth_domtrans_chk_passwd&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Allow initrc_t to query selinux access, otherwise avc assertion&lt;/span&gt;
-&lt;span class="n"&gt;allow&lt;/span&gt; &lt;span class="n"&gt;initrc_t&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:netlink_selinux_socket&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;bind&lt;/span&gt; &lt;span class="n"&gt;create&lt;/span&gt; &lt;span class="n"&gt;read&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:netlink_selinux_socket&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;bind&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;create&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
 &lt;span class="n"&gt;selinux_compute_access_vector&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Allow initrc_t to honor the pam_rootok setting&lt;/span&gt;
-&lt;span class="n"&gt;allow&lt;/span&gt; &lt;span class="n"&gt;initrc_t&lt;/span&gt; &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:passwd&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="n"&gt;passwd&lt;/span&gt; &lt;span class="n"&gt;rootok&lt;/span&gt; &lt;span class="p"&gt;};&lt;/span&gt;
+&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;initrc_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="ss"&gt;:passwd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;passwd&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="n"&gt;rootok&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;};&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;With these SELinux rules, switching the user works as expected from within an
@@ -690,14 +690,14 @@ package.&lt;/p&gt;
 &lt;span class="nv"&gt;IUSE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span class="nv"&gt;MODS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;screen&amp;quot;&lt;/span&gt;
 
-inherit selinux-policy-2
+inherit&lt;span class="w"&gt; &lt;/span&gt;selinux-policy-2
 
 &lt;span class="nv"&gt;DESCRIPTION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SELinux policy for screen&amp;quot;&lt;/span&gt;
 
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="nv"&gt;$PV&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="m"&gt;9999&lt;/span&gt;* &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
-        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$PV&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;9999&lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span class="k"&gt;else&lt;/span&gt;
-        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -727,14 +727,14 @@ and referred to through the &lt;code&gt;POLICY_FILES&lt;/code&gt; variable:&lt;/
 &lt;span class="nv"&gt;MODS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;oracle&amp;quot;&lt;/span&gt;
 &lt;span class="nv"&gt;POLICY_FILES&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;oracle.te oracle.if oracle.fc&amp;quot;&lt;/span&gt;
 
-inherit selinux-policy-2
+inherit&lt;span class="w"&gt; &lt;/span&gt;selinux-policy-2
 
 &lt;span class="nv"&gt;DESCRIPTION&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SELinux policy for screen&amp;quot;&lt;/span&gt;
 
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; &lt;span class="nv"&gt;$PV&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="m"&gt;9999&lt;/span&gt;* &lt;span class="o"&gt;]]&lt;/span&gt; &lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
-        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$PV&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;==&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;9999&lt;/span&gt;*&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;then&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
 &lt;span class="k"&gt;else&lt;/span&gt;
-        &lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="nv"&gt;KEYWORDS&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;~amd64 ~x86&amp;quot;&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -865,14 +865,14 @@ In it, we wanted to allow &lt;code&gt;mozilla_t&lt;/code&gt; to send and receive
 example didn't use an interface-like construction for this, so let's see
 how this would be dealt with.&lt;/p&gt;
 &lt;p&gt;First, the module is slightly adjusted to create a &lt;em&gt;macro&lt;/em&gt; called &lt;code&gt;myhttp_sendrecv_client_packet&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt; &lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Another module would then call this:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt; &lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_sendrecv_client_packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;That's it. When the policy modules are both loaded, then the &lt;code&gt;mozilla_t&lt;/code&gt; domain is able
@@ -882,24 +882,24 @@ to send and receive &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; labeled pack
 for the interfaces, CIL is able to use namespaces. It allows to create an almost
 object-like approach for policy development.&lt;/p&gt;
 &lt;p&gt;The above &lt;code&gt;myhttp_client_packet_t&lt;/code&gt; definition could be written as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;myhttp&lt;/span&gt;
-  &lt;span class="c1"&gt;; MyHTTP client packet&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt; &lt;span class="nv"&gt;object_r&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;client_packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="c1"&gt;; MyHTTP client packet&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt; &lt;span class="nv"&gt;sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-    &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
-  &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;macro&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;sendrecv_client_packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;    &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The other module looks as follows:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt; &lt;span class="nv"&gt;mozilla&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt; &lt;span class="nv"&gt;myhttp.sendrecv_client_packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;block&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;call&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp.sendrecv_client_packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -1221,7 +1221,7 @@ allowed any access to &lt;code&gt;unlabeled_t&lt;/code&gt;.&lt;/p&gt;
 &lt;li&gt;Allow &lt;code&gt;unlabeled_t&lt;/code&gt; for all domains.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;To allow the latter, we can load a SELinux rule like the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;domain&lt;/span&gt; &lt;span class="nv"&gt;unlabeled_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;unlabeled_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This will allow all domains to send and receive packets of the &lt;code&gt;unlabeled_t&lt;/code&gt; type.
@@ -1243,14 +1243,14 @@ connection, as all other web browsers and other HTTP-aware applications will hav
 policy rules enabled to send and receive that packet type. Instead, we are going
 to create a new packet type to use.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;;; Definition of myhttp_client_packet_t&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt; &lt;span class="nv"&gt;object_r&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;client_packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;packet_type&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;roletype&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;object_r&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;client_packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;packet_type&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
 &lt;span class="c1"&gt;;; Grant the use to mozilla_t&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt; &lt;span class="nv"&gt;cil_gen_require&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt; &lt;span class="nv"&gt;mozilla_t&lt;/span&gt; &lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt; &lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;typeattributeset&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;cil_gen_require&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;allow&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;mozilla_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;myhttp_client_packet_t&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;packet&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nv"&gt;send&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;recv&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Putting the above in a &lt;code&gt;myhttppacket.cil&lt;/code&gt; file and loading it allows the type
@@ -1699,7 +1699,7 @@ audit: backlog limit exceeded
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
-&lt;p&gt;The message shows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+&lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
@@ -2195,7 +2195,7 @@ much reusable.&lt;/p&gt;</content><category term="SELinux"></category><category 
 that it (well, the authdaemon that is part of Courier) wanted to access
 &lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
 know that this is through the PAM support (more specifically,
-&lt;code&gt;pam …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
+&lt;code&gt;pam_unix …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;While updating the SELinux policy for the Courier IMAP daemon, I noticed
 that it (well, the authdaemon that is part of Courier) wanted to access
 &lt;code&gt;/etc/shadow&lt;/code&gt;, which is of course a big no-no. It doesn't take long to
 know that this is through the PAM support (more specifically,
@@ -2818,7 +2818,8 @@ available which do not build &lt;code&gt;seunshare&lt;/code&gt; anymore. And now
 providing the full &lt;em&gt;2.3&lt;/em&gt; userspace that has been announced today.&lt;/p&gt;</content><category term="Gentoo"></category><category term="Gentoo"></category><category term="hardened"></category><category term="policycoreutils"></category><category term="selinux"></category><category term="seunshare"></category><category term="vulnerability"></category></entry><entry><title>If things are weird, check for policy.29</title><link href="https://blog.siphos.be/2014/04/if-things-are-weird-check-for-policy-29/" rel="alternate"></link><published>2014-04-17T21:01:00+02:00</published><updated>2014-04-17T21:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-17:/2014/04/if-things-are-weird-check-for-policy-29/</id><summary type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
-issue that has been resolved in our current SELinux policy repository …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
+issue that has been resolved in our current SELinux policy repository
+but …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
 issue that has been resolved in our current SELinux policy repository
@@ -2970,7 +2971,10 @@ such patches from upstream might need a few manual corrections before
 they apply to our tree). However, I gladly take that up if it means my
 system will have somewhat better confinement.&lt;/p&gt;</content><category term="Gentoo"></category><category term="alsa"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>Decoding the hex-coded path information in AVC denials</title><link href="https://blog.siphos.be/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/" rel="alternate"></link><published>2014-03-30T16:37:00+02:00</published><updated>2014-03-30T16:37:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-03-30:/2014/03/decoding-the-hex-coded-path-information-in-avc-denials/</id><summary type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
 human readable, like so:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;To know what this …&lt;/p&gt;</summary><content type="html">&lt;p&gt;When investigating AVC denials, some denials show a path that isn't
 human readable, like so:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;type=AVC msg=audit(1396189189.734:1913): avc:  denied  { execute } for  pid=17955 comm=&amp;quot;emerge&amp;quot; path=2F7661722F666669737A69596157202864656C6574656429 dev=&amp;quot;dm-3&amp;quot; ino=1838 scontext=staff_u:sysadm_r:portage_t tcontext=staff_u:object_r:var_t tclass=file
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -3505,7 +3509,7 @@ application should gracefully fail.&lt;/p&gt;</content><category term="SELinux">
 was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
 that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
 &lt;p&gt;I used a simple script (which I've been using for a while already)
-called &lt;strong&gt;seshowtree …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
 was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
 that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
 &lt;p&gt;I used a simple script (which I've been using for a while already)
@@ -4317,7 +4321,7 @@ and, if you like it, put it on your wish list and let everyone know ;-)&lt;/p&gt
 done on request of the administrator for certain packages. For instance,
 for the &lt;code&gt;dev-db/postgresql-server&lt;/code&gt; package we can call its
 &lt;code&gt;pkg_config()&lt;/code&gt; phase to create the PostgreSQL instance and configure it
-so that the configuration of the database is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
+so that the configuration of the database is stored …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the features that Portage provides is to have post-processing
 done on request of the administrator for certain packages. For instance,
 for the &lt;code&gt;dev-db/postgresql-server&lt;/code&gt; package we can call its
 &lt;code&gt;pkg_config()&lt;/code&gt; phase to create the PostgreSQL instance and configure it
@@ -4393,7 +4397,7 @@ policy&lt;/a&gt; as its base for
 SELinux policies. Yes, we do customize it and not everything is already
 pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
 customizable types to further restrict user application access has been
-sent up for …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
+sent up for comments …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
 policy&lt;/a&gt; as its base for
 SELinux policies. Yes, we do customize it and not everything is already
 pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
@@ -4748,7 +4752,7 @@ types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
 more flexible: booleans. The idea now is that a boolean called
 &lt;em&gt;incron_notify_non_security_files&lt;/em&gt; enables &lt;strong&gt;incrond&lt;/strong&gt; to be
-notified on …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+notified on changes on all possible …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
 to mark other
 types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
@@ -4805,7 +4809,9 @@ granting too many rights automatically.&lt;/p&gt;</content><category term="SELin
 post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
 &lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
 want to be able to update the policy more dynamically with additional
-types. To accomplish this, we will make types eligible for watching …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the
+types. To accomplish this, we will make types eligible for watching
+through an attribute.&lt;/p&gt;
+&lt;p&gt;So how …&lt;/p&gt;</summary><content type="html">&lt;p&gt;In the
 &lt;a herf="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-default-set/"&gt;previous
 post&lt;/a&gt; we made &lt;strong&gt;incrond&lt;/strong&gt; able to watch &lt;code&gt;public_content_t&lt;/code&gt; and
 &lt;code&gt;public_content_rw_t&lt;/code&gt; types. However, this is not scalable, so we might
@@ -5049,7 +5055,7 @@ miscfiles_read_public_files(incrond_t)
 domain. As this domain will also be used to execute the user (and
 system) commands provided through the incrontabs, we need to consider
 how we are going to deal with this wide range of possible permissions
-that it might …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With &lt;code&gt;incrontab_t&lt;/code&gt; (hopefully) complete, let's look at the &lt;code&gt;incrond_t&lt;/code&gt;
+that it might take. One …&lt;/p&gt;</summary><content type="html">&lt;p&gt;With &lt;code&gt;incrontab_t&lt;/code&gt; (hopefully) complete, let's look at the &lt;code&gt;incrond_t&lt;/code&gt;
 domain. As this domain will also be used to execute the user (and
 system) commands provided through the incrontabs, we need to consider
 how we are going to deal with this wide range of possible permissions
@@ -5775,7 +5781,7 @@ instead - which will be for the next post.&lt;/p&gt;</content><category term="SE
 first question to ask is how it got there.&lt;/p&gt;
 &lt;p&gt;Well, one way is to have a process running in a known domain, like
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
-domain is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you notice that a process is running in the &lt;code&gt;unlabeled_t&lt;/code&gt; domain, the
+domain is removed from …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you notice that a process is running in the &lt;code&gt;unlabeled_t&lt;/code&gt; domain, the
 first question to ask is how it got there.&lt;/p&gt;
 &lt;p&gt;Well, one way is to have a process running in a known domain, like
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
@@ -5811,7 +5817,7 @@ transition to it. The above one is one way that this still can occur.&lt;/p&gt;<
 was to give some additional information on frequently occurring denials,
 such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
-developers often notice that these capabilities …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
+developers often notice that these capabilities are triggered without …&lt;/p&gt;</summary><content type="html">&lt;p&gt;While writing up the posts on capabilities, one thing I had in my mind
 was to give some additional information on frequently occurring denials,
 such as the &lt;em&gt;dac_override&lt;/em&gt; and &lt;em&gt;dac_read_search&lt;/em&gt; capabilities, and
 when they are triggered. For the DAC-related capabilities, policy
@@ -6343,7 +6349,7 @@ all ears.&lt;/p&gt;</content><category term="SELinux"></category><category term=
 reflects this into the policy).&lt;/p&gt;
 &lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
-&lt;em&gt;udp_socket&lt;/em&gt; (depending on the protocol). There used to be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
+&lt;em&gt;udp_socket&lt;/em&gt; (depending on the protocol). There used to be &lt;em&gt;node&lt;/em&gt; and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
 reflects this into the policy).&lt;/p&gt;
 &lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
@@ -6411,7 +6417,8 @@ I started with a small overview of
 capabilities. So next up are process-related capabilities (note, this
 isn't a conform terminology, more some categorization that I do myself).&lt;/p&gt;
 &lt;dl&gt;
-&lt;dt&gt;CAP_IPC_LOCK …&lt;/dt&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
+&lt;dt&gt;CAP_IPC_LOCK&lt;/dt&gt;
+&lt;dd&gt;Allow the …&lt;/dd&gt;&lt;/dl&gt;</summary><content type="html">&lt;p&gt;As I've (in a very high level) &lt;a href="http://blog.siphos.be/2013/05/capabilities-a-short-intro/"&gt;described
 capabilities&lt;/a&gt;
 and talked a bit on how to &lt;a href="http://blog.siphos.be/2013/05/restricting-and-granting-capabilities/"&gt;work with
 them&lt;/a&gt;,
@@ -6761,7 +6768,8 @@ can certainly be an important method to help achieve it.&lt;/p&gt;</content><cat
 SELinux-enabled, their user context is wrong. An example would be when,
 after logon (in permissive mode), the user is in the
 &lt;code&gt;system_u:system_r:local_login_t&lt;/code&gt; domain instead of a user domain like
-&lt;code&gt;staff_u:staff_r:staff …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes, especially when users are converting their systems to be
+&lt;code&gt;staff_u:staff_r:staff_t&lt;/code&gt;.&lt;br&gt;
+So, how does a login get …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Sometimes, especially when users are converting their systems to be
 SELinux-enabled, their user context is wrong. An example would be when,
 after logon (in permissive mode), the user is in the
 &lt;code&gt;system_u:system_r:local_login_t&lt;/code&gt; domain instead of a user domain like
@@ -7246,7 +7254,7 @@ mitigate the results of a succesfull exploit against software. So what
 about the recent &lt;a href="http://www.postgresql.org/support/security/faq/2013-04-04/"&gt;PostgreSQL
 vulnerability&lt;/a&gt;?&lt;/p&gt;
 &lt;p&gt;When correctly configured, the PostgreSQL daemon will run in the
-&lt;code&gt;postgresql_t&lt;/code&gt; domain. In …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://www.gentoo.org"&gt;Gentoo&lt;/a&gt; is one of the various distributions
+&lt;code&gt;postgresql_t&lt;/code&gt; domain. In SELinux-speak …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="http://www.gentoo.org"&gt;Gentoo&lt;/a&gt; is one of the various distributions
 which supports &lt;a href="http://www.gentoo.org/proj/en/hardened/selinux"&gt;SELinux&lt;/a&gt;
 as a &lt;em&gt;Mandatory Access Control&lt;/em&gt; system to, amongst other things,
 mitigate the results of a succesfull exploit against software. So what
@@ -7415,7 +7423,11 @@ Authenticating root.
 Password:
 
 # run_init rc-service postgresql-9.2 status
-Authenticating root …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;One of the things that has been bugging me was why, even with having
+Authenticating root.
+ * status: started
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;So I …&lt;/p&gt;</summary><content type="html">&lt;p&gt;One of the things that has been bugging me was why, even with having
 &lt;code&gt;pam_rootok.so&lt;/code&gt; set in &lt;code&gt;/etc/pam.d/run_init&lt;/code&gt;, I cannot enjoy
 passwordless service management without using &lt;strong&gt;run_init&lt;/strong&gt; directly:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;# rc-service postgresql-9.2 status
@@ -7494,7 +7506,7 @@ started. Sadly that wasn't the case, as the rc-* scripts always return
 0 (you'll need to parse the output).&lt;/p&gt;
 &lt;p&gt;So what I did now is to create a simple script called &lt;code&gt;runstatus&lt;/code&gt; which
 returns the state of services. It's crude, but seems to work:&lt;/p&gt;
-&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -7507,7 +7519,7 @@ returns the state of services. It's crude, but seems to work:&lt;/p&gt;
 &lt;span class="normal"&gt;11&lt;/span&gt;
 &lt;span class="normal"&gt;12&lt;/span&gt;
 &lt;span class="normal"&gt;13&lt;/span&gt;
-&lt;span class="normal"&gt;14&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
 
 &lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
@@ -7518,11 +7530,11 @@ returns the state of services. It's crude, but seems to work:&lt;/p&gt;
 &lt;span class="c1"&gt;# 3 - if not running&lt;/span&gt;
 &lt;span class="c1"&gt;# 4 - if unknown&lt;/span&gt;
 
-rc-status -a -C &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -q started &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-rc-status -a -C &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; grep -q stopped &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+rc-status&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;-C&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;-q&lt;span class="w"&gt; &lt;/span&gt;started&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+rc-status&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;-C&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;SERVICENAME&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;-q&lt;span class="w"&gt; &lt;/span&gt;stopped&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;3&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
 &lt;p&gt;I then have the service provider (I now provide my own instead of
 patching the openrc one) call &lt;strong&gt;runstatus&lt;/strong&gt; to get the state of a
 service, as well as call it after trying to start a service. But as this

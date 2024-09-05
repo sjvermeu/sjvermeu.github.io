@@ -470,7 +470,8 @@ services don't usually have the privileges (policy-wise) to
 &lt;em&gt;acquire_svc&lt;/em&gt; a service with a different label than their own label.&lt;/p&gt;</content><category term="SELinux"></category><category term="busconfig"></category><category term="d-bus"></category><category term="dbus"></category><category term="linux"></category><category term="policy"></category><category term="selinux"></category></entry><entry><title>If things are weird, check for policy.29</title><link href="https://blog.siphos.be/2014/04/if-things-are-weird-check-for-policy-29/" rel="alternate"></link><published>2014-04-17T21:01:00+02:00</published><updated>2014-04-17T21:01:00+02:00</updated><author><name>Sven Vermeulen</name></author><id>tag:blog.siphos.be,2014-04-17:/2014/04/if-things-are-weird-check-for-policy-29/</id><summary type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
-issue that has been resolved in our current SELinux policy repository …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
+issue that has been resolved in our current SELinux policy repository
+but …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today we analyzed a weird issue one of our SELinux users had with their
 system. He had a denial when calling &lt;strong&gt;audit2allow&lt;/strong&gt;, informing us that
 &lt;code&gt;sysadm_t&lt;/code&gt; had no rights to read the SELinux policy. This is a known
 issue that has been resolved in our current SELinux policy repository
@@ -624,7 +625,7 @@ system will have somewhat better confinement.&lt;/p&gt;</content><category term=
 was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
 that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
 &lt;p&gt;I used a simple script (which I've been using for a while already)
-called &lt;strong&gt;seshowtree …&lt;/strong&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
+called &lt;strong&gt;seshowtree&lt;/strong&gt; which presents …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Today a question was raised how the unprivileged user domain &lt;code&gt;user_t&lt;/code&gt;
 was allowed to write to &lt;code&gt;cgroup_t&lt;/code&gt; files. There is nothing obvious about
 that in the &lt;code&gt;roles/unprivuser.te&lt;/code&gt; file, so what gives?&lt;/p&gt;
 &lt;p&gt;I used a simple script (which I've been using for a while already)
@@ -1029,7 +1030,7 @@ policy&lt;/a&gt; as its base for
 SELinux policies. Yes, we do customize it and not everything is already
 pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
 customizable types to further restrict user application access has been
-sent up for …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
+sent up for comments …&lt;/p&gt;</summary><content type="html">&lt;p&gt;As you are probably aware, Gentoo uses the &lt;a href="http://oss.tresys.com/projects/refpolicy/"&gt;reference
 policy&lt;/a&gt; as its base for
 SELinux policies. Yes, we do customize it and not everything is already
 pushed upstream (for instance, our approach to use &lt;code&gt;xdg_*_home_t&lt;/code&gt;
@@ -1250,7 +1251,7 @@ types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
 more flexible: booleans. The idea now is that a boolean called
 &lt;em&gt;incron_notify_non_security_files&lt;/em&gt; enables &lt;strong&gt;incrond&lt;/strong&gt; to be
-notified on …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
+notified on changes on all possible …&lt;/p&gt;</summary><content type="html">&lt;p&gt;After using a default set of directories to watch, and &lt;a href="http://blog.siphos.be/2013/05/a-selinux-policy-for-incron-marking-types-eligible-for-watching/"&gt;allowing admins
 to mark other
 types&lt;/a&gt;
 as such as well, let's consider another approach for making the policy
@@ -2164,7 +2165,7 @@ instead - which will be for the next post.&lt;/p&gt;</content><category term="SE
 first question to ask is how it got there.&lt;/p&gt;
 &lt;p&gt;Well, one way is to have a process running in a known domain, like
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
-domain is …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you notice that a process is running in the &lt;code&gt;unlabeled_t&lt;/code&gt; domain, the
+domain is removed from …&lt;/p&gt;</summary><content type="html">&lt;p&gt;If you notice that a process is running in the &lt;code&gt;unlabeled_t&lt;/code&gt; domain, the
 first question to ask is how it got there.&lt;/p&gt;
 &lt;p&gt;Well, one way is to have a process running in a known domain, like
 &lt;code&gt;screen_t&lt;/code&gt;, after which the SELinux policy module that provides this
@@ -2462,7 +2463,7 @@ all ears.&lt;/p&gt;</content><category term="SELinux"></category><category term=
 reflects this into the policy).&lt;/p&gt;
 &lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and
-&lt;em&gt;udp_socket&lt;/em&gt; (depending on the protocol). There used to be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
+&lt;em&gt;udp_socket&lt;/em&gt; (depending on the protocol). There used to be &lt;em&gt;node&lt;/em&gt; and …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Let's talk about how SELinux governs network streams (and how it
 reflects this into the policy).&lt;/p&gt;
 &lt;p&gt;When you don't do fancy stuff like SECMARK or netlabeling, then the
 classes that you should keep an eye on are &lt;em&gt;tcp_socket&lt;/em&gt; and

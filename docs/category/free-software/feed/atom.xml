@@ -533,7 +533,7 @@ connection was using Ed25519 through the &lt;code&gt;auth.log&lt;/code&gt; file:
 &lt;p&gt;If this communication succeeds, then you can remove the old key from the &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; files.&lt;/p&gt;
 &lt;p&gt;On the client level, you might want to hide &lt;code&gt;~/.ssh/id_dsa&lt;/code&gt; from the SSH agent:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="c1"&gt;# Obsolete - keychain ~/.ssh/id_dsa&lt;/span&gt;
-keychain ~/.ssh/id_ed25519
+keychain&lt;span class="w"&gt; &lt;/span&gt;~/.ssh/id_ed25519
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If a server update was forgotten, then the authentication will fail and, depending
@@ -655,13 +655,13 @@ with obnam. So, how does it work?&lt;/p&gt;
 I tell which directories need to be backed up, as well as which subdirectories
 or files (through expressions) can be left alone. For instance, I don't want
 obnam to backup ISO files as those have been downloaded anyway.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[config]&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;repository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/srv/backup&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;root&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;exclude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
-&lt;span class="na"&gt;exclude-caches&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="k"&gt;[config]&lt;/span&gt;
+&lt;span class="na"&gt;repository&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/srv/backup&lt;/span&gt;
+&lt;span class="na"&gt;root&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;/root, /etc, /var/lib/portage, /srv/virt/gentoo, /home&lt;/span&gt;
+&lt;span class="na"&gt;exclude&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;\.img$, \.iso$, /home/[^/]*/Development/Centralized/.*&lt;/span&gt;
+&lt;span class="na"&gt;exclude-caches&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;yes&lt;/span&gt;
 
-&lt;span class="na"&gt;keep&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;8h,14d,10w,12m,10y&lt;/span&gt;&lt;span class="w"&gt;&lt;/span&gt;
+&lt;span class="na"&gt;keep&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s"&gt;8h,14d,10w,12m,10y&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The &lt;code&gt;root&lt;/code&gt; parameter tells obnam which directories (and subdirectories) to
@@ -944,7 +944,7 @@ audit: backlog limit exceeded
 
 &lt;!-- PELICAN_END_SUMMMARY --&gt;
 
-&lt;p&gt;The message shows …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
+&lt;p&gt;The message shows up when certain audit events could not be …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Be it because of SELinux experiments, or through general audit
 experiments, sometimes you'll get in touch with a message similar to the
 following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;audit: audit_backlog=321 &amp;gt; audit_backlog_limit=320
@@ -1188,7 +1188,7 @@ request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt
 Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
 what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
 &lt;p&gt;The answer can be found in &lt;code&gt;/usr/src/linux/include/linux/socket.h&lt;/code&gt;:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When checking audit logs, you might come across applications that
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;#define AF_ATMPVC …&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;When checking audit logs, you might come across applications that
 request loading of a &lt;code&gt;net-pf-##&lt;/code&gt; module, with &lt;code&gt;##&lt;/code&gt; being an integer.
 Having requests for &lt;code&gt;net-pf-10&lt;/code&gt; is a more known cause (enable IPv6) but
 what about &lt;code&gt;net-pf-34&lt;/code&gt;?&lt;/p&gt;
@@ -2731,7 +2731,7 @@ voila, new CD available.&lt;/p&gt;</content><category term="Free-Software"></cat
 Video For Linux (CONFIG_VIDEO_DEV) which can be found in the Linux
 kernel configuration at Device Drivers, Multimedia Support. Then, select
 Video capture adapters and inside that menu, select V4L USB devices and
-then USB Video …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Okay, getting the HP webcam running on Linux wasn't hard at all. Enable
+then USB Video Class (UVC …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Okay, getting the HP webcam running on Linux wasn't hard at all. Enable
 Video For Linux (CONFIG_VIDEO_DEV) which can be found in the Linux
 kernel configuration at Device Drivers, Multimedia Support. Then, select
 Video capture adapters and inside that menu, select V4L USB devices and
@@ -2776,7 +2776,7 @@ to the Internet through GPRS...&lt;/p&gt;
 &lt;p&gt;My idea here would be to create a script (say "athome.sh") which returns
 0 if you're at home, and 1 otherwise. The key of the script is that the
 MAC address of your (default) gateway is unique.&lt;/p&gt;
-&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
 &lt;span class="normal"&gt; 2&lt;/span&gt;
 &lt;span class="normal"&gt; 3&lt;/span&gt;
 &lt;span class="normal"&gt; 4&lt;/span&gt;
@@ -2786,19 +2786,19 @@ MAC address of your (default) gateway is unique.&lt;/p&gt;
 &lt;span class="normal"&gt; 8&lt;/span&gt;
 &lt;span class="normal"&gt; 9&lt;/span&gt;
 &lt;span class="normal"&gt;10&lt;/span&gt;
-&lt;span class="normal"&gt;11&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
 
-&lt;span class="nv"&gt;GW&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;/sbin/ip route &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;/default/ {print $3}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
-&lt;span class="nv"&gt;MGW&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;/sbin/arp -e &lt;span class="p"&gt;|&lt;/span&gt; grep &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;GW&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; awk &lt;span class="s1"&gt;&amp;#39;{print $3}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;GW&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;/sbin/ip&lt;span class="w"&gt; &lt;/span&gt;route&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;awk&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;/default/ {print $3}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="nv"&gt;MGW&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;/sbin/arp&lt;span class="w"&gt; &lt;/span&gt;-e&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;grep&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;GW&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;awk&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;{print $3}&amp;#39;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 
-&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;MGW&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;00:11:22:33:44:55&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;MGW&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;00:11:22:33:44:55&amp;quot;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="o"&gt;]&lt;/span&gt;
 &lt;span class="k"&gt;then&lt;/span&gt;
-  &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="k"&gt;else&lt;/span&gt;
-  &lt;span class="nb"&gt;exit&lt;/span&gt; &lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="w"&gt;  &lt;/span&gt;&lt;span class="nb"&gt;exit&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
 &lt;span class="k"&gt;fi&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;
+
 &lt;p&gt;With this script, you can then run &lt;code&gt;athome.sh &amp;amp;&amp;amp; fetchmail&lt;/code&gt;. If you
 aren't home, &lt;code&gt;athome.sh&lt;/code&gt; will return 1 and the fetchmail command will
 never be executed. When you are, the command returns 0 and fetchmail is

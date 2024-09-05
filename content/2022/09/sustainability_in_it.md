@@ -17,6 +17,8 @@ infrastructure and optimal resource consumption are at least two other
 attention points that deserve plenty of attention. But let's start at the
 manufacturing process...
 
+<!-- PELICAN_END_SUMMARY -->
+
 **Certifications for products and companies**
 
 Eco certifications are a good start in the selection process. By selecting
@@ -201,4 +203,3 @@ Feedback? Comments? Don't hesitate to [drop me an
 email](mailto:sven.vermeulen@siphos.be), or join the [discussion on
 Twitter](https://twitter.com/infrainsight/status/1573941352844464128).
 
-<!-- PELICAN_END_SUMMARY -->
