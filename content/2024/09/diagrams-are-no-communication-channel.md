@@ -15,6 +15,8 @@ My stance, however, is that architects should not use the diagrams from their
 architecture modeling framework to convey their message to every stakeholder
 out there...
 
+<!-- PELICAN_END_SUMMARY -->
+
 **An enterprise framework for architects**
 
 Certainly, using a single modeling language like ArchiMate is important.
@@ -91,4 +93,3 @@ Certainly, you will lose a lot of insight compared to the architectural
 drawings, but you'll get much better acceptance by the community.
 
 
-<!-- PELICAN_END_SUMMARY -->

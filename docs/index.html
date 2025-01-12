@@ -197,6 +197,282 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2025/01/digital-operational-resilience-act/">Digital Operational Resilience Act</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 12 January 2025</span></span>
+                <p><p>One of the topics that most financial institutions are (still) currently
+working on, is their compliance with a European legislation called
+<a href="https://eur-lex.europa.eu/eli/reg/2022/2554/oj/eng">DORA</a>.  This abbreviation,
+which stands for "Digital Operational Resilience Act", is a European
+regulation. European regulations apply automatically and uniformly across all EU
+countries. This is unlike another recent legislation called
+<a href="https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng">NIS2</a>, the "Network and
+Information Security" directive. As a EU directive, NIS2 requires the EU
+countries to formulate the directive into local law. As a result, 
+different EU countries can have a slightly different implementation.</p>
+<p>The DORA regulation applies to the EU financial sector, and has some strict
+requirements in it that companies' IT stakeholders are affected by. It doesn't
+often sugar-coat things like some frameworks do. This has the advantage that
+its "interpretation flexibility" is quite reduced - but not zero of course.
+Yet, that advantage is also a disadvantage: financial entities might have
+had different strategies covering their resiliency, and now need to adjust their
+strategy.</p>
+<p><strong>History of DORA</strong></p>
+<p>Officially called the Regulation (EU) 2022/2554, DORA was proposed as a new
+regulatory framework in September 2020. It aimied to further strengthen the
+digital operational resilience of the financial sector. "Operational resilience"
+here focuses strongly on cyber threat resilience and operational risks
+like IT disasters. On January 16th 2023, the main DORA regulation
+<a href="https://www.esma.europa.eu/esmas-activities/digital-finance-and-innovation/digital-operational-resilience-act-dora">entered into
+force</a> 
+and will apply as of January 17th 2025. Yes, that's about now.</p>
+<p>Alongside the main DORA text, additional standards are being developed too.
+These are <a href="https://www.eba.europa.eu/regulation-and-policy/operational-resilience">Regulatory Technical
+Standards</a>
+that detail requirements of one or more articles within DORA. The one I
+currently come into contact with the most is the <a href="https://www.eba.europa.eu/activities/single-rulebook/regulatory-activities/operational-resilience/regulatory-technical-standards-ict-risk-management-framework-and-simplified-ict-risk-management">RTS on ICT risk management
+framework</a>.
+This RTS elaborates on various requirements close to my own expertise. However,
+other RTS documents are also on my visor to read through, such as the technical
+standard on <a href="https://www.eba.europa.eu/activities/single-rulebook/regulatory-activities/operational-resilience/regulatory-technical-standards-policy-ict-services-supporting-critical-or-important-functions">ICT services supporting critical or important functions provided by
+ICT third-party service
+providers</a>
+and <a href="https://www.eba.europa.eu/activities/single-rulebook/regulatory-activities/operational-resilience/joint-regulatory-technical-subcontracting">subcontracting ICT
+services</a>.</p>
+<p>During the development of the DORA regulation and these technical standards,
+various stakeholders were consulted. The European Supervisory Authorities (ESAs) were 
+of course primary stakeholders here, but other stakeholders could also provide
+their feedback. This feedback, and the answers or reactions of it by the
+legislative branch, help out in understanding parts of the regulation ("am I
+reading this right") as well as conveying the understanding of the regulatory
+branch about what is stated ("does the regular understand what they are
+asking").</p>
+<p>DORA is not a first of course. The moment you start reading the regulation, you
+notice that it amends previous regulations. These were predecessors, so should
+also be seen as part of the "history" of DORA:
+- <a href="https://eur-lex.europa.eu/eli/reg/2009/1060/oj/eng">Regulation (EC) No
+  1060/2009</a>, which
+  regulates the credit rating agencies.
+- <a href="https://eur-lex.europa.eu/eli/reg/2012/648/oj/eng">Regulation (EU) No
+  648/2012</a>, covering
+  regulation on derivatives, central counter parties, and trade repositories.
+- <a href="https://eur-lex.europa.eu/eli/reg/2014/600/oj/eng">Regulation (EU) No
+  600/2014</a>, regulating the
+  markets in financial instruments.
+- <a href="https://eur-lex.europa.eu/eli/reg/2014/909/oj/eng">Regulation (EU) No
+  909/2014</a>, which focuses on
+  securities settlements and central securities depositories.
+- <a href="https://eur-lex.europa.eu/eli/reg/2016/1011/oj/eng">Regulation (EU)
+  2016/1011</a>, focusing on
+  benchmarks in financial instruments and financial contracts, and measuring
+  performance of investment funds</p>
+<p>Now, these are all market oriented regulations, and while many of these do
+sporadically refer to an operational resilience aspect, they require a
+significant understanding of that financial market to begin with, which isn't
+the case for DORA. But DORA wasn't the first to be more IT oriented.</p>
+<p>The first part of the DORA regulation provides context into the actual
+legislative articles (which only start one-third into the document). It provides
+references to previous publications or legislation that are more IT (or cyber
+threat) oriented. This first part is called the "preamble" in EU legislation.</p>
+<p>In this preamble, paragraph 15 references <a href="https://eur-lex.europa.eu/eli/dir/2016/1148/oj/eng">Directive (EU)
+2016/1148</a> as the
+first broad cybersecurity framework enacted at EU level. It covers a high common
+level of security of network and information systems. Yes, that's the "NIS" directive
+that recently got a new iteration: <a href="https://eur-lex.europa.eu/eli/dir/2022/2555/oj/eng">Directive (EU)
+2022/2555</a>, aka NIS2.
+Plenty of other references exist as well. Sometimes these refer to the
+legislation that covers certain markets, as listed before. Other references
+focus on the supervisory bodies. Many references are towards other legislation
+that provides definitions for the used terms.</p>
+<p><strong>Structure of DORA</strong></p>
+<p>The main DORA legislation (so excluding the regulatory technical standards)
+covers 64 articles, divided into 9 chapters. But as mentioned earlier, it 
+has a quite sizeable preamble that covers context, motivation and interpretation
+details for the legislative text. This allows for improved interpretation
+of the articles themselves.</p>
+<p>More specifically, such a preamble covers the legal basis of the legislation,
+and the objectives why the legislation came to be. I found <a href="https://fabianbohnenberger.com/2024/04/10/how-to-read-eu-law/comment-page-1/">How to read EU
+law</a>
+by Fabian Bohnenberger to be a very good and quick-to-read overview of how an EU
+legislative text is structured. The DORA preamble covers 106 paragraphs already,
+and they're not even the actual legislative articles.</p>
+<p>So, how are the legislative articles themselves structured like?</p>
+<ul>
+<li>
+<p><em>Chapter I - General provisions</em> defines what the purpose of the legislation is
+  and its structure (art 1), where the legislation applies to (art 2), 65
+  definitions used throughout the legislation (art 3) and the notion that
+  proportionality applies (art 4).</p>
+</li>
+<li>
+<p><em>Chapter II - ICT risk management</em> tells the in-scope markets and institutions
+  how to govern and organize themselves to cover risk management (art 5), what
+  the risk management framework should do (art 6), that they need to have
+  fit-for-purpose tooling and procedures to cover risk management (art 7), that
+  they need to properly identify risks towards their assets (art 8), need to
+  take sufficient measures to protect themselves against various threats (art
+  9), be able to detect anomalous activities (art 10), have a response and
+  recovery process in place (art 11), have backup/restore processes in place
+  (art 12), ensure knowledge of the employees is sound (art 13), be able to
+  communicate properly (art 14) and follow regulatory technical standards for
+  ICT risk management (art 15). In the end, art 16 covers the requirements for
+  smaller financial institutions (as DORA differentiates requirements based on
+  the impact, size and some other criteria).</p>
+</li>
+<li>
+<p><em>Chapter III - ICT-related incident management, classification and reporting</em>
+  describes how to handle ICT incidents (art 17), how to classify these
+  incidents and threats (art 18), what reporting expectations exist (art 19),
+  and the standardization on the reporting (art 20). The reported incidents are
+  centralized (art 21), supervisors will provide answers to the reports (art
+  22), and art 23 informs us for which incidents the above is all applicable.</p>
+</li>
+<li>
+<p><em>Chapter IV - Digital operational resilience testing</em> covers the testing of
+  the operational resilience. First, general requirements are provided (art 24),
+  after which DORA covers the testing of tools and systems (art 25), mandatory
+  use of penetration testing (art 26), and how these threat-led penetration
+  tests (TLPTs) are carried out (art 27).</p>
+</li>
+<li>
+<p><em>Chapter V - Managing of ICT third-party risk</em> further divulges in managing
+  threats related to outsourcing and use of third parties. Art 28 covers the
+  general principles, whereas art 29 covers the potential concentration risk
+  (aka "if everyone depends on this third party, then..."). Contractual
+  expectations are covered in art 30. Further, this chapter covers the
+  introduction of an oversight framework for large, critical third-party service
+  providers. Art 31 designates when a third-party service provider is deemed
+  critical, art 32 covers the oversight structure, art 33 introduces the
+  role of the Lead Overseer(s), their operational coordination (art 34), their
+  power (art 35), and what their capabilities are outside of the EU (art 36).
+  Art 37 covers how the overseer can receive information, if and how
+  investigations take place (art 38), how inspections are handled (art 39), how
+  this relates to existing oversights (art 40), how the conduct of oversight
+  activities is handled (art 41), how authorities follow-up on overseer
+  activities (art 42), who will pay for the oversight activities (art 43) and
+  the international cooperation amongst regulatory/supervisory bodies (art 44).</p>
+</li>
+<li>
+<p><em>Chapter VI - Information-sharing arrangements</em> has a single article, art 45,
+  on threat/intelligence information sharing amongst the financial institutions.</p>
+</li>
+<li>
+<p><em>Chapter VII - Competent authorities</em> assigns the appropriate authorities
+  towards the various financial institutions (art 46), how these authorities
+  cooperate with others (art 47), and how they cooperate amongst themselves (art
+  48). Cross-sector exercises are covered in art 49, and the penalties and
+  remedial measures are covered in art 50. Art 51 is how/when administrative
+  penalties/measures are imposed, art 52 is when criminal liabilities where
+  found. Art 53 requires EU member states to notify the EU institutions about
+  related legislation/provisions, art 54 documents how administrative penalties
+  are published. Art 55 confirms the professional secrecy of the authorities,
+  and art 56 covers the data protection provisions for the authorities.</p>
+</li>
+<li>
+<p><em>Chapter VIII - Delegated acts</em> has one article (art 57) covering by whom this
+  legislation is exercised (role of the Commission, Parliament, etc.)</p>
+</li>
+<li>
+<p><em>Chapter IX - Transitional and final provisions</em> is a "the rest" chapter. It
+  covers a review of the law and implementations by January 17th 2028 (art 58),
+  and then many amendments to existing regulations to make them aligned and
+  consistent with the DORA legislation (art 59 - 63). The last article, art 64,
+  describes when DORA comes into force and when it shall apply.</p>
+</li>
+</ul>
+<p>For me, chapters II (risk management), IV (resilience testing) and V (third
+party risk) are the most interesting as they cover expectations for many IT
+processes or controls.</p>
+<p><strong>Regulatory Technical Standards</strong></p>
+<p>Within the DORA legislation, references are made to regulatory technical
+standards that need to be drafted up. The intention of the regulatory technical
+standards is to further elaborate on the expectations and requirements of DORA.
+These RTS documents also have legislative power (hence the "regulatory" in the 
+name) and are important to track too.</p>
+<p>The RTS that covers the ICT risk framework from article 15 is one that has a
+strong IT orientation with it. Like the EU legislative texts, it holds 
+a lot of context to begin with. The draft publications also cover the
+feedback received and the answers/results from that feedback. It is unlikely
+that these will be found in the final published RTS' though.</p>
+<p>The current <a href="https://www.eba.europa.eu/sites/default/files/2024-01/bf5a2976-1a48-44f3-b5a7-56acd23ba55c/JC%202023%2086%20-%20Final%20report%20on%20draft%20RTS%20on%20ICT%20Risk%20Management%20Framework%20and%20on%20simplified%20ICT%20Risk%20Management%20Framework.pdf">JC 2023 76 - Final report on draft RTS on ICT Risk Management
+Framework and on simplified ICT Risk Management
+Framework</a>
+has the actual technical standard between pages 45 and 89. It too uses
+chapters to split the text up a bit. After art 1, covering the overall risk
+profile and complexity, we have:</p>
+<ul>
+<li>
+<p><em>Chapter I - ICT security policies, procedures, protocols, and tools</em> contains
+  significant input for various IT processes and domains. It is further subdivided
+  into sections:</p>
+</li>
+<li>
+<p><em>Section I</em> covers what should be in the ICT security policies (art 2),</p>
+</li>
+<li><em>Section II</em> describes the details of the ICT risk management framework (art 3), </li>
+<li><em>Section III - ICT Asset Management</em> covers the ICT asset management expectations (art
+  4) and ICT asset management process (art 5), </li>
+<li><em>Section IV - Encryption and cryptography</em> covers cryptography expectations (art 6 and
+  7), </li>
+<li><em>Section V - ICT Operations Security</em> handles the ICT operations policies
+    (art 8), capacity and performance management (art 9), vulnerability and
+    patch management (art 10), data and system security (art 11), logging
+    expectations (art 12), </li>
+<li><em>Section VI - Network security</em> is about the network security expectations
+    (art 13), and in-transit data protection measures (art 14),</li>
+<li><em>Section VII - ICT project and change management</em> covers the ICT project
+    management (art 15), ICT development and maintenance activities (art 16),
+    and change management (art 17),</li>
+<li>
+<p><em>Section VIII</em> handles physical security measures (art 18)</p>
+</li>
+<li>
+<p><em>Chapter II - Human Resources Policy and Access Control</em> handles HR policies (art 19), identity management
+  (art 20), access control (art 21).</p>
+</li>
+<li>
+<p><em>Chapter III - ICT-related incident detection and response</em> , incident management (art 22), anomalous
+  activity detection and response (art 23), business continuity (art 24 and 25),
+  ICT response and recovery (26)</p>
+</li>
+</ul>
+<p>As you can read from the titles, these are more specific. Don't think "Oh, it is
+just a single article" about a subject. Some articles span more than a full
+page. For instance, Article 13 on network security has 13 sub-paragraphs.</p>
+<p><strong>DORA for architects</strong></p>
+<p>I think that the DORA legislation is a crucial authority to consider when
+you are developing internal policies for EU-based financial institutions. I've
+mentioned the use of
+<a href="https://blog.siphos.be/2022/08/getting-lost-in-the-frameworks/">frameworks</a> in
+the past, which can inspire companies in the development of their own policies.
+Companies should never blindly copy these frameworks (or legislative
+requirements) into a policy, because then your policy becomes a mess of
+overlapping or sometimes even contradictory requirements. Instead, policies
+should refer to these authorities when relevant, allowing readers to understand
+which requirements are triggered by which source.</p>
+<p>When you're not involved in the development of policies, having a read through
+some of the DORA texts might be still sensible as it gives a grasp on what
+requirements are pushed to your company. And while we're at it, do the same for
+the NIS2 documents, because even if your company is in scope of DORA, NIS2 still
+applies (DORA is a specialized law, so takes precedence over what NIS2 asks, but
+if DORA doesn't cover a topic and NIS2 does, then you still have to follow
+NIS2).</p>
+<p>Feedback? Comments? Don't hesitate to get in touch on
+<a href="https://discuss.systems/@infrainsight">Mastodon</a>.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/regulation.html">regulation</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/dora/">dora</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2024/09/diagrams-are-no-communication-channel/">Diagrams are no communication channel</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Thu 05 September 2024</span></span>
@@ -208,68 +484,6 @@ known for its broad architecture framework titled TOGAF.</p>
 <p>My stance, however, is that architects should not use the diagrams from their
 architecture modeling framework to convey their message to every stakeholder
 out there...</p>
-<p><strong>An enterprise framework for architects</strong></p>
-<p>Certainly, using a single modeling language like ArchiMate is important.
-It allows architects to use a common language, a common framework,
-in which they can convey their ideas and designs. When collaborating on
-the same project, it would be unwise to use different modeling techniques
-or design frameworks among each other.</p>
-<p>By standardizing on a single framework <em>for a particular purpose</em>, a company
-can optimize their efforts surrounding education and documentation. If several 
-architecture frameworks are used for the same purpose, inefficiencies arise.
-Supporting tooling can also be selected (such as 
-<a href="https://www.archimatetool.com/">Archi</a>), which has specialized features to support
-this framework.  The more architects are fluent in a common framework, the less
-likely ambiguity or misunderstandings occur about what certain architectures or
-designs want to present.</p>
-<p>Now, I highlighted "<em>for a particular purpose</em>", because that architecture
-framework isn't the goal, it's a means.</p>
-<p><strong>Domain-specific language, also in architecture</strong></p>
-<p>In larger companies, you'll find architects with different specializations
-and focus areas. A common set is to have architects at different levels
-or layers of the architecture:</p>
-<ul>
-<li>enterprise architects focus on the holistic and strategic level, </li>
-<li>domain architects manage the architecture for one or more domains (a means of splitting the complexity
-of a company, often tied to business domains), </li>
-<li>solution or system architects focus on the architecture for specific projects or solutions, </li>
-<li>security architects concentrate on the cyber threats and protection measures, </li>
-<li>network architects look at the network design, flows and flow controls,
-etc.</li>
-</ul>
-<p>Architecture frameworks are often not meant to support all levels. ArchiMate
-for instance, is tailored to enterprise and domain level in general. It also
-supports solution or system architecture well when it focuses
-on applications. Sure, other architecture layers can be expressed as well, but
-after a while, you'll notice that the expressivity of the framework lacks the
-details or specifics needed for those layers.</p>
-<p>It is thus not uncommon that, at a certain point, architects drop one framework 
-and start using another. Network architecture and design is expressed differently
-than the ICT domain architecture. Both need to 'plug into each other',
-because network architects need to understand the larger picture they operate
-in, and domain architects should be able to read network architecture design
-and relate it back to the domain architecture.</p>
-<p>Such a transition is not only within IT. Consider city planning and
-housing units, where architects design new community areas and housing.
-These designs need to be well understood by the architects, who are
-responsible for specific specializations such as utilities, transportation,
-interior, landscaping, and more. They use different ways of designing, but
-make sure it is understandable (and often even standardized) by the others.</p>
-<p><strong>Your schematic is not your presentation</strong></p>
-<p>I've seen architects who are very satisfied with their architectural
-design: they want nothing more than to share this with their
-(non-architect) stakeholders in all its glory. And while I do agree that lead
-engineers, for instance, should be able to understand architecture drawings, the
-schematics themselves shouldn't be the presentation material.</p>
-<p>And definitely not towards higher management.</p>
-<p>When you want to bring a design to a broader community, or to stakeholders
-with different backgrounds or roles, it is important to tell your story
-in an easy-to-understand way. Just like building architects would create
-physical mock-ups at scale to give a better view of a building, IT
-architects should create representative material to expedite
-presentations and discussions.</p>
-<p>Certainly, you will lose a lot of insight compared to the architectural
-drawings, but you'll get much better acceptance by the community.</p>
 </p>
                 <div class="flex-row mx-auto mt-3 small">
                     <div class="float-left">
@@ -490,30 +704,6 @@ I want to share some practices I've learned on how to draft such a policy.</p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/enterprise/">enterprise</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/legal/">legal</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/compliance/">compliance</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2021/11/hybrid-cloud-can-be-very-complex/">Hybrid cloud can be very complex</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 08 November 2021</span></span>
-                <p><p>I am not an advocate for hybrid cloud architectures. Or at least, not the
-definition for hybrid cloud that assumes one (cloud or on premise) environment
-is just an extension of another (cloud or on premise) environment. While such
-architectures seem to be simple and fruitful - you can easily add some capacity
-in the other environment to handle burst load - they are a complex beast to
-tame.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/architecture.html">architecture</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/hybrid/">hybrid</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/cloud/">cloud</a>
                     </div>
                 </div>
             </div>
