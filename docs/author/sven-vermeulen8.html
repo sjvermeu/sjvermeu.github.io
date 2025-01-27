@@ -196,6 +196,32 @@ Simplicity is a form of art... - Articles by Sven Vermeulen        </title>
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2015/08/filtering-network-access-per-application/">Filtering network access per application</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 07 August 2015</span></span>
+                <p><p>Iptables (and the successor nftables) is a powerful packet filtering system in
+the Linux kernel, able to create advanced firewall capabilities. One of the 
+features that it <em>cannot</em> provide is per-application filtering. Together with
+SELinux however, it is possible to implement this on a <em>per domain</em> basis.</p>
+<p>SELinux does not know applications, but it knows domains. If we ensure that each
+application runs in its own domain, then we can leverage the firewall
+capabilities with SELinux to only allow those domains access that we need.</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/network/">network</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/iptables/">iptables</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2015/08/my-application-base-obnam/">My application base: Obnam</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 05 August 2015</span></span>
@@ -446,38 +472,6 @@ show how I use central authentication and authorization with PostgreSQL.</p>
                     <div class=" float-right">
                         <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free-software</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/postgresql/">postgresql</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2015/05/testing-with-permissive-domains/">Testing with permissive domains</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Mon 18 May 2015</span></span>
-                <p><p>When testing out new technologies or new setups, not having (proper)
-SELinux policies can be a nuisance. Not only are the number of SELinux
-policies that are available through the standard repositories limited,
-some of these policies are not even written with the same level of
-confinement that an administrator might expect. Or perhaps the
-technology to be tested is used in a completely different manner.</p>
-<p>Without proper policies, any attempt to start such a daemon or
-application might or will cause permission violations. In many cases,
-developers or users tend to disable SELinux enforcing then so that they
-can continue playing with the new technology. And why not? After all,
-policy development is to be done <em>after</em> the technology is understood.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/permissive/">permissive</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/policy/">policy</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/semanage/">semanage</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/test/">test</a>
                     </div>
                 </div>
             </div>

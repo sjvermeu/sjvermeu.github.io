@@ -24,6 +24,8 @@ Yet, that advantage is also a disadvantage: financial entities might have
 had different strategies covering their resiliency, and now need to adjust their
 strategy.
 
+<!-- PELICAN_END_SUMMARY -->
+
 **History of DORA**
 
 Officially called the Regulation (EU) 2022/2554, DORA was proposed as a new
@@ -61,6 +63,7 @@ asking").
 DORA is not a first of course. The moment you start reading the regulation, you
 notice that it amends previous regulations. These were predecessors, so should
 also be seen as part of the "history" of DORA:
+
 - [Regulation (EC) No
   1060/2009](https://eur-lex.europa.eu/eli/reg/2009/1060/oj/eng), which
   regulates the credit rating agencies.
@@ -269,4 +272,3 @@ NIS2).
 Feedback? Comments? Don't hesitate to get in touch on
 [Mastodon](https://discuss.systems/@infrainsight).
 
-<!-- PELICAN_END_SUMMARY -->

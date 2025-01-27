@@ -197,6 +197,35 @@
         <div class="card mb-2 shadow-sm">
             <div class="card-body">
                 <h5 class="card-title" style="margin-bottom: 0;">
+                    <a href="https://blog.siphos.be/2015/09/using-multiple-openssh-daemons/">Using multiple OpenSSH daemons</a>
+                </h5>
+                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Sun 06 September 2015</span></span>
+                <p><p>I administer a couple of systems which provide interactive access by end users,
+and for this interactive access I position <a href="http://www.openssh.com/">OpenSSH</a>. 
+However, I also use this for administrative access to the system, and I tend to
+have harder security requirements for OpenSSH than most users do.</p>
+<p>For instance, on one system, end users with a userid + password use the
+sFTP server for publishing static websites. Other access is prohibited,
+so I really like this OpenSSH configuration to use chrooted users, internal
+sftp support, whereas a different OpenSSH is used for administrative access
+(which is only accessible by myself and some trusted parties).</p>
+</p>
+                <div class="flex-row mx-auto mt-3 small">
+                    <div class="float-left">
+                    </div>
+                    <div class=" float-right">
+                        <a class="badge badge-success" href="https://blog.siphos.be/category/free-software.html">free-software</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/openssh/">openssh</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/ssh/">ssh</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/u2f/">u2f</a>
+                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title" style="margin-bottom: 0;">
                     <a href="https://blog.siphos.be/2015/09/maintaining-packages-and-backporting/">Maintaining packages and backporting</a>
                 </h5>
                 <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Wed 02 September 2015</span></span>
@@ -439,32 +468,6 @@ have LSM be as minimally invasive as possible.</p>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/linux/">linux</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/dac/">dac</a>
                             <a class="badge badge-info" href="https://blog.siphos.be/tag/lsm/">lsm</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title" style="margin-bottom: 0;">
-                    <a href="https://blog.siphos.be/2015/08/filtering-network-access-per-application/">Filtering network access per application</a>
-                </h5>
-                <span class="small">by <a href="https://blog.siphos.be/pages/about.html">Sven Vermeulen</a>, post on <span class="text-success">Fri 07 August 2015</span></span>
-                <p><p>Iptables (and the successor nftables) is a powerful packet filtering system in
-the Linux kernel, able to create advanced firewall capabilities. One of the 
-features that it <em>cannot</em> provide is per-application filtering. Together with
-SELinux however, it is possible to implement this on a <em>per domain</em> basis.</p>
-<p>SELinux does not know applications, but it knows domains. If we ensure that each
-application runs in its own domain, then we can leverage the firewall
-capabilities with SELinux to only allow those domains access that we need.</p>
-</p>
-                <div class="flex-row mx-auto mt-3 small">
-                    <div class="float-left">
-                    </div>
-                    <div class=" float-right">
-                        <a class="badge badge-success" href="https://blog.siphos.be/category/selinux.html">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/selinux/">selinux</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/network/">network</a>
-                            <a class="badge badge-info" href="https://blog.siphos.be/tag/iptables/">iptables</a>
                     </div>
                 </div>
             </div>
